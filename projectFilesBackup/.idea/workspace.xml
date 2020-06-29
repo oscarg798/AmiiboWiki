@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="error" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f40208e6-d9d9-4da6-b3bb-adfa6b02d15f" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Nuevo" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view />
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="resourceFile" />
+        <option value="valueResourceFile" />
+        <option value="layoutResourceFile" />
+        <option value="Kotlin File" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1dr0Uhwg9e8tFZGvNR83fSNiAhl" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DEBUGGABLE_DEVICE" value="google-pixel_4_xl-192.168.1.90:5555" />
+    <property name="DEBUGGABLE_PROCESS" value="com.oscarg798.potterwiki" />
+    <property name="DEBUGGER_ID" value="Auto" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="Nuevo" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-06-26T11:46:21.706Z" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHOW_ALL_PROCESSES" value="false" />
+    <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/core/src/main/res/font" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RecentsManager">
+    <key name="android.template.509504921">
+      <recent name="com.oscarg798.potterwiki.houses" />
+      <recent name="com.oscarg798.potterwiki" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.oscarg798.potterwiki.houses.mvi" />
+      <recent name="com.oscarg798.potterwiki.core.mvi" />
+      <recent name="com.oscarg798.potterwiki.core.base" />
+      <recent name="com.oscarg798.potterwiki.network.exceptions" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/core/src/main/res/font" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/core/src/main/res/values" />
+      <recent name="$PROJECT_DIR$/core/src/main/java/com/oscarg798/potterwiki/core/mvi" />
+      <recent name="$PROJECT_DIR$/core/src/main/java/com/oscarg798/potterwiki/core/base" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Android App.app">
+    <configuration name="HouseViewStateTest" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="houses" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.oscarg798.potterwiki.houses.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.oscarg798.potterwiki.houses" />
+      <option name="MAIN_CLASS_NAME" value="com.oscarg798.potterwiki.houses.HouseViewStateTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="app" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Hybrid>
+      <Java />
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GetHousesUseCaseTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="houses" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.oscarg798.potterwiki.houses.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.oscarg798.potterwiki.houses" />
+      <option name="MAIN_CLASS_NAME" value="com.oscarg798.potterwiki.houses.GetHousesUseCaseTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HouseRepositoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="core" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.oscarg798.potterwiki.core.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.oscarg798.potterwiki.core" />
+      <option name="MAIN_CLASS_NAME" value="com.oscarg798.potterwiki.core.HouseRepositoryTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Android JUnit.HouseViewStateTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f40208e6-d9d9-4da6-b3bb-adfa6b02d15f" name="Default Changelist" comment="" />
+      <created>1593167921670</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593167921670</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="540" y="346" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1593172128977">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="540" y="346" key="#com.intellij.fileTypes.FileTypeChooser/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593172128977" />
+    <state x="619" y="259" key="#com.intellij.ide.util.MemberChooser" timestamp="1593181190643">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="619" y="259" key="#com.intellij.ide.util.MemberChooser/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593181190643" />
+    <state x="563" y="196" width="557" height="681" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog" timestamp="1593172276931">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="563" y="196" width="557" height="681" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593172276931" />
+    <state x="603" y="247" width="913" height="579" key="#xdebugger.evaluate" timestamp="1593183572425">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="603" y="247" width="913" height="579" key="#xdebugger.evaluate/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593183572425" />
+    <state x="480" y="407" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1593169553048">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="480" y="407" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593169553048" />
+    <state x="428" y="298" key="AndroidCreateResourceFileDialog" timestamp="1593177908764">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="428" y="298" key="AndroidCreateResourceFileDialog/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593177908764" />
+    <state x="696" y="309" key="AndroidProcessChooserDialog" timestamp="1593198304053">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="696" y="309" key="AndroidProcessChooserDialog/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593198304053" />
+    <state x="518" y="298" key="Downloadable.Font.Dialog.Size" timestamp="1593171128878">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="518" y="298" key="Downloadable.Font.Dialog.Size/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593171128878" />
+    <state width="1638" height="650" key="GridCell.Tab.0.bottom" timestamp="1593203464974">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="650" key="GridCell.Tab.0.bottom/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593203464974" />
+    <state width="1638" height="650" key="GridCell.Tab.0.center" timestamp="1593203464973">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="650" key="GridCell.Tab.0.center/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593203464973" />
+    <state width="1638" height="650" key="GridCell.Tab.0.left" timestamp="1593203464972">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="650" key="GridCell.Tab.0.left/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593203464972" />
+    <state width="1638" height="650" key="GridCell.Tab.0.right" timestamp="1593203464973">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="650" key="GridCell.Tab.0.right/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593203464973" />
+    <state width="1638" height="345" key="GridCell.Tab.1.bottom" timestamp="1593198482385">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="345" key="GridCell.Tab.1.bottom/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593198482385" />
+    <state width="1638" height="345" key="GridCell.Tab.1.center" timestamp="1593198482384">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="345" key="GridCell.Tab.1.center/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593198482384" />
+    <state width="1638" height="345" key="GridCell.Tab.1.left" timestamp="1593198482384">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="345" key="GridCell.Tab.1.left/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593198482384" />
+    <state width="1638" height="345" key="GridCell.Tab.1.right" timestamp="1593198482385">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1638" height="345" key="GridCell.Tab.1.right/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593198482385" />
+    <state x="341" y="175" key="SettingsEditor" timestamp="1593169539589">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="341" y="175" key="SettingsEditor/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593169539589" />
+    <state x="368" y="146" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1593173941685">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="368" y="146" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593173941685" />
+    <state x="492" y="293" width="695" height="486" key="find.popup" timestamp="1593183759271">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="492" y="293" width="695" height="486" key="find.popup/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593183759271" />
+    <state x="602" y="173" key="refactoring.ChangeSignatureDialog" timestamp="1593175110216">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="602" y="173" key="refactoring.ChangeSignatureDialog/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593175110216" />
+    <state x="505" y="250" width="670" height="676" key="search.everywhere.popup" timestamp="1593208332226">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="505" y="250" width="670" height="676" key="search.everywhere.popup/1680.-209.2560.1417/0.23.1680.1027@0.23.1680.1027" timestamp="1593208332226" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/network/src/main/java/com/oscarg798/potterwiki/network/interceptors/ErrorInterceptor.kt</url>
+          <line>40</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
