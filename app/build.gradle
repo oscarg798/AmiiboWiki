@@ -1,0 +1,137 @@
+/*
+ * Copyright 2020 Oscar David Gallon Rosero
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.oscarg798.potterwiki"
+        minSdkVersion appMinSdkVersion
+        targetSdkVersion appTargetSdkVersion
+        versionCode appVersionCode
+        versionName appVersionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            buildConfigField "String", "API_KEY","\"$apiKey\""
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            buildConfigField "String", "API_KEY","\"$apiKey\""
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        freeCompilerArgs = ["-Xallow-result-return-type"]
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+    implementation kotlinJDK
+
+    implementation appCompat
+    implementation cardView
+    implementation recyclerView
+    implementation design
+    implementation constraintLayout
+    implementation appCompatV4
+    implementation preferenceV7
+    implementation preferenceV14
+    implementation customTabs
+    implementation multidex
+
+    implementation arrowCompat
+    implementation arrowSintax
+    kapt arrowMeta
+
+    implementation airbnb
+    kapt airbnbProcessor
+
+    //Dagger
+    implementation dagger
+    implementation daggerAndroidSupport
+    kapt daggerCompiler
+    kapt daggerAndroidProcessor
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    //Coroutines
+    implementation kotlinCoroutines
+    implementation kotlinCoroutinesAndroid
+
+    implementation retrofit
+    implementation gsonConverter
+    implementation okhttp3
+    implementation okhttpLoggingInterceptor
+
+    implementation lifecycleExtensions
+    implementation lifecycle
+
+    //Test
+    testImplementation mockk
+    testImplementation mockitoCore
+    testImplementation junit
+    testImplementation kluent
+    testImplementation androidXCoreTest
+    testImplementation mockWebServer
+    testImplementation robolectric
+    testImplementation testRunner
+    testImplementation espressoIntents
+    testImplementation espressoCore
+    testImplementation truth
+    testImplementation kotlinCoroutinesTest
+    debugImplementation fragmentTesting
+
+    //Aceptance Testing
+    androidTestImplementation androidAnnotations
+    androidTestImplementation mockWebServer
+    androidTestImplementation testRunner
+    androidTestImplementation testRules
+    androidTestImplementation espressoCore
+    androidTestImplementation espressoContrib
+    androidTestImplementation espressoIntents
+    androidTestImplementation uiAutomator
+    androidTestImplementation mockk
+
+    implementation firebaseAnalytics
+    implementation crashly
+
+    implementation project(path: ':core')
+    implementation project(path: ':amiibolist')
+
+    implementation 'androidx.ui:ui-framework:0.1.0-dev10'
+    implementation 'androidx.ui:ui-tooling:0.1.0-dev10'
+    implementation 'androidx.ui:ui-layout:0.1.0-dev10'
+    implementation 'androidx.ui:ui-material:0.1.0-dev10'
+}
