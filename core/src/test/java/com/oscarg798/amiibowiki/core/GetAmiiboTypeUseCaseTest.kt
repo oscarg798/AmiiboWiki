@@ -10,11 +10,12 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist
+package com.oscarg798.amiibowiki.core
 
 import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.houses.repository.AmiiboTypeRepository
-import com.oscarg798.amiibowiki.houses.usecases.GetAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
+import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -39,7 +40,7 @@ class GetAmiiboTypeUseCaseTest {
     @Test
     fun `when is executed then it should return types with default value`() {
         val result = runBlocking {
-            usecase.getAmiiboType()
+            usecase.execute()
         }
 
         true shouldBeEqualTo result.isSuccess

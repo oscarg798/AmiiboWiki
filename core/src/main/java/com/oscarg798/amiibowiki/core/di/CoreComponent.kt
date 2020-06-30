@@ -15,7 +15,8 @@ package com.oscarg798.amiibowiki.core.di
 import android.content.Context
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.models.Config
-import com.oscarg798.amiibowiki.core.network.AmiiboService
+import com.oscarg798.amiibowiki.core.network.services.AmiiboService
+import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import dagger.BindsInstance
@@ -39,7 +40,8 @@ interface CoreComponent {
     fun provideRetrofit(): Retrofit
     fun provideCoroutineContextProvider(): CoroutineContextProvider
     fun provideLocale(): Locale
-    fun provideHousesService(): AmiiboService
-    fun provideHouseRepository(): AmiiboRepository
+    fun provideAmiiboService(): AmiiboService
+    fun provideAmiiboRepository(): AmiiboRepository
+    fun provideAmiiboTypeService(): AmiiboTypeService
 
 }

@@ -15,10 +15,10 @@ package com.oscarg798.amiibowiki.core
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import com.oscarg798.amiibowiki.core.network.APIAmiibo
-import com.oscarg798.amiibowiki.core.network.APIAmiiboReleaseDate
-import com.oscarg798.amiibowiki.core.network.AmiiboService
-import com.oscarg798.amiibowiki.core.network.GetAmiiboResponse
+import com.oscarg798.amiibowiki.core.network.models.APIAmiibo
+import com.oscarg798.amiibowiki.core.network.models.APIAmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.network.services.AmiiboService
+import com.oscarg798.amiibowiki.core.network.models.GetAmiiboResponse
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import io.mockk.coEvery
@@ -39,7 +39,11 @@ class AmiiboRepositoryTest {
 
     @Before
     fun before() {
-        coEvery { amiiboService.get() } answers { GetAmiiboResponse(listOf(API_AMIIBO)) }
+        coEvery { amiiboService.get() } answers {
+            GetAmiiboResponse(
+                listOf(API_AMIIBO)
+            )
+        }
         coEvery { amiiboService.getAmiiboFilteredByType(any()) } answers {
             GetAmiiboResponse(
                 listOf(
@@ -133,5 +137,10 @@ class AmiiboRepositoryTest {
 private val API_AMIIBO =
     APIAmiibo(
         "1", "2", "3", "4", "5", "6",
-        APIAmiiboReleaseDate("7", "8", "9", "10"), "11", "12"
+        APIAmiiboReleaseDate(
+            "7",
+            "8",
+            "9",
+            "10"
+        ), "11", "12"
     )

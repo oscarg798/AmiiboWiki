@@ -10,9 +10,13 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist
+package com.oscarg798.amiibowiki.core
 
 import com.oscarg798.amiibowiki.core.models.AmiiboType
+import com.oscarg798.amiibowiki.core.network.models.APIAmiiboType
+import com.oscarg798.amiibowiki.core.network.models.GetAmiiboTypeResponse
+import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
+import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -22,18 +26,17 @@ import org.junit.Test
 
 class AmiiboTypeRepositoryTest {
 
-    private val amiiboTypeService = mockk<com.oscarg798.amiibowiki.houses.network.AmiiboTypeService>()
-    private lateinit var repository: com.oscarg798.amiibowiki.houses.repository.AmiiboTypeRepository
+    private val amiiboTypeService = mockk<AmiiboTypeService>()
+    private lateinit var repository: AmiiboTypeRepository
 
     @Before
     fun setup() {
         coEvery { amiiboTypeService.getTypes() } answers {
-            com.oscarg798.amiibowiki.houses.network.GetAmiiboTypeResponse(
+            GetAmiiboTypeResponse(
                 MOCK_TYPES
             )
         }
-        repository =
-            com.oscarg798.amiibowiki.houses.repository.AmiiboTypeRepository(
+        repository = AmiiboTypeRepository(
                 amiiboTypeService
             )
     }
@@ -52,7 +55,7 @@ class AmiiboTypeRepositoryTest {
 }
 
 private val MOCK_TYPES = listOf(
-    com.oscarg798.amiibowiki.houses.network.APIAmiiboType(
+    APIAmiiboType(
         "1",
         "2"
     )

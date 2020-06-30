@@ -10,24 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.usecases
+package com.oscarg798.amiibowiki.core.repositories
 
-import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.core.models.Amiibo
+
+import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import com.oscarg798.amiibowiki.core.network.models.APIAmiiboType
+import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import javax.inject.Inject
 
-class GetAmiiboFilteredUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboRepository: AmiiboRepository
-) {
+class AmiiboTypeRepository @Inject constructor(private val amiiboTypeService: AmiiboTypeService) {
 
-    suspend fun execute(filter: AmiiboType): Result<List<Amiibo>> {
-        return if (filter == getDefaultAmiiboTypeUseCase.execute()) {
-            amiiboRepository.getAmiibos()
-        } else {
-            amiiboRepository.getAmiibosFilteredByTypeName(filter.name)
+    suspend fun getTypes(): Result<List<AmiiboType>> {
+        return runCatchingNetworkException {
+            amiiboTypeService.getTypes().amiibo.map { it.map() }
         }
     }
 }
+
+private fun APIAmiiboType.map() = AmiiboType(key, name)

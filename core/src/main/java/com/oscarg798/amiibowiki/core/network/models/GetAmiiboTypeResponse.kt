@@ -10,38 +10,6 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.network
+package com.oscarg798.amiibowiki.core.network.models
 
-import com.google.gson.annotations.SerializedName
-
-data class APIAmiiboReleaseDate(
-    @SerializedName("au")
-    val australia: String?,
-    @SerializedName("eu")
-    val europe: String?,
-    @SerializedName("na")
-    val northAmerica: String?,
-    @SerializedName("jp")
-    val japan: String?
-)
-
-data class APIAmiibo(
-    @SerializedName("amiiboSeries")
-    val amiiboSeries: String,
-    @SerializedName("character")
-    val character: String,
-    @SerializedName("gameSeries")
-    val gameSeries: String,
-    @SerializedName("head")
-    val head: String,
-    @SerializedName("image")
-    val image: String,
-    @SerializedName("type")
-    val type: String,
-    @SerializedName("release")
-    val releaseDate: APIAmiiboReleaseDate,
-    @SerializedName("tail")
-    val tail: String,
-    @SerializedName("name")
-    val name: String
-)
+class GetAmiiboTypeResponse(val amiibo: List<APIAmiiboType>)

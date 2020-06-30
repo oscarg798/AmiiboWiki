@@ -10,19 +10,15 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.network
+package com.oscarg798.amiibowiki.core.network.services
 
+import com.oscarg798.amiibowiki.core.network.models.GetAmiiboTypeResponse
 import retrofit2.http.GET
-import retrofit2.http.Query
 
-interface AmiiboService {
+interface AmiiboTypeService {
 
-    @GET(GET_AMIIBO_LIST_ROUTE)
-    suspend fun get(): GetAmiiboResponse
-
-    @GET(GET_AMIIBO_FILTERED_BY_TYPE_LIST_ROUTE)
-    suspend fun getAmiiboFilteredByType(@Query("type") filter: String):GetAmiiboResponse
+    @GET(GET_AMIIBO_TYPE_ROUTE)
+    suspend fun getTypes(): GetAmiiboTypeResponse
 }
 
-private const val GET_AMIIBO_LIST_ROUTE = "api/amiibo/"
-private const val GET_AMIIBO_FILTERED_BY_TYPE_LIST_ROUTE = "api/amiibo/"
+private const val GET_AMIIBO_TYPE_ROUTE = "api/type"

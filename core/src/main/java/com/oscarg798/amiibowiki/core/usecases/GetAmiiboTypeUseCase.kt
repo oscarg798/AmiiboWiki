@@ -10,9 +10,21 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.network
+package com.oscarg798.amiibowiki.core.usecases
 
-data class APIAmiiboType(
-    val key: String,
-    val name: String
-)
+import com.oscarg798.amiibowiki.core.models.AmiiboType
+import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
+import javax.inject.Inject
+
+class GetAmiiboTypeUseCase @Inject constructor(
+    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
+    private val amiiboTypeRepository: AmiiboTypeRepository
+) {
+    suspend fun execute(): Result<List<AmiiboType>> = amiiboTypeRepository.getTypes().map {
+        arrayListOf<AmiiboType>().apply {
+            addAll(it)
+            add(getDefaultAmiiboTypeUseCase.execute())
+        }
+    }
+}
+

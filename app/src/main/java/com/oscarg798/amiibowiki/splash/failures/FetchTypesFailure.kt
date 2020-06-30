@@ -10,24 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.usecases
+package com.oscarg798.amiibowiki.splash.failures
 
-import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
-import javax.inject.Inject
+import java.lang.Exception
 
-class GetAmiiboFilteredUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboRepository: AmiiboRepository
-) {
-
-    suspend fun execute(filter: AmiiboType): Result<List<Amiibo>> {
-        return if (filter == getDefaultAmiiboTypeUseCase.execute()) {
-            amiiboRepository.getAmiibos()
-        } else {
-            amiiboRepository.getAmiibosFilteredByTypeName(filter.name)
-        }
-    }
-}
+class FetchTypesFailure(override val message: String?, override val cause: Throwable?) :
+    Exception(message, cause)

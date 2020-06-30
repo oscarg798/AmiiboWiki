@@ -93,25 +93,24 @@ class AmiiboListActivity : AppCompatActivity() {
     private fun setupViewModelInteractions() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(AmiiboListViewModel::class.java)
 
-        lifecycleScope.launch {
-            viewModel.state
-                .collect {
-                    val state = it as AmiiboListViewState
-                    when {
-                        state.loading is ViewState.LoadingState.Loading -> showLoading()
-                        state.status is AmiiboListViewState.Status.AmiibosFetched -> showAmiibos(
-                            state.status.amiibos
-                        )
-                        state.error != null -> showErrors(state.error.message!!)
-                        state.showingFilters is AmiiboListViewState.ShowingFilters.FetchSuccess -> showFilters(
-                            state.showingFilters.filters
-                        )
-                        state.filtering is AmiiboListViewState.Filtering.FetchSuccess -> showAmiibos(
-                            state.filtering.amiibos
-                        )
-                    }
+        viewModel.state
+            .onEach {
+                val state = it as AmiiboListViewState
+                when {
+                    state.loading is ViewState.LoadingState.Loading -> showLoading()
+                    state.status is AmiiboListViewState.Status.AmiibosFetched -> showAmiibos(
+                        state.status.amiibos
+                    )
+                    state.error != null -> showErrors(state.error.message!!)
+                    state.showingFilters is AmiiboListViewState.ShowingFilters.FetchSuccess -> showFilters(
+                        state.showingFilters.filters
+                    )
+                    state.filtering is AmiiboListViewState.Filtering.FetchSuccess -> showAmiibos(
+                        state.filtering.amiibos
+                    )
                 }
-        }
+            }.launchIn(lifecycleScope)
+
 
         merge(fetchAmiibos(), refresh())
             .onEach {

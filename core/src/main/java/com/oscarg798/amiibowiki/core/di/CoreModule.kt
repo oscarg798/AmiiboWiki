@@ -14,8 +14,8 @@ package com.oscarg798.amiibowiki.core.di
 
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.models.Config
-import com.oscarg798.amiibowiki.core.network.AmiiboService
-import com.oscarg798.amiibowiki.network.interceptors.APIKeyInterceptor
+import com.oscarg798.amiibowiki.core.network.services.AmiiboService
+import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
@@ -42,4 +42,10 @@ object CoreModule {
     @CoreScope
     @Provides
     fun provideBaseUrl(config: Config) = config.baseUrl
+
+    @CoreScope
+    @Provides
+    fun provideAmiiboTypeService(retrofit: Retrofit) =
+        retrofit.create(AmiiboTypeService::class.java)
+
 }
