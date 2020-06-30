@@ -11,7 +11,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.oscarg798.potterwiki.network">
+    package="com.oscarg798.amiibowiki.network">
 
     /
 </manifest>

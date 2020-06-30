@@ -10,50 +10,17 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.core
 
-android {
-    compileSdkVersion 29
+import androidx.lifecycle.ViewModel
+import dagger.MapKey
+import kotlin.reflect.KClass
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
-}
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
+)
+@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+@MapKey
+annotation class ViewModelKey(val value: KClass<out ViewModel>)

@@ -10,50 +10,24 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.core.models
 
-android {
-    compileSdkVersion 29
+data class AmiiboReleaseDate(
+    val australia: String?,
+    val europe: String?,
+    val northAmerica: String?,
+    val japan: String?
+)
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+data class Amiibo(
+    val amiiboSeries: String,
+    val character: String,
+    val gameSeries: String,
+    val head: String,
+    val image: String,
+    val type: String,
+    val releaseDate: AmiiboReleaseDate,
+    val tail: String,
+    val name: String
+)
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
-}

@@ -10,50 +10,33 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.amiibolist.adapter
 
-android {
-    compileSdkVersion 29
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import com.oscarg798.amiibowiki.amiibolist.R
+import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 
-    kotlinOptions {
-        jvmTarget = '1.8'
+
+class AmiiboListAdapter : ListAdapter<ViewAmiibo, AmiiboListViewHolder>(object :
+    DiffUtil.ItemCallback<ViewAmiibo>() {
+    override fun areItemsTheSame(oldItem: ViewAmiibo, newItem: ViewAmiibo): Boolean =
+        oldItem.tail == newItem.tail
+
+    override fun areContentsTheSame(oldItem: ViewAmiibo, newItem: ViewAmiibo): Boolean =
+        oldItem == newItem
+
+}) {
+
+    override fun onBindViewHolder(holder: AmiiboListViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AmiiboListViewHolder {
+        return AmiiboListViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.amiibo_list_item, parent, false)
+        )
     }
 }

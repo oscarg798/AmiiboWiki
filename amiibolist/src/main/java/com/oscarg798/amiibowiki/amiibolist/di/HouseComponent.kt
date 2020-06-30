@@ -10,50 +10,19 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.amiibolist.di
 
-android {
-    compileSdkVersion 29
+import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
+import com.oscarg798.amiibowiki.core.di.CoreComponent
+import dagger.Component
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+@FlowPreview
+@ExperimentalCoroutinesApi
+@HouseScope
+@Component(dependencies = [CoreComponent::class], modules = [HouseModule::class])
+interface HouseComponent  {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
+    fun inject(amiiboListActivity: AmiiboListActivity)
 }

@@ -10,50 +10,16 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.core.di
 
-android {
-    compileSdkVersion 29
+import androidx.lifecycle.ViewModelProvider
+import com.oscarg798.amiibowiki.core.ViewModelFactory
+import dagger.Binds
+import dagger.Module
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+@Module
+abstract class ViewModelsModule  {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
+    @Binds
+    abstract fun bindViewModelFactory(factory : ViewModelFactory) : ViewModelProvider.Factory
 }

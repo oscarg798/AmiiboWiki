@@ -10,50 +10,37 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.core.di
 
-android {
-    compileSdkVersion 29
+import android.content.Context
+import com.oscarg798.amiibowiki.core.CoroutineContextProvider
+import com.oscarg798.amiibowiki.core.models.Config
+import com.oscarg798.amiibowiki.core.network.AmiiboService
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import com.oscarg798.amiibowiki.network.di.NetworkModule
+import dagger.BindsInstance
+import dagger.Component
+import retrofit2.Retrofit
+import java.util.*
 
-    kotlinOptions {
-        jvmTarget = '1.8'
+@CoreScope
+@Component(modules = [CoreModule::class, ViewModelsModule::class, NetworkModule::class])
+interface CoreComponent {
+
+    @Component.Factory
+    interface Builder {
+
+        fun create(
+            @BindsInstance context: Context,
+            @BindsInstance baseUrl: String,
+            @BindsInstance config: Config
+        ): CoreComponent
     }
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
+    fun provideRetrofit(): Retrofit
+    fun provideCoroutineContextProvider(): CoroutineContextProvider
+    fun provideLocale(): Locale
+    fun provideHousesService(): AmiiboService
+    fun provideHouseRepository(): AmiiboRepository
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
 }

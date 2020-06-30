@@ -22,7 +22,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.oscarg798.potterwiki"
+        applicationId "com.oscarg798.amiibowiki"
         minSdkVersion appMinSdkVersion
         targetSdkVersion appTargetSdkVersion
         versionCode appVersionCode

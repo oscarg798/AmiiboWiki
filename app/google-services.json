@@ -66,9 +66,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:496542573882:android:4465b92c2b88726018dc03",
+        "mobilesdk_app_id": "1:496542573882:android:c83f82ac19e6553c18dc03",
         "android_client_info": {
-          "package_name": "com.oscarg798.potterwiki"
+          "package_name": "com.oscarg798.amiibowiki"
         }
       },
       "oauth_client": [

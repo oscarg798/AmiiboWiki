@@ -10,50 +10,19 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.network.interceptors
 
-android {
-    compileSdkVersion 29
+import okhttp3.Interceptor
+import okhttp3.Response
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+class APIKeyInterceptor(private val apiKey: String) : Interceptor {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+        val newUrl = request.url.newBuilder().addQueryParameter(KEY, apiKey).build()
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
+        return chain.proceed(request.newBuilder().url(newUrl).build())
     }
 }
+
+private const val KEY = "key"
