@@ -10,30 +10,32 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.testutils
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
+import com.oscarg798.amiibowiki.core.CoroutineContextProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import okio.IOException
-import javax.inject.Inject
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 
 @ExperimentalCoroutinesApi
-class GetAmiiboTypeUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
-    fun execute(): Flow<List<AmiiboType>> {
-        return amiiboTypeRepository.getTypes().filterNot { it.isEmpty() }
-            .map {
-                arrayListOf<AmiiboType>().apply {
-                    addAll(it)
-                    add(getDefaultAmiiboTypeUseCase.execute())
-                }
+class CoroutinesTestRule : TestRule {
+
+    val testDispatcher = TestCoroutineDispatcher()
+    val coroutineContextProvider =
+        CoroutineContextProvider(testDispatcher, testDispatcher)
+
+    override fun apply(base: Statement, description: Description): Statement {
+        return object : Statement() {
+            override fun evaluate() {
+                Dispatchers.setMain(testDispatcher)
+                base.evaluate()
+                Dispatchers.resetMain()
             }
+        }
     }
-
-
 }
-

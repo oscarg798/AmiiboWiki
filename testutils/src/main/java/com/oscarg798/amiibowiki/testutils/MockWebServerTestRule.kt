@@ -10,20 +10,28 @@
  *
  */
 
-package com.oscarg798.amiibowiki
+package com.oscarg798.amiibowiki.testutils
 
-import org.junit.Test
+import okhttp3.mockwebserver.Dispatcher
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 
-import org.junit.Assert.*
+class MockWebServerTestRule(private val dispatcher: Dispatcher) : TestRule {
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-class ExampleUnitTest {
-    @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    private lateinit var mockWebServer: MockWebServer
+
+    override fun apply(base: Statement, description: Description): Statement {
+        return object: Statement() {
+            override fun evaluate() {
+                mockWebServer = MockWebServer()
+                mockWebServer.start(MOCK_WEB_SERVER_PORT)
+                mockWebServer.dispatcher = dispatcher
+                base.evaluate()
+                mockWebServer.shutdown()
+            }
+        }
     }
 }
+private const val MOCK_WEB_SERVER_PORT = 8080

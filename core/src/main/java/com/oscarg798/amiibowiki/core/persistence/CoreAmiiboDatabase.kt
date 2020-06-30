@@ -10,30 +10,13 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.core.persistence
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import okio.IOException
-import javax.inject.Inject
+import androidx.room.Database
+import androidx.room.RoomDatabase
 
-@ExperimentalCoroutinesApi
-class GetAmiiboTypeUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
-    fun execute(): Flow<List<AmiiboType>> {
-        return amiiboTypeRepository.getTypes().filterNot { it.isEmpty() }
-            .map {
-                arrayListOf<AmiiboType>().apply {
-                    addAll(it)
-                    add(getDefaultAmiiboTypeUseCase.execute())
-                }
-            }
-    }
+@Database(entities = [DBAmiiboType::class], version = 1)
+abstract class CoreAmiiboDatabase : RoomDatabase() {
 
-
+    abstract fun amiiboTypeDAO(): AmiiboTypeDAO
 }
-

@@ -9,6 +9,7 @@
  *
  *
  */
+include ':testutils'
 rootProject.name = "AmiiboWiki"
 include ':network'
 include ':core'

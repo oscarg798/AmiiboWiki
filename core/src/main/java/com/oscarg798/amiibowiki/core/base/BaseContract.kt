@@ -18,6 +18,7 @@ import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
+import okio.IOException
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
@@ -28,7 +29,7 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult> : ViewModel
 
     protected val wishProcessor = ConflatedBroadcastChannel<Wish>()
 
-    protected abstract fun process(): Flow<ViewState<Result>>
+    public abstract fun process(): Flow<ViewState<Result>>
     protected abstract fun initState(): ViewState<Result>
 
 
