@@ -12,4 +12,4 @@
 
 package com.oscarg798.amiibowiki.core.models
 
-data class Config(val apiKey: String)
+data class Config(val baseUrl: String)

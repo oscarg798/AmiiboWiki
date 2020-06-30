@@ -18,14 +18,14 @@ import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.di.DaggerCoreComponent
 import com.oscarg798.amiibowiki.core.models.Config
 
-class PotterWikiApplication : Application(), CoreComponentProvider {
+class AmiiboWikiApplication : Application(), CoreComponentProvider {
 
     private lateinit var coreComponent: CoreComponent
 
     override fun provideCoreComponent(): CoreComponent {
         if (!::coreComponent.isInitialized) {
-            coreComponent = DaggerCoreComponent.factory().create(this, BASE_URL,
-            Config(BuildConfig.API_KEY)
+            coreComponent = DaggerCoreComponent.factory().create(
+                this, Config(BuildConfig.BASE_URL)
             )
         }
 
@@ -33,4 +33,3 @@ class PotterWikiApplication : Application(), CoreComponentProvider {
     }
 }
 
-private const val BASE_URL = "https://www.amiiboapi.com/"

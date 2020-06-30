@@ -48,8 +48,7 @@ object NetworkModule {
     @Reusable
     @Provides
     fun provideHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
-        apiKeyInterceptor: APIKeyInterceptor
+        loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
             .connectTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
@@ -57,7 +56,6 @@ object NetworkModule {
             .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
             .addInterceptor(ErrorInterceptor())
             .addInterceptor(loggingInterceptor)
-            //.addInterceptor(apiKeyInterceptor)
 
 
         return builder.build()
