@@ -12,11 +12,12 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
-import com.oscarg798.amiibowiki.houses.usecases.GetAmiiboFilteredUseCase
+import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

@@ -16,9 +16,9 @@ import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import com.oscarg798.amiibowiki.core.network.APIAmiibo
-import com.oscarg798.amiibowiki.core.network.APIAmiiboReleaseDate
-import com.oscarg798.amiibowiki.core.network.AmiiboService
+import com.oscarg798.amiibowiki.core.network.models.APIAmiibo
+import com.oscarg798.amiibowiki.core.network.models.APIAmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import javax.inject.Inject
 

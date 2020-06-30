@@ -12,10 +12,10 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
-import com.oscarg798.amiibowiki.houses.usecases.GetAmiibosUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals

@@ -10,6 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.network
+package com.oscarg798.amiibowiki.splash.mvi
 
-data class GetAmiiboResponse(val amiibo: List<APIAmiibo>)
+import com.oscarg798.amiibowiki.core.mvi.Wish
+
+sealed class SplashWish : Wish {
+    object GetTypes: SplashWish()
+}

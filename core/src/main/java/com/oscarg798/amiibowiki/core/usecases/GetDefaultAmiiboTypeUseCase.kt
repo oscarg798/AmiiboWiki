@@ -10,14 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.network
+package com.oscarg798.amiibowiki.core.usecases
 
-import retrofit2.http.GET
+import com.oscarg798.amiibowiki.core.models.AmiiboType
+import javax.inject.Inject
 
-interface AmiiboTypeService {
+class GetDefaultAmiiboTypeUseCase @Inject constructor() {
 
-    @GET(GET_AMIIBO_TYPE_ROUTE)
-    suspend fun getTypes(): GetAmiiboTypeResponse
+    fun execute() = AmiiboType(
+        DEFAULT_ITEM_KEY,
+        DEFAULT_ITEM_NAME
+    )
 }
 
-private const val GET_AMIIBO_TYPE_ROUTE = "api/type"
+
+private const val DEFAULT_ITEM_NAME = "Clear Filters"
+private const val DEFAULT_ITEM_KEY = "1x11"

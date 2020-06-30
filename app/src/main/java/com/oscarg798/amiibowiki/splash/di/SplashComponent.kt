@@ -10,16 +10,23 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist
+package com.oscarg798.amiibowiki.splash.di
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import javax.inject.Inject
+import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.splash.SplashActivity
+import dagger.Component
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import javax.inject.Scope
 
-class GetDefaultAmiiboTypeUseCase @Inject constructor() {
+@FlowPreview
+@ExperimentalCoroutinesApi
+@SplashScope
+@Component(dependencies = [CoreComponent::class], modules = [SplahModule::class])
+interface SplashComponent {
 
-    fun execute() = AmiiboType(DEFAULT_ITEM_KEY, DEFAULT_ITEM_NAME)
+    fun inject(splashActivity: SplashActivity)
 }
 
-
-private const val DEFAULT_ITEM_NAME = "Clear Filters"
-private const val DEFAULT_ITEM_KEY = "1x11"
+@Scope
+annotation class SplashScope

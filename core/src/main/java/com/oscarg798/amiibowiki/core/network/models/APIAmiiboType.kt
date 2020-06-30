@@ -10,24 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.usecases
+package com.oscarg798.amiibowiki.core.network.models
 
-import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
-import javax.inject.Inject
-
-class GetAmiiboFilteredUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboRepository: AmiiboRepository
-) {
-
-    suspend fun execute(filter: AmiiboType): Result<List<Amiibo>> {
-        return if (filter == getDefaultAmiiboTypeUseCase.execute()) {
-            amiiboRepository.getAmiibos()
-        } else {
-            amiiboRepository.getAmiibosFilteredByTypeName(filter.name)
-        }
-    }
-}
+data class APIAmiiboType(
+    val key: String,
+    val name: String
+)

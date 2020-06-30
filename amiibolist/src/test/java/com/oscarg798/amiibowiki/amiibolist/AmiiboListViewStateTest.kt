@@ -12,11 +12,10 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.houses.mvi.AmiiboListFailure
-import com.oscarg798.amiibowiki.houses.mvi.AmiiboListResult
 import org.junit.Test
 
 import org.junit.Assert.*

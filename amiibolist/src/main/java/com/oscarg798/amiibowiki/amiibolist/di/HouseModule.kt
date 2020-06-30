@@ -14,15 +14,19 @@ package com.oscarg798.amiibowiki.amiibolist.di
 
 import androidx.lifecycle.ViewModel
 import com.oscarg798.amiibowiki.AmiiboListViewModel
-import com.oscarg798.amiibowiki.amiibolist.network.AmiiboTypeService
+import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.ViewModelKey
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import retrofit2.Retrofit
 
-@Module(includes = [AmiiboTypeModule::class])
+@ExperimentalCoroutinesApi
+@FlowPreview
+@Module
 abstract class HouseModule {
 
     @Binds
@@ -31,11 +35,3 @@ abstract class HouseModule {
     abstract fun bindHouseViewModel(amiiboListViewModel: AmiiboListViewModel): ViewModel
 }
 
-@Module
-object AmiiboTypeModule {
-
-    @HouseScope
-    @Provides
-    fun provideAmiiboTypeService(retrofit: Retrofit) =
-        retrofit.create(AmiiboTypeService::class.java)
-}

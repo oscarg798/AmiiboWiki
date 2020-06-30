@@ -10,24 +10,24 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.usecases
+package com.oscarg798.amiibowiki.splash.di
 
-import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
-import javax.inject.Inject
+import androidx.lifecycle.ViewModel
+import com.oscarg798.amiibowiki.core.ViewModelKey
+import com.oscarg798.amiibowiki.splash.SplashViewModel
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
-class GetAmiiboFilteredUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboRepository: AmiiboRepository
-) {
+@ExperimentalCoroutinesApi
+@FlowPreview
+@Module
+abstract class SplahModule {
 
-    suspend fun execute(filter: AmiiboType): Result<List<Amiibo>> {
-        return if (filter == getDefaultAmiiboTypeUseCase.execute()) {
-            amiiboRepository.getAmiibos()
-        } else {
-            amiiboRepository.getAmiibosFilteredByTypeName(filter.name)
-        }
-    }
+    @Binds
+    @IntoMap
+    @ViewModelKey(SplashViewModel::class)
+    abstract fun bindHouseViewModel(amiiboListViewModel: SplashViewModel): ViewModel
 }

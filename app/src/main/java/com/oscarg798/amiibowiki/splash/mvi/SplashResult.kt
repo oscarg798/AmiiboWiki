@@ -10,22 +10,14 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.usecases
+package com.oscarg798.amiibowiki.splash.mvi
 
-import com.oscarg798.amiibowiki.amiibolist.GetDefaultAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.amiibolist.repository.AmiiboTypeRepository
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import javax.inject.Inject
+import com.oscarg798.amiibowiki.core.mvi.Result
+import java.lang.Exception
 
-class GetAmiiboTypeUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
-    suspend fun getAmiiboType(): Result<List<AmiiboType>> = amiiboTypeRepository.getTypes().map {
-        arrayListOf<AmiiboType>().apply {
-            addAll(it)
-            add(getDefaultAmiiboTypeUseCase.execute())
-        }
-    }
+sealed class SplashResult : Result {
+
+    object Loading : SplashResult()
+    object TypesFetched : SplashResult()
+    data class Error(val exception: Exception) : SplashResult()
 }
-

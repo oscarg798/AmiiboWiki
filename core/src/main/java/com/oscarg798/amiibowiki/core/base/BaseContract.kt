@@ -18,6 +18,8 @@ import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 
@@ -117,3 +119,15 @@ public inline fun <T, R> T.runCatchingNetworkException(
 
     }
 }
+
+public inline fun <T> Result<T>.onException(action: (exception: Exception) -> Unit): Result<T> {
+    exceptionOrNull()?.let {
+        if (it !is Exception) {
+            throw it
+        }
+
+        action(it)
+    }
+    return this
+}
+

@@ -10,21 +10,38 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.repository
+package com.oscarg798.amiibowiki.core.network.models
 
-import com.oscarg798.amiibowiki.amiibolist.network.APIAmiiboType
-import com.oscarg798.amiibowiki.amiibolist.network.AmiiboTypeService
-import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import javax.inject.Inject
+import com.google.gson.annotations.SerializedName
 
-class AmiiboTypeRepository @Inject constructor(private val amiiboTypeService: AmiiboTypeService) {
+data class APIAmiiboReleaseDate(
+    @SerializedName("au")
+    val australia: String?,
+    @SerializedName("eu")
+    val europe: String?,
+    @SerializedName("na")
+    val northAmerica: String?,
+    @SerializedName("jp")
+    val japan: String?
+)
 
-    suspend fun getTypes(): Result<List<AmiiboType>> {
-        return runCatchingNetworkException {
-            amiiboTypeService.getTypes().amiibo.map { it.map() }
-        }
-    }
-}
-
-private fun APIAmiiboType.map() = AmiiboType(key, name)
+data class APIAmiibo(
+    @SerializedName("amiiboSeries")
+    val amiiboSeries: String,
+    @SerializedName("character")
+    val character: String,
+    @SerializedName("gameSeries")
+    val gameSeries: String,
+    @SerializedName("head")
+    val head: String,
+    @SerializedName("image")
+    val image: String,
+    @SerializedName("type")
+    val type: String,
+    @SerializedName("release")
+    val releaseDate: APIAmiiboReleaseDate,
+    @SerializedName("tail")
+    val tail: String,
+    @SerializedName("name")
+    val name: String
+)
