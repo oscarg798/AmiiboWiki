@@ -10,50 +10,38 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.core.network
 
-android {
-    compileSdkVersion 29
+import com.google.gson.annotations.SerializedName
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+data class APIAmiiboReleaseDate(
+    @SerializedName("au")
+    val australia: String?,
+    @SerializedName("eu")
+    val europe: String?,
+    @SerializedName("na")
+    val northAmerica: String?,
+    @SerializedName("jp")
+    val japan: String?
+)
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
-}
+data class APIAmiibo(
+    @SerializedName("amiiboSeries")
+    val amiiboSeries: String,
+    @SerializedName("character")
+    val character: String,
+    @SerializedName("gameSeries")
+    val gameSeries: String,
+    @SerializedName("head")
+    val head: String,
+    @SerializedName("image")
+    val image: String,
+    @SerializedName("type")
+    val type: String,
+    @SerializedName("release")
+    val releaseDate: APIAmiiboReleaseDate,
+    @SerializedName("tail")
+    val tail: String,
+    @SerializedName("name")
+    val name: String
+)

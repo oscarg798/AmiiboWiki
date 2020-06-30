@@ -10,50 +10,32 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.core.mvi
 
-android {
-    compileSdkVersion 29
+import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
+import com.oscarg798.amiibowiki.core.mvi.Actions as MVIActions
 
-    kotlinOptions {
-        jvmTarget = '1.8'
+interface ViewRenderer<Result : MVIResult, State : ViewState<Result>, Actions : MVIActions> {
+
+    fun render(state: State, actions: Actions)
+}
+
+interface ChildRenderer<Result : MVIResult, State : ViewState<Result>,
+        Actions : MVIActions> :
+    ViewRenderer<Result, State, Actions> {
+
+    fun isApplicable(state: State): Boolean
+}
+
+abstract class AbstractViewRenderer<Result : MVIResult,
+        State : ViewState<Result>, Actions : MVIActions>(
+    private val childRenderers: List<ChildRenderer<Result, State, Actions>>
+) : ViewRenderer<Result, State, Actions> {
+
+    override fun render(state: State, actions: Actions) {
+        childRenderers.first {
+            it.isApplicable(state)
+        }.render(state, actions)
     }
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
 }

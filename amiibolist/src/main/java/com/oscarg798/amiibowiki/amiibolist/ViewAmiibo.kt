@@ -10,50 +10,26 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.amiibolist
 
-android {
-    compileSdkVersion 29
+import com.oscarg798.amiibowiki.core.models.Amiibo
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+data class ViewAmiibo(
+    val tail: String,
+    val name: String,
+    val serie: String,
+    val image: String
+)
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
+private const val SCARLET = "scarlet"
+private const val GOLD = "gold"
+private const val BLUE = "blue"
+private const val GREEN = "green"
+private const val BRONZE = "bronze"
+private const val SILVER = "silver"
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
+fun Amiibo.map(): ViewAmiibo {
+    return ViewAmiibo(
+        tail, name, gameSeries, image
+    )
 }

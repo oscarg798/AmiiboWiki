@@ -10,50 +10,36 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.core.di
 
-android {
-    compileSdkVersion 29
+import com.oscarg798.amiibowiki.core.CoroutineContextProvider
+import com.oscarg798.amiibowiki.core.models.Config
+import com.oscarg798.amiibowiki.core.network.AmiiboService
+import com.oscarg798.amiibowiki.network.interceptors.APIKeyInterceptor
+import dagger.Module
+import dagger.Provides
+import kotlinx.coroutines.Dispatchers
+import retrofit2.Retrofit
+import java.util.*
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+@Module
+object CoreModule {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
+    @CoreScope
+    @Provides
+    fun provideLocale(): Locale = Locale.getDefault()
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+    @CoreScope
+    @Provides
+    fun provideCoroutineContextProvider(): CoroutineContextProvider =
+        CoroutineContextProvider(Dispatchers.Main, Dispatchers.IO)
 
-    viewBinding {
-        enabled = true
-    }
+    @CoreScope
+    @Provides
+    fun provideHousesService(retrofit: Retrofit): AmiiboService =
+        retrofit.create(AmiiboService::class.java)
 
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
+    @CoreScope
+    @Provides
+    fun provideAPIKeyInterceptor(config: Config) = APIKeyInterceptor(config.apiKey)
 }

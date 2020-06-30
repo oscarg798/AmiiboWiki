@@ -9,51 +9,37 @@
  *
  *
  */
+package com.oscarg798.amiibowiki.network.exceptions
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+import java.io.IOException
 
-android {
-    compileSdkVersion 29
+sealed class NetworkException(
+    override val message: String?,
+    open val code: Int?
+) : IOException(message) {
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+    data class BadRequest(override val message: String?) :
+        NetworkException(message, 400)
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
+    data class Unauthorized(override val message: String?) :
+        NetworkException(message, 401)
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+    data class Forbidden(override val message: String?) :
+        NetworkException(message, 403)
 
-    viewBinding {
-        enabled = true
-    }
+    data class NotFound(override val message: String?) :
+        NetworkException(message, 404)
 
+    data class APIKeyNotFound(override val message: String?) :
+        NetworkException(message, 409)
 
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
+    data class Internal(override val message: String?) :
+        NetworkException(message, 500)
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+    object Connection : NetworkException("Verify internet connection or host", null)
+    object TimeOut : NetworkException("Timeout", null)
 
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
+    data class Unknown(override val message: String?, override val code: Int?) :
+        NetworkException(message, code)
+
 }

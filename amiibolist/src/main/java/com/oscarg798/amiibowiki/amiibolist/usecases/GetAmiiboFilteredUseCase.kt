@@ -10,50 +10,24 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.amiibolist.usecases
 
-android {
-    compileSdkVersion 29
+import com.oscarg798.amiibowiki.amiibolist.GetDefaultAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.models.Amiibo
+import com.oscarg798.amiibowiki.core.models.AmiiboType
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import javax.inject.Inject
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+class GetAmiiboFilteredUseCase @Inject constructor(
+    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
+    private val amiiboRepository: AmiiboRepository
+) {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    suspend fun execute(filter: AmiiboType): Result<List<Amiibo>> {
+        return if (filter == getDefaultAmiiboTypeUseCase.execute()) {
+            amiiboRepository.getAmiibos()
+        } else {
+            amiiboRepository.getAmiibosFilteredByTypeName(filter.name)
         }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
     }
 }

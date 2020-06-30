@@ -10,50 +10,32 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.amiibolist.di
 
-android {
-    compileSdkVersion 29
+import androidx.lifecycle.ViewModel
+import com.oscarg798.amiibowiki.AmiiboListViewModel
+import com.oscarg798.amiibowiki.amiibolist.network.AmiiboTypeService
+import com.oscarg798.amiibowiki.core.ViewModelKey
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.multibindings.IntoMap
+import retrofit2.Retrofit
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+@Module(includes = [AmiiboTypeModule::class])
+abstract class HouseModule {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
+    @Binds
+    @IntoMap
+    @ViewModelKey(AmiiboListViewModel::class)
+    abstract fun bindHouseViewModel(amiiboListViewModel: AmiiboListViewModel): ViewModel
+}
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+@Module
+object AmiiboTypeModule {
 
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
+    @HouseScope
+    @Provides
+    fun provideAmiiboTypeService(retrofit: Retrofit) =
+        retrofit.create(AmiiboTypeService::class.java)
 }

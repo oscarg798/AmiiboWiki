@@ -10,50 +10,29 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.amiibolist.adapter
 
-android {
-    compileSdkVersion 29
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.oscarg798.amiibowiki.amiibolist.R
+import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
+import com.oscarg798.amiibowiki.core.setImage
+import kotlinx.android.extensions.LayoutContainer
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+class AmiiboListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), LayoutContainer {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
+    override val containerView: View?
+        get() = itemView
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+    private val ivImage = itemView.findViewById<ImageView>(R.id.ivImage)
+    private val tvAmiiboName = itemView.findViewById<TextView>(R.id.tvAmiiboName)
+    private val tvAmiiboSeries = itemView.findViewById<TextView>(R.id.tvAmiiboSeries)
 
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
+    fun bind(amiibo: ViewAmiibo) {
+        tvAmiiboName.text = amiibo.name
+        tvAmiiboSeries.text = amiibo.serie
+        ivImage.setImage(amiibo.image)
     }
 }

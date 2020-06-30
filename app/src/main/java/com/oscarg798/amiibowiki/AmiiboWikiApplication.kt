@@ -10,50 +10,27 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki
 
-android {
-    compileSdkVersion 29
+import android.app.Application
+import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.di.DaggerCoreComponent
+import com.oscarg798.amiibowiki.core.models.Config
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+class PotterWikiApplication : Application(), CoreComponentProvider {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
+    private lateinit var coreComponent: CoreComponent
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    override fun provideCoreComponent(): CoreComponent {
+        if (!::coreComponent.isInitialized) {
+            coreComponent = DaggerCoreComponent.factory().create(this, BASE_URL,
+            Config(BuildConfig.API_KEY)
+            )
         }
-    }
 
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
+        return coreComponent
     }
 }
+
+private const val BASE_URL = "https://www.amiiboapi.com/"

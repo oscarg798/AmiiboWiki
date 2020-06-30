@@ -10,50 +10,17 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.amiibolist.mvi
 
-android {
-    compileSdkVersion 29
+import com.oscarg798.amiibowiki.core.models.Amiibo
+import com.oscarg798.amiibowiki.core.models.AmiiboType
+import com.oscarg798.amiibowiki.core.mvi.Result
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+sealed class AmiiboListResult : Result {
+    object Loading : AmiiboListResult()
+    data class FetchSuccess(val amiibos: List<Amiibo>) : AmiiboListResult()
+    data class AmiibosFiltered(val amiibos: List<Amiibo>) : AmiiboListResult()
+    data class FiltersFetched(val filters: List<AmiiboType>): AmiiboListResult()
+    data class Error(val error: AmiiboListFailure) : AmiiboListResult()
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
 }

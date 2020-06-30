@@ -10,50 +10,21 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.amiibolist.repository
 
-android {
-    compileSdkVersion 29
+import com.oscarg798.amiibowiki.amiibolist.network.APIAmiiboType
+import com.oscarg798.amiibowiki.amiibolist.network.AmiiboTypeService
+import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
+import com.oscarg798.amiibowiki.core.models.AmiiboType
+import javax.inject.Inject
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+class AmiiboTypeRepository @Inject constructor(private val amiiboTypeService: AmiiboTypeService) {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    suspend fun getTypes(): Result<List<AmiiboType>> {
+        return runCatchingNetworkException {
+            amiiboTypeService.getTypes().amiibo.map { it.map() }
         }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
     }
 }
+
+private fun APIAmiiboType.map() = AmiiboType(key, name)

@@ -10,50 +10,19 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.core.network
 
-android {
-    compileSdkVersion 29
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+interface AmiiboService {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        //testInstrumentationRunner "com.storiphy.testmodule.uitests.MyUiTestRunner"
-    }
+    @GET(GET_AMIIBO_LIST_ROUTE)
+    suspend fun get(): GetAmiiboResponse
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
+    @GET(GET_AMIIBO_FILTERED_BY_TYPE_LIST_ROUTE)
+    suspend fun getAmiiboFilteredByType(@Query("type") filter: String):GetAmiiboResponse
 }
+
+private const val GET_AMIIBO_LIST_ROUTE = "api/amiibo/"
+private const val GET_AMIIBO_FILTERED_BY_TYPE_LIST_ROUTE = "api/amiibo/"
