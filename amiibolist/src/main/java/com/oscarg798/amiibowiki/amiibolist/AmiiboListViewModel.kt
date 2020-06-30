@@ -24,6 +24,7 @@ import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.base.onException
+import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -64,12 +65,13 @@ class AmiiboListViewModel @Inject constructor(
         }
 
     private fun getFilters(): Flow<AmiiboListResult> {
-        return flow<AmiiboListResult> {
-            getAmiiboTypeUseCase.execute().map {
-                emit(AmiiboListResult.FiltersFetched(it))
+        return getAmiiboTypeUseCase.execute()
+            .map {
+                AmiiboListResult.FiltersFetched(it) as AmiiboListResult
+            }.catch { cause ->
+                handleFailure(cause)
             }
-                .onException { handleFailure(it) }
-        }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+            .flowOn(coroutinesContextProvider.backgroundDispatcher)
     }
 
     private fun filterAmiibos(filter: ViewAmiiboType): Flow<AmiiboListResult> {
@@ -94,7 +96,11 @@ class AmiiboListViewModel @Inject constructor(
         }.flowOn(coroutinesContextProvider.backgroundDispatcher)
     }
 
-    private suspend fun FlowCollector<AmiiboListResult>.handleFailure(failure: Exception) {
+    private suspend fun FlowCollector<AmiiboListResult>.handleFailure(failure: Throwable) {
+        if (failure !is Exception) {
+            throw failure
+        }
+
         emit(AmiiboListResult.Error(AmiiboListFailure.FetchError(failure.message!!)))
     }
 }

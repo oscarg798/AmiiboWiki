@@ -12,57 +12,88 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.junit.Before
 
 
 class AmiiboListViewStateTest {
 
+    private lateinit var state: AmiiboListViewState
+
+    @Before
+    fun setup() {
+        state = AmiiboListViewState.init()
+    }
 
     @Test
     fun `when init is called then loading and status are none`() {
-        val state = AmiiboListViewState.init()
         assertEquals(ViewState.LoadingState.None, state.loading)
         assertEquals(AmiiboListViewState.Status.None, state.status)
     }
 
     @Test
     fun `when result is success then loading is none and status success`() {
-        val state = AmiiboListViewState.init()
-
         val newState =
             state.reduce(AmiiboListResult.FetchSuccess(AMIIBO_RESULT)) as AmiiboListViewState
         assertEquals(ViewState.LoadingState.None, newState.loading)
         assert(newState.status is AmiiboListViewState.Status.AmiibosFetched)
-        assertEquals(VIEWAMIIBO, (newState.status as AmiiboListViewState.Status.AmiibosFetched).amiibos)
+        assertEquals(
+            VIEWAMIIBO,
+            (newState.status as AmiiboListViewState.Status.AmiibosFetched).amiibos
+        )
     }
 
-//    @Test
-//    fun `when result is error then loading is none and status error`() {
-//        val state = AmiiboListViewState.init()
-//
-//        val newState =
-//            state.reduce(AmiiboListResult.Error(AmiiboListFailure.UnknowError)) as AmiiboListViewState
-//        assertEquals(ViewState.LoadingState.None, newState.loading)
-//        assert(newState.status is AmiiboListViewState.Status.Error)
-//        assert((newState.status as AmiiboListViewState.Status.Error).exception is AmiiboListFailure.UnknowError)
-//    }
+    @Test
+    fun `when result is error then loading is none and status error`() {
+        val newState =
+            state.reduce(AmiiboListResult.Error(AmiiboListFailure.UnknowError)) as AmiiboListViewState
+        assertEquals(ViewState.LoadingState.None, newState.loading)
+        assert(newState.error != null)
+        assert(newState.error is AmiiboListFailure.UnknowError)
+    }
 
     @Test
     fun `when result is loading then loading is loading and status None`() {
-        val state = AmiiboListViewState.init()
-
         val newState = state.reduce(AmiiboListResult.Loading) as AmiiboListViewState
         assertEquals(ViewState.LoadingState.Loading, newState.loading)
         assert(newState.status is AmiiboListViewState.Status.None)
     }
+
+    @Test
+    fun `when result is amiibo filters fetched then filtering is fetch success`() {
+        val newState =
+            state.reduce(AmiiboListResult.FiltersFetched(AMIIBO_TYPE)) as AmiiboListViewState
+        assertEquals(ViewState.LoadingState.None, newState.loading)
+        assertNull(newState.error)
+        assertEquals(AmiiboListViewState.Status.None, newState.status)
+        assert(newState.showingFilters is AmiiboListViewState.ShowingFilters.FetchSuccess)
+        assertEquals(
+            listOf(ViewAmiiboType("1", "2")),
+            (newState.showingFilters as AmiiboListViewState.ShowingFilters.FetchSuccess).filters
+        )
+    }
+
+    @Test
+    fun `when result is amiibo filtered then state is Filtering Fetch Success `() {
+        val newState =
+            state.reduce(AmiiboListResult.AmiibosFiltered(AMIIBO_RESULT)) as AmiiboListViewState
+        assertEquals(ViewState.LoadingState.None, newState.loading)
+        assertNull(newState.error)
+        assertEquals(AmiiboListViewState.Status.None, newState.status)
+        assert(newState.showingFilters is AmiiboListViewState.ShowingFilters.None)
+        assert(newState.filtering is AmiiboListViewState.Filtering.FetchSuccess)
+    }
 }
 
+private val AMIIBO_TYPE = listOf(AmiiboType("1", "2"))
 private val VIEWAMIIBO = listOf(ViewAmiibo("11", "12", "3", "5"))
 private val AMIIBO_RESULT = listOf(
     Amiibo(

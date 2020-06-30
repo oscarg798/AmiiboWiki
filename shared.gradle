@@ -82,4 +82,7 @@ dependencies {
     androidTestImplementation espressoIntents
     androidTestImplementation uiAutomator
     androidTestImplementation mockk
+
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
 }

@@ -19,10 +19,12 @@ import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.base.onException
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -31,7 +33,7 @@ import javax.inject.Inject
 @FlowPreview
 @ExperimentalCoroutinesApi
 class SplashViewModel @Inject constructor(
-    private val getAmiiboTypeUseCase: GetAmiiboTypeUseCase,
+    private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
     private val coroutineContextProvider: CoroutineContextProvider
 ) :
     AbstractViewModel<SplashWish, SplashResult>() {
@@ -55,7 +57,7 @@ class SplashViewModel @Inject constructor(
 
     private fun fetchTypes() = flow<SplashResult> {
         emit(SplashResult.Loading)
-        getAmiiboTypeUseCase.execute().map {
+        updateAmiiboTypeUseCase.execute().map {
             emit(SplashResult.TypesFetched)
         }.onException {
             emit(SplashResult.Error(it))

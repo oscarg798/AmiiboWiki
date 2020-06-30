@@ -10,30 +10,27 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.testutils
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import okio.IOException
-import javax.inject.Inject
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 
-@ExperimentalCoroutinesApi
-class GetAmiiboTypeUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
-    fun execute(): Flow<List<AmiiboType>> {
-        return amiiboTypeRepository.getTypes().filterNot { it.isEmpty() }
-            .map {
-                arrayListOf<AmiiboType>().apply {
-                    addAll(it)
-                    add(getDefaultAmiiboTypeUseCase.execute())
-                }
-            }
+import org.junit.Test
+import org.junit.runner.RunWith
+
+import org.junit.Assert.*
+
+/**
+ * Instrumented test, which will execute on an Android device.
+ *
+ * See [testing documentation](http://d.android.com/tools/testing).
+ */
+@RunWith(AndroidJUnit4::class)
+class ExampleInstrumentedTest {
+    @Test
+    fun useAppContext() {
+        // Context of the app under test.
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        assertEquals("com.oscarg798.amiibowiki.testutils.test", appContext.packageName)
     }
-
-
 }
-

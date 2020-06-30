@@ -10,30 +10,20 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.testutils
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import okio.IOException
-import javax.inject.Inject
+import org.junit.Test
 
-@ExperimentalCoroutinesApi
-class GetAmiiboTypeUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
-    fun execute(): Flow<List<AmiiboType>> {
-        return amiiboTypeRepository.getTypes().filterNot { it.isEmpty() }
-            .map {
-                arrayListOf<AmiiboType>().apply {
-                    addAll(it)
-                    add(getDefaultAmiiboTypeUseCase.execute())
-                }
-            }
+import org.junit.Assert.*
+
+/**
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * See [testing documentation](http://d.android.com/tools/testing).
+ */
+class ExampleUnitTest {
+    @Test
+    fun addition_isCorrect() {
+        assertEquals(4, 2 + 2)
     }
-
-
 }
-

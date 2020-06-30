@@ -12,28 +12,14 @@
 
 package com.oscarg798.amiibowiki.core.usecases
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import okio.IOException
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class GetAmiiboTypeUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
+class UpdateAmiiboTypeUseCase @Inject constructor(
     private val amiiboTypeRepository: AmiiboTypeRepository
 ) {
-    fun execute(): Flow<List<AmiiboType>> {
-        return amiiboTypeRepository.getTypes().filterNot { it.isEmpty() }
-            .map {
-                arrayListOf<AmiiboType>().apply {
-                    addAll(it)
-                    add(getDefaultAmiiboTypeUseCase.execute())
-                }
-            }
-    }
 
-
+    suspend fun execute() = amiiboTypeRepository.updateTypes()
 }
-

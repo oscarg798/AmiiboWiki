@@ -17,4 +17,8 @@ dependencies {
     implementation picasso
     implementation project(path: ':network')
 
+    implementation roomRuntime
+    implementation roomCompiler
+    implementation roomKTX
+    testImplementation roomTesting
 }

@@ -105,9 +105,9 @@ class AmiiboListActivity : AppCompatActivity() {
                     state.showingFilters is AmiiboListViewState.ShowingFilters.FetchSuccess -> showFilters(
                         state.showingFilters.filters
                     )
-                    state.filtering is AmiiboListViewState.Filtering.FetchSuccess -> showAmiibos(
-                        state.filtering.amiibos
-                    )
+                    state.filtering is AmiiboListViewState.Filtering.FetchSuccess -> {
+                        showAmiibos(state.filtering.amiibos)
+                    }
                 }
             }.launchIn(lifecycleScope)
 

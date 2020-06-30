@@ -9,31 +9,29 @@
  *
  *
  */
+apply from: "$rootProject.projectDir/shared.gradle"
 
-package com.oscarg798.amiibowiki.core.usecases
+dependencies {
+    implementation project(path: ':core')
+    implementation project(path: ':network')
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import okio.IOException
-import javax.inject.Inject
+    implementation kotlinCoroutinesTest
+    implementation junit
+    implementation mockk
 
-@ExperimentalCoroutinesApi
-class GetAmiiboTypeUseCase @Inject constructor(
-    private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
-    fun execute(): Flow<List<AmiiboType>> {
-        return amiiboTypeRepository.getTypes().filterNot { it.isEmpty() }
-            .map {
-                arrayListOf<AmiiboType>().apply {
-                    addAll(it)
-                    add(getDefaultAmiiboTypeUseCase.execute())
-                }
-            }
-    }
+    implementation scalars
 
+    implementation firebaseAnalytics
 
+    implementation androidAnnotations
+    implementation mockWebServer
+    implementation testRunner
+    implementation testRules
+    implementation espressoCore
+    implementation espressoContrib
+    implementation espressoIntents
+    implementation uiAutomator
+    implementation mockk
+
+    debugImplementation idlingResource
 }
-

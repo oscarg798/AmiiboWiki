@@ -12,10 +12,14 @@
 
 package com.oscarg798.amiibowiki.core.di
 
+import android.content.Context
+import androidx.room.Room
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
+import com.oscarg798.amiibowiki.core.persistence.AmiiboTypeDAO
+import com.oscarg798.amiibowiki.core.persistence.CoreAmiiboDatabase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
@@ -48,4 +52,16 @@ object CoreModule {
     fun provideAmiiboTypeService(retrofit: Retrofit) =
         retrofit.create(AmiiboTypeService::class.java)
 
+    @CoreScope
+    @Provides
+    fun provideDatabase(context: Context): CoreAmiiboDatabase {
+      return  Room.databaseBuilder(
+            context,
+            CoreAmiiboDatabase::class.java, "core_amiibo_database"
+        ).build()
+    }
+
+    @CoreScope
+    @Provides
+    fun provideAmiiboTypeDao(database: CoreAmiiboDatabase): AmiiboTypeDAO = database.amiiboTypeDAO()
 }
