@@ -33,13 +33,13 @@ android {
 
     buildTypes {
         release {
-            buildConfigField "String", "API_KEY","\"$apiKey\""
+            buildConfigField "String", "BASE_URL","\"$baseUrl\""
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug {
-            buildConfigField "String", "API_KEY","\"$apiKey\""
+            buildConfigField "String", "BASE_URL","\"$baseUrl\""
             minifyEnabled false
         }
     }

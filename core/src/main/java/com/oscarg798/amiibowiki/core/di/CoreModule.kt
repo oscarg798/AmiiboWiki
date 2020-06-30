@@ -41,5 +41,5 @@ object CoreModule {
 
     @CoreScope
     @Provides
-    fun provideAPIKeyInterceptor(config: Config) = APIKeyInterceptor(config.apiKey)
+    fun provideBaseUrl(config: Config) = config.baseUrl
 }

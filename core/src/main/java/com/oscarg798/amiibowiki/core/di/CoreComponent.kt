@@ -32,7 +32,6 @@ interface CoreComponent {
 
         fun create(
             @BindsInstance context: Context,
-            @BindsInstance baseUrl: String,
             @BindsInstance config: Config
         ): CoreComponent
     }
