@@ -19,10 +19,14 @@ import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class GetAmiibosUseCaseTest {
 
     private val repository = mockk<AmiiboRepository>()
@@ -30,19 +34,19 @@ class GetAmiibosUseCaseTest {
 
     @Before
     fun setup() {
-        coEvery { repository.getAmiibos() } answers { AMIIBO_RESULT }
+        coEvery { repository.getAmiibos() } answers { flowOf(AMIIBO_RESULT) }
         usecase = GetAmiibosUseCase(repository)
     }
 
     @Test
     fun `when its executed then it should return amiibos`() {
-        val response = runBlocking { usecase.execute() }
+        val response = runBlocking { usecase.execute().toList().get(0) }
 
         assertEquals(AMIIBO_RESULT, response)
     }
 }
 
-private val AMIIBO_RESULT = Result.success(
+private val AMIIBO_RESULT =
     listOf(
         Amiibo(
             "1",
@@ -55,4 +59,3 @@ private val AMIIBO_RESULT = Result.success(
             "11", "12"
         )
     )
-)

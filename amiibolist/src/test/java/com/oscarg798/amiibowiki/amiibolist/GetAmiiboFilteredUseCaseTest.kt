@@ -21,11 +21,15 @@ import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class GetAmiiboFilteredUseCaseTest {
 
     private val getDefaultAmiiboTypeUseCase = mockk<GetDefaultAmiiboTypeUseCase>()
@@ -37,9 +41,7 @@ class GetAmiiboFilteredUseCaseTest {
     fun setup() {
         every { getDefaultAmiiboTypeUseCase.execute() }.answers { AmiiboType("3", "3") }
         coEvery { repository.getAmiibosFilteredByTypeName(any()) } answers {
-            Result.success(
-                FILTERED_AMIIBOS
-            )
+            FILTERED_AMIIBOS
         }
 
         usecase = GetAmiiboFilteredUseCase(
@@ -50,18 +52,21 @@ class GetAmiiboFilteredUseCaseTest {
 
     @Test
     fun `given non default filter when is executed then it should return filtered amiibos`() {
-        FILTERED_AMIIBOS shouldBeEqualTo runBlocking {
-            usecase.execute(AmiiboType("1", "2"))
-        }.getOrNull()
+        val result = runBlocking {
+            usecase.execute(AmiiboType("1", "2")).toList().get(0)
+        }
+
+        FILTERED_AMIIBOS shouldBeEqualTo result
     }
 
     @Test
     fun `given default filter when is executed then it should return all the amiibos`() {
-        coEvery { repository.getAmiibos() } answers { Result.success(NO_FILTERED_AMIIBOS) }
+        coEvery { repository.getAmiibos() } answers { flowOf(NO_FILTERED_AMIIBOS) }
 
-        NO_FILTERED_AMIIBOS shouldBeEqualTo runBlocking {
-            usecase.execute(AmiiboType("3", "3"))
-        }.getOrNull()
+        val result = runBlocking {
+            usecase.execute(AmiiboType("3", "3")).toList().get(0)
+        }
+        NO_FILTERED_AMIIBOS shouldBeEqualTo result
 
     }
 }

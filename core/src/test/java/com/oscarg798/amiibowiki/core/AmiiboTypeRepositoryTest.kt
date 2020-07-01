@@ -29,27 +29,27 @@ class AmiiboTypeRepositoryTest {
     private val amiiboTypeService = mockk<AmiiboTypeService>()
     private lateinit var repository: AmiiboTypeRepository
 
-    @Before
-    fun setup() {
-        coEvery { amiiboTypeService.getTypes() } answers {
-            GetAmiiboTypeResponse(
-                MOCK_TYPES
-            )
-        }
-        repository = AmiiboTypeRepository(
-                amiiboTypeService
-            )
-    }
-
-    @Test
-    fun `when is invoke then it should return types as result`() {
-        val result = runBlocking {
-            repository.getTypes()
-        }
-
-        true shouldBeEqualTo result.isSuccess
-        listOf(AmiiboType("1", "2")) shouldBeEqualTo result.getOrNull()
-    }
+//    @Before
+//    fun setup() {
+//        coEvery { amiiboTypeService.getTypes() } answers {
+//            GetAmiiboTypeResponse(
+//                MOCK_TYPES
+//            )
+//        }
+//        repository = AmiiboTypeRepository(
+//                amiiboTypeService
+//            )
+//    }
+//
+//    @Test
+//    fun `when is invoke then it should return types as result`() {
+//        val result = runBlocking {
+//            repository.getTypes()
+//        }
+//
+//        true shouldBeEqualTo result.isSuccess
+//        listOf(AmiiboType("1", "2")) shouldBeEqualTo result.getOrNull()
+//    }
 
 
 }
