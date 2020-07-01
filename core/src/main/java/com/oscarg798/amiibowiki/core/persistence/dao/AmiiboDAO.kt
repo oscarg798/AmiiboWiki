@@ -10,19 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.persistence
+package com.oscarg798.amiibowiki.core.persistence.dao
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.oscarg798.amiibowiki.core.models.AmiiboType
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_TABLE_NAME
+import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
+import kotlinx.coroutines.flow.Flow
 
-@Entity(tableName = DB_AMIIBO_TYPE_TABLE_NAME)
-data class DBAmiiboType(
-    @PrimaryKey val key: String,
-    val name: String
-){
+@Dao
+interface AmiiboDAO {
 
-    fun map() = AmiiboType(key, name)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(dbAmiibos: List<DBAmiibo>)
+
+    @Query("select * from $AMIIBO_TABLE_NAME")
+    fun getAmiibos(): Flow<List<DBAmiibo>>
 }
-
-const val DB_AMIIBO_TYPE_TABLE_NAME = "amibbo_type"

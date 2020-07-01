@@ -19,6 +19,7 @@ import java.io.IOException
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 
 class ErrorInterceptor : Interceptor {
@@ -33,6 +34,7 @@ class ErrorInterceptor : Interceptor {
                 is ConnectException -> NetworkException.Connection
                 is TimeoutException,
                 is SocketTimeoutException -> NetworkException.TimeOut
+                is UnknownHostException -> NetworkException.Unknown(e.message, null)
                 else -> e
             }
         }

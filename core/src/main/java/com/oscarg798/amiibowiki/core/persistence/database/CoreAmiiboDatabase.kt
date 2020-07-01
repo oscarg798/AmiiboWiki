@@ -10,20 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.persistence
+package com.oscarg798.amiibowiki.core.persistence.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
+import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
+import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 
-@Dao
-interface AmiiboTypeDAO {
+@Database(entities = [DBAmiibo::class, DBAmiiboType::class], version = 1)
+abstract class CoreAmiiboDatabase : RoomDatabase() {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertType(dbAmiiboType: DBAmiiboType)
+    abstract fun amiiboTypeDAO(): AmiiboTypeDAO
 
-    @Query("select * from $DB_AMIIBO_TYPE_TABLE_NAME")
-    fun getTypes(): Flow<List<DBAmiiboType>>
+    abstract fun amiiboDAO(): AmiiboDAO
 }

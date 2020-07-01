@@ -13,9 +13,12 @@
 package com.oscarg798.amiibowiki.amiibolist.usecases
 
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.filterNot
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class GetAmiibosUseCase @Inject constructor(private val repository: AmiiboRepository) {
 
-    suspend fun execute() = repository.getAmiibos()
+    suspend fun execute() = repository.getAmiibos().filterNot { it.isEmpty() }
 }

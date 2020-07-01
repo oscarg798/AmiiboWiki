@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
@@ -64,37 +65,31 @@ class AmiiboListViewModel @Inject constructor(
             _state.value = it
         }
 
-    private fun getFilters(): Flow<AmiiboListResult> {
-        return getAmiiboTypeUseCase.execute()
-            .map {
-                AmiiboListResult.FiltersFetched(it) as AmiiboListResult
-            }.catch { cause ->
-                handleFailure(cause)
-            }
-            .flowOn(coroutinesContextProvider.backgroundDispatcher)
-    }
+    private fun getFilters(): Flow<AmiiboListResult> = getAmiiboTypeUseCase.execute()
+        .map {
+            AmiiboListResult.FiltersFetched(it) as AmiiboListResult
+        }.catch { cause ->
+            handleFailure(cause)
+        }
+        .flowOn(coroutinesContextProvider.backgroundDispatcher)
 
-    private fun filterAmiibos(filter: ViewAmiiboType): Flow<AmiiboListResult> {
-        return flow<AmiiboListResult> {
-            emit(AmiiboListResult.Loading)
-            getAmiiboFilteredUseCase.execute(filter.map()).map {
-                emit(AmiiboListResult.AmiibosFiltered(it))
-            }.onException {
-                handleFailure(it)
-            }
-        }.flowOn(coroutinesContextProvider.backgroundDispatcher)
-    }
 
-    private fun fetchAmiibos(): Flow<AmiiboListResult> {
-        return flow<AmiiboListResult> {
+    private suspend fun filterAmiibos(filter: ViewAmiiboType) =
+        getAmiiboFilteredUseCase.execute(filter.map()).map {
+            AmiiboListResult.AmiibosFiltered(it) as AmiiboListResult
+        }.onStart {
             emit(AmiiboListResult.Loading)
-            getAmiibosUseCase.execute().map {
-                emit(AmiiboListResult.FetchSuccess(it))
-            }.onException {
-                handleFailure(it)
-            }
+        }.catch { cause ->
+            handleFailure(cause)
         }.flowOn(coroutinesContextProvider.backgroundDispatcher)
-    }
+
+    private suspend fun fetchAmiibos(): Flow<AmiiboListResult> = getAmiibosUseCase.execute().map {
+        AmiiboListResult.FetchSuccess(it) as AmiiboListResult
+    }.onStart {
+        emit(AmiiboListResult.Loading)
+    }.catch {
+        handleFailure(it)
+    }.flowOn(coroutinesContextProvider.backgroundDispatcher)
 
     private suspend fun FlowCollector<AmiiboListResult>.handleFailure(failure: Throwable) {
         if (failure !is Exception) {

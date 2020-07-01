@@ -19,15 +19,45 @@ import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.network.models.APIAmiibo
 import com.oscarg798.amiibowiki.core.network.models.APIAmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
+import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
+import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-class AmiiboRepository @Inject constructor(private val amiiboService: AmiiboService) {
+@ExperimentalCoroutinesApi
+class AmiiboRepository @Inject constructor(
+    private val amiiboService: AmiiboService,
+    private val amiiboDAO: AmiiboDAO
+) {
+    suspend fun getAmiibos(): Flow<List<Amiibo>> =
+        merge(getLocalAmiibos(), getCloudAmiibos())
 
-    suspend fun getAmiibos(): Result<List<Amiibo>> =
-        runCatchingNetworkException { amiiboService.get().amiibo.map { it.map() } }
+    private suspend fun getCloudAmiibos(): Flow<List<Amiibo>> =
+        flowOf(amiiboService.get().amiibo.map { apiAmiibo ->
+            apiAmiibo.map()
+        }).onEach {
+            amiiboDAO.insert(it.map { amiibo ->
+                amiibo.map()
+            })
+        }.catch {cause ->
+            if(cause !is NetworkException){
+                throw cause
+            }
+            emit(listOf())
+        }
 
-    suspend fun getAmiibosFilteredByTypeName(type: String): Result<List<Amiibo>> =
+    private fun getLocalAmiibos(): Flow<List<Amiibo>> {
+        return amiiboDAO.getAmiibos().map {
+            it.map { dbAmiibo ->
+                dbAmiibo.map()
+            }
+        }
+    }
+
+    suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo> =
         runCatchingNetworkException(exceptionHandler = {
             Result.failure<List<Amiibo>>(
                 when (it) {
@@ -36,7 +66,12 @@ class AmiiboRepository @Inject constructor(private val amiiboService: AmiiboServ
                 }
             )
         }) { amiiboService.getAmiiboFilteredByType(type).amiibo.map { it.map() } }
+            .getOrThrow()
 }
+
+fun AmiiboReleaseDate.map() = DBAMiiboReleaseDate(australia, europe, northAmerica, japan)
+fun Amiibo.map() =
+    DBAmiibo(amiiboSeries, character, gameSeries, head, image, type, tail, name, releaseDate.map())
 
 fun APIAmiiboReleaseDate.map() = AmiiboReleaseDate(australia, europe, northAmerica, japan)
 fun APIAmiibo.map() =

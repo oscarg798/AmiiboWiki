@@ -69,6 +69,7 @@ data class AmiiboListViewState(
             is AmiiboListResult.AmiibosFiltered -> copy(
                 loading = ViewState.LoadingState.None,
                 status = Status.None,
+                showingFilters = ShowingFilters.None,
                 filtering = Filtering.FetchSuccess(result.amiibos.map { it.map() }),
                 error = null
             )

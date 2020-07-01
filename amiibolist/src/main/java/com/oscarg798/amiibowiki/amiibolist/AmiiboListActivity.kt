@@ -124,7 +124,7 @@ class AmiiboListActivity : AppCompatActivity() {
             skeleton = Skeleton.bind(binding.rvAmiiboList)
                 .adapter(binding.rvAmiiboList.adapter)
                 .load(R.layout.skeleton_amiibo_list_item)
-                .count(10)
+                .count(SKELETON_ANIMATION_EXAMPLES_COUNT)
                 .show()
         } else {
             skeleton?.show()
@@ -173,4 +173,5 @@ class AmiiboListActivity : AppCompatActivity() {
     }
 }
 
+private const val SKELETON_ANIMATION_EXAMPLES_COUNT = 10
 private const val NUMBER_OF_COLUMNS = 2

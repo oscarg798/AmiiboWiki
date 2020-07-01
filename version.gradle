@@ -13,8 +13,10 @@
 ext {
     appVersionName = "${versionMajor}.${versionMinor}.${versionMicro}"
     appMinSdkVersion = 23
-    appTargetSdkVersion = 29
+    appTargetSdkVersion = 30
+    appCompileSdkVersion = 30
     appVersionCode = getReleaseVersionCode()
+    appBuildToolsVersion = "30.0.0"
 }
 
 def getReleaseVersionCode() {

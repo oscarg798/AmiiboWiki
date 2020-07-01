@@ -17,9 +17,8 @@ import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.network.models.APIAmiiboType
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
-import com.oscarg798.amiibowiki.core.persistence.AmiiboTypeDAO
-import com.oscarg798.amiibowiki.core.persistence.CoreAmiiboDatabase
-import com.oscarg798.amiibowiki.core.persistence.DBAmiiboType
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
+import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -47,5 +46,6 @@ class AmiiboTypeRepository @Inject constructor(
     }
 }
 
-private fun AmiiboType.map() = DBAmiiboType(key, name)
+private fun AmiiboType.map() =
+    DBAmiiboType(key, name)
 private fun APIAmiiboType.map() = AmiiboType(key, name)
