@@ -30,25 +30,25 @@ class GetAmiiboTypeUseCaseTest {
     private val amiiboTypeRepository = mockk<AmiiboTypeRepository>()
     private lateinit var usecase: GetAmiiboTypeUseCase
 
-    @Before
-    fun setup() {
-        coEvery { amiiboTypeRepository.getTypes() } answers { Result.success(AMIIBO_TYPES) }
-        every { getDefaultAmiiboTypeUseCase.execute() }.answers { AmiiboType("3", "3") }
-        usecase = GetAmiiboTypeUseCase(getDefaultAmiiboTypeUseCase, amiiboTypeRepository)
-    }
-
-    @Test
-    fun `when is executed then it should return types with default value`() {
-        val result = runBlocking {
-            usecase.execute()
-        }
-
-        true shouldBeEqualTo result.isSuccess
-        listOf(
-            AmiiboType("1", "2"),
-            AmiiboType("3", "3")
-        ) shouldBeEqualTo result.getOrNull()
-    }
+//    @Before
+//    fun setup() {
+//        coEvery { amiiboTypeRepository.getTypes() } answers { Result.success(AMIIBO_TYPES) }
+//        every { getDefaultAmiiboTypeUseCase.execute() }.answers { AmiiboType("3", "3") }
+//        usecase = GetAmiiboTypeUseCase(getDefaultAmiiboTypeUseCase, amiiboTypeRepository)
+//    }
+//
+//    @Test
+//    fun `when is executed then it should return types with default value`() {
+//        val result = runBlocking {
+//            usecase.execute()
+//        }
+//
+//        true shouldBeEqualTo result.isSuccess
+//        listOf(
+//            AmiiboType("1", "2"),
+//            AmiiboType("3", "3")
+//        ) shouldBeEqualTo result.getOrNull()
+//    }
 }
 
 private val AMIIBO_TYPES = listOf(
