@@ -17,8 +17,8 @@ import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
-import com.oscarg798.amiibowiki.core.persistence.AmiiboTypeDAO
-import com.oscarg798.amiibowiki.core.persistence.CoreAmiiboDatabase
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import dagger.BindsInstance
@@ -46,5 +46,6 @@ interface CoreComponent {
     fun provideAmiiboRepository(): AmiiboRepository
     fun provideAmiiboTypeService(): AmiiboTypeService
     fun provideAmiiboTypeDao(): AmiiboTypeDAO
+    fun provideAmiiboDAO(): AmiiboDAO
 
 }

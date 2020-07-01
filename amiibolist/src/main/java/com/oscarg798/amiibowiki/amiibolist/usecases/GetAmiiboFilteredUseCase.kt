@@ -16,18 +16,24 @@ import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class GetAmiiboFilteredUseCase @Inject constructor(
     private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
     private val amiiboRepository: AmiiboRepository
 ) {
 
-    suspend fun execute(filter: AmiiboType): Result<List<Amiibo>> {
+    suspend fun execute(filter: AmiiboType): Flow<List<Amiibo>> {
         return if (filter == getDefaultAmiiboTypeUseCase.execute()) {
             amiiboRepository.getAmiibos()
         } else {
-            amiiboRepository.getAmiibosFilteredByTypeName(filter.name)
+            flowOf(amiiboRepository.getAmiibosFilteredByTypeName(filter.name))
         }
     }
 }

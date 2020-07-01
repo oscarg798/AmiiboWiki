@@ -10,13 +10,23 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.persistence
+package com.oscarg798.amiibowiki.core.persistence.models
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.oscarg798.amiibowiki.core.models.AmiiboType
 
-@Database(entities = [DBAmiiboType::class], version = 1)
-abstract class CoreAmiiboDatabase : RoomDatabase() {
+@Entity(tableName = AMIIBO_TYPE_TABLE_NAME)
+data class DBAmiiboType(
+    @PrimaryKey
+    @ColumnInfo(name = "key")
+    val key: String,
+    @ColumnInfo(name = "name")
+    val name: String
+) {
 
-    abstract fun amiiboTypeDAO(): AmiiboTypeDAO
+    fun map() = AmiiboType(key, name)
 }
+
+const val AMIIBO_TYPE_TABLE_NAME = "amibbo_type"

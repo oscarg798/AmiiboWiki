@@ -18,8 +18,9 @@ import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
-import com.oscarg798.amiibowiki.core.persistence.AmiiboTypeDAO
-import com.oscarg798.amiibowiki.core.persistence.CoreAmiiboDatabase
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
+import com.oscarg798.amiibowiki.core.persistence.database.CoreAmiiboDatabase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
@@ -64,4 +65,8 @@ object CoreModule {
     @CoreScope
     @Provides
     fun provideAmiiboTypeDao(database: CoreAmiiboDatabase): AmiiboTypeDAO = database.amiiboTypeDAO()
+
+    @CoreScope
+    @Provides
+    fun provideAmiiboDAO(database: CoreAmiiboDatabase): AmiiboDAO = database.amiiboDAO()
 }
