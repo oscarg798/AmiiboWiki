@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.SplashViewModel
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
@@ -41,13 +42,13 @@ class SplashViewModelTest {
     @get: Rule
     val coroutinesRule = CoroutinesTestRule()
 
-    private val getAmiiboTypeUseCase = mockk<GetAmiiboTypeUseCase>()
+    private val updateAmiiboTypeUseCase = mockk<UpdateAmiiboTypeUseCase>()
     private lateinit var viewModel: SplashViewModel
 
     @Before
     fun setup() {
-        coEvery { getAmiiboTypeUseCase.execute() } answers { Result.success(TYPES) }
-        viewModel = SplashViewModel(getAmiiboTypeUseCase, coroutinesRule.coroutineContextProvider)
+        coEvery { updateAmiiboTypeUseCase.execute() } answers { Result.success(Unit) }
+        viewModel = SplashViewModel(updateAmiiboTypeUseCase, coroutinesRule.coroutineContextProvider)
         viewModel.viewModelScope.newCoroutineContext(coroutinesRule.coroutineContextProvider.mainDispatcher)
     }
 }
