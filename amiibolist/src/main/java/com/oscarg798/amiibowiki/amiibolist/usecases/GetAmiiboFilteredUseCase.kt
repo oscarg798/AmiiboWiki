@@ -33,7 +33,10 @@ class GetAmiiboFilteredUseCase @Inject constructor(
         return if (filter == getDefaultAmiiboTypeUseCase.execute()) {
             amiiboRepository.getAmiibos()
         } else {
-            flowOf(amiiboRepository.getAmiibosFilteredByTypeName(filter.name))
+            flow<List<Amiibo>> {
+                val result = amiiboRepository.getAmiibosFilteredByTypeName(filter.name)
+                emit(result)
+            }
         }
     }
 }

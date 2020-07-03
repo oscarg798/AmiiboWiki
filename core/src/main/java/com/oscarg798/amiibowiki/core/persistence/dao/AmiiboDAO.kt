@@ -28,4 +28,7 @@ interface AmiiboDAO {
 
     @Query("select * from $AMIIBO_TABLE_NAME")
     fun getAmiibos(): Flow<List<DBAmiibo>>
+
+    @Query("select count(*) from $AMIIBO_TABLE_NAME")
+    suspend fun getCount(): Int
 }

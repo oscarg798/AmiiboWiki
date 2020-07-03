@@ -18,6 +18,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_TYPE_TABLE_NAME
+import com.oscarg798.amiibowiki.core.persistence.models.NAME_COLUMN_NAME
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -28,4 +29,7 @@ interface AmiiboTypeDAO {
 
     @Query("select * from $AMIIBO_TYPE_TABLE_NAME")
     fun getTypes(): Flow<List<DBAmiiboType>>
+
+    @Query("select count($NAME_COLUMN_NAME) from $AMIIBO_TYPE_TABLE_NAME")
+    suspend fun count(): Int
 }

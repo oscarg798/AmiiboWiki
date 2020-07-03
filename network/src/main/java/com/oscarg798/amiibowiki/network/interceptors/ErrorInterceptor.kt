@@ -34,7 +34,7 @@ class ErrorInterceptor : Interceptor {
                 is ConnectException -> NetworkException.Connection
                 is TimeoutException,
                 is SocketTimeoutException -> NetworkException.TimeOut
-                is UnknownHostException -> NetworkException.Unknown(e.message, null)
+                is UnknownHostException -> NetworkException.UnknowHost(e.message)
                 else -> e
             }
         }

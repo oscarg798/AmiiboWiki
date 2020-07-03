@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.amiibolist
 
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
+import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
@@ -20,11 +21,14 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
+import java.lang.Exception
 
 @ExperimentalCoroutinesApi
 class GetAmiibosUseCaseTest {
@@ -35,14 +39,67 @@ class GetAmiibosUseCaseTest {
     @Before
     fun setup() {
         coEvery { repository.getAmiibos() } answers { flowOf(AMIIBO_RESULT) }
+        coEvery { repository.updateAmiibos() } answers { flowOf(listOf(AMIIBO_RESULT[0].copy(name = "amiibo"))) }
         usecase = GetAmiibosUseCase(repository)
     }
 
     @Test
     fun `when its executed then it should return amiibos`() {
-        val response = runBlocking { usecase.execute().toList().get(0) }
+        val response = runBlocking { usecase.execute().toList() }
 
-        assertEquals(AMIIBO_RESULT, response)
+        2 shouldBeEqualTo response.size
+        listOf(
+            Amiibo(
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                AmiiboReleaseDate("7", "8", "9", "10"),
+                "11", "12"
+            )
+        ) shouldBeEqualTo response[0]
+
+        listOf(
+            Amiibo(
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                AmiiboReleaseDate("7", "8", "9", "10"),
+                "11", "amiibo"
+            )
+        ) shouldBeEqualTo response[1]
+    }
+
+    @Test
+    fun `given a GetAmiibosFailure_ProblemInDataSource when usecase is executed then only one result should be return `() {
+        coEvery { repository.updateAmiibos() } answers {
+            flow {
+                throw GetAmiibosFailure.ProblemInDataSource(
+                    "",
+                    Exception()
+                )
+            }
+        }
+        val response = runBlocking { usecase.execute().toList() }
+
+        1 shouldBeEqualTo response.size
+        listOf(
+            Amiibo(
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                AmiiboReleaseDate("7", "8", "9", "10"),
+                "11", "12"
+            )
+        ) shouldBeEqualTo response[0]
     }
 }
 

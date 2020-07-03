@@ -51,6 +51,9 @@ dependencies {
     implementation gsonConverter
     implementation okhttp3
     implementation okhttpLoggingInterceptor
+
+    implementation viewModelScope
+    implementation lifecycleExtensions
     implementation lifecycle
 
     implementation skeleton

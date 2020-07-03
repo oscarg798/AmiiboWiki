@@ -44,64 +44,20 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult> : ViewModel
     }
 }
 
-sealed class Failure(message: String?, cause: Throwable? = null) : Exception(message, cause) {
-    class Recoverable(message: String?, cause: Throwable?) : Failure(message, cause)
+sealed class Failure(message: String?, cause: Exception? = null) : Exception(message, cause) {
+    open class Recoverable(override val message: String?, override val cause: Exception?) :
+        Failure(message, cause)
 }
 
-inline fun <R> Result<R>.catchFailures(
-    exceptionMapper: ((Throwable) -> Failure) = ::defaultExceptionMapper
-): R {
-    return fold({
-        it
-    }, {
-        throw  exceptionMapper(it)
-    })
-}
 
-fun defaultExceptionMapper(throwable: Throwable): Failure {
-
-    if (throwable !is Exception) {
-        throw  throwable
-    }
-
-    return Failure.Recoverable(
-        throwable.message,
-        throwable
-    )
-}
-
-public inline fun <R, T> Result<T>.foldException(
-    onSuccess: (T) -> R,
-    onFailure: (exception: Exception) -> R = { throw  it }
-): R {
-    return fold({
-        onSuccess(it)
-    }, {
-        if (it is Exception) {
-            onFailure(it)
-        } else {
-            throw it
-        }
-    })
-}
-
-public inline fun <R, reified E : Exception> Result<R>.ignoreException(
-    onSuccess: (R) -> Unit
-) {
-    onSuccess {
-        onSuccess(it)
-    }.onFailure {
-        if (it !is E) {
-            throw it
-        }
-    }
-}
-
-public inline fun <T, R> T.runCatchingException(block: T.() -> R): Result<R> {
-    return try {
-        Result.success(block())
-    } catch (e: Exception) {
-        Result.failure(e)
+fun <R> Result<R>.getOrTransformNetworkException(
+    exceptionMapper: ((NetworkException) -> Failure) = { throw it }
+): R = getOrElse {
+    throw  when (it) {
+        is NetworkException.TimeOut,
+        NetworkException.UnknowHost(it.message),
+        NetworkException.Connection -> exceptionMapper(it as NetworkException)
+        else -> it
     }
 }
 

@@ -12,3 +12,17 @@
 
 package com.oscarg798.amiibowiki.core.failures
 
+import com.oscarg798.amiibowiki.core.base.Failure
+
+sealed class GetAmiibosFailure(
+    override val message: String?,
+    override val cause: Exception?
+) : Failure.Recoverable(message, cause) {
+
+    data class ProblemInDataSource(val sourceType: String, override val cause: Exception?) :
+        GetAmiibosFailure("There was an error in $sourceType data source", cause)
+}
+
+
+const val REMOTE_DATA_SOURCE_TYPE = "REMOTE"
+const val LOCAL_DATA_SOURCE_TYPE = "LOCAL"
