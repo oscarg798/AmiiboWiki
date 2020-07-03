@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.core
 
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
+import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.network.models.APIAmiibo
@@ -24,9 +25,7 @@ import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -66,79 +65,108 @@ class AmiiboRepositoryTest {
     }
 
     @Test
-    fun `when get amiibos is called then it should return amiibos`() {
+    fun `when get amiibos is called then it should return local amiibos`() {
         val response = runBlocking { repository.getAmiibos().toList() }
 
-        2 shouldBeEqualTo response.size
+        1 shouldBeEqualTo response.size
         listOf(
             Amiibo(
                 "11", "12", "13", "14", "15", "16",
                 AmiiboReleaseDate("19", "20", "21", "22"), "17", "18"
             )
-        )
+        ) shouldBeEqualTo response[0]
+        verify {
+            amiiboDAO.getAmiibos()
+        }
     }
-
 
     @Test
-    fun `when there is an network exception getting amiibos then it should return an empty list`() {
-        coEvery { amiiboService.get() } throws NetworkException.APIKeyNotFound("not found")
-        val response = runBlocking { repository.getAmiibos() }
+    fun `when update amiibos is called then it should return amiibos from the web`() {
+        val response = runBlocking { repository.updateAmiibos().toList() }
 
-            //    assert(response.isFailure)
-     //   assert(response.exceptionOrNull() is NetworkException.APIKeyNotFound)
+        1 shouldBeEqualTo response.size
+
+        listOf(AMIIBO) shouldBeEqualTo response[0]
+
+        coVerify {
+            amiiboDAO.insert(
+                listOf(
+                    DBAmiibo(
+                        "1", "2", "3", "4", "5", "6", "11", "12",
+                        DBAMiiboReleaseDate("7", "8", "9", "10")
+                    )
+                )
+            )
+            amiiboService.get()
+        }
     }
-//
-//    @Test(expected = IOException::class)
-//    fun `when there is an exception getting amiibos then it should throw`() {
-//        coEvery { amiiboService.get() } throws IOException()
-//        runBlocking { repository.getAmiibos() }
-//    }
-//
-//    @Test
-//    fun `given a filter when repo is invoke to filter amiibos then it should return them`() {
-//        val response = runBlocking { repository.getAmiibosFilteredByTypeName("yarn") }
-//
-//        assertEquals(
-//            listOf(
-//                Amiibo(
-//                    "1",
-//                    "2",
-//                    "3",
-//                    "4",
-//                    "5",
-//                    "6",
-//                    AmiiboReleaseDate("7", "8", "9", "10"),
-//                    "11", "12"
-//                )
-//            ), response.getOrNull()
-//        )
-//    }
-//
-//    @Test
-//    fun `given a filter when repo is invoke and there is a badexception filtering amiibos then FilterDoesNotExists should be return`() {
-//        coEvery { amiiboService.getAmiiboFilteredByType(any()) }.throws(
-//            NetworkException.BadRequest(
-//                "something"
-//            )
-//        )
-//        val response = runBlocking { repository.getAmiibosFilteredByTypeName("yarn") }
-//
-//        true shouldBeEqualTo response.isFailure
-//        true shouldBeEqualTo (response.exceptionOrNull() is FilterAmiiboFailure.FilterDoesNotExists)
-//    }
-//
-//    @Test
-//    fun `given a filter when repo is invoke and there is a NetworkException filtering amiibos then FilterAmiiboFailure should be return`() {
-//        coEvery { amiiboService.getAmiiboFilteredByType(any()) }.throws(
-//            NetworkException.Forbidden("something")
-//        )
-//        val response = runBlocking { repository.getAmiibosFilteredByTypeName("yarn") }
-//
-//        true shouldBeEqualTo response.isFailure
-//        true shouldBeEqualTo (response.exceptionOrNull() is FilterAmiiboFailure.Unknown)
-//    }
+
+
+    @Test(expected = GetAmiibosFailure.ProblemInDataSource::class)
+    fun `when there is an NetworkException_TimeOut updating amiibos then it should throw GetAmiibosFailure_ProblemInDataSource`() {
+        coEvery { amiiboService.get() } throws NetworkException.TimeOut
+        runBlocking { repository.updateAmiibos().toList() }
+    }
+
+    @Test(expected = GetAmiibosFailure.ProblemInDataSource::class)
+    fun `when there is an NetworkException_UnknowHost updating amiibos then it should throw GetAmiibosFailure_ProblemInDataSource`() {
+        coEvery { amiiboService.get() } throws NetworkException.UnknowHost("")
+        runBlocking { repository.updateAmiibos().toList() }
+    }
+
+    @Test(expected = GetAmiibosFailure.ProblemInDataSource::class)
+    fun `when there is an NetworkException_Connection updating amiibos then it should throw GetAmiibosFailure_ProblemInDataSource`() {
+        coEvery { amiiboService.get() } throws NetworkException.Connection
+        runBlocking { repository.updateAmiibos().toList() }
+    }
+
+    @Test(expected = NetworkException.BadRequest::class)
+    fun `when there is an exception updating amiibos then it should throw that exception`() {
+        coEvery { amiiboService.get() } throws NetworkException.BadRequest("")
+        runBlocking { repository.updateAmiibos().toList() }
+    }
+
+    @Test
+    fun `given a name when filter amiibos is called then it shoudl return filtered amiibos`() {
+        val result = runBlocking { repository.getAmiibosFilteredByTypeName("1") }
+        listOf(AMIIBO) shouldBeEqualTo result
+    }
+
+    @Test(expected = FilterAmiiboFailure.ErrorFilteringAmiibos::class)
+    fun `when there is an NetworkException_TimeOut filtering amiibos by name then it should throw FilterAmiiboFailure_ErrorFilteringAmiibos`() {
+        coEvery { amiiboService.getAmiiboFilteredByType("a") } throws NetworkException.TimeOut
+        runBlocking { repository.getAmiibosFilteredByTypeName("a") }
+    }
+
+    @Test(expected = FilterAmiiboFailure.ErrorFilteringAmiibos::class)
+    fun `when there is an NetworkException_UnknowHost filtering amiibos then it should throw FilterAmiiboFailure_ErrorFilteringAmiibos`() {
+        coEvery { amiiboService.getAmiiboFilteredByType("a") } throws NetworkException.UnknowHost("")
+        runBlocking { repository.getAmiibosFilteredByTypeName("a") }
+    }
+
+    @Test(expected = FilterAmiiboFailure.ErrorFilteringAmiibos::class)
+    fun `when there is an NetworkException_Connection filtering amiibos then it should throw FilterAmiiboFailure_ErrorFilteringAmiibos`() {
+        coEvery { amiiboService.getAmiiboFilteredByType("a") } throws NetworkException.Connection
+        runBlocking { repository.getAmiibosFilteredByTypeName("a") }
+    }
+
+    @Test(expected = NetworkException.BadRequest::class)
+    fun `when there is an exception filtering amiibos then it should throw that exception`() {
+        coEvery { amiiboService.getAmiiboFilteredByType("a") } throws NetworkException.BadRequest("")
+        runBlocking { repository.getAmiibosFilteredByTypeName("a") }
+    }
 }
 
+private val AMIIBO = Amiibo(
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    AmiiboReleaseDate("7", "8", "9", "10"),
+    "11", "12"
+)
 private val DB_AMIIBO = DBAmiibo(
     "11", "12", "13", "14", "15"
     , "16", "17", "18", DBAMiiboReleaseDate("19", "20", "21", "22")

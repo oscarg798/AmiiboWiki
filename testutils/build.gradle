@@ -33,5 +33,5 @@ dependencies {
     implementation uiAutomator
     implementation mockk
 
-    debugImplementation idlingResource
+    implementation idlingResource
 }

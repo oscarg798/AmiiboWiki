@@ -44,8 +44,13 @@ class AmiiboTypeRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun hasTypes(): Boolean {
+        return amiiboTypeDAO.count() > 0
+    }
 }
 
 private fun AmiiboType.map() =
     DBAmiiboType(key, name)
+
 private fun APIAmiiboType.map() = AmiiboType(key, name)

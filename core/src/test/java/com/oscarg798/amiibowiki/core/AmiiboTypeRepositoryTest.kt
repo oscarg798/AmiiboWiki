@@ -16,44 +16,68 @@ import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.network.models.APIAmiiboType
 import com.oscarg798.amiibowiki.core.network.models.GetAmiiboTypeResponse
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
+import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import io.mockk.coEvery
-import io.mockk.mockk
+import io.mockk.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class AmiiboTypeRepositoryTest {
 
     private val amiiboTypeService = mockk<AmiiboTypeService>()
+    private val amiiboTypeDAO = mockk<AmiiboTypeDAO>()
+
     private lateinit var repository: AmiiboTypeRepository
 
-//    @Before
-//    fun setup() {
-//        coEvery { amiiboTypeService.getTypes() } answers {
-//            GetAmiiboTypeResponse(
-//                MOCK_TYPES
-//            )
-//        }
-//        repository = AmiiboTypeRepository(
-//                amiiboTypeService
-//            )
-//    }
-//
-//    @Test
-//    fun `when is invoke then it should return types as result`() {
-//        val result = runBlocking {
-//            repository.getTypes()
-//        }
-//
-//        true shouldBeEqualTo result.isSuccess
-//        listOf(AmiiboType("1", "2")) shouldBeEqualTo result.getOrNull()
-//    }
+    @Before
+    fun setup() {
+        coEvery { amiiboTypeService.getTypes() } answers {
+            GetAmiiboTypeResponse(
+                MOCK_TYPES
+            )
+        }
+        every { amiiboTypeDAO.insertType(DB_AMIIBO_TYPE[0]) } just Runs
+        every { amiiboTypeDAO.getTypes() } answers { flowOf(DB_AMIIBO_TYPE) }
 
+        repository = AmiiboTypeRepository(
+            amiiboTypeService,
+            amiiboTypeDAO
+        )
+    }
 
+    @Test
+    fun `when get types invoke then it should return types as result`() {
+        val result = runBlocking {
+            repository.getTypes().toList()
+        }
+
+        1 shouldBeEqualTo result.size
+        listOf(AmiiboType("1", "2")) shouldBeEqualTo result[0]
+    }
+
+    @Test
+    fun `when updates types is invoke then it should return types as result`() {
+        val result = runBlocking {
+            repository.updateTypes()
+        }
+
+        true shouldBeEqualTo result.isSuccess
+        listOf(AmiiboType("1", "2")) shouldBeEqualTo result.getOrNull()
+
+        verify {
+            amiiboTypeDAO.insertType(DB_AMIIBO_TYPE[0])
+        }
+    }
 }
 
+private val DB_AMIIBO_TYPE = listOf(DBAmiiboType("1", "2"))
 private val MOCK_TYPES = listOf(
     APIAmiiboType(
         "1",

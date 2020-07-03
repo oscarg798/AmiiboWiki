@@ -12,14 +12,18 @@
 
 package com.oscarg798.amiibowiki.core.failures
 
+import com.oscarg798.amiibowiki.core.base.Failure
+
 sealed class FilterAmiiboFailure(
     override val message: String?,
-    override val cause: Throwable?
-) : Exception() {
+    override val cause: Exception?
+) : Failure.Recoverable(message, cause) {
 
     class FilterDoesNotExists(
-        cause: Throwable?
+        cause: Exception?
     ) : FilterAmiiboFailure("Filter does not exists", cause)
 
-    class Unknown(cause: Throwable?) : FilterAmiiboFailure("There was an unknow error", cause)
+    class ErrorFilteringAmiibos(cause: Exception) : FilterAmiiboFailure(cause.message, cause)
+
+    class Unknown(cause: Exception?) : FilterAmiiboFailure("There was an unknow error", cause)
 }

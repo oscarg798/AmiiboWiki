@@ -39,6 +39,9 @@ sealed class NetworkException(
     object Connection : NetworkException("Verify internet connection or host", null)
     object TimeOut : NetworkException("Timeout", null)
 
+    data class UnknowHost(override val message: String?, override val code: Int? = null) :
+        NetworkException(message, code)
+
     data class Unknown(override val message: String?, override val code: Int?) :
         NetworkException(message, code)
 

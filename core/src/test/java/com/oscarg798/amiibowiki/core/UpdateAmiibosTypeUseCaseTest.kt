@@ -10,24 +10,40 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.core
 
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
+import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
+import org.amshove.kluent.shouldBeEqualTo
+import org.junit.Before
+import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class UpdateAmiiboTypeUseCase @Inject constructor(
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
+class UpdateAmiibosTypeUseCaseTest {
 
-    suspend fun execute() = amiiboTypeRepository.updateTypes().recoverCatching {
-        if (!amiiboTypeRepository.hasTypes()) {
-            throw it
-        }
+    private lateinit var usecase: UpdateAmiiboTypeUseCase
+    private val amiiboTypeRepository = mockk<AmiiboTypeRepository>()
 
-        Result.success(listOf<AmiiboType>())
-    }.map { Unit }
+    @Before
+    fun setup() {
+        coEvery { amiiboTypeRepository.updateTypes() } answers { Result.success(AMIIBO_TYPES) }
+        usecase = UpdateAmiiboTypeUseCase(amiiboTypeRepository)
+    }
 
+    @Test
+    fun `when is invoken then it should return the types as result`() {
+        val result = runBlocking { usecase.execute() }
+        result.isSuccess shouldBeEqualTo true
+        result.getOrNull() shouldBeEqualTo Unit
+    }
 }
+
+private val AMIIBO_TYPES = listOf(
+    AmiiboType("1", "2")
+)

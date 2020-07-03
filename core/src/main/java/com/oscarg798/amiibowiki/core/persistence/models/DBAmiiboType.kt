@@ -22,11 +22,12 @@ data class DBAmiiboType(
     @PrimaryKey
     @ColumnInfo(name = "key")
     val key: String,
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = NAME_COLUMN_NAME)
     val name: String
 ) {
 
     fun map() = AmiiboType(key, name)
 }
 
+const val NAME_COLUMN_NAME = "name"
 const val AMIIBO_TYPE_TABLE_NAME = "amibbo_type"

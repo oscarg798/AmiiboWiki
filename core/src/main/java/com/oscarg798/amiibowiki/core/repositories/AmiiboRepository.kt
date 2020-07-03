@@ -12,8 +12,11 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
+import com.oscarg798.amiibowiki.core.base.getOrTransformNetworkException
 import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
+import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
+import com.oscarg798.amiibowiki.core.failures.REMOTE_DATA_SOURCE_TYPE
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.network.models.APIAmiibo
@@ -32,41 +35,39 @@ class AmiiboRepository @Inject constructor(
     private val amiiboService: AmiiboService,
     private val amiiboDAO: AmiiboDAO
 ) {
-    suspend fun getAmiibos(): Flow<List<Amiibo>> =
-        merge(getLocalAmiibos(), getCloudAmiibos())
-
-    private suspend fun getCloudAmiibos(): Flow<List<Amiibo>> =
-        flowOf(amiiboService.get().amiibo.map { apiAmiibo ->
-            apiAmiibo.map()
-        }).onEach {
-            amiiboDAO.insert(it.map { amiibo ->
-                amiibo.map()
-            })
-        }.catch {cause ->
-            if(cause !is NetworkException){
-                throw cause
-            }
-            emit(listOf())
-        }
-
-    private fun getLocalAmiibos(): Flow<List<Amiibo>> {
-        return amiiboDAO.getAmiibos().map {
-            it.map { dbAmiibo ->
-                dbAmiibo.map()
-            }
+    fun getAmiibos(): Flow<List<Amiibo>> = amiiboDAO.getAmiibos().map {
+        it.map { dbAmiibo ->
+            dbAmiibo.map()
         }
     }
 
-    suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo> =
-        runCatchingNetworkException(exceptionHandler = {
-            Result.failure<List<Amiibo>>(
-                when (it) {
-                    is NetworkException.BadRequest -> FilterAmiiboFailure.FilterDoesNotExists(it)
-                    else -> FilterAmiiboFailure.Unknown(it)
+    suspend fun updateAmiibos(): Flow<List<Amiibo>> =
+        flow<List<Amiibo>> {
+            val result = runCatching {
+                amiiboService.get().amiibo.map { apiAmiibo ->
+                    apiAmiibo.map()
                 }
-            )
-        }) { amiiboService.getAmiiboFilteredByType(type).amiibo.map { it.map() } }
-            .getOrThrow()
+            }.getOrTransformNetworkException {
+                GetAmiibosFailure.ProblemInDataSource(REMOTE_DATA_SOURCE_TYPE, it)
+            }
+
+            emit(result)
+        }.onEach {
+            if (it.isEmpty()) {
+                return@onEach
+            }
+
+            amiiboDAO.insert(it.map { amiibo ->
+                amiibo.map()
+            })
+        }
+
+    suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo> =
+        runCatching {
+            amiiboService.getAmiiboFilteredByType(type).amiibo.map { it.map() }
+        }.getOrTransformNetworkException {
+            FilterAmiiboFailure.ErrorFilteringAmiibos(it)
+        }
 }
 
 fun AmiiboReleaseDate.map() = DBAMiiboReleaseDate(australia, europe, northAmerica, japan)
