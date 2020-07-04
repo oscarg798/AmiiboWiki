@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.core.repositories
 
 import com.oscarg798.amiibowiki.core.base.getOrTransformNetworkException
-import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
@@ -26,9 +25,11 @@ import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
-import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi

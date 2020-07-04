@@ -15,7 +15,6 @@ package com.oscarg798.amiibowiki.amiibodetail.usecase
 import com.oscarg798.amiibowiki.amiibodetail.di.AmiiboDetailScope
 import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.base.runCatchingException
-import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi

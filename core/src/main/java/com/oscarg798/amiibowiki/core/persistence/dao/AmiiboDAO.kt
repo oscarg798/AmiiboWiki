@@ -16,9 +16,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_TABLE_NAME
-import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_TYPE_TABLE_NAME
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import kotlinx.coroutines.flow.Flow
 

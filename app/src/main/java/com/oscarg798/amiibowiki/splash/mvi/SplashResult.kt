@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.splash.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.Result
-import java.lang.Exception
 
 sealed class SplashResult : Result {
 

@@ -18,7 +18,10 @@ import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi

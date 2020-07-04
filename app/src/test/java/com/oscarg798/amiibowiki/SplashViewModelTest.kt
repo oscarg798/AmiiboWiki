@@ -14,26 +14,16 @@ package com.oscarg798.amiibowiki
 
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.SplashViewModel
-import com.oscarg798.amiibowiki.splash.mvi.SplashResult
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
-import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.testutils.CoroutinesTestRule
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.test.runBlockingTest
-import org.amshove.kluent.shouldBeEqualTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.newCoroutineContext
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
 @ExperimentalCoroutinesApi
 @FlowPreview

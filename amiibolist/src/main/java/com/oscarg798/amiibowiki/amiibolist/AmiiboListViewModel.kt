@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
@@ -20,13 +19,10 @@ import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
-import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.base.onException
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -55,8 +51,11 @@ class AmiiboListViewModel @Inject constructor(
             is AmiiboListWish.GetAmiibos -> fetchAmiibos()
             is AmiiboListWish.FilterAmiibos -> filterAmiibos(wish.filter)
             is AmiiboListWish.ShowFilters -> getFilters()
+            is AmiiboListWish.ShowAmiiboDetail -> showDetail(wish.viewAmiibo.tail)
         }
     }
+
+    private fun showDetail(tail: String) = flowOf(AmiiboListResult.ShowAmiiboDetail(tail))
 
     private fun getFilters(): Flow<AmiiboListResult> = getAmiiboTypeUseCase.execute()
         .map {

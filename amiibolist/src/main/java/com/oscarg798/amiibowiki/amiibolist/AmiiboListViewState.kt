@@ -21,6 +21,7 @@ data class AmiiboListViewState(
     val status: Status,
     val filtering: Filtering,
     val showingFilters: ShowingFilters,
+    val showAmiiboDetail: ShowAmiiboDetail,
     val error: AmiiboListFailure?
 ) : ViewState<AmiiboListResult> {
 
@@ -40,6 +41,11 @@ data class AmiiboListViewState(
 
     }
 
+    sealed class ShowAmiiboDetail {
+        object None : ShowAmiiboDetail()
+        data class Show(val tail: String) : ShowAmiiboDetail()
+    }
+
     /**
      * Map should happen in other place
      */
@@ -50,6 +56,7 @@ data class AmiiboListViewState(
                 status = Status.None,
                 filtering = Filtering.None,
                 showingFilters = ShowingFilters.None,
+                showAmiiboDetail = ShowAmiiboDetail.None,
                 error = null
             )
             is AmiiboListResult.FetchSuccess -> copy(
@@ -57,6 +64,7 @@ data class AmiiboListViewState(
                 status = Status.AmiibosFetched(result.amiibos.map { it.map() }),
                 filtering = Filtering.None,
                 showingFilters = ShowingFilters.None,
+                showAmiiboDetail = ShowAmiiboDetail.None,
                 error = null
             )
             is AmiiboListResult.Error -> copy(
@@ -64,6 +72,7 @@ data class AmiiboListViewState(
                 status = Status.None,
                 error = result.error,
                 filtering = Filtering.None,
+                showAmiiboDetail = ShowAmiiboDetail.None,
                 showingFilters = ShowingFilters.None
             )
             is AmiiboListResult.AmiibosFiltered -> copy(
@@ -71,6 +80,7 @@ data class AmiiboListViewState(
                 status = Status.None,
                 showingFilters = ShowingFilters.None,
                 filtering = Filtering.FetchSuccess(result.amiibos.map { it.map() }),
+                showAmiiboDetail = ShowAmiiboDetail.None,
                 error = null
             )
             is AmiiboListResult.FiltersFetched -> copy(
@@ -78,6 +88,15 @@ data class AmiiboListViewState(
                 status = Status.None,
                 filtering = Filtering.None,
                 showingFilters = ShowingFilters.FetchSuccess(result.filters.map { it.map() }),
+                showAmiiboDetail = ShowAmiiboDetail.None,
+                error = null
+            )
+            is AmiiboListResult.ShowAmiiboDetail -> copy(
+                loading = ViewState.LoadingState.None,
+                status = Status.None,
+                filtering = Filtering.None,
+                showingFilters = ShowingFilters.None,
+                showAmiiboDetail = ShowAmiiboDetail.Show(result.amiiboTail),
                 error = null
             )
         }
@@ -91,6 +110,7 @@ data class AmiiboListViewState(
                 Status.None,
                 Filtering.None,
                 ShowingFilters.None,
+                ShowAmiiboDetail.None,
                 null
             )
     }

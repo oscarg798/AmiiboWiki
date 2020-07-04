@@ -18,8 +18,8 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.network.models.APIAmiibo
 import com.oscarg798.amiibowiki.core.network.models.APIAmiiboReleaseDate
-import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.models.GetAmiiboResponse
+import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
@@ -31,12 +31,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
-import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Before
-import java.io.IOException
-import java.lang.IllegalArgumentException
+import org.junit.Test
 
 
 @ExperimentalCoroutinesApi

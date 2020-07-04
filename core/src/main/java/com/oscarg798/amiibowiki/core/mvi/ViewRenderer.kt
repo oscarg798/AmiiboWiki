@@ -12,8 +12,8 @@
 
 package com.oscarg798.amiibowiki.core.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.Actions as MVIActions
+import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 
 interface ViewRenderer<Result : MVIResult, State : ViewState<Result>, Actions : MVIActions> {
 

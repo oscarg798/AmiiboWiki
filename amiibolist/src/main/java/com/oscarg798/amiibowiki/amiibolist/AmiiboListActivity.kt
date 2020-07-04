@@ -12,13 +12,12 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -43,7 +42,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -94,17 +92,6 @@ class AmiiboListActivity : AppCompatActivity() {
         with(binding.rvAmiiboList) {
             setHasFixedSize(false)
             layoutManager = GridLayoutManager(context, NUMBER_OF_COLUMNS)
-
-            /**
-             * TODO: this should generate a whish, and navigation should be thougth deeplink
-             */
-            adapter = AmiiboListAdapter(object : AmiiboClickListener {
-                override fun onClick(viewAmiibo: ViewAmiibo) {
-                    startDeepLinkIntent(AMIIBO_DETAIL_DEEPLINK,Bundle().apply {
-                        putString(TAIL_ARGUMENT, viewAmiibo.tail)
-                    })
-                }
-            })
         }
     }
 
@@ -113,7 +100,7 @@ class AmiiboListActivity : AppCompatActivity() {
 
         viewModel.state
             .onEach {
-                val state = it as AmiiboListViewState
+                val state = it
                 when {
                     state.loading is ViewState.LoadingState.Loading -> showLoading()
                     state.status is AmiiboListViewState.Status.AmiibosFetched -> showAmiibos(
@@ -126,11 +113,14 @@ class AmiiboListActivity : AppCompatActivity() {
                     state.filtering is AmiiboListViewState.Filtering.FetchSuccess -> {
                         showAmiibos(state.filtering.amiibos)
                     }
+                    state.showAmiiboDetail is AmiiboListViewState.ShowAmiiboDetail.Show -> showAmiiboDetail(
+                        state.showAmiiboDetail.tail
+                    )
                 }
             }.launchIn(lifecycleScope)
 
 
-        merge(fetchAmiibos(), refresh())
+        merge(fetchAmiibos(), refresh(), onAmiiboClick())
             .onEach {
                 viewModel.onWish(it)
             }.launchIn(lifecycleScope)
@@ -188,6 +178,24 @@ class AmiiboListActivity : AppCompatActivity() {
         }
 
         awaitClose { binding.srlMain.setOnRefreshListener(null) }
+    }
+
+    private fun onAmiiboClick() = callbackFlow<AmiiboListWish> {
+        binding.rvAmiiboList.adapter = AmiiboListAdapter(object : AmiiboClickListener {
+            override fun onClick(viewAmiibo: ViewAmiibo) {
+                offer(AmiiboListWish.ShowAmiiboDetail(viewAmiibo))
+            }
+        })
+
+        awaitClose {
+            binding.rvAmiiboList.adapter = null
+        }
+    }
+
+    private fun showAmiiboDetail(tail: String) {
+        startDeepLinkIntent(AMIIBO_DETAIL_DEEPLINK, Bundle().apply {
+            putString(TAIL_ARGUMENT, tail)
+        })
     }
 }
 

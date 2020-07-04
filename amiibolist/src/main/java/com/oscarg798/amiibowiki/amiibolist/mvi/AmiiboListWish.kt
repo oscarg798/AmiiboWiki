@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibolist.mvi
 
+import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.Wish
 
@@ -19,5 +20,6 @@ sealed class AmiiboListWish : Wish {
     object RefreshAmiibos : AmiiboListWish()
     object GetAmiibos : AmiiboListWish()
     object ShowFilters : AmiiboListWish()
+    data class ShowAmiiboDetail(val viewAmiibo: ViewAmiibo) : AmiiboListWish()
     data class FilterAmiibos(val filter: ViewAmiiboType) : AmiiboListWish()
 }
