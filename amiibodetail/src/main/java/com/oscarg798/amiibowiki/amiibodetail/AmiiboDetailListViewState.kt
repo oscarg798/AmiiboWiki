@@ -17,7 +17,7 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
 
-data class DetailAmiiboListViewState(
+data class AmiiboDetailListViewState(
     val loading: ViewState.LoadingState,
     val status: Status,
     val error: AmiiboDetailFailure? = null
@@ -43,6 +43,6 @@ data class DetailAmiiboListViewState(
 
     companion object {
 
-        fun init() = DetailAmiiboListViewState(ViewState.LoadingState.None, Status.None)
+        fun init() = AmiiboDetailListViewState(ViewState.LoadingState.None, Status.None)
     }
 }

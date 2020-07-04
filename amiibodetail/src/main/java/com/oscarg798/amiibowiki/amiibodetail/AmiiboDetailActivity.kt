@@ -16,10 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
 import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
+import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
+import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.setImage
@@ -29,6 +32,7 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
+@DeepLink(AMIIBO_DETAIL_DEEPLINK)
 class AmiiboDetailActivity : AppCompatActivity() {
 
     @Inject
@@ -42,7 +46,10 @@ class AmiiboDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         DaggerAmiiboDetailComponent.factory()
-            .create(intent.getStringExtra(TAIL_ARGUMENT)!!, (application as CoreComponentProvider).provideCoreComponent())
+            .create(
+                intent.getStringExtra(TAIL_ARGUMENT)!!,
+                (application as CoreComponentProvider).provideCoreComponent()
+            )
             .inject(this)
 
         setup()
@@ -51,7 +58,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
     private fun setup() {
         val vm = ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
         vm.state.onEach {
-            if (it.status is DetailAmiiboListViewState.Status.ShowingDetail) {
+            if (it.status is AmiiboDetailListViewState.Status.ShowingDetail) {
                 showDetail(it.status.amiibo)
             } else if (it.error != null) {
                 Snackbar.make(binding.ivImage, it.error.message ?: "Error", Snackbar.LENGTH_LONG)
@@ -66,5 +73,3 @@ class AmiiboDetailActivity : AppCompatActivity() {
         binding.ivImage.setImage(amiibo.image)
     }
 }
-
-const val TAIL_ARGUMENT = "tail"

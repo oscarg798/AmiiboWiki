@@ -35,5 +35,5 @@ interface AmiiboDAO {
     suspend fun getCount(): Int
 
     @Query("select * from $AMIIBO_TABLE_NAME where tail=:tail")
-    suspend fun getById(tail: String): DBAmiibo
+    suspend fun getById(tail: String): DBAmiibo?
 }

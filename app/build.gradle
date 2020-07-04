@@ -134,6 +134,7 @@ dependencies {
 
     implementation project(path: ':core')
     implementation project(path: ':amiibolist')
+    implementation project(path: ':amiibodetail')
     testImplementation project(path: ':testutils')
 
     implementation 'androidx.ui:ui-framework:0.1.0-dev10'

@@ -84,6 +84,26 @@ public inline fun <T, R> T.runCatchingNetworkException(
     }
 }
 
+public inline fun <T, R, reified E> T.runCatchingException(
+    noinline exceptionHandler: ((E) -> Result<R>)? = null,
+    block: T.() -> R
+): Result<R> {
+    return try {
+        Result.success(block())
+    } catch (e: Exception) {
+        if(e !is E){
+            throw e
+        }
+
+        if (exceptionHandler != null) {
+            exceptionHandler(e)
+        } else {
+            Result.failure(e)
+        }
+    }
+}
+
+
 public inline fun <T> Result<T>.onException(action: (exception: Exception) -> Unit): Result<T> {
     exceptionOrNull()?.let {
         if (it !is Exception) {

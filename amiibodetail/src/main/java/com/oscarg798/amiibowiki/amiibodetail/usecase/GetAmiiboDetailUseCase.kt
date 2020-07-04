@@ -13,6 +13,9 @@
 package com.oscarg798.amiibowiki.amiibodetail.usecase
 
 import com.oscarg798.amiibowiki.amiibodetail.di.AmiiboDetailScope
+import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.core.base.runCatchingException
+import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,5 +25,11 @@ import javax.inject.Inject
 @AmiiboDetailScope
 class GetAmiiboDetailUseCase @Inject constructor(private val repository: AmiiboRepository) {
 
-    suspend fun execute(tail: String): Amiibo = repository.getAmiiboById(tail)
+    suspend fun execute(tail: String): Amiibo {
+        return runCatchingException<GetAmiiboDetailUseCase, Amiibo, IllegalArgumentException>({
+            Result.failure(AmiiboDetailFailure.AmiiboNotFoundByTail(tail))
+        }) {
+            repository.getAmiiboById(tail)
+        }.getOrThrow()
+    }
 }

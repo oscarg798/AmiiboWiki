@@ -10,19 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.di
+package com.oscarg798.amiibowiki.amiibolist.deeplink
 
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
-import com.oscarg798.amiibowiki.core.di.CoreComponent
-import dagger.Component
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import com.airbnb.deeplinkdispatch.DeepLinkModule
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-@AmiiboListScope
-@Component(dependencies = [CoreComponent::class], modules = [HouseModule::class])
-interface HouseComponent  {
-
-    fun inject(amiiboListActivity: AmiiboListActivity)
-}
+@DeepLinkModule
+interface AmiiboListDeeplinkModule

@@ -10,9 +10,10 @@
  *
  */
 
-apply from: "$rootProject.projectDir/shared.gradle"
+package com.oscarg798.amiibowiki.amiibodetail.deeplink
 
-dependencies {
-    implementation project(path: ':core')
-    implementation project(path: ':network')
-}
+import com.airbnb.deeplinkdispatch.DeepLinkModule
+import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
+
+@DeepLinkModule
+interface AmiiboDetailDeepLinkModule

@@ -13,10 +13,10 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import androidx.lifecycle.viewModelScope
+import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -28,9 +28,9 @@ class AmiiboDetailViewModel @Inject constructor(
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
     private val coroutinesContextProvider: CoroutineContextProvider
 ) :
-    AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, DetailAmiiboListViewState>() {
+    AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailListViewState>() {
 
-    override fun initState(): DetailAmiiboListViewState = DetailAmiiboListViewState.init()
+    override fun initState(): AmiiboDetailListViewState = AmiiboDetailListViewState.init()
 
     init {
         process()
@@ -39,8 +39,14 @@ class AmiiboDetailViewModel @Inject constructor(
 
     override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = getDetail()
 
-    private suspend fun getDetail(): Flow<AmiiboDetailResult>  = flow {
-       val result =  getAmiiboDetailUseCase.execute(tail)
-        emit(AmiiboDetailResult.DetailFetched(result))
+    private suspend fun getDetail(): Flow<AmiiboDetailResult> = flow {
+        val result = getAmiiboDetailUseCase.execute(tail)
+        emit(AmiiboDetailResult.DetailFetched(result) as AmiiboDetailResult)
+    }.catch { cause ->
+        if (cause !is AmiiboDetailFailure.AmiiboNotFoundByTail) {
+            throw  cause
+        }
+
+        emit(AmiiboDetailResult.Error(cause))
     }
 }
