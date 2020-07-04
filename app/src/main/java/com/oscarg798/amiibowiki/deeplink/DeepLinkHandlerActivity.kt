@@ -10,9 +10,29 @@
  *
  */
 
-apply from: "$rootProject.projectDir/shared.gradle"
+package com.oscarg798.amiibowiki.deeplink
 
-dependencies {
-    implementation project(path: ':core')
-    implementation project(path: ':network')
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.airbnb.deeplinkdispatch.DeepLinkHandler
+import com.oscarg798.amiibowiki.amiibodetail.deeplink.AmiiboDetailDeepLinkModule
+import com.oscarg798.amiibowiki.amiibodetail.deeplink.AmiiboDetailDeepLinkModuleRegistry
+import com.oscarg798.amiibowiki.amiibolist.deeplink.AmiiboListDeeplinkModule
+import com.oscarg798.amiibowiki.amiibolist.deeplink.AmiiboListDeeplinkModuleRegistry
+
+@DeepLinkHandler(
+    AmiiboListDeeplinkModule::class,
+    AmiiboDetailDeepLinkModule::class
+)
+class DeepLinkHandlerActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val deepLinkDelegate = DeepLinkDelegate(
+            AmiiboListDeeplinkModuleRegistry(),
+            AmiiboDetailDeepLinkModuleRegistry()
+        )
+        deepLinkDelegate.dispatchFrom(this)
+        finish()
+    }
 }

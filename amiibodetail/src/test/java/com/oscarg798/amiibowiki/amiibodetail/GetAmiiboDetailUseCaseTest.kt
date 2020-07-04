@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
+import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
@@ -23,6 +24,7 @@ import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
+import java.lang.IllegalArgumentException
 
 
 @ExperimentalCoroutinesApi
@@ -42,6 +44,19 @@ class GetAmiiboDetailUseCaseTest {
         val result = runBlocking { usecase.execute("1") }
         AMIIBO shouldBeEqualTo result
     }
+
+    @Test(expected = AmiiboDetailFailure.AmiiboNotFoundByTail::class)
+    fun `when usecase is executed and repository throws an illegalargumentexception then it should throw an AmiiboDetailFailure`() {
+        coEvery { repository.getAmiiboById("1") } throws IllegalArgumentException()
+        runBlocking { usecase.execute("1") }
+    }
+
+    @Test(expected = Exception::class)
+    fun `when is executed and repostory throws an exception then it should rethrow it`() {
+        coEvery { repository.getAmiiboById("1") } throws Exception()
+        runBlocking { usecase.execute("1") }
+    }
+
 }
 
 private val AMIIBO = Amiibo(

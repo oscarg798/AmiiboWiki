@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.usecases
 
+import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,6 +21,7 @@ import okio.IOException
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
+@CoreScope
 class GetAmiiboTypeUseCase @Inject constructor(
     private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
     private val amiiboTypeRepository: AmiiboTypeRepository

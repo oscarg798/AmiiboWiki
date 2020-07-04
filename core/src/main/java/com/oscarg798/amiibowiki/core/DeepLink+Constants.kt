@@ -10,9 +10,7 @@
  *
  */
 
-apply from: "$rootProject.projectDir/shared.gradle"
+package com.oscarg798.amiibowiki.core
 
-dependencies {
-    implementation project(path: ':core')
-    implementation project(path: ':network')
-}
+const val AMIIBO_LIST_DEEPLINK  = "amiibowiki://list"
+const val AMIIBO_DETAIL_DEEPLINK = "amiibowiki://detail"

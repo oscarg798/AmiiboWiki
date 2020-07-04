@@ -20,8 +20,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
+import com.oscarg798.amiibowiki.core.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.startDeepLinkIntent
 import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding
 import com.oscarg798.amiibowiki.splash.di.DaggerSplashComponent
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
@@ -60,11 +62,8 @@ class SplashActivity : AppCompatActivity() {
         vm.state.onEach {
             val state = it as SplashViewState
             when {
-                state.status == SplashViewState.FetchStatus.Success -> startActivity(
-                    Intent(
-                        this,
-                        AmiiboListActivity::class.java
-                    )
+                state.status == SplashViewState.FetchStatus.Success -> startDeepLinkIntent(
+                    AMIIBO_LIST_DEEPLINK
                 )
                 state.error != null -> showFetchError()
             }

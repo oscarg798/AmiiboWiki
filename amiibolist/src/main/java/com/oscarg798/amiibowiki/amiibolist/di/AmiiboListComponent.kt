@@ -10,9 +10,19 @@
  *
  */
 
-apply from: "$rootProject.projectDir/shared.gradle"
+package com.oscarg798.amiibowiki.amiibolist.di
 
-dependencies {
-    implementation project(path: ':core')
-    implementation project(path: ':network')
+import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
+import com.oscarg798.amiibowiki.core.di.CoreComponent
+import dagger.Component
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+
+@FlowPreview
+@ExperimentalCoroutinesApi
+@AmiiboListScope
+@Component(dependencies = [CoreComponent::class], modules = [AmiiboModule::class])
+interface AmiiboListComponent  {
+
+    fun inject(amiiboListActivity: AmiiboListActivity)
 }

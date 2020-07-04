@@ -13,6 +13,6 @@
 package com.oscarg798.amiibowiki.amiibodetail.errors
 
 sealed class AmiiboDetailFailure(override val message: String?) : Exception(message) {
-    class FetchError(message: String) : AmiiboDetailFailure(message)
+    class AmiiboNotFoundByTail(tail: String) : AmiiboDetailFailure("Amiibo with tail $tail not found")
     object UnknowError : AmiiboDetailFailure("There was an error please try again later")
 }

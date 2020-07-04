@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.core.repositories
 
 import com.oscarg798.amiibowiki.core.base.getOrTransformNetworkException
 import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
+import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.failures.REMOTE_DATA_SOURCE_TYPE
@@ -31,6 +32,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
+@CoreScope
 class AmiiboRepository @Inject constructor(
     private val amiiboService: AmiiboService,
     private val amiiboDAO: AmiiboDAO
@@ -41,7 +43,12 @@ class AmiiboRepository @Inject constructor(
         }
     }
 
-    suspend fun getAmiiboById(tail: String) = amiiboDAO.getById(tail).map()
+    suspend fun getAmiiboById(tail: String): Amiibo {
+        val amiibo = amiiboDAO.getById(tail)?.map()
+
+        return amiibo
+            ?: throw IllegalArgumentException("tail $tail does not belong to any saved amiibo")
+    }
 
     suspend fun updateAmiibos(): Flow<List<Amiibo>> =
         flow<List<Amiibo>> {

@@ -22,20 +22,23 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.AmiiboListViewModel
-import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailActivity
-import com.oscarg798.amiibowiki.amiibodetail.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.ActivityAmiiboListBinding
-import com.oscarg798.amiibowiki.amiibolist.di.DaggerHouseComponent
+import com.oscarg798.amiibowiki.amiibolist.di.DaggerAmiiboListComponent
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
+import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
+import com.oscarg798.amiibowiki.core.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
+import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.startDeepLinkIntent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
@@ -45,6 +48,7 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @FlowPreview
+@DeepLink(AMIIBO_LIST_DEEPLINK)
 class AmiiboListActivity : AppCompatActivity() {
 
     @Inject
@@ -60,7 +64,7 @@ class AmiiboListActivity : AppCompatActivity() {
         binding = ActivityAmiiboListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        DaggerHouseComponent.builder()
+        DaggerAmiiboListComponent.builder()
             .coreComponent((application as CoreComponentProvider).provideCoreComponent())
             .build()
             .inject(this)
@@ -96,13 +100,9 @@ class AmiiboListActivity : AppCompatActivity() {
              */
             adapter = AmiiboListAdapter(object : AmiiboClickListener {
                 override fun onClick(viewAmiibo: ViewAmiibo) {
-                    startActivity(
-                        Intent(
-                            this@AmiiboListActivity,
-                            AmiiboDetailActivity::class.java
-                        ).apply {
-                            putExtra(TAIL_ARGUMENT, viewAmiibo.tail)
-                        })
+                    startDeepLinkIntent(AMIIBO_DETAIL_DEEPLINK,Bundle().apply {
+                        putString(TAIL_ARGUMENT, viewAmiibo.tail)
+                    })
                 }
             })
         }

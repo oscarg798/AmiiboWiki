@@ -10,9 +10,28 @@
  *
  */
 
-apply from: "$rootProject.projectDir/shared.gradle"
+package com.oscarg798.amiibowiki.amiibolist.di
 
-dependencies {
-    implementation project(path: ':core')
-    implementation project(path: ':network')
+import androidx.lifecycle.ViewModel
+import com.oscarg798.amiibowiki.AmiiboListViewModel
+import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
+import com.oscarg798.amiibowiki.core.ViewModelKey
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.multibindings.IntoMap
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import retrofit2.Retrofit
+
+@ExperimentalCoroutinesApi
+@FlowPreview
+@Module
+abstract class AmiiboModule {
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AmiiboListViewModel::class)
+    abstract fun bindHouseViewModel(amiiboListViewModel: AmiiboListViewModel): ViewModel
 }
+

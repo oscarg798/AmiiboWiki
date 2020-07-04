@@ -36,6 +36,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
 import java.io.IOException
+import java.lang.IllegalArgumentException
 
 
 @ExperimentalCoroutinesApi
@@ -164,6 +165,12 @@ class AmiiboRepositoryTest {
             "11", "12", "13", "14",
             "15", "16", AmiiboReleaseDate("19", "20", "21", "22"), "17", "18"
         ) shouldBeEqualTo result
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `given a non existen tail id when get by id is called then it should return IllegalArgumentException`(){
+        coEvery { amiiboDAO.getById("1") } answers { null }
+         runBlocking { repository.getAmiiboById("1") }
     }
 
 }
