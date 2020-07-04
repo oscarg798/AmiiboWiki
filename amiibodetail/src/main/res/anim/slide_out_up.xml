@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2020 Oscar David Gallon Rosero
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -9,10 +9,7 @@
   ~
   ~
   -->
-
-<resources>
-    <string name="name_string_format">Name: %s</string>
-    <string name="character_string_format">Character: %s</string>
-    <string name="game_series_string_format">Game series: %s</string>
-    <string name="type_string_format">Type: %s</string>
-</resources>
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@android:integer/config_longAnimTime"
+    android:fromYDelta="0%p"
+    android:toYDelta="100%p" />

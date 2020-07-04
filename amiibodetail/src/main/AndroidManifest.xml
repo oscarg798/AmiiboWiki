@@ -3,7 +3,8 @@
     package="com.oscarg798.amiibowiki.amiibodetail">
 
     <application>
-        <activity android:name=".AmiiboDetailActivity"></activity>
+        <activity android:name=".AmiiboDetailActivity"
+            android:theme="@style/AppTheme.AmiiboDetail"/>
     </application>
 
 </manifest>

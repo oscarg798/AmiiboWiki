@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2020 Oscar David Gallon Rosero
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -11,34 +11,17 @@
   -->
 
 <resources>
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+    <style name="AppTheme.AmiiboDetail" parent="AppTheme">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="textColor">@color/textColor</item>
-        <item name="TextColorSecondary">@color/secondaryTextColor</item>
+        <item name="colorPrimary">@color/cerise</item>
+        <item name="colorPrimaryDark">@color/tulip_tree</item>
+        <item name="colorAccent">@color/cinnabar</item>
+        <item name="android:windowAnimationStyle">@style/BottomToTopAnimation</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="AppTheme">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
+    <style name="BottomToTopAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_up</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_up</item>
     </style>
-
-    <style name="Styles" />
-
-    <style name="Styles.AmiiboWiki" />
-
-    <style name="Styles.AmiiboWiki.Default">
-        <item name="android:textColor">?textColor</item>
-    </style>
-
-
-    <style name="Styles.AmiiboWiki.Secondary">
-        <item name="android:textColor">?TextColorSecondary</item>
-    </style>
-
 </resources>
