@@ -12,27 +12,9 @@
 
 package com.oscarg798.amiibowiki.amiibolist.adapter
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.oscarg798.amiibowiki.amiibolist.R
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.core.setImage
-import kotlinx.android.extensions.LayoutContainer
 
-class AmiiboListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), LayoutContainer {
+interface AmiiboClickListener  {
 
-    override val containerView: View?
-        get() = itemView
-
-    private val ivImage = itemView.findViewById<ImageView>(R.id.ivImage)
-    private val tvAmiiboName = itemView.findViewById<TextView>(R.id.tvAmiiboName)
-    private val tvAmiiboSeries = itemView.findViewById<TextView>(R.id.tvAmiiboSeries)
-
-    fun bind(amiibo: ViewAmiibo) {
-        tvAmiiboName.text = amiibo.name
-        tvAmiiboSeries.text = amiibo.serie
-        ivImage.setImage(amiibo.image, R.drawable.ic_amiibo_logo)
-    }
+    fun onClick(viewAmiibo: ViewAmiibo)
 }

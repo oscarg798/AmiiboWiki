@@ -10,30 +10,39 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.persistence.dao
+package com.oscarg798.amiibowiki.amiibodetail
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_TABLE_NAME
-import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_TYPE_TABLE_NAME
-import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
-import kotlinx.coroutines.flow.Flow
+import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-@Dao
-interface AmiiboDAO {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(dbAmiibos: List<DBAmiibo>)
+data class DetailAmiiboListViewState(
+    val loading: ViewState.LoadingState,
+    val status: Status,
+    val error: AmiiboDetailFailure? = null
+) : ViewState<AmiiboDetailResult> {
 
-    @Query("select * from $AMIIBO_TABLE_NAME")
-    fun getAmiibos(): Flow<List<DBAmiibo>>
+    sealed class Status {
+        object None : Status()
+        data class ShowingDetail(val amiibo: Amiibo) : Status()
+    }
 
-    @Query("select count(*) from $AMIIBO_TABLE_NAME")
-    suspend fun getCount(): Int
+    override fun reduce(result: AmiiboDetailResult): ViewState<AmiiboDetailResult> {
+        return when (result) {
+            is AmiiboDetailResult.DetailFetched -> copy(
+                loading = ViewState.LoadingState.None,
+                status = Status.ShowingDetail(result.amiibo), error = null
+            )
+            is AmiiboDetailResult.Error -> copy(
+                loading = ViewState.LoadingState.None,
+                status = Status.None, error = result.error
+            )
+        }
+    }
 
-    @Query("select * from $AMIIBO_TABLE_NAME where tail=:tail")
-    suspend fun getById(tail: String): DBAmiibo
+    companion object {
+
+        fun init() = DetailAmiiboListViewState(ViewState.LoadingState.None, Status.None)
+    }
 }

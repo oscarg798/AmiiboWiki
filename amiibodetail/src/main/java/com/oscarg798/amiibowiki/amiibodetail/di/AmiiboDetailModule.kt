@@ -10,29 +10,23 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.adapter
+package com.oscarg798.amiibowiki.amiibodetail.di
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.oscarg798.amiibowiki.amiibolist.R
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.core.setImage
-import kotlinx.android.extensions.LayoutContainer
+import androidx.lifecycle.ViewModel
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
+import com.oscarg798.amiibowiki.core.ViewModelKey
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class AmiiboListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), LayoutContainer {
+@ExperimentalCoroutinesApi
+@Module
+abstract class AmiiboDetailModule {
 
-    override val containerView: View?
-        get() = itemView
-
-    private val ivImage = itemView.findViewById<ImageView>(R.id.ivImage)
-    private val tvAmiiboName = itemView.findViewById<TextView>(R.id.tvAmiiboName)
-    private val tvAmiiboSeries = itemView.findViewById<TextView>(R.id.tvAmiiboSeries)
-
-    fun bind(amiibo: ViewAmiibo) {
-        tvAmiiboName.text = amiibo.name
-        tvAmiiboSeries.text = amiibo.serie
-        ivImage.setImage(amiibo.image, R.drawable.ic_amiibo_logo)
-    }
+    @AmiiboDetailScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(AmiiboDetailViewModel::class)
+    abstract fun bindAmiiboDetailViewModel(amiiboDetailViewModel: AmiiboDetailViewModel): ViewModel
 }

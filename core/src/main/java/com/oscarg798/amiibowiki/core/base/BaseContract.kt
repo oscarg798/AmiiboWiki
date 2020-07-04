@@ -13,31 +13,38 @@
 package com.oscarg798.amiibowiki.core.base
 
 import androidx.lifecycle.ViewModel
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
-import okio.IOException
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
 @ExperimentalCoroutinesApi
-abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult> : ViewModel() {
+abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
+        ViewState : MVIViewState<Result>> : ViewModel() {
 
     protected val wishProcessor = ConflatedBroadcastChannel<Wish>()
 
-    public abstract fun process(): Flow<ViewState<Result>>
-    protected abstract fun initState(): ViewState<Result>
-
-
-    protected val _state: MutableStateFlow<ViewState<Result>> =
+    protected val _state: MutableStateFlow<ViewState> =
         MutableStateFlow(initState())
 
-    val state: StateFlow<ViewState<Result>>
+    val state: StateFlow<ViewState>
         get() = _state
+
+    protected abstract suspend fun getResult(wish: Wish): Flow<Result>
+
+    protected abstract fun initState(): ViewState
+
+    public fun process(): Flow<ViewState> = wishProcessor.asFlow()
+        .flatMapMerge {
+            getResult(it)
+        }.scan(_state.value){state, result ->
+            state.reduce(result) as ViewState
+        }.onEach {
+            _state.value = it
+        }
 
     fun onWish(wish: Wish) {
         wishProcessor.offer(wish)

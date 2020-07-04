@@ -10,29 +10,31 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.adapter
+package com.oscarg798.amiibowiki.amiibodetail.di
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.oscarg798.amiibowiki.amiibolist.R
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.core.setImage
-import kotlinx.android.extensions.LayoutContainer
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailActivity
+import com.oscarg798.amiibowiki.core.di.CoreComponent
+import dagger.BindsInstance
+import dagger.Component
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Scope
 
-class AmiiboListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), LayoutContainer {
+@ExperimentalCoroutinesApi
+@AmiiboDetailScope
+@Component(dependencies = [CoreComponent::class], modules = [AmiiboDetailModule::class])
+interface AmiiboDetailComponent {
 
-    override val containerView: View?
-        get() = itemView
+    fun inject(amiiboDetailActivity: AmiiboDetailActivity)
 
-    private val ivImage = itemView.findViewById<ImageView>(R.id.ivImage)
-    private val tvAmiiboName = itemView.findViewById<TextView>(R.id.tvAmiiboName)
-    private val tvAmiiboSeries = itemView.findViewById<TextView>(R.id.tvAmiiboSeries)
+    @Component.Factory
+    interface Factory {
 
-    fun bind(amiibo: ViewAmiibo) {
-        tvAmiiboName.text = amiibo.name
-        tvAmiiboSeries.text = amiibo.serie
-        ivImage.setImage(amiibo.image, R.drawable.ic_amiibo_logo)
+        fun create(
+            @BindsInstance tail: String,
+            coreComponent: CoreComponent
+        ): AmiiboDetailComponent
     }
 }
+
+@Scope
+annotation class AmiiboDetailScope

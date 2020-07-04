@@ -10,29 +10,27 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.adapter
+package com.oscarg798.amiibowiki.amiibodetail
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.oscarg798.amiibowiki.amiibolist.R
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.core.setImage
-import kotlinx.android.extensions.LayoutContainer
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnit4
 
-class AmiiboListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), LayoutContainer {
+import org.junit.Test
+import org.junit.runner.RunWith
 
-    override val containerView: View?
-        get() = itemView
+import org.junit.Assert.*
 
-    private val ivImage = itemView.findViewById<ImageView>(R.id.ivImage)
-    private val tvAmiiboName = itemView.findViewById<TextView>(R.id.tvAmiiboName)
-    private val tvAmiiboSeries = itemView.findViewById<TextView>(R.id.tvAmiiboSeries)
-
-    fun bind(amiibo: ViewAmiibo) {
-        tvAmiiboName.text = amiibo.name
-        tvAmiiboSeries.text = amiibo.serie
-        ivImage.setImage(amiibo.image, R.drawable.ic_amiibo_logo)
+/**
+ * Instrumented test, which will execute on an Android device.
+ *
+ * See [testing documentation](http://d.android.com/tools/testing).
+ */
+@RunWith(AndroidJUnit4::class)
+class ExampleInstrumentedTest {
+    @Test
+    fun useAppContext() {
+        // Context of the app under test.
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        assertEquals("com.oscarg798.amiibowiki.amiibodetail.test", appContext.packageName)
     }
 }

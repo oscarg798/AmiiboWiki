@@ -20,7 +20,7 @@ import kotlinx.coroutines.FlowPreview
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-@HouseScope
+@AmiiboListScope
 @Component(dependencies = [CoreComponent::class], modules = [HouseModule::class])
 interface HouseComponent  {
 

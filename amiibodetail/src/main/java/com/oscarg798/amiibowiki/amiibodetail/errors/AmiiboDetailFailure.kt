@@ -10,9 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.di
+package com.oscarg798.amiibowiki.amiibodetail.errors
 
-import javax.inject.Scope
-
-@Scope
-annotation class HouseScope
+sealed class AmiiboDetailFailure(override val message: String?) : Exception(message) {
+    class FetchError(message: String) : AmiiboDetailFailure(message)
+    object UnknowError : AmiiboDetailFailure("There was an error please try again later")
+}

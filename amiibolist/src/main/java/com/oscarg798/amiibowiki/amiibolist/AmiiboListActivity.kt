@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -25,6 +26,9 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.AmiiboListViewModel
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailActivity
+import com.oscarg798.amiibowiki.amiibodetail.TAIL_ARGUMENT
+import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.ActivityAmiiboListBinding
 import com.oscarg798.amiibowiki.amiibolist.di.DaggerHouseComponent
@@ -86,7 +90,21 @@ class AmiiboListActivity : AppCompatActivity() {
         with(binding.rvAmiiboList) {
             setHasFixedSize(false)
             layoutManager = GridLayoutManager(context, NUMBER_OF_COLUMNS)
-            adapter = AmiiboListAdapter()
+
+            /**
+             * TODO: this should generate a whish, and navigation should be thougth deeplink
+             */
+            adapter = AmiiboListAdapter(object : AmiiboClickListener {
+                override fun onClick(viewAmiibo: ViewAmiibo) {
+                    startActivity(
+                        Intent(
+                            this@AmiiboListActivity,
+                            AmiiboDetailActivity::class.java
+                        ).apply {
+                            putExtra(TAIL_ARGUMENT, viewAmiibo.tail)
+                        })
+                }
+            })
         }
     }
 
