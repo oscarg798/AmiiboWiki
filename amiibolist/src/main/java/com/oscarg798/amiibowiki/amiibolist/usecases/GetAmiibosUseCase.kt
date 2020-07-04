@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibolist.usecases
 
+import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListScope
 import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
+@AmiiboListScope
 class GetAmiibosUseCase @Inject constructor(private val repository: AmiiboRepository) {
 
     suspend fun execute(): Flow<List<Amiibo>> = merge(repository.getAmiibos(), updateAmiibos())

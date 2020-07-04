@@ -177,3 +177,9 @@ Ocore/src/main/java/com/oscarg798/amiibowiki/core/persistence/models/DBAmiibo.kt
 Ncore/src/main/java/com/oscarg798/amiibowiki/core/failures/GetAmiibosFailure.kt,3/4/3422c2f183a7fe92a24ed12f5a6df22c339d61a9
 }
 Mcore/src/main/java/com/oscarg798/amiibowiki/core/persistence/dao/AmiiboDAO.kt,8/4/84e84c36d336b350ae7375431e7972e2588abc7f
+€
+Pcore/src/test/java/com/oscarg798/amiibowiki/core/UpdateAmiibosTypeUseCaseTest.kt,6/a/6aaaaa51f653ce6cbd7c27e5b95d9def1bc87763
+t
+Dcore/src/main/java/com/oscarg798/amiibowiki/core/Image+Extensions.kt,0/2/0248c966d91fdb5cc4b170539bc3ac8bf7e80cd4
+I
+amiibodetail/build.gradle,c/2/c22cb2adfdf99d0911da3a5b63baf197d4ba0313

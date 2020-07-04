@@ -10,30 +10,47 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.persistence.dao
+package com.oscarg798.amiibowiki.amiibodetail
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_TABLE_NAME
-import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_TYPE_TABLE_NAME
-import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
-import kotlinx.coroutines.flow.Flow
+import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import org.amshove.kluent.shouldBeEqualTo
+import org.junit.Before
+import org.junit.Test
 
-@Dao
-interface AmiiboDAO {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(dbAmiibos: List<DBAmiibo>)
+@ExperimentalCoroutinesApi
+class GetAmiiboDetailUseCaseTest {
 
-    @Query("select * from $AMIIBO_TABLE_NAME")
-    fun getAmiibos(): Flow<List<DBAmiibo>>
+    private val repository = mockk<AmiiboRepository>()
+    private lateinit var usecase: GetAmiiboDetailUseCase
 
-    @Query("select count(*) from $AMIIBO_TABLE_NAME")
-    suspend fun getCount(): Int
+    @Before
+    fun setup() {
+        coEvery { repository.getAmiiboById("1") } answers { AMIIBO }
+        usecase = GetAmiiboDetailUseCase(repository)
+    }
 
-    @Query("select * from $AMIIBO_TABLE_NAME where tail=:tail")
-    suspend fun getById(tail: String): DBAmiibo
+    @Test
+    fun `given a tail id when its executed then it should return the amiibo`() {
+        val result = runBlocking { usecase.execute("1") }
+        AMIIBO shouldBeEqualTo result
+    }
 }
+
+private val AMIIBO = Amiibo(
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    AmiiboReleaseDate("7", "8", "9", "10"),
+    "11", "12"
+)

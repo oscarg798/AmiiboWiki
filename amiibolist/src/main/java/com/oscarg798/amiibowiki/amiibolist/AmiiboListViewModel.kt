@@ -40,30 +40,23 @@ class AmiiboListViewModel @Inject constructor(
     private val getAmiiboTypeUseCase: GetAmiiboTypeUseCase,
     private val coroutinesContextProvider: CoroutineContextProvider
 ) :
-    AbstractViewModel<AmiiboListWish, AmiiboListResult>() {
+    AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>() {
 
-    override fun initState(): ViewState<AmiiboListResult> = AmiiboListViewState.init()
+    override fun initState(): AmiiboListViewState = AmiiboListViewState.init()
 
     init {
         process()
             .launchIn(viewModelScope)
     }
 
-    override fun process(): Flow<ViewState<AmiiboListResult>> = wishProcessor.asFlow()
-        .flatMapMerge {
-            when (it) {
-                is AmiiboListWish.RefreshAmiibos,
-                is AmiiboListWish.GetAmiibos -> fetchAmiibos()
-                is AmiiboListWish.FilterAmiibos -> filterAmiibos(it.filter)
-                is AmiiboListWish.ShowFilters -> getFilters()
-            }
-
-        }.scan(_state.value) { state, result ->
-            state.reduce(result) as AmiiboListViewState
+    override suspend fun getResult(wish: AmiiboListWish): Flow<AmiiboListResult> {
+        return when (wish) {
+            is AmiiboListWish.RefreshAmiibos,
+            is AmiiboListWish.GetAmiibos -> fetchAmiibos()
+            is AmiiboListWish.FilterAmiibos -> filterAmiibos(wish.filter)
+            is AmiiboListWish.ShowFilters -> getFilters()
         }
-        .onEach {
-            _state.value = it
-        }
+    }
 
     private fun getFilters(): Flow<AmiiboListResult> = getAmiiboTypeUseCase.execute()
         .map {
@@ -72,7 +65,6 @@ class AmiiboListViewModel @Inject constructor(
             handleFailure(cause)
         }
         .flowOn(coroutinesContextProvider.backgroundDispatcher)
-
 
     private suspend fun filterAmiibos(filter: ViewAmiiboType) =
         getAmiiboFilteredUseCase.execute(filter.map()).map {

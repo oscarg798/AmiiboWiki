@@ -49,6 +49,7 @@ class AmiiboRepositoryTest {
     fun before() {
         every { amiiboDAO.getAmiibos() } answers { flowOf(listOf(DB_AMIIBO)) }
         every { amiiboDAO.insert(any()) } answers { Unit }
+        coEvery { amiiboDAO.getById("1") } answers { DB_AMIIBO }
         coEvery { amiiboService.get() } answers {
             GetAmiiboResponse(
                 listOf(API_AMIIBO)
@@ -155,6 +156,16 @@ class AmiiboRepositoryTest {
         coEvery { amiiboService.getAmiiboFilteredByType("a") } throws NetworkException.BadRequest("")
         runBlocking { repository.getAmiibosFilteredByTypeName("a") }
     }
+
+    @Test
+    fun `given an amiibo tail when get by id is called then it should return amiibo found`() {
+        val result = runBlocking { repository.getAmiiboById("1") }
+        Amiibo(
+            "11", "12", "13", "14",
+            "15", "16", AmiiboReleaseDate("19", "20", "21", "22"), "17", "18"
+        ) shouldBeEqualTo result
+    }
+
 }
 
 private val AMIIBO = Amiibo(

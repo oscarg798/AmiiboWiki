@@ -41,6 +41,8 @@ class AmiiboRepository @Inject constructor(
         }
     }
 
+    suspend fun getAmiiboById(tail: String) = amiiboDAO.getById(tail).map()
+
     suspend fun updateAmiibos(): Flow<List<Amiibo>> =
         flow<List<Amiibo>> {
             val result = runCatching {

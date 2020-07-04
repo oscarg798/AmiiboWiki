@@ -13,8 +13,23 @@
 package com.oscarg798.amiibowiki.core
 
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
-fun ImageView.setImage(url: String){
+fun ImageView.setImage(url: String) {
     Picasso.with(context).load(url).into(this)
+}
+
+fun ImageView.setImage(url: String, @DrawableRes fallback: Int) {
+    Picasso.with(context).load(url).into(this, object : Callback {
+        override fun onSuccess() {
+            //NO_OP
+        }
+
+        override fun onError() {
+            setImageDrawable(ContextCompat.getDrawable(context, fallback))
+        }
+    })
 }

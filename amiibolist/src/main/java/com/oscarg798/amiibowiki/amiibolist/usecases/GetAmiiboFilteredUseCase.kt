@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibolist.usecases
 
+import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListScope
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboType
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
+@AmiiboListScope
 class GetAmiiboFilteredUseCase @Inject constructor(
     private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
     private val amiiboRepository: AmiiboRepository

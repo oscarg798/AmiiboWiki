@@ -10,49 +10,37 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash
+package com.oscarg798.amiibowiki.amiibodetail
 
 import androidx.lifecycle.viewModelScope
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewState
+import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.base.onException
 import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
-import com.oscarg798.amiibowiki.splash.mvi.SplashResult
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
-import com.oscarg798.amiibowiki.splash.mvi.SplashWish
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-@FlowPreview
 @ExperimentalCoroutinesApi
-class SplashViewModel @Inject constructor(
-    private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
-    private val coroutineContextProvider: CoroutineContextProvider
+class AmiiboDetailViewModel @Inject constructor(
+    private val tail: String,
+    private val amiiboDetailTail: String,
+    private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
+    private val coroutinesContextProvider: CoroutineContextProvider
 ) :
-    AbstractViewModel<SplashWish, SplashResult, SplashViewState>() {
+    AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, DetailAmiiboListViewState>() {
+
+    override fun initState(): DetailAmiiboListViewState = DetailAmiiboListViewState.init()
 
     init {
         process()
             .launchIn(viewModelScope)
     }
 
-    override fun initState(): SplashViewState = SplashViewState.init()
+    override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = getDetail()
 
-    override suspend fun getResult(wish: SplashWish): Flow<SplashResult> = fetchTypes()
-
-    private fun fetchTypes() = flow<SplashResult> {
-        emit(SplashResult.Loading)
-        updateAmiiboTypeUseCase.execute().map {
-            emit(SplashResult.TypesFetched)
-        }.onException {
-            emit(SplashResult.Error(it))
-        }
-    }.flowOn(coroutineContextProvider.backgroundDispatcher)
+    private suspend fun getDetail(): Flow<AmiiboDetailResult>  = flow {
+       val result =  getAmiiboDetailUseCase.execute(tail)
+        emit(AmiiboDetailResult.DetailFetched(result))
+    }
 }
