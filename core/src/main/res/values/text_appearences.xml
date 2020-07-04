@@ -37,7 +37,7 @@
     </style>
 
     <style name="TextAppearance.AmiiboWiki.Body.M">
-        <item name="android:fontFamily">@font/rubik_medium</item>
+        <item name="android:fontFamily">@font/rubik</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">@dimen/textappearence_bodym_text_size</item>
         <item name="android:lineSpacingExtra">@dimen/textappearence_bodym_line_spacing</item>

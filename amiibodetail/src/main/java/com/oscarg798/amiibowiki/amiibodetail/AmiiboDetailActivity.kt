@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -55,7 +56,21 @@ class AmiiboDetailActivity : AppCompatActivity() {
         setup()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setup() {
+        supportActionBar?.let {
+            with(it) {
+                setDisplayHomeAsUpEnabled(true)
+                setHomeAsUpIndicator(R.drawable.ic_close)
+            }
+        }
+
         val vm = ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
         vm.state.onEach {
             if (it.status is AmiiboDetailListViewState.Status.ShowingDetail) {
@@ -70,6 +85,22 @@ class AmiiboDetailActivity : AppCompatActivity() {
     }
 
     private fun showDetail(amiibo: Amiibo) {
-        binding.ivImage.setImage(amiibo.image)
+        with(binding) {
+            ivImage.setImage(amiibo.image)
+            tvName.setText(String.format(getString(R.string.name_string_format), amiibo.name))
+            tvCharacter.setText(
+                String.format(
+                    getString(R.string.character_string_format),
+                    amiibo.character
+                )
+            )
+            tvSerie.setText(
+                String.format(
+                    getString(R.string.game_series_string_format),
+                    amiibo.amiiboSeries
+                )
+            )
+            tvType.setText(String.format(getString(R.string.type_string_format), amiibo.type))
+        }
     }
 }
