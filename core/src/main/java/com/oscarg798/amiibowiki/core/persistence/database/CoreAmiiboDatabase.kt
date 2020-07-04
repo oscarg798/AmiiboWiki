@@ -15,9 +15,9 @@ package com.oscarg798.amiibowiki.core.persistence.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
-import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
+import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 
 @Database(entities = [DBAmiibo::class, DBAmiiboType::class], version = 1)
 abstract class CoreAmiiboDatabase : RoomDatabase() {

@@ -13,15 +13,13 @@
 package com.oscarg798.amiibowiki.amiibolist.usecases
 
 import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListScope
-import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi

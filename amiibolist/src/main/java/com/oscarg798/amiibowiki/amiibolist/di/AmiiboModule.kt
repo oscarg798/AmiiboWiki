@@ -14,15 +14,12 @@ package com.oscarg798.amiibowiki.amiibolist.di
 
 import androidx.lifecycle.ViewModel
 import com.oscarg798.amiibowiki.AmiiboListViewModel
-import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.ViewModelKey
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.multibindings.IntoMap
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import retrofit2.Retrofit
 
 @ExperimentalCoroutinesApi
 @FlowPreview

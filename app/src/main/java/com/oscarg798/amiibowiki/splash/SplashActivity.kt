@@ -12,14 +12,11 @@
 
 package com.oscarg798.amiibowiki.splash
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.oscarg798.amiibowiki.R
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
 import com.oscarg798.amiibowiki.core.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider

@@ -1,8 +1,5 @@
 package com.oscarg798.amiibowiki.testutils
 
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.IdlingResource
-import org.junit.rules.TestName
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement

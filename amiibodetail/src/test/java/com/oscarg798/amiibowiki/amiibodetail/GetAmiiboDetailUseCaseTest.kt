@@ -24,7 +24,6 @@ import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
-import java.lang.IllegalArgumentException
 
 
 @ExperimentalCoroutinesApi

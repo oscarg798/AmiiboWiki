@@ -18,8 +18,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
-import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
+import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 
 @ExperimentalCoroutinesApi
 abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,

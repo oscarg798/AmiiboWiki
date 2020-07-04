@@ -18,10 +18,10 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
-import org.junit.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
+import org.junit.Test
 
 
 class AmiiboListViewStateTest {
@@ -37,6 +37,10 @@ class AmiiboListViewStateTest {
     fun `when init is called then loading and status are none`() {
         assertEquals(ViewState.LoadingState.None, state.loading)
         assertEquals(AmiiboListViewState.Status.None, state.status)
+        assertEquals(AmiiboListViewState.Filtering.None, state.filtering)
+        assertEquals(AmiiboListViewState.ShowingFilters.None, state.showingFilters)
+        assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, state.showAmiiboDetail)
+        assertNull(state.error)
     }
 
     @Test
@@ -45,6 +49,7 @@ class AmiiboListViewStateTest {
             state.reduce(AmiiboListResult.FetchSuccess(AMIIBO_RESULT)) as AmiiboListViewState
         assertEquals(ViewState.LoadingState.None, newState.loading)
         assert(newState.status is AmiiboListViewState.Status.AmiibosFetched)
+        assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, newState.showAmiiboDetail)
         assertEquals(
             VIEWAMIIBO,
             (newState.status as AmiiboListViewState.Status.AmiibosFetched).amiibos
@@ -58,6 +63,7 @@ class AmiiboListViewStateTest {
         assertEquals(ViewState.LoadingState.None, newState.loading)
         assert(newState.error != null)
         assert(newState.error is AmiiboListFailure.UnknowError)
+        assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, newState.showAmiiboDetail)
     }
 
     @Test
@@ -65,6 +71,7 @@ class AmiiboListViewStateTest {
         val newState = state.reduce(AmiiboListResult.Loading) as AmiiboListViewState
         assertEquals(ViewState.LoadingState.Loading, newState.loading)
         assert(newState.status is AmiiboListViewState.Status.None)
+        assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, newState.showAmiiboDetail)
     }
 
     @Test
@@ -79,6 +86,7 @@ class AmiiboListViewStateTest {
             listOf(ViewAmiiboType("1", "2")),
             (newState.showingFilters as AmiiboListViewState.ShowingFilters.FetchSuccess).filters
         )
+        assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, newState.showAmiiboDetail)
     }
 
     @Test
@@ -90,6 +98,21 @@ class AmiiboListViewStateTest {
         assertEquals(AmiiboListViewState.Status.None, newState.status)
         assert(newState.showingFilters is AmiiboListViewState.ShowingFilters.None)
         assert(newState.filtering is AmiiboListViewState.Filtering.FetchSuccess)
+        assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, newState.showAmiiboDetail)
+    }
+
+    @Test
+    fun `when result is show detail then state is ShowAmiiboDetail`() {
+        val newState =
+            state.reduce(AmiiboListResult.ShowAmiiboDetail("1")) as AmiiboListViewState
+
+        assertEquals(ViewState.LoadingState.None, newState.loading)
+        assertNull(newState.error)
+        assertEquals(AmiiboListViewState.Status.None, newState.status)
+        assert(newState.showingFilters is AmiiboListViewState.ShowingFilters.None)
+        assert(newState.filtering is AmiiboListViewState.Filtering.None)
+        assert(newState.showAmiiboDetail is AmiiboListViewState.ShowAmiiboDetail.Show)
+        assertEquals("1", (newState.showAmiiboDetail as AmiiboListViewState.ShowAmiiboDetail.Show).tail)
     }
 }
 

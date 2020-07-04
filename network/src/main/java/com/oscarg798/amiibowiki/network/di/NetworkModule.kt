@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.network.di
 
 import com.google.gson.GsonBuilder
-import com.oscarg798.amiibowiki.network.interceptors.APIKeyInterceptor
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
 import dagger.Provides

@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.amiibodetail.deeplink
 
 import com.airbnb.deeplinkdispatch.DeepLinkModule
-import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
 
 @DeepLinkModule
 interface AmiiboDetailDeepLinkModule

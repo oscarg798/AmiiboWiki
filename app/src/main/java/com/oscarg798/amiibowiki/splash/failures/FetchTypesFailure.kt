@@ -12,7 +12,5 @@
 
 package com.oscarg798.amiibowiki.splash.failures
 
-import java.lang.Exception
-
 class FetchTypesFailure(override val message: String?, override val cause: Throwable?) :
     Exception(message, cause)
