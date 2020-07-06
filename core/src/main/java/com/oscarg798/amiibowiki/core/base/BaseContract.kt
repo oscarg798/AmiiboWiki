@@ -14,40 +14,41 @@ package com.oscarg798.amiibowiki.core.base
 
 import androidx.lifecycle.ViewModel
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
-        ViewState : MVIViewState<Result>> : ViewModel() {
+        ViewState : MVIViewState<Result>>(private val initialState: ViewState) : ViewModel() {
 
-    protected val wishProcessor = ConflatedBroadcastChannel<Wish>()
+    private val wishProcessor = ConflatedBroadcastChannel<Wish>()
 
-    protected val _state: MutableStateFlow<ViewState> =
-        MutableStateFlow(initState())
+    val state: Flow<ViewState> = wishProcessor.asFlow()
+        .flatMapMerge {
+            getResult(it)
+        }.scan(initialState) { state, result ->
+            state.reduce(result) as ViewState
+        }
 
-    val state: StateFlow<ViewState>
-        get() = _state
+    protected val defaultExceptionHandler: CoroutineExceptionHandler =
+        CoroutineExceptionHandler { _, exception -> throw exception }
 
     protected abstract suspend fun getResult(wish: Wish): Flow<Result>
 
-    protected abstract fun initState(): ViewState
-
-    public fun process(): Flow<ViewState> = wishProcessor.asFlow()
-        .flatMapMerge {
-            getResult(it)
-        }.scan(_state.value){state, result ->
-            state.reduce(result) as ViewState
-        }.onEach {
-            _state.value = it
-        }
-
     fun onWish(wish: Wish) {
         wishProcessor.offer(wish)
+    }
+
+    override fun onCleared() {
+        wishProcessor.close()
+        super.onCleared()
     }
 }
 
@@ -91,7 +92,7 @@ public inline fun <T, R, reified E> T.runCatchingException(
     return try {
         Result.success(block())
     } catch (e: Exception) {
-        if(e !is E){
+        if (e !is E) {
             throw e
         }
 

@@ -29,18 +29,6 @@ class SplashViewStateTest {
         state = SplashViewState.init()
     }
 
-    @Test
-    fun `when result is loading then view state should be loading`() {
-        val newState = state.reduce(SplashResult.Loading)
-
-        assertEquals(
-            SplashViewState(
-                ViewState.LoadingState.Loading,
-                SplashViewState.FetchStatus.None,
-                null
-            ), newState
-        )
-    }
 
     @Test
     fun `when result is Fetch success then view state should not be loading and should felect this`() {
@@ -48,7 +36,6 @@ class SplashViewStateTest {
 
         assertEquals(
             SplashViewState(
-                ViewState.LoadingState.None,
                 SplashViewState.FetchStatus.Success,
                 null
             ), newState
@@ -60,7 +47,6 @@ class SplashViewStateTest {
         val error = Exception()
         val newState = state.reduce(SplashResult.Error(error)) as SplashViewState
 
-        assertEquals(ViewState.LoadingState.None, newState.loading)
         assertEquals(SplashViewState.FetchStatus.None, newState.status)
         assert(newState.error != null)
 

@@ -16,7 +16,6 @@ import com.oscarg798.amiibowiki.core.mvi.Result
 
 sealed class SplashResult : Result {
 
-    object Loading : SplashResult()
     object TypesFetched : SplashResult()
     data class Error(val exception: Exception) : SplashResult()
 }

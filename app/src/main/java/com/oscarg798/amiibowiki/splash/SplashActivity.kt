@@ -56,8 +56,7 @@ class SplashActivity : AppCompatActivity() {
     private fun setup() {
         val vm = ViewModelProvider(this, viewModelFactory).get(SplashViewModel::class.java)
 
-        vm.state.onEach {
-            val state = it as SplashViewState
+        vm.state.onEach { state ->
             when {
                 state.status == SplashViewState.FetchStatus.Success -> startDeepLinkIntent(
                     AMIIBO_LIST_DEEPLINK
