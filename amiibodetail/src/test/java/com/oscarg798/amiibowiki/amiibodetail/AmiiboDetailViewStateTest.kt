@@ -12,37 +12,42 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
 
+class AmiiboDetailViewStateTest {
 
-data class AmiiboDetailListViewState(
-    val loading: ViewState.LoadingState,
-    val status: Status,
-    val error: AmiiboDetailFailure? = null
-) : ViewState<AmiiboDetailResult> {
+    private lateinit var state: AmiiboDetailViewState
 
-    sealed class Status {
-        object None : Status()
-        data class ShowingDetail(val amiibo: Amiibo) : Status()
+    @Before
+    fun setup() {
+        state = AmiiboDetailViewState.init()
     }
 
-    override fun reduce(result: AmiiboDetailResult): ViewState<AmiiboDetailResult> {
-        return when (result) {
-            is AmiiboDetailResult.DetailFetched -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.ShowingDetail(result.amiibo), error = null
-            )
-            is AmiiboDetailResult.Error -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.None, error = result.error
-            )
-        }
-    }
+    @Test
+    fun `when amiibo detail fetch is success then state should reflect the change`() {
+        val newState =
+            state.reduce(AmiiboDetailResult.DetailFetched(AMIIBO)) as AmiiboDetailViewState
+        Assert.assertNull(newState.error)
+        assert(newState.status is AmiiboDetailViewState.Status.ShowingDetail)
+        Assert.assertEquals(
+            AMIIBO,
+            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiibo
+        )
 
-    companion object {
-
-        fun init() = AmiiboDetailListViewState(ViewState.LoadingState.None, Status.None)
     }
 }
+
+private val AMIIBO = Amiibo(
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    AmiiboReleaseDate("7", "8", "9", "10"),
+    "11", "12"
+)

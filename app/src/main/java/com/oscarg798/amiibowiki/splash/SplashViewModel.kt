@@ -34,19 +34,11 @@ class SplashViewModel @Inject constructor(
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
     private val coroutineContextProvider: CoroutineContextProvider
 ) :
-    AbstractViewModel<SplashWish, SplashResult, SplashViewState>() {
-
-    init {
-        process()
-            .launchIn(viewModelScope)
-    }
-
-    override fun initState(): SplashViewState = SplashViewState.init()
+    AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.init()) {
 
     override suspend fun getResult(wish: SplashWish): Flow<SplashResult> = fetchTypes()
 
     private fun fetchTypes() = flow<SplashResult> {
-        emit(SplashResult.Loading)
         updateAmiiboTypeUseCase.execute().map {
             emit(SplashResult.TypesFetched)
         }.onException {

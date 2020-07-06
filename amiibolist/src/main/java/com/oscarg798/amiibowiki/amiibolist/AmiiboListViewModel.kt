@@ -36,14 +36,7 @@ class AmiiboListViewModel @Inject constructor(
     private val getAmiiboTypeUseCase: GetAmiiboTypeUseCase,
     private val coroutinesContextProvider: CoroutineContextProvider
 ) :
-    AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>() {
-
-    override fun initState(): AmiiboListViewState = AmiiboListViewState.init()
-
-    init {
-        process()
-            .launchIn(viewModelScope)
-    }
+    AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(AmiiboListViewState.init()) {
 
     override suspend fun getResult(wish: AmiiboListWish): Flow<AmiiboListResult> {
         return when (wish) {

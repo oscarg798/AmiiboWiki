@@ -98,26 +98,26 @@ class AmiiboListActivity : AppCompatActivity() {
     private fun setupViewModelInteractions() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(AmiiboListViewModel::class.java)
 
-        viewModel.state
-            .onEach {
-                val state = it
-                when {
-                    state.loading is ViewState.LoadingState.Loading -> showLoading()
-                    state.status is AmiiboListViewState.Status.AmiibosFetched -> showAmiibos(
-                        state.status.amiibos
-                    )
-                    state.error != null -> showErrors(state.error.message!!)
-                    state.showingFilters is AmiiboListViewState.ShowingFilters.FetchSuccess -> showFilters(
-                        state.showingFilters.filters
-                    )
-                    state.filtering is AmiiboListViewState.Filtering.FetchSuccess -> {
-                        showAmiibos(state.filtering.amiibos)
-                    }
-                    state.showAmiiboDetail is AmiiboListViewState.ShowAmiiboDetail.Show -> showAmiiboDetail(
-                        state.showAmiiboDetail.tail
-                    )
+        viewModel.state.onEach {
+            val state = it
+            when {
+                state.loading is ViewState.LoadingState.Loading -> showLoading()
+                state.status is AmiiboListViewState.Status.AmiibosFetched -> showAmiibos(
+                    state.status.amiibos
+                )
+                state.error != null -> showErrors(state.error.message!!)
+                state.showingFilters is AmiiboListViewState.ShowingFilters.FetchSuccess -> showFilters(
+                    state.showingFilters.filters
+                )
+                state.filtering is AmiiboListViewState.Filtering.FetchSuccess -> {
+                    showAmiibos(state.filtering.amiibos)
                 }
-            }.launchIn(lifecycleScope)
+                state.showAmiiboDetail is AmiiboListViewState.ShowAmiiboDetail.Show -> showAmiiboDetail(
+                    state.showAmiiboDetail.tail
+                )
+            }
+        }.launchIn(lifecycleScope)
+
 
 
         merge(fetchAmiibos(), refresh(), onAmiiboClick())

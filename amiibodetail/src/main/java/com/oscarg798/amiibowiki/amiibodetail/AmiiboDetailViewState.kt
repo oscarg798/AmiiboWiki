@@ -10,32 +10,38 @@
  *
  */
 
-package com.oscarg798.amiibowiki.testutils
+package com.oscarg798.amiibowiki.amiibodetail
 
-import com.oscarg798.amiibowiki.core.CoroutineContextProvider
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.*
-import org.junit.rules.TestRule
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
+import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.core.models.Amiibo
+import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-@ExperimentalCoroutinesApi
-class CoroutinesTestRule : TestRule {
 
-    val testDispatcher = TestCoroutineDispatcher()
-    val testCoroutineScope = TestCoroutineScope(testDispatcher)
-    val coroutineContextProvider =
-        CoroutineContextProvider(testDispatcher, testDispatcher)
+data class AmiiboDetailViewState(
+    val status: Status,
+    val error: AmiiboDetailFailure? = null
+) : ViewState<AmiiboDetailResult> {
 
-    override fun apply(base: Statement, description: Description): Statement {
-        return object : Statement() {
-            override fun evaluate() {
-                Dispatchers.setMain(testDispatcher)
-                base.evaluate()
-                Dispatchers.resetMain()
-            }
+    sealed class Status {
+        object None : Status()
+        data class ShowingDetail(val amiibo: Amiibo) : Status()
+    }
+
+    override fun reduce(result: AmiiboDetailResult): ViewState<AmiiboDetailResult> {
+        return when (result) {
+            is AmiiboDetailResult.DetailFetched -> copy(
+                status = Status.ShowingDetail(result.amiibo),
+                error = null
+            )
+            is AmiiboDetailResult.Error -> copy(
+                status = Status.None,
+                error = result.error
+            )
         }
+    }
+
+    companion object {
+
+        fun init() = AmiiboDetailViewState(Status.None)
     }
 }

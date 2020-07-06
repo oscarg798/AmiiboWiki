@@ -16,7 +16,6 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 
 data class SplashViewState(
-    val loading: ViewState.LoadingState,
     val status: FetchStatus,
     val error: FetchTypesFailure?
 ) : ViewState<SplashResult> {
@@ -28,18 +27,11 @@ data class SplashViewState(
 
     override fun reduce(result: SplashResult): ViewState<SplashResult> {
         return when (result) {
-            is SplashResult.Loading -> copy(
-                loading = ViewState.LoadingState.Loading,
-                status = FetchStatus.None,
-                error = null
-            )
             is SplashResult.TypesFetched -> copy(
-                loading = ViewState.LoadingState.None,
                 status = FetchStatus.Success,
                 error = null
             )
             is SplashResult.Error -> copy(
-                loading = ViewState.LoadingState.None,
                 status = FetchStatus.None,
                 error = FetchTypesFailure(result.exception.message, result.exception)
             )
@@ -48,7 +40,6 @@ data class SplashViewState(
 
     companion object {
         fun init() = SplashViewState(
-            loading = ViewState.LoadingState.None,
             status = FetchStatus.None,
             error = null
         )

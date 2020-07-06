@@ -103,6 +103,8 @@ dependencies {
     implementation lifecycleExtensions
     implementation lifecycle
 
+    implementation lottie
+
     //Test
     testImplementation mockk
     testImplementation mockitoCore

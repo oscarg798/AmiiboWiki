@@ -28,10 +28,12 @@ import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.setImage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 @DeepLink(AMIIBO_DETAIL_DEEPLINK)
 class AmiiboDetailActivity : AppCompatActivity() {
@@ -73,7 +75,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
 
         val vm = ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
         vm.state.onEach {
-            if (it.status is AmiiboDetailListViewState.Status.ShowingDetail) {
+            if (it.status is AmiiboDetailViewState.Status.ShowingDetail) {
                 showDetail(it.status.amiibo)
             } else if (it.error != null) {
                 Snackbar.make(binding.ivImage, it.error.message ?: "Error", Snackbar.LENGTH_LONG)
@@ -85,6 +87,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
     }
 
     private fun showDetail(amiibo: Amiibo) {
+        supportActionBar?.title = amiibo.name
         with(binding) {
             ivImage.setImage(amiibo.image)
             tvName.setText(String.format(getString(R.string.name_string_format), amiibo.name))
