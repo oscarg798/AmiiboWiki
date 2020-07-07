@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.nfcreader.repository
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.AmiiboIdentifier
-import com.oscarg798.amiibowiki.core.base.getOrTransform
+import com.oscarg798.amiibowiki.core.extensions.getOrTransform
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
 import com.oscarg798.amiibowiki.nfcreader.errors.UnknowReadError
 import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException

@@ -10,18 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.nfcreader.errors
+package com.oscarg798.amiibowiki.core.failures
 
-import com.oscarg798.amiibowiki.core.failures.Failure
-
-
-sealed class NFCReaderFailure(
-    override val message: String?,
-    override val cause: Exception? = null
-) : Failure.Recoverable(message, cause) {
-
-    object AdapterNotFound : NFCReaderFailure("NFC adapter not found in device")
-    object AdapterDisabled : NFCReaderFailure("NFC Adapter is disabled")
-    class TagNotSupported(cause: Exception): NFCReaderFailure("Tag not supported", cause)
-    class Unknow(cause: Exception) : NFCReaderFailure(cause.message, cause)
+sealed class Failure(message: String?, cause: Exception? = null) : Exception(message, cause) {
+    open class Recoverable(override val message: String?, override val cause: Exception?) :
+        Failure(message, cause)
 }

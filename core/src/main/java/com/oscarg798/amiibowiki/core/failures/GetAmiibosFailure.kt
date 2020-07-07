@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.core.failures
 
-import com.oscarg798.amiibowiki.core.base.Failure
 
 sealed class GetAmiibosFailure(
     override val message: String?,

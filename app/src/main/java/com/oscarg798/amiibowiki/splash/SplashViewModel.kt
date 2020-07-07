@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.splash
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.base.onException
+import com.oscarg798.amiibowiki.core.extensions.onException
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
