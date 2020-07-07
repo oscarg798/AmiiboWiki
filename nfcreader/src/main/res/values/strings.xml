@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2020 Oscar David Gallon Rosero
   ~
@@ -12,21 +11,6 @@
   -->
 
 <resources>
-
-    <dimen name="textappearence_titles_text_size">16sp</dimen>
-    <dimen name="textappearence_titles_line_spacing">6sp</dimen>
-    <dimen name="textappearence_titles_letter_spacing">-0.01</dimen>
-
-    <dimen name="textappearence_titlem_text_size">24sp</dimen>
-    <dimen name="textappearence_titlem_line_spacing">6sp</dimen>
-    <dimen name="textappearence_titlem_letter_spacing">-0.01</dimen>
-
-    <dimen name="textappearence_bodys_text_size">12sp</dimen>
-    <dimen name="textappearence_bodys_line_spacing">5sp</dimen>
-    <dimen name="textappearence_bodys_letter_spacing">-0.01</dimen>
-
-    <dimen name="textappearence_bodym_text_size">14sp</dimen>
-    <dimen name="textappearence_bodym_line_spacing">5sp</dimen>
-    <dimen name="textappearence_bodym_letter_spacing">-0.01</dimen>
-
+    <string name="intruccions">Please hold the Amiibo close to the phone NFC Adapter</string>
+    <string name="default_error">Something went wrong,please try again</string>
 </resources>

@@ -9,11 +9,20 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.utils
+
+import javax.inject.Inject
+
+class AmiiboArrayCloner @Inject constructor() : ArrayCloner {
+
+    override fun copy(
+        source: ByteArray,
+        sourcePosition: Int,
+        destination: ByteArray,
+        destinationPosition: Int,
+        length: Int
+    ) {
+        System.arraycopy(source, sourcePosition, destination, destinationPosition, length)
+    }
+}

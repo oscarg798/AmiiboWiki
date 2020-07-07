@@ -55,6 +55,7 @@ interface CoreComponent {
     fun provideGetAmiiboTypeUseCase(): GetAmiiboTypeUseCase
     fun provideGetDefaulAmiiboTypeUseCase(): GetDefaultAmiiboTypeUseCase
     fun provideUpdateAmiiboTypeUseCase(): UpdateAmiiboTypeUseCase
+    fun provideContext(): Context
 
 
 }

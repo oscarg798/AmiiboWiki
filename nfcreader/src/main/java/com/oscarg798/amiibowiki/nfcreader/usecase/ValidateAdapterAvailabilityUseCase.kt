@@ -9,11 +9,15 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.usecase
+
+import android.nfc.NfcAdapter
+import javax.inject.Inject
+
+class ValidateAdapterAvailabilityUseCase @Inject constructor(private val adapter: NfcAdapter) {
+
+    fun execute(): Boolean {
+        return adapter.isEnabled
+    }
+}

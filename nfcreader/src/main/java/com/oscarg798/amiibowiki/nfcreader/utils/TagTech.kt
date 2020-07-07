@@ -9,11 +9,16 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.utils
+
+import android.nfc.Tag
+
+interface TagTech {
+
+    fun initTech(tag: Tag)
+
+    fun readPages(offset: Int): ByteArray?
+
+    fun close()
+}

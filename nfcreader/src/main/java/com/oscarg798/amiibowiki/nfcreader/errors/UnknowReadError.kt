@@ -9,11 +9,9 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.errors
+
+import com.oscarg798.amiibowiki.core.base.Failure
+
+class UnknowReadError(override val cause: Exception?) : Failure.Recoverable(null, cause = cause)

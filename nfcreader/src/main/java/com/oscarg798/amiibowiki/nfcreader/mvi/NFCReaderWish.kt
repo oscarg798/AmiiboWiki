@@ -9,11 +9,15 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.mvi
+
+import android.nfc.Tag
+import com.oscarg798.amiibowiki.core.mvi.Wish
+
+sealed class NFCReaderWish : Wish {
+
+    object ValidateAdapterAvailability : NFCReaderWish()
+    data class Read(val tag: Tag) : NFCReaderWish()
+    object StopAdapter : NFCReaderWish()
+}

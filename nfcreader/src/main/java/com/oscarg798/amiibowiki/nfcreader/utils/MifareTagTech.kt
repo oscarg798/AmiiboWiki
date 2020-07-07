@@ -9,11 +9,25 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.utils
+
+import android.nfc.Tag
+import android.nfc.tech.MifareUltralight
+import javax.inject.Inject
+
+class MifareTagTech @Inject constructor() : TagTech {
+
+    private lateinit var mifareUltralight: MifareUltralight
+
+    override fun initTech(tag: Tag) {
+        mifareUltralight = MifareUltralight.get(tag)
+        mifareUltralight.connect()
+    }
+
+    override fun readPages(offset: Int): ByteArray? = mifareUltralight.readPages(offset)
+
+    override fun close() {
+        mifareUltralight.close()
+    }
+}
