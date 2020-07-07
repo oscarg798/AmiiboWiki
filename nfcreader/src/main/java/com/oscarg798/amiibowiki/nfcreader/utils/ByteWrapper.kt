@@ -9,11 +9,12 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.utils
+
+import java.nio.ByteBuffer
+
+interface ByteWrapper {
+
+    fun wrap(array: ByteArray): ByteBuffer
+}

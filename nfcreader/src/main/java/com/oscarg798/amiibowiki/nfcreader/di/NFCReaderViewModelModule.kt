@@ -9,11 +9,25 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.di
+
+import androidx.lifecycle.ViewModel
+import com.oscarg798.amiibowiki.core.ViewModelKey
+import com.oscarg798.amiibowiki.nfcreader.NFCReaderViewModel
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+
+@FlowPreview
+@ExperimentalCoroutinesApi
+@Module
+abstract class NFCReaderViewModelModule  {
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(NFCReaderViewModel::class)
+    abstract fun bindHouseViewModel(amiiboListViewModel: NFCReaderViewModel): ViewModel
+}

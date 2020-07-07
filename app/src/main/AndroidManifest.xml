@@ -3,6 +3,7 @@
     package="com.oscarg798.amiibowiki">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name="com.oscarg798.amiibowiki.AmiiboWikiApplication"
         android:allowBackup="true"

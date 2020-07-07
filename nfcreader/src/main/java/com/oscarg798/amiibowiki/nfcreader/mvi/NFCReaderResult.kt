@@ -9,11 +9,23 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.mvi
+
+import com.oscarg798.amiibowiki.core.AmiiboIdentifier
+import com.oscarg798.amiibowiki.core.mvi.Result
+import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
+
+sealed class NFCReaderResult : Result {
+
+    object Reading : NFCReaderResult()
+    object AdapterReady : NFCReaderResult()
+    object AdapterDisabled : NFCReaderResult()
+    object AdapterStoped : NFCReaderResult()
+
+    data class ReadSuccessful(
+        val amiiboIdentifier: AmiiboIdentifier
+    ) : NFCReaderResult()
+
+    data class Error(val error: NFCReaderFailure) : NFCReaderResult()
+}

@@ -69,6 +69,15 @@ fun <R> Result<R>.getOrTransformNetworkException(
     }
 }
 
+fun <R> Result<R>.getOrTransform(
+    exceptionMapper: ((Exception) -> Failure) = { throw it }
+): R = getOrElse {
+    throw when (it) {
+        is Exception ->  exceptionMapper(it)
+        else -> throw it
+    }
+}
+
 public inline fun <T, R> T.runCatchingNetworkException(
     noinline exceptionHandler: ((NetworkException) -> Result<R>)? = null,
     block: T.() -> R

@@ -9,11 +9,23 @@
  *
  *
  */
-include ':nfcreader'
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
+
+package com.oscarg798.amiibowiki.nfcreader.di
+
+import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.nfcreader.NFCReaderActivity
+import dagger.Component
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+
+@FlowPreview
+@ExperimentalCoroutinesApi
+@NFCReaderScope
+@Component(
+    dependencies = [CoreComponent::class], modules = [NFCReaderModule::class,
+        NFCReaderViewModelModule::class]
+)
+interface NFCReaderComponent {
+
+    fun inject(nfcReaderActivity: NFCReaderActivity)
+}
