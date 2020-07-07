@@ -10,52 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.base
+package com.oscarg798.amiibowiki.core.extensions
 
-import androidx.lifecycle.ViewModel
+import com.oscarg798.amiibowiki.core.failures.Failure
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
-import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
-import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
-import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
-
-@FlowPreview
-@ExperimentalCoroutinesApi
-abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
-        ViewState : MVIViewState<Result>>(private val initialState: ViewState) : ViewModel() {
-
-    private val wishProcessor = ConflatedBroadcastChannel<Wish>()
-
-    val state: Flow<ViewState> = wishProcessor.asFlow()
-        .flatMapMerge {
-            getResult(it)
-        }.scan(initialState) { state, result ->
-            state.reduce(result) as ViewState
-        }
-
-    protected val defaultExceptionHandler: CoroutineExceptionHandler =
-        CoroutineExceptionHandler { _, exception -> throw exception }
-
-    protected abstract suspend fun getResult(wish: Wish): Flow<Result>
-
-    fun onWish(wish: Wish) {
-        wishProcessor.offer(wish)
-    }
-
-    override fun onCleared() {
-        wishProcessor.close()
-        super.onCleared()
-    }
-}
-
-sealed class Failure(message: String?, cause: Exception? = null) : Exception(message, cause) {
-    open class Recoverable(override val message: String?, override val cause: Exception?) :
-        Failure(message, cause)
-}
 
 
 fun <R> Result<R>.getOrTransformNetworkException(
@@ -73,7 +31,7 @@ fun <R> Result<R>.getOrTransform(
     exceptionMapper: ((Exception) -> Failure) = { throw it }
 ): R = getOrElse {
     throw when (it) {
-        is Exception ->  exceptionMapper(it)
+        is Exception -> exceptionMapper(it)
         else -> throw it
     }
 }
@@ -94,26 +52,6 @@ public inline fun <T, R> T.runCatchingNetworkException(
     }
 }
 
-public inline fun <T, R, reified E> T.runCatchingException(
-    noinline exceptionHandler: ((E) -> Result<R>)? = null,
-    block: T.() -> R
-): Result<R> {
-    return try {
-        Result.success(block())
-    } catch (e: Exception) {
-        if (e !is E) {
-            throw e
-        }
-
-        if (exceptionHandler != null) {
-            exceptionHandler(e)
-        } else {
-            Result.failure(e)
-        }
-    }
-}
-
-
 public inline fun <T> Result<T>.onException(action: (exception: Exception) -> Unit): Result<T> {
     exceptionOrNull()?.let {
         if (it !is Exception) {
@@ -124,4 +62,3 @@ public inline fun <T> Result<T>.onException(action: (exception: Exception) -> Un
     }
     return this
 }
-

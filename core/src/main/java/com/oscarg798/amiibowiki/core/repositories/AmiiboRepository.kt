@@ -12,8 +12,8 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
-import com.oscarg798.amiibowiki.core.base.getOrTransformNetworkException
 import com.oscarg798.amiibowiki.core.di.CoreScope
+import com.oscarg798.amiibowiki.core.extensions.getOrTransformNetworkException
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.failures.REMOTE_DATA_SOURCE_TYPE

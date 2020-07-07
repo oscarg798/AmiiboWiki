@@ -13,8 +13,8 @@
 package com.oscarg798.amiibowiki.core.repositories
 
 
-import com.oscarg798.amiibowiki.core.base.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.di.CoreScope
+import com.oscarg798.amiibowiki.core.extensions.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.network.models.APIAmiiboType
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
