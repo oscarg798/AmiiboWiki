@@ -10,31 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.testutils.di
+package com.oscarg798.amiibowiki.testutils
 
-import android.content.Context
-import com.oscarg798.amiibowiki.core.di.CoreComponent
-import com.oscarg798.amiibowiki.core.di.CoreModule
-import com.oscarg798.amiibowiki.core.di.CoreScope
-import com.oscarg798.amiibowiki.core.models.Config
-import dagger.BindsInstance
-import dagger.Component
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.oscarg798.amiibowiki.testutils.idleresources.NetworkIdlingResourceRule
+import com.oscarg798.amiibowiki.testutils.testrules.MockWebServerTestRule
+import okhttp3.mockwebserver.Dispatcher
+import org.junit.Rule
+import org.junit.rules.RuleChain
+import org.junit.rules.TestRule
 
-@ExperimentalCoroutinesApi
-@CoreScope
-@Component(
-    modules = [CoreModule::class, TestNetworkModule::class,
-        TestPersistenceModule::class]
-)
-interface TestCoreComponent : CoreComponent {
+abstract class BaseUITest(dispatcher: Dispatcher) {
 
-    @Component.Factory
-    interface Builder {
-
-        fun create(
-            @BindsInstance context: Context,
-            @BindsInstance config: Config
-        ): TestCoreComponent
-    }
+    @Rule
+    @JvmField
+    val testRule: TestRule = RuleChain.outerRule(NetworkIdlingResourceRule())
+        .around(MockWebServerTestRule(dispatcher))
 }

@@ -32,7 +32,10 @@ import java.util.*
 
 @ExperimentalCoroutinesApi
 @CoreScope
-@Component(modules = [CoreModule::class, ViewModelsModule::class, NetworkModule::class])
+@Component(
+    modules = [CoreModule::class, ViewModelsModule::class, NetworkModule::class,
+        PersistenceModule::class]
+)
 interface CoreComponent {
 
     @Component.Factory
