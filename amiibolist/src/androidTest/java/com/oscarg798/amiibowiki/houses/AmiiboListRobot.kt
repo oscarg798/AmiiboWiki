@@ -24,7 +24,6 @@ class AmiiboListRobot : TestRobot {
 
     override fun isViewDisplayed() {
         Espresso.onView(withId(R.id.srlMain)).check(matches(isDisplayed()))
-
     }
 
     fun areAmiibosDisplayed() {
