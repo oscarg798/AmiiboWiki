@@ -15,6 +15,10 @@ import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 
 interface ViewState<Result : MVIResult> {
 
+    /**
+     * TODO: This should be perform by a recuder class,
+     * then viewmodel will use it to reduce the states.
+     */
     fun reduce(result: Result): ViewState<Result>
 
     sealed class LoadingState {

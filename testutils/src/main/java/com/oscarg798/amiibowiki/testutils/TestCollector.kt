@@ -10,9 +10,28 @@
  *
  */
 
-package com.oscarg798.amiibowiki.nfcreader.errors
+package com.oscarg798.amiibowiki.testutils
 
-import com.oscarg798.amiibowiki.core.failures.Failure
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
+/**
+ * Took from https://www.thuytrinh.dev/test-receiving-events-hot-flow-coroutines/
+ */
+class TestCollector<T> {
+    private val values = mutableListOf<T>()
+
+    fun test(scope: CoroutineScope, flow: Flow<T>): Job {
+        return scope.launch { flow.collect { values.add(it) } }
+    }
 
 
-class UnknowReadError(override val cause: Exception?) : Failure.Recoverable(null, cause = cause)
+    fun assertValues(vararg _values: T) {
+        assert(values.containsAll(_values.toList()))
+    }
+
+}

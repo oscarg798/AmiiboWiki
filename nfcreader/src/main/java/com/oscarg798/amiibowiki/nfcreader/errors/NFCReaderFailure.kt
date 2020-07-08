@@ -14,7 +14,6 @@ package com.oscarg798.amiibowiki.nfcreader.errors
 
 import com.oscarg798.amiibowiki.core.failures.Failure
 
-
 sealed class NFCReaderFailure(
     override val message: String?,
     override val cause: Exception? = null

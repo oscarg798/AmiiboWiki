@@ -10,7 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.failures
+package com.oscarg798.amiibowiki.nfcreader.errors
 
-data class FetchTypesFailure(override val message: String?, override val cause: Throwable?) :
-    Exception(message, cause)
+import com.oscarg798.amiibowiki.core.failures.Failure
+
+
+class UnknownReadError(override val cause: Exception?) : Failure.Recoverable(null, cause = cause)

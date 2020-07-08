@@ -11,7 +11,7 @@
             android:name=".NFCReaderActivity"
             android:launchMode="singleTop"
             android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NFCReader">
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
 

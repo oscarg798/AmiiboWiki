@@ -20,6 +20,7 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.testutils.CoroutinesTestRule
+import com.oscarg798.amiibowiki.testutils.TestCollector
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -44,10 +45,12 @@ class AmiiboDetailViewModelTest {
 
     private val getAmiiboDetailUseCase = mockk<GetAmiiboDetailUseCase>()
     private lateinit var viewModel: AmiiboDetailViewModel
+    private lateinit var testCollector: TestCollector<AmiiboDetailViewState>
 
     @Before
     fun setup() {
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } answers { AMIIBO }
+        testCollector = TestCollector()
         viewModel = AmiiboDetailViewModel(
             TAIL,
             getAmiiboDetailUseCase,
@@ -58,12 +61,9 @@ class AmiiboDetailViewModelTest {
     @Test
     fun `given ShowDetail wish when view model process it then it should update the state with the amiibo result`() {
         viewModel.onWish(AmiiboDetailWish.ShowDetail)
-        val list = arrayListOf<AmiiboDetailViewState>()
-        viewModel.state.onEach {
-            list.add(it)
-        }.launchIn(coroutinesRule.testCoroutineScope)
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
-        list shouldBeEqualTo listOf(
+        testCollector.assertValues(
             AmiiboDetailViewState(
                 status = AmiiboDetailViewState.Status.None,
                 error = null
@@ -85,26 +85,18 @@ class AmiiboDetailViewModelTest {
             TAIL
         )
         viewModel.onWish(AmiiboDetailWish.ShowDetail)
-        val list = arrayListOf<AmiiboDetailViewState>()
-        viewModel.state.onEach {
-            list.add(it)
-        }.launchIn(coroutinesRule.testCoroutineScope)
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
-        Assert.assertEquals(2, list.size)
-
-        val initialState = list.first()
-
-        Assert.assertEquals(
+        testCollector.assertValues(
             AmiiboDetailViewState(
                 status = AmiiboDetailViewState.Status.None,
                 error = null
-            ), initialState
+            ),
+            AmiiboDetailViewState(
+                status = AmiiboDetailViewState.Status.None,
+                error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)
+            )
         )
-
-        val state = list[1]
-        Assert.assertEquals(AmiiboDetailViewState.Status.None, state.status)
-        assert(state.error is AmiiboDetailFailure.AmiiboNotFoundByTail)
-
         coVerify {
             getAmiiboDetailUseCase.execute(TAIL)
         }

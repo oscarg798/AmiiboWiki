@@ -12,18 +12,42 @@
 
 package com.oscarg798.amiibowiki.nfcreader
 
+import android.nfc.NfcAdapter
+import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
+import com.oscarg798.amiibowiki.testutils.relaxedMockk
+import io.mockk.every
+import io.mockk.verify
+import org.amshove.kluent.shouldBeEqualTo
+import org.junit.Before
 import org.junit.Test
 
-import org.junit.Assert.*
+class ValidateAdapterAvailabilityUseCaseTest {
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-class ExampleUnitTest {
+    private val nfcAdapter = relaxedMockk<NfcAdapter>()
+    private lateinit var usecase: ValidateAdapterAvailabilityUseCase
+
+    @Before
+    fun setup() {
+        every { nfcAdapter.isEnabled } answers { true }
+        usecase = ValidateAdapterAvailabilityUseCase(nfcAdapter)
+    }
+
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun `given adapter enabled when usecase is executed then it should return true`() {
+        usecase.execute() shouldBeEqualTo true
+
+        verify {
+            nfcAdapter.isEnabled
+        }
+    }
+
+    @Test
+    fun `given adapter disbaled when usecase is executed then it should return false`() {
+        every { nfcAdapter.isEnabled } answers { false }
+        usecase.execute() shouldBeEqualTo false
+
+        verify {
+            nfcAdapter.isEnabled
+        }
     }
 }

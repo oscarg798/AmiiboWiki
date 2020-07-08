@@ -47,7 +47,7 @@ data class AmiiboListViewState(
     }
 
     /**
-     * Map should happen in other place
+     * TODO: Map should happen in other place
      */
     override fun reduce(result: AmiiboListResult): ViewState<AmiiboListResult> {
         return when (result) {
