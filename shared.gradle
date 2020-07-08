@@ -84,7 +84,7 @@ dependencies {
     androidTestImplementation espressoContrib
     androidTestImplementation espressoIntents
     androidTestImplementation uiAutomator
-    androidTestImplementation mockk
+    androidTestImplementation mockkAndroid
 
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     testImplementation project(path: ':testutils')

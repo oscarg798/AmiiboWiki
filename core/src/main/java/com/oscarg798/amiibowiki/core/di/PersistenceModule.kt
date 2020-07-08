@@ -14,44 +14,29 @@ package com.oscarg798.amiibowiki.core.di
 
 import android.content.Context
 import androidx.room.Room
-import com.oscarg798.amiibowiki.core.CoroutineContextProvider
-import com.oscarg798.amiibowiki.core.models.Config
-import com.oscarg798.amiibowiki.core.network.services.AmiiboService
-import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.database.CoreAmiiboDatabase
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
-import retrofit2.Retrofit
-import java.util.*
 
 @Module
-object CoreModule {
+object PersistenceModule {
 
     @CoreScope
     @Provides
-    fun provideLocale(): Locale = Locale.getDefault()
+    fun provideDatabase(context: Context): CoreAmiiboDatabase {
+        return  Room.databaseBuilder(
+            context,
+            CoreAmiiboDatabase::class.java, "core_amiibo_database"
+        ).build()
+    }
 
     @CoreScope
     @Provides
-    fun provideCoroutineContextProvider(): CoroutineContextProvider =
-        CoroutineContextProvider(Dispatchers.Main, Dispatchers.IO)
+    fun provideAmiiboTypeDao(database: CoreAmiiboDatabase): AmiiboTypeDAO = database.amiiboTypeDAO()
 
     @CoreScope
     @Provides
-    fun provideHousesService(retrofit: Retrofit): AmiiboService =
-        retrofit.create(AmiiboService::class.java)
-
-    @CoreScope
-    @Provides
-    fun provideBaseUrl(config: Config) = config.baseUrl
-
-    @CoreScope
-    @Provides
-    fun provideAmiiboTypeService(retrofit: Retrofit) =
-        retrofit.create(AmiiboTypeService::class.java)
-
-
+    fun provideAmiiboDAO(database: CoreAmiiboDatabase): AmiiboDAO = database.amiiboDAO()
 }

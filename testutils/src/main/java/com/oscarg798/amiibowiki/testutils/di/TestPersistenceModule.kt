@@ -10,9 +10,37 @@
  *
  */
 
-package com.oscarg798.amiibowiki.testutils
+package com.oscarg798.amiibowiki.testutils.di
 
-interface TestRobot {
+import android.content.Context
+import androidx.room.Room
+import com.oscarg798.amiibowiki.core.di.CoreScope
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
+import com.oscarg798.amiibowiki.core.persistence.database.CoreAmiiboDatabase
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
+import dagger.Module
+import dagger.Provides
 
-    fun isViewDisplayed()
+@Module
+object TestPersistenceModule {
+
+    val amiiboTypeDAO = relaxedMockk<AmiiboTypeDAO>()
+    val amiiboDAO = relaxedMockk<AmiiboDAO>()
+
+    private val database = relaxedMockk<CoreAmiiboDatabase>()
+
+    @CoreScope
+    @Provides
+    fun provideDatabase(): CoreAmiiboDatabase {
+        return database
+    }
+
+    @CoreScope
+    @Provides
+    fun provideAmiiboTypeDao(): AmiiboTypeDAO = amiiboTypeDAO
+
+    @CoreScope
+    @Provides
+    fun provideAmiiboDAO(): AmiiboDAO = amiiboDAO
 }

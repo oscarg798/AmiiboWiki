@@ -10,31 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.testutils.di
+package com.oscarg798.amiibowiki.testutils.utils
 
-import android.content.Context
-import com.oscarg798.amiibowiki.core.di.CoreComponent
-import com.oscarg798.amiibowiki.core.di.CoreModule
-import com.oscarg798.amiibowiki.core.di.CoreScope
-import com.oscarg798.amiibowiki.core.models.Config
-import dagger.BindsInstance
-import dagger.Component
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+interface TestRobot {
 
-@ExperimentalCoroutinesApi
-@CoreScope
-@Component(
-    modules = [CoreModule::class, TestNetworkModule::class,
-        TestPersistenceModule::class]
-)
-interface TestCoreComponent : CoreComponent {
-
-    @Component.Factory
-    interface Builder {
-
-        fun create(
-            @BindsInstance context: Context,
-            @BindsInstance config: Config
-        ): TestCoreComponent
-    }
+    fun isViewDisplayed()
 }

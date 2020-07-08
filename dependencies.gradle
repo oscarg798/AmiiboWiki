@@ -182,6 +182,7 @@ ext {
     // Testing
     mockk = "io.mockk:mockk:$mockk_version"
     mockitoCore = "org.mockito:mockito-core:$mockito_core_version"
+    mockkAndroid = "io.mockk:mockk-android:$mockk_version"
     espressoContrib = "androidx.test.espresso:espresso-contrib:$android_x_espresso_version"
     espressoCore = "androidx.test.espresso:espresso-core:$android_x_espresso_version"
     espressoIntents = "androidx.test.espresso:espresso-intents:$android_x_espresso_version"
