@@ -10,50 +10,22 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.testutils
 
-android {
-    compileSdkVersion 30
+import android.app.Application
+import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.models.Config
+import com.oscarg798.amiibowiki.testutils.di.DaggerTestCoreComponent
+import com.oscarg798.amiibowiki.testutils.testrules.MOCK_WEB_SERVER_URL
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-    kotlinOptions {
-        jvmTarget = '1.8'
+class TestApplication : Application(), CoreComponentProvider {
+
+    @ExperimentalCoroutinesApi
+    override fun provideCoreComponent(): CoreComponent {
+
+        return DaggerTestCoreComponent.factory().create(this, Config(MOCK_WEB_SERVER_URL))
     }
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        testInstrumentationRunner "com.oscarg798.amiibowiki.testutils.testrunner.UITestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-    }
 }

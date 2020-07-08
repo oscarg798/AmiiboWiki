@@ -12,26 +12,7 @@
 
 package com.oscarg798.amiibowiki.testutils
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+interface TestRobot {
 
-/**
- * Took from https://www.thuytrinh.dev/test-receiving-events-hot-flow-coroutines/
- */
-class TestCollector<T> {
-    private val values = mutableListOf<T>()
-
-    fun test(scope: CoroutineScope, flow: Flow<T>): Job {
-        return scope.launch { flow.collect { values.add(it) } }
-    }
-
-
-    fun assertValues(vararg _values: T) {
-        assert(values.containsAll(_values.toList()))
-    }
-
+    fun isViewDisplayed()
 }

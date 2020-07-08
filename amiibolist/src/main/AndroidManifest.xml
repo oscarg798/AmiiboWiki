@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.oscarg798.amiibowiki.amiibolist">
 
-    <application>
-        <activity android:name=".AmiiboListActivity"></activity>
+    <application
+        android:networkSecurityConfig="@xml/network_security_config">
+        <activity android:name=".AmiiboListActivity"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

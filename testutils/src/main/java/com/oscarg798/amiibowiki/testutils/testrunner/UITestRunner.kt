@@ -10,50 +10,21 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.testutils.testrunner
 
-android {
-    compileSdkVersion 30
+import android.app.Application
+import android.content.Context
+import androidx.test.runner.AndroidJUnitRunner
+import com.oscarg798.amiibowiki.testutils.TestApplication
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+class UITestRunner : AndroidJUnitRunner() {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        testInstrumentationRunner "com.oscarg798.amiibowiki.testutils.testrunner.UITestRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
+    @Throws(Exception::class)
+    override fun newApplication(
+        cl: ClassLoader?,
+        className: String?,
+        context: Context?
+    ): Application {
+        return super.newApplication(cl, TestApplication::class.java.getName(), context)
     }
 }

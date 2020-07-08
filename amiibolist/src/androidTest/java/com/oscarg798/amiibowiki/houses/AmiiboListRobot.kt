@@ -12,15 +12,22 @@
 
 package com.oscarg798.amiibowiki.houses
 
-import androidx.test.runner.AndroidJUnit4
-import org.junit.Test
-import org.junit.runner.RunWith
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
+import com.oscarg798.amiibowiki.amiibolist.R
+import com.oscarg798.amiibowiki.testutils.TestRobot
 
+class AmiiboListRobot : TestRobot {
 
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
+    override fun isViewDisplayed() {
+        Espresso.onView(withId(R.id.srlMain)).check(matches(isDisplayed()))
 
     }
+
+    fun isMarioDisplayed() {
+        Espresso.onView(withText("Mario")).check(matches(isDisplayed()))
+    }
+
 }

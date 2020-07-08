@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.nfcreader
 
 import android.nfc.NfcAdapter
 import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
-import com.oscarg798.amiibowiki.testutils.relaxedMockk
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import io.mockk.every
 import io.mockk.verify
 import org.amshove.kluent.shouldBeEqualTo
@@ -23,7 +23,8 @@ import org.junit.Test
 
 class ValidateAdapterAvailabilityUseCaseTest {
 
-    private val nfcAdapter = relaxedMockk<NfcAdapter>()
+    private val nfcAdapter =
+        relaxedMockk<NfcAdapter>()
     private lateinit var usecase: ValidateAdapterAvailabilityUseCase
 
     @Before

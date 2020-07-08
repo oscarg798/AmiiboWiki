@@ -10,28 +10,25 @@
  *
  */
 
-package com.oscarg798.amiibowiki.testutils
+package com.oscarg798.amiibowiki.testutils.utils
 
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.rules.TestRule
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class MockWebServerTestRule(private val dispatcher: Dispatcher) : TestRule {
+/**
+ * Took from https://www.thuytrinh.dev/test-receiving-events-hot-flow-coroutines/
+ */
+class TestCollector<T> {
+    private val values = mutableListOf<T>()
 
-    private lateinit var mockWebServer: MockWebServer
+    fun test(scope: CoroutineScope, flow: Flow<T>): Job {
+        return scope.launch { flow.collect { values.add(it) } }
+    }
 
-    override fun apply(base: Statement, description: Description): Statement {
-        return object: Statement() {
-            override fun evaluate() {
-                mockWebServer = MockWebServer()
-                mockWebServer.start(MOCK_WEB_SERVER_PORT)
-                mockWebServer.dispatcher = dispatcher
-                base.evaluate()
-                mockWebServer.shutdown()
-            }
-        }
+    fun assertValues(vararg _values: T) {
+        assert(values.containsAll(_values.toList()))
     }
 }
-private const val MOCK_WEB_SERVER_PORT = 8080

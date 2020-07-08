@@ -10,50 +10,29 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.testutils.testrules
 
-android {
-    compileSdkVersion 30
+import okhttp3.mockwebserver.Dispatcher
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+class MockWebServerTestRule(private val dispatcher: Dispatcher) : TestRule {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        testInstrumentationRunner "com.oscarg798.amiibowiki.testutils.testrunner.UITestRunner"
-    }
+    private lateinit var mockWebServer: MockWebServer
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    override fun apply(base: Statement, description: Description): Statement {
+        return object: Statement() {
+            override fun evaluate() {
+                mockWebServer = MockWebServer()
+                mockWebServer.start(MOCK_WEB_SERVER_PORT)
+                mockWebServer.dispatcher = dispatcher
+                base.evaluate()
+                mockWebServer.shutdown()
+            }
         }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
     }
 }
+const val MOCK_WEB_SERVER_URL = "http://localhost:8080"
+private const val MOCK_WEB_SERVER_PORT = 8080
