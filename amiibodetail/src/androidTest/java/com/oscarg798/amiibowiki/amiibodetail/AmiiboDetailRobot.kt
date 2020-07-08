@@ -12,23 +12,26 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
+import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.oscarg798.amiibowiki.amiibodetail.test", appContext.packageName)
+class AmiiboDetailRobot : TestRobot {
+
+    override fun isViewDisplayed() {
+        Espresso.onView(ViewMatchers.withId(R.id.ivImage))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
+    fun isAmiiboDataDisplayed(){
+        Espresso.onView(ViewMatchers.withText("Name: Mario"))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withText("Game series: 11"))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withText("Type: 16"))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withText("Character: 12"))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 }
