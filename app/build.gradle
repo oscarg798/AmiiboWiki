@@ -28,7 +28,7 @@ android {
         versionCode appVersionCode
         versionName appVersionName
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+       // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {

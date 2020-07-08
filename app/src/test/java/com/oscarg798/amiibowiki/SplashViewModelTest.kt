@@ -12,28 +12,18 @@
 
 package com.oscarg798.amiibowiki
 
-import androidx.lifecycle.viewModelScope
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.SplashViewModel
 import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
-import com.oscarg798.amiibowiki.testutils.CoroutinesTestRule
-import com.oscarg798.amiibowiki.testutils.TestCollector
+import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
+import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.test.runBlockingTest
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldBeInstanceOf
-import org.amshove.kluent.shouldNotBeEqualTo
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,7 +33,8 @@ import org.junit.Test
 class SplashViewModelTest {
 
     @get: Rule
-    val coroutinesRule = CoroutinesTestRule()
+    val coroutinesRule =
+        CoroutinesTestRule()
 
     private val updateAmiiboTypeUseCase = mockk<UpdateAmiiboTypeUseCase>()
     private lateinit var viewModel: SplashViewModel

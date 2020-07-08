@@ -10,50 +10,31 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+package com.oscarg798.amiibowiki.testutils.testrules
 
-android {
-    compileSdkVersion 30
+import com.oscarg798.amiibowiki.core.CoroutineContextProvider
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.*
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+@ExperimentalCoroutinesApi
+class CoroutinesTestRule : TestRule {
 
-    defaultConfig {
-        minSdkVersion appMinSdkVersion
-        targetSdkVersion appTargetSdkVersion
-        versionCode appVersionCode
-        versionName appVersionName
-        testInstrumentationRunner "com.oscarg798.amiibowiki.testutils.testrunner.UITestRunner"
-    }
+    val testDispatcher = TestCoroutineDispatcher()
+    val testCoroutineScope = TestCoroutineScope(testDispatcher)
+    val coroutineContextProvider = CoroutineContextProvider(testDispatcher, testDispatcher)
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    override fun apply(base: Statement, description: Description): Statement {
+        return object : Statement() {
+            override fun evaluate() {
+                Dispatchers.setMain(testDispatcher)
+                base.evaluate()
+                Dispatchers.resetMain()
+            }
         }
-    }
-
-    viewBinding {
-        enabled = true
-    }
-
-
-    testOptions {
-        unitTests {
-            includeAndroidResources true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
     }
 }

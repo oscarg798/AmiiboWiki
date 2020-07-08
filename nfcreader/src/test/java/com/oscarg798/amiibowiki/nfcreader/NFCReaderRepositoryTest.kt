@@ -21,23 +21,28 @@ import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
 import com.oscarg798.amiibowiki.nfcreader.utils.ArrayCloner
 import com.oscarg798.amiibowiki.nfcreader.utils.ByteWrapper
 import com.oscarg798.amiibowiki.nfcreader.utils.TagTech
-import com.oscarg798.amiibowiki.testutils.relaxedMockk
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import io.mockk.every
 import io.mockk.verify
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
-import java.io.IOException
 import java.nio.ByteBuffer
 
 class NFCReaderRepositoryTest {
 
-    private val nfcAdapter = relaxedMockk<NfcAdapter>()
-    private val tagTech = relaxedMockk<TagTech>()
-    private val arrayCloner = relaxedMockk<ArrayCloner>()
-    private val byteWrapper = relaxedMockk<ByteWrapper>()
-    private val tag = relaxedMockk<Tag>()
-    private val byteBuffer = relaxedMockk<ByteBuffer>()
+    private val nfcAdapter =
+        relaxedMockk<NfcAdapter>()
+    private val tagTech =
+        relaxedMockk<TagTech>()
+    private val arrayCloner =
+        relaxedMockk<ArrayCloner>()
+    private val byteWrapper =
+        relaxedMockk<ByteWrapper>()
+    private val tag =
+        relaxedMockk<Tag>()
+    private val byteBuffer =
+        relaxedMockk<ByteBuffer>()
 
     private lateinit var repository: NFCReaderRepository
 

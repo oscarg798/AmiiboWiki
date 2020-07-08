@@ -1,4 +1,4 @@
-package com.oscarg798.amiibowiki.testutils
+package com.oscarg798.amiibowiki.testutils.extensions
 
 import io.mockk.MockK
 import io.mockk.MockKDsl

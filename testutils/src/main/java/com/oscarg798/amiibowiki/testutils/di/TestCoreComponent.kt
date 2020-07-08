@@ -10,31 +10,28 @@
  *
  */
 
-package com.oscarg798.amiibowiki.testutils
+package com.oscarg798.amiibowiki.testutils.di
 
-import com.oscarg798.amiibowiki.core.CoroutineContextProvider
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
+import android.content.Context
+import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.core.di.CoreModule
+import com.oscarg798.amiibowiki.core.di.CoreScope
+import com.oscarg798.amiibowiki.core.models.Config
+import dagger.BindsInstance
+import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.*
-import org.junit.rules.TestRule
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
 
 @ExperimentalCoroutinesApi
-class CoroutinesTestRule : TestRule {
+@CoreScope
+@Component(modules = [CoreModule::class, TestNetworkModule::class])
+interface TestCoreComponent : CoreComponent {
 
-    val testDispatcher = TestCoroutineDispatcher()
-    val testCoroutineScope = TestCoroutineScope(testDispatcher)
-    val coroutineContextProvider = CoroutineContextProvider(testDispatcher, testDispatcher)
+    @Component.Factory
+    interface Builder {
 
-    override fun apply(base: Statement, description: Description): Statement {
-        return object : Statement() {
-            override fun evaluate() {
-                Dispatchers.setMain(testDispatcher)
-                base.evaluate()
-                Dispatchers.resetMain()
-            }
-        }
+        fun create(
+            @BindsInstance context: Context,
+            @BindsInstance config: Config
+        ): TestCoreComponent
     }
 }

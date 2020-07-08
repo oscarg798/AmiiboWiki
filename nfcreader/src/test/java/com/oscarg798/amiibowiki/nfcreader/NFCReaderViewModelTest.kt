@@ -20,16 +20,14 @@ import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
-import com.oscarg798.amiibowiki.testutils.CoroutinesTestRule
-import com.oscarg798.amiibowiki.testutils.TestCollector
+import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
+import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,7 +39,8 @@ import java.lang.Exception
 class NFCReaderViewModelTest {
 
     @get: Rule
-    val coroutinesRule = CoroutinesTestRule()
+    val coroutinesRule =
+        CoroutinesTestRule()
 
     private val validateAdapterAvailabilityUseCase = mockk<ValidateAdapterAvailabilityUseCase>()
     private val readTagUseCase = mockk<ReadTagUseCase>()

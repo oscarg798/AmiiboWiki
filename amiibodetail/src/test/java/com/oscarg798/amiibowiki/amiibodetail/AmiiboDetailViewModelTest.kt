@@ -12,26 +12,18 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import androidx.lifecycle.viewModelScope
-import com.ibm.icu.impl.Assert.fail
 import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.testutils.CoroutinesTestRule
-import com.oscarg798.amiibowiki.testutils.TestCollector
+import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
+import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.test.TestCoroutineExceptionHandler
-import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
-import org.amshove.kluent.shouldBeEqualTo
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,7 +33,8 @@ import org.junit.Test
 class AmiiboDetailViewModelTest {
 
     @get: Rule
-    val coroutinesRule = CoroutinesTestRule()
+    val coroutinesRule =
+        CoroutinesTestRule()
 
     private val getAmiiboDetailUseCase = mockk<GetAmiiboDetailUseCase>()
     private lateinit var viewModel: AmiiboDetailViewModel
