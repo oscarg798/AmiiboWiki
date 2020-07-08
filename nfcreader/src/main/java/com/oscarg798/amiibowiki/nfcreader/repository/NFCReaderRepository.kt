@@ -17,7 +17,7 @@ import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.AmiiboIdentifier
 import com.oscarg798.amiibowiki.core.extensions.getOrTransform
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
-import com.oscarg798.amiibowiki.nfcreader.errors.UnknowReadError
+import com.oscarg798.amiibowiki.nfcreader.errors.UnknownReadError
 import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException
 import com.oscarg798.amiibowiki.nfcreader.utils.ArrayCloner
 import com.oscarg798.amiibowiki.nfcreader.utils.ByteWrapper
@@ -47,7 +47,7 @@ class NFCReaderRepository @Inject constructor(
                 throw it
             }
 
-            throw UnknowReadError(it)
+            throw UnknownReadError(it)
         }
     }
 

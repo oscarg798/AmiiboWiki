@@ -22,6 +22,7 @@ import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.testutils.CoroutinesTestRule
+import com.oscarg798.amiibowiki.testutils.TestCollector
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -46,29 +47,26 @@ class SplashViewModelTest {
 
     private val updateAmiiboTypeUseCase = mockk<UpdateAmiiboTypeUseCase>()
     private lateinit var viewModel: SplashViewModel
+    private lateinit var testCollector: TestCollector<SplashViewState>
 
     @Before
     fun setup() {
         coEvery { updateAmiiboTypeUseCase.execute() } answers { Result.success(Unit) }
+        testCollector = TestCollector()
         viewModel =
             SplashViewModel(updateAmiiboTypeUseCase, coroutinesRule.coroutineContextProvider)
-        viewModel.viewModelScope.newCoroutineContext(coroutinesRule.coroutineContextProvider.mainDispatcher)
     }
 
     @Test
     fun `given a wish to get the types when events are proccess then state value should be loading and then fetch success`() {
         viewModel.onWish(SplashWish.GetTypes)
-        val list = arrayListOf<SplashViewState>()
-        viewModel.state.onEach {
-            list.add(it)
-        }.launchIn(CoroutineScope(coroutinesRule.coroutineContextProvider.mainDispatcher))
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
-        list shouldBeEqualTo listOf(
+        testCollector.assertValues(
             SplashViewState(
                 status = SplashViewState.FetchStatus.None,
                 error = null
-            ),
-            SplashViewState(
+            ), SplashViewState(
                 status = SplashViewState.FetchStatus.Success,
                 error = null
             )
@@ -83,22 +81,20 @@ class SplashViewModelTest {
     fun `given a wish to get the types when events are proccess but there is an error then state value should be loading and then fetch success`() {
         val error = Exception("something")
         coEvery { updateAmiiboTypeUseCase.execute() } answers { Result.failure(error) }
+
         viewModel.onWish(SplashWish.GetTypes)
-        val list = arrayListOf<SplashViewState>()
-        viewModel.state.onEach {
-            list.add(it)
-        }.launchIn(CoroutineScope(coroutinesRule.coroutineContextProvider.mainDispatcher))
 
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
-        Assert.assertEquals(SplashViewState(
-            status = SplashViewState.FetchStatus.None,
-            error = null
-        ), list[0])
-
-        val result = list[1]
-        result.status shouldBeEqualTo SplashViewState.FetchStatus.None
-        result.error shouldNotBeEqualTo  null
-        assert(result.error is FetchTypesFailure)
+        testCollector.assertValues(
+            SplashViewState(
+                status = SplashViewState.FetchStatus.None,
+                error = null
+            ), SplashViewState(
+                status = SplashViewState.FetchStatus.None,
+                error = FetchTypesFailure("something",error)
+            )
+        )
 
         coVerify {
             updateAmiiboTypeUseCase.execute()

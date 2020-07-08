@@ -26,8 +26,7 @@ class CoroutinesTestRule : TestRule {
 
     val testDispatcher = TestCoroutineDispatcher()
     val testCoroutineScope = TestCoroutineScope(testDispatcher)
-    val coroutineContextProvider =
-        CoroutineContextProvider(testDispatcher, testDispatcher)
+    val coroutineContextProvider = CoroutineContextProvider(testDispatcher, testDispatcher)
 
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {

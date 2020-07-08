@@ -18,13 +18,12 @@ import com.oscarg798.amiibowiki.core.AmiiboIdentifier
 import com.oscarg798.amiibowiki.core.extensions.getOrTransform
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
-import com.oscarg798.amiibowiki.nfcreader.errors.UnknowReadError
+import com.oscarg798.amiibowiki.nfcreader.errors.UnknownReadError
 import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
 import javax.inject.Inject
 
 class ReadTagUseCase @Inject constructor(
-    private val nfcAdapter: NfcAdapter,
     private val repository: NFCReaderRepository
 ) {
 
@@ -35,7 +34,7 @@ class ReadTagUseCase @Inject constructor(
             throw when (it) {
                 is InvalidTagDataException,
                 is WrongPageFormatException -> NFCReaderFailure.TagNotSupported(it)
-                is UnknowReadError -> NFCReaderFailure.Unknow(it)
+                is UnknownReadError -> NFCReaderFailure.Unknow(it)
                 else -> it
             }
         }
