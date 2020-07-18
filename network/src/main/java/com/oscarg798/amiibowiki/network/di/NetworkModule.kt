@@ -12,11 +12,13 @@
 
 package com.oscarg798.amiibowiki.network.di
 
+import android.net.Network
 import com.google.gson.GsonBuilder
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -47,7 +49,8 @@ object NetworkModule {
     @Reusable
     @Provides
     fun provideHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
+        networkLoggerInterceptor: Interceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
             .connectTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
@@ -55,6 +58,7 @@ object NetworkModule {
             .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
             .addInterceptor(ErrorInterceptor())
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(networkLoggerInterceptor)
 
 
         return builder.build()

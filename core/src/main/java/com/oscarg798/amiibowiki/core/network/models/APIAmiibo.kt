@@ -13,6 +13,8 @@
 package com.oscarg798.amiibowiki.core.network.models
 
 import com.google.gson.annotations.SerializedName
+import com.oscarg798.amiibowiki.core.models.Amiibo
+import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 
 data class APIAmiiboReleaseDate(
     @SerializedName("au")
@@ -23,7 +25,10 @@ data class APIAmiiboReleaseDate(
     val northAmerica: String?,
     @SerializedName("jp")
     val japan: String?
-)
+){
+    fun toAmiiboReleaseDate() = AmiiboReleaseDate(australia, europe, northAmerica, japan)
+
+}
 
 data class APIAmiibo(
     @SerializedName("amiiboSeries")
@@ -44,4 +49,17 @@ data class APIAmiibo(
     val tail: String,
     @SerializedName("name")
     val name: String
-)
+) {
+    fun toAmiibo() =
+        Amiibo(
+            amiiboSeries,
+            character,
+            gameSeries,
+            head,
+            image,
+            type,
+            releaseDate.toAmiiboReleaseDate(),
+            tail,
+            name
+        )
+}

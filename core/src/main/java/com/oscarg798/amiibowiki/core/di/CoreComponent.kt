@@ -24,6 +24,7 @@ import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.network.di.NetworkModule
+import com.oscarg798.lomeno.logger.Logger
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,7 +35,7 @@ import java.util.*
 @CoreScope
 @Component(
     modules = [CoreModule::class, ViewModelsModule::class, NetworkModule::class,
-        PersistenceModule::class]
+        PersistenceModule::class, LoggerModule::class]
 )
 interface CoreComponent {
 
@@ -59,6 +60,7 @@ interface CoreComponent {
     fun provideGetDefaulAmiiboTypeUseCase(): GetDefaultAmiiboTypeUseCase
     fun provideUpdateAmiiboTypeUseCase(): UpdateAmiiboTypeUseCase
     fun provideContext(): Context
+    fun provideLogger(): Logger
 
 
 }

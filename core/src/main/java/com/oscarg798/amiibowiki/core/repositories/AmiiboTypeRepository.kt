@@ -41,8 +41,8 @@ class AmiiboTypeRepository @Inject constructor(
     suspend fun updateTypes(): Result<List<AmiiboType>> {
         return runCatchingNetworkException {
             amiiboTypeService.getTypes().amiibo.map {
-                val type = it.map()
-                amiiboTypeDAO.insertType(type.map())
+                val type = it.toDBAmiibo()
+                amiiboTypeDAO.insertType(type.toDBAmiibo())
                 type
             }
         }
@@ -53,7 +53,7 @@ class AmiiboTypeRepository @Inject constructor(
     }
 }
 
-private fun AmiiboType.map() =
+private fun AmiiboType.toDBAmiibo() =
     DBAmiiboType(key, name)
 
-private fun APIAmiiboType.map() = AmiiboType(key, name)
+private fun APIAmiiboType.toDBAmiibo() = AmiiboType(key, name)

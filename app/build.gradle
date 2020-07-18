@@ -16,6 +16,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply from : '../citask.gradle.kts'
 
 android {
     compileSdkVersion appCompileSdkVersion
@@ -59,6 +60,18 @@ android {
 
     viewBinding {
         enabled = true
+    }
+
+    packagingOptions {
+        exclude "**/attach_hotspot_windows.dll"
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/licenses/ASM'
+        exclude 'META-INF/metadata.jvm.kotlin_module'
+        exclude 'META-INF/metadata.kotlin_module'
+        exclude 'META-INF/gradle/incremental.annotation.processors'
+        exclude 'META-INF/gradle/incremental.annotation.processors'
+
     }
 }
 
@@ -144,4 +157,8 @@ dependencies {
     implementation 'androidx.ui:ui-tooling:0.1.0-dev10'
     implementation 'androidx.ui:ui-layout:0.1.0-dev10'
     implementation 'androidx.ui:ui-material:0.1.0-dev10'
+
+    //implementation 'com.oscarg798.lomeno:Lomeno:1.0.2'
+
+
 }

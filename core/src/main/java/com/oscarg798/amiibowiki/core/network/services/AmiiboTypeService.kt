@@ -13,12 +13,15 @@
 package com.oscarg798.amiibowiki.core.network.services
 
 import com.oscarg798.amiibowiki.core.network.models.GetAmiiboTypeResponse
+import com.oscarg798.lomeno.event.NetworkTrackingEvent
 import retrofit2.http.GET
 
 interface AmiiboTypeService {
 
+    @NetworkTrackingEvent(GET_AMIIBO_TYPES_EVENT_NAME)
     @GET(GET_AMIIBO_TYPE_ROUTE)
     suspend fun getTypes(): GetAmiiboTypeResponse
 }
 
+private const val GET_AMIIBO_TYPES_EVENT_NAME = "GET_AMIIBO_TYPES"
 private const val GET_AMIIBO_TYPE_ROUTE = "api/type"

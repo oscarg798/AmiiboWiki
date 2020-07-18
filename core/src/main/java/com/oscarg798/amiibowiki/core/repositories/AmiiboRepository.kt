@@ -55,7 +55,7 @@ class AmiiboRepository @Inject constructor(
         flow<List<Amiibo>> {
             val result = runCatching {
                 amiiboService.get().amiibo.map { apiAmiibo ->
-                    apiAmiibo.map()
+                    apiAmiibo.toAmiibo()
                 }
             }.getOrTransformNetworkException {
                 GetAmiibosFailure.ProblemInDataSource(REMOTE_DATA_SOURCE_TYPE, it)
@@ -68,22 +68,19 @@ class AmiiboRepository @Inject constructor(
             }
 
             amiiboDAO.insert(it.map { amiibo ->
-                amiibo.map()
+                amiibo.toDBAmiibo()
             })
         }
 
     suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo> =
         runCatching {
-            amiiboService.getAmiiboFilteredByType(type).amiibo.map { it.map() }
+            amiiboService.getAmiiboFilteredByType(type).amiibo.map { it.toAmiibo() }
         }.getOrTransformNetworkException {
             FilterAmiiboFailure.ErrorFilteringAmiibos(it)
         }
 }
 
-fun AmiiboReleaseDate.map() = DBAMiiboReleaseDate(australia, europe, northAmerica, japan)
-fun Amiibo.map() =
-    DBAmiibo(amiiboSeries, character, gameSeries, head, image, type, tail, name, releaseDate.map())
+fun AmiiboReleaseDate.toDBAmiiboReleaseDate() = DBAMiiboReleaseDate(australia, europe, northAmerica, japan)
+fun Amiibo.toDBAmiibo() =
+    DBAmiibo(amiiboSeries, character, gameSeries, head, image, type, tail, name, releaseDate.toDBAmiiboReleaseDate())
 
-fun APIAmiiboReleaseDate.map() = AmiiboReleaseDate(australia, europe, northAmerica, japan)
-fun APIAmiibo.map() =
-    Amiibo(amiiboSeries, character, gameSeries, head, image, type, releaseDate.map(), tail, name)
