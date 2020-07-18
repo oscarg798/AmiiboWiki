@@ -10,8 +10,18 @@
  *
  */
 
-package com.oscarg798.amiibowiki.loggerdecoratorprocessor
+package com.oscarg798.amiibowiki.amiibolist.di
 
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.CLASS)
-public annotation class  LoggerDecorator
+import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
+import com.oscarg798.amiibowiki.amiibolist.AmiiboListLoggerImpl
+import com.oscarg798.lomeno.logger.Logger
+import dagger.Module
+import dagger.Provides
+
+@Module
+object AmiiboListModule {
+
+    @AmiiboListScope
+    @Provides
+    fun provideAmiiboListLogger(logger: Logger): AmiiboListLogger = AmiiboListLoggerImpl(logger)
+}

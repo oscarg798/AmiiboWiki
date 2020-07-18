@@ -10,10 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger
+package com.oscarg798.amiibowiki.logger.annotations
 
-import com.oscarg798.lomeno.event.LogSource
-
-
-object FirebaseSource: LogSource
-object CrashlytcisSource: LogSource
+/**
+ * First attemp was to
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
+annotation class ScreenName(val name: String)

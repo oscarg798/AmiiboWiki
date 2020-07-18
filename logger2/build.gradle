@@ -10,14 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.loggerdecoratorprocessor
+apply from: "$rootProject.projectDir/sharedbase.gradle"
 
-typealias MethodName = String
-typealias ScreenShownName = String
-
-data class DecoratorBuilder(
-    val className: String,
-    val classPackage: String,
-    val interfaceName: String,
-    val screenShownMethods: Map<MethodName, ScreenShownName>
-)
+dependencies {
+    implementation kotlinJDK
+    implementation lomeno
+    implementation retrofit
+}

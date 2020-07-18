@@ -9,14 +9,15 @@
  *
  *
  */
-include ':logger'
 
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
-include ':nfcreader'
-include ':loggerprocessor'
+package com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder
+
+typealias MethodName = String
+typealias ScreenShownName = String
+
+data class DecoratorBuilder(
+    val className: String,
+    val classPackage: String,
+    val interfaceName: String,
+    val screenShownMethods: Map<MethodName, ScreenShownName>
+)

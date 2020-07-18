@@ -13,18 +13,11 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
-repositories {
-    jcenter()
-    maven {
-        url 'https://dl.bintray.com/oscarg798/lomeno'
-    }
-}
-
-
 dependencies {
     implementation kotlinJDK
     implementation kotlinpoet
-    implementation 'com.oscarg798.lomeno:Lomeno:1.0.8'
+    implementation lomeno
+    implementation project(path: ':logger')
 
 }
 

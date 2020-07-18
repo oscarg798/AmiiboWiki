@@ -15,8 +15,8 @@ package com.oscarg798.amiibowiki.core.di
 import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.oscarg798.amiibowiki.core.logger.FirebaseLogger
-import com.oscarg798.amiibowiki.logger.FirebaseSource
 import com.oscarg798.amiibowiki.logger.requestprocessor.DefaultRequestProcessor
+import com.oscarg798.amiibowiki.logger.sources.FirebaseSource
 import com.oscarg798.lomeno.interceptor.NetworkLoggerInterceptor
 import com.oscarg798.lomeno.logger.Logger
 import com.oscarg798.lomeno.logger.Lomeno
@@ -42,5 +42,8 @@ object LoggerModule {
     @CoreScope
     @Provides
     fun provideNetworkLoggerInterceptor(logger: Logger): Interceptor =
-        NetworkLoggerInterceptor(logger, NetworkLogEventMapperImpl(), DefaultRequestProcessor())
+        NetworkLoggerInterceptor(
+            logger, NetworkLogEventMapperImpl(),
+            DefaultRequestProcessor()
+        )
 }

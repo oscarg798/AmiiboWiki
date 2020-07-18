@@ -12,6 +12,12 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor
 
+import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
+import com.oscarg798.amiibowiki.logger.annotations.ScreenName
+import com.oscarg798.amiibowiki.logger.events.ScreenViewEvent
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.DecoratorBuilder
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodName
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.ScreenShownName
 import com.oscarg798.lomeno.logger.Logger
 import com.squareup.kotlinpoet.*
 import java.util.*
@@ -21,6 +27,10 @@ import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
+/**
+ * Useful resource to understand how it works:
+ * https://medium.com/@iammert/annotation-processing-dont-repeat-yourself-generate-your-code-8425e60c6657
+ */
 class LoggerDecoratorProcessor : AbstractProcessor() {
 
     private val decoratorBuilders = mutableSetOf<DecoratorBuilder>()
@@ -64,6 +74,12 @@ class LoggerDecoratorProcessor : AbstractProcessor() {
         elements.forEach {
 
             val screenShownMethods = mutableMapOf<MethodName, ScreenShownName>()
+            /**
+             * TODO: So we can endup with a when here to discover which kind of event its
+             * so will be a good idea to process in a different class each on
+             * the supported annotations that we have. then when we add a new annotation
+             * we do not need to touch the processor
+             */
             it.enclosedElements.map { element ->
                 Pair(
                     element.simpleName.toString(),
@@ -110,7 +126,11 @@ class LoggerDecoratorProcessor : AbstractProcessor() {
                         decorator.interfaceName
                     )
                 )
-
+            /**
+             * TODO: This makes sense to have it here now but will be a good idea
+             * to have a class than can create the screen methods
+             * or the widget clicks methods etc..
+             */
             decorator.screenShownMethods.forEach { screenShownMethod ->
                 classBuilder.addFunction(
                     FunSpec.builder(screenShownMethod.key)
@@ -122,8 +142,11 @@ class LoggerDecoratorProcessor : AbstractProcessor() {
             }
 
             FileSpec.builder(decorator.classPackage, decorator.className)
-                .addImport(SCREEN_VIEW_EVENT_PACKAGE_NAME, SCREEN_VIEW_EVENT_CLASS_NAME)
-                .addImport(Logger::class.java.`package`.name, Logger::class.simpleName!!)
+                .addImport(
+                    ScreenViewEvent::class.java.`package`.name,
+                    ScreenViewEvent::class.java.simpleName
+                )
+                .addImport(Logger::class.java.`package`.name, Logger::class.java.simpleName)
                 .addType(classBuilder.build())
                 .build().writeTo(filer)
 
@@ -138,6 +161,4 @@ class LoggerDecoratorProcessor : AbstractProcessor() {
 private const val LOGGER_ANNOTATION_WRONG_PLACE_ERROR_MESSAGE =
     "Annotation should only be present in interfaces"
 private const val LOGGER_DECORATOR_SUFFIX = "Impl"
-private const val SCREEN_VIEW_EVENT_CLASS_NAME = "ScreenViewEvent"
-private const val SCREEN_VIEW_EVENT_PACKAGE_NAME = "com.oscarg798.amiibowiki.logger"
 private const val LOGGER_CONTRUCTOR_PARAM = "logger"

@@ -9,14 +9,9 @@
  *
  *
  */
-include ':logger'
 
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
-include ':nfcreader'
-include ':loggerprocessor'
+package com.oscarg798.amiibowiki.logger.annotations
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+public annotation class  LoggerDecorator

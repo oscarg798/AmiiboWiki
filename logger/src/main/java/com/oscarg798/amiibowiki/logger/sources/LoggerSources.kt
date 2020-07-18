@@ -10,21 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger
+package com.oscarg798.amiibowiki.logger.sources
 
-import com.oscarg798.lomeno.event.LogEvent
 import com.oscarg798.lomeno.event.LogSource
 
 
-class ScreenViewEvent(screenName: String) : LogEvent {
-
-    override val name: String =
-        SCREEN_VIEW_EVENT_NAME
-
-    override val properties: Map<String, String> = mapOf(SCREEN_NAME_EVENT_NAME to screenName)
-
-    override fun isSourceSupported(logSource: LogSource): Boolean = logSource is FirebaseSource
-}
-
-private const val SCREEN_NAME_EVENT_NAME = "SCREEN_NAME"
-private const val SCREEN_VIEW_EVENT_NAME = "SCREEN_VIEW"
+object FirebaseSource: LogSource
+object CrashlytcisSource: LogSource
