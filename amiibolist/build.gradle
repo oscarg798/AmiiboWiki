@@ -16,6 +16,5 @@ dependencies {
     implementation project(path: ':core')
     implementation project(path: ':network')
 
-    implementation project(':loggerprocessor')
     kapt project(':loggerprocessor')
 }

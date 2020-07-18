@@ -32,10 +32,3 @@ interface AmiiboListComponent {
     fun inject(amiiboListActivity: AmiiboListActivity)
 }
 
-@Module
-object AmiiboListModule {
-
-    @AmiiboListScope
-    @Provides
-    fun provideAmiiboListLogger(logger: Logger): AmiiboListLogger = AmiiboListLoggerImpl(logger)
-}

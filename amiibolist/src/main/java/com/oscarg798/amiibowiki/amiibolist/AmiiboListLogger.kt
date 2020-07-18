@@ -12,8 +12,8 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
-import com.oscarg798.amiibowiki.loggerdecoratorprocessor.LoggerDecorator
-import com.oscarg798.amiibowiki.loggerdecoratorprocessor.ScreenName
+import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
+import com.oscarg798.amiibowiki.logger.annotations.ScreenName
 
 
 @LoggerDecorator
@@ -21,9 +21,6 @@ interface AmiiboListLogger {
 
     @ScreenName(AMIIBO_LIST_SCREEN_NAME)
     fun trackScreenViewed()
-
-    @ScreenName("CUlito")
-    fun culito()
 }
 
 private const val AMIIBO_LIST_SCREEN_NAME = "AMIIBO_LIST"
