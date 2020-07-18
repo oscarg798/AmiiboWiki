@@ -13,16 +13,29 @@
 package com.oscarg798.amiibowiki.amiibolist.di
 
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
+import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
+import com.oscarg798.amiibowiki.amiibolist.AmiiboListLoggerImpl
 import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.lomeno.logger.Logger
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 @AmiiboListScope
-@Component(dependencies = [CoreComponent::class], modules = [AmiiboModule::class])
-interface AmiiboListComponent  {
+@Component(dependencies = [CoreComponent::class], modules = [AmiiboModule::class, AmiiboListModule::class])
+interface AmiiboListComponent {
 
     fun inject(amiiboListActivity: AmiiboListActivity)
+}
+
+@Module
+object AmiiboListModule {
+
+    @AmiiboListScope
+    @Provides
+    fun provideAmiiboListLogger(logger: Logger): AmiiboListLogger = AmiiboListLoggerImpl(logger)
 }

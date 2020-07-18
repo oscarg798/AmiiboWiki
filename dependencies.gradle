@@ -218,4 +218,8 @@ ext {
     idlingResource = 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
     activityx = "androidx.activity:activity-ktx:1.2.0-alpha06"
     picasso = "com.squareup.picasso:picasso:2.0.0"
+
+    lomeno = "com.oscarg798.lomeno:Lomeno:1.0.8"
+
+    kotlinpoet = 'com.squareup:kotlinpoet:1.6.0'
 }

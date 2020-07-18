@@ -31,6 +31,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 @FlowPreview
@@ -45,6 +46,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        throw IllegalArgumentException()
         binding = ActivityAmiiboDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

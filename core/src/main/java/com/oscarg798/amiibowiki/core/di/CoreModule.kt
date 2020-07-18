@@ -41,7 +41,7 @@ object CoreModule {
 
     @CoreScope
     @Provides
-    fun provideHousesService(retrofit: Retrofit): AmiiboService =
+    fun provideAmiibo(retrofit: Retrofit): AmiiboService =
         retrofit.create(AmiiboService::class.java)
 
     @CoreScope
@@ -52,6 +52,4 @@ object CoreModule {
     @Provides
     fun provideAmiiboTypeService(retrofit: Retrofit) =
         retrofit.create(AmiiboTypeService::class.java)
-
-
 }

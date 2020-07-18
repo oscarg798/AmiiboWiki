@@ -13,17 +13,22 @@
 package com.oscarg798.amiibowiki.core.network.services
 
 import com.oscarg798.amiibowiki.core.network.models.GetAmiiboResponse
+import com.oscarg798.lomeno.event.NetworkTrackingEvent
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface AmiiboService {
 
+    @NetworkTrackingEvent(GET_AMIIBOS_LIST_EVENT_NAME)
     @GET(GET_AMIIBO_LIST_ROUTE)
     suspend fun get(): GetAmiiboResponse
 
+    @NetworkTrackingEvent(GET_AMIIBO_FILTERED_EVENT_NAME)
     @GET(GET_AMIIBO_FILTERED_BY_TYPE_LIST_ROUTE)
     suspend fun getAmiiboFilteredByType(@Query("type") filter: String): GetAmiiboResponse
 }
 
+private const val GET_AMIIBOS_LIST_EVENT_NAME = "GET_AMIIBO_LIST"
+private const val GET_AMIIBO_FILTERED_EVENT_NAME = "GET_AMIIBO_FILTERED"
 private const val GET_AMIIBO_LIST_ROUTE = "api/amiibo/"
 private const val GET_AMIIBO_FILTERED_BY_TYPE_LIST_ROUTE = "api/amiibo/"

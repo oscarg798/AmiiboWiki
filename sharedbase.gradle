@@ -55,6 +55,7 @@ android {
         exclude 'META-INF/licenses/ASM'
         exclude 'META-INF/metadata.jvm.kotlin_module'
         exclude 'META-INF/metadata.kotlin_module'
+
     }
 
     compileOptions {

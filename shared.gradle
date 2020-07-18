@@ -59,6 +59,8 @@ dependencies {
     implementation skeleton
     implementation shimmerLayout
 
+    implementation lomeno
+
     //Test
     testImplementation mockk
     testImplementation mockitoCore
@@ -86,8 +88,10 @@ dependencies {
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
 
+    implementation project(path: ':logger')
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     testImplementation project(path: ':testutils')
+
     androidTestImplementation project(path: ':testutils')
 
 }
