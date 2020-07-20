@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors
 
+import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.exceptions.IllegalMethodToBeProcesseedException
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.exceptions.NoMethodProcessorFoundForMethodException
@@ -32,7 +33,7 @@ abstract class AbstractMethodProcessor(private val nextProcessor: MethodProcesso
 
     override fun process(methodElement: Element, messager: Messager): MethodDecorator {
         require(methodElement is ExecutableElement)
-        checkIfMethodCanBeProcessed(methodElement, messager)
+        assert(canMethodBeProcceced(methodElement, messager))
 
         return if (canMethodBeProcessed(methodElement)) {
             processInternally(methodElement, messager)
@@ -42,19 +43,37 @@ abstract class AbstractMethodProcessor(private val nextProcessor: MethodProcesso
         }
     }
 
-    private fun checkIfMethodCanBeProcessed(
+    private fun canMethodBeProcceced(
         methodElement: ExecutableElement,
         messager: Messager
-    ) {
+    ): Boolean {
         if (methodElement.parameters.size > ALLOWED_PARAMETERS_SIZE) {
             messager.printMessage(
                 Diagnostic.Kind.ERROR,
                 WRONG_NUMBERS_OF_PARAMTERS_FOR_ANNOTATED_METHODS
             )
             throw IllegalMethodToBeProcesseedException(getMethodName(methodElement))
+        } else if (methodElement.parameters.size == ALLOWED_PARAMETERS_SIZE) {
+            val logEventPropertiesCount =
+                methodElement.parameters[PROPERTIES_POSITION_IN_PARAMETERS].getAnnotationsByType(
+                    LogEventProperties::class.java
+                ).count()
+
+            if (logEventPropertiesCount != ALLOWED_PARAMETERS_SIZE) {
+                messager.printMessage(
+                    Diagnostic.Kind.ERROR,
+                    WRONG_NUMBERS_OF_PARAMTERS_FOR_ANNOTATED_METHODS
+                )
+                throw IllegalMethodToBeProcesseedException(getMethodName(methodElement))
+            }
         }
+
+        return true
     }
 
     protected fun getMethodName(methodElement: ExecutableElement) =
         methodElement.simpleName.toString()
 }
+
+private const val PROPERTIES_POSITION_IN_PARAMETERS = 0
+        
