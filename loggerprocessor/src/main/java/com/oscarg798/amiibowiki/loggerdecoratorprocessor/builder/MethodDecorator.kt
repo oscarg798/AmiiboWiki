@@ -10,11 +10,39 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger.annotations
+package com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder
 
-/**
- * First attemp was to
- */
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.FUNCTION)
-annotation class ScreenName(val name: String)
+typealias MethodName = String
+typealias PropertiesName = String
+typealias ScreenShownName = String
+
+data class MethodDecorator(
+    val screenShownName: ScreenShownName,
+    val methodName: MethodName,
+    val propertiesName: PropertiesName?
+) {
+
+    private constructor(builder: Builder) : this(
+        builder.screenShownName,
+        builder.methodName,
+        builder.propertiesName
+    )
+
+    class Builder constructor(
+        val screenShownName: ScreenShownName,
+        val methodName: MethodName
+    ) {
+
+        var propertiesName: PropertiesName? = null
+            private set
+
+        fun withPropertiesName(propertiesName: PropertiesName?): Builder {
+            this.propertiesName = propertiesName
+            return this
+        }
+
+        fun build(): MethodDecorator =
+            MethodDecorator(this)
+    }
+}
+

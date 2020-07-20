@@ -12,15 +12,19 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
-import com.oscarg798.amiibowiki.logger.annotations.ScreenName
+import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 
 
 @LoggerDecorator
 interface AmiiboListLogger {
 
-    @ScreenName(AMIIBO_LIST_SCREEN_NAME)
+    @ScreenShown(AMIIBO_LIST_SCREEN_NAME)
     fun trackScreenViewed()
+
+    @ScreenShown("With_properties")
+    fun trackScreenViewed(@LogEventProperties properties: Map<String, String>)
 }
 
 private const val AMIIBO_LIST_SCREEN_NAME = "AMIIBO_LIST"
