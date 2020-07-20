@@ -10,11 +10,37 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger.annotations
+package com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder
 
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.FUNCTION)
-annotation class WidgetClicked(
-    val widgetName: String,
-    val widgetType: String
-)
+typealias ScreenShownName = String
+
+data class ScreenShownMethodDecorator(
+    val screenShownName: ScreenShownName,
+    override val methodName: MethodName,
+    override val propertiesName: PropertiesName?
+) : MethodDecorator {
+
+    private constructor(builder: Builder) : this(
+        builder.screenShownName,
+        builder.methodName,
+        builder.propertiesName
+    )
+
+    class Builder constructor(
+        val screenShownName: ScreenShownName,
+        val methodName: MethodName
+    ) {
+
+        var propertiesName: PropertiesName? = null
+            private set
+
+        fun withPropertiesName(propertiesName: PropertiesName?): Builder {
+            this.propertiesName = propertiesName
+            return this
+        }
+
+        fun build(): ScreenShownMethodDecorator =
+            ScreenShownMethodDecorator(this)
+    }
+}
+

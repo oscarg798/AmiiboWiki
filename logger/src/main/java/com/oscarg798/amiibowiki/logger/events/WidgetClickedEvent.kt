@@ -10,11 +10,30 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger.annotations
+package com.oscarg798.amiibowiki.logger.events
 
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.FUNCTION)
-annotation class WidgetClicked(
-    val widgetName: String,
-    val widgetType: String
-)
+import com.oscarg798.amiibowiki.logger.sources.FirebaseSource
+import com.oscarg798.lomeno.event.LogEvent
+import com.oscarg798.lomeno.event.LogSource
+
+class WidgetClickedEvent(
+    widgetName: String,
+    private val widgetType: String,
+    private val extraProperties: Map<String, String>? = null
+) : LogEvent {
+
+    override val name: String
+        get() = "$widgetType$WIDGET_ACTION_SUFFIX"
+
+    override val properties: Map<String, String> = mutableMapOf<String, String>().apply {
+        put("$widgetType$WIDGET_NAME_SUFFIX", widgetName)
+        extraProperties?.let {
+            putAll(it)
+        }
+    }
+
+    override fun isSourceSupported(logSource: LogSource): Boolean = logSource is FirebaseSource
+}
+
+private const val WIDGET_NAME_SUFFIX = "_NAME"
+private const val WIDGET_ACTION_SUFFIX = "_CLICK"

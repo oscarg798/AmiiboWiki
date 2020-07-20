@@ -14,35 +14,9 @@ package com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder
 
 typealias MethodName = String
 typealias PropertiesName = String
-typealias ScreenShownName = String
 
-data class MethodDecorator(
-    val screenShownName: ScreenShownName,
-    val methodName: MethodName,
+interface MethodDecorator {
+
+    val methodName: MethodName
     val propertiesName: PropertiesName?
-) {
-
-    private constructor(builder: Builder) : this(
-        builder.screenShownName,
-        builder.methodName,
-        builder.propertiesName
-    )
-
-    class Builder constructor(
-        val screenShownName: ScreenShownName,
-        val methodName: MethodName
-    ) {
-
-        var propertiesName: PropertiesName? = null
-            private set
-
-        fun withPropertiesName(propertiesName: PropertiesName?): Builder {
-            this.propertiesName = propertiesName
-            return this
-        }
-
-        fun build(): MethodDecorator =
-            MethodDecorator(this)
-    }
 }
-

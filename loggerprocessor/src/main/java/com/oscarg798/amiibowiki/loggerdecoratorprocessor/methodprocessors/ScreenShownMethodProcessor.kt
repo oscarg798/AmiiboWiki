@@ -10,43 +10,41 @@
  *
  */
 
-package com.oscarg798.amiibowiki.loggerdecoratorprocessor
+package com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors
 
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.ScreenShownMethodDecorator
 import javax.annotation.processing.Messager
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.tools.Diagnostic
 
-class ScreenShownMethodProcessor {
+class ScreenShownMethodProcessor(nextProcessor: MethodProcessor? = null) :
+    AbstractMethodProcessor(nextProcessor) {
 
-    fun process(methodElement: Element, messager: Messager): MethodDecorator {
-        val methodName = methodElement.simpleName.toString()
-        val screeName =
-            (methodElement.getAnnotation(ScreenShown::class.java) as ScreenShown).name
+    override fun processInternally(
+        methodElement: ExecutableElement,
+        messager: Messager
+    ): MethodDecorator {
+        val methodDecoratorBuilder = getMethodMethodDecoratorBuilder(methodElement)
 
-        val methodDecoratorBuilder = MethodDecorator.Builder(screeName, methodName)
-
-        val method = methodElement as ExecutableElement
-        if (method.parameters.size > ALLOWED_PARAMETERS_SIZE) {
-            messager.printMessage(
-                Diagnostic.Kind.ERROR,
-                WRONG_NUMBERS_OF_PARAMTERS_FOR_ANNOTATED_METHODS
-            )
-        }
-
-        if (method.parameters.size == ALLOWED_PARAMETERS_SIZE) {
-            val paramether = method.parameters[PROPERTIES_POSITION_IN_PARAMETER]
+        if (methodElement.parameters.size == ALLOWED_PARAMETERS_SIZE) {
+            val paramether = methodElement.parameters[PROPERTIES_POSITION_IN_PARAMETER]
             methodDecoratorBuilder.withPropertiesName(paramether.simpleName.toString())
-
         }
 
         return methodDecoratorBuilder.build()
     }
+
+    private fun getMethodMethodDecoratorBuilder(methodElement: ExecutableElement): ScreenShownMethodDecorator.Builder {
+        val screeName =
+            (methodElement.getAnnotation(ScreenShown::class.java) as ScreenShown).name
+
+        return ScreenShownMethodDecorator.Builder(screeName, getMethodName(methodElement))
+    }
+
+    override fun canMethodBeProcessed(methodElement: Element): Boolean =
+        methodElement.getAnnotationsByType(ScreenShown::class.java).isNotEmpty()
 }
 
-private const val PROPERTIES_POSITION_IN_PARAMETER = 0
-private const val ALLOWED_PARAMETERS_SIZE = 1
-private const val WRONG_NUMBERS_OF_PARAMTERS_FOR_ANNOTATED_METHODS =
-    "Annotated methods can only have 1 paramter"

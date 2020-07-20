@@ -10,11 +10,40 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger.annotations
+package com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder
 
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.FUNCTION)
-annotation class WidgetClicked(
+import com.oscarg798.amiibowiki.logger.events.WidgetType
+
+data class WidgetClickedMethodDecorator(
     val widgetName: String,
-    val widgetType: String
-)
+    val widgetType: WidgetType,
+    override val methodName: MethodName,
+    override val propertiesName: PropertiesName?
+) : MethodDecorator {
+
+    private constructor(builder: Builder) : this(
+        builder.widgetName,
+        builder.widgetType,
+        builder.methodName,
+        builder.propertiesName
+    )
+
+    class Builder constructor(
+        val widgetName: ScreenShownName,
+        val widgetType: WidgetType,
+        val methodName: MethodName
+
+    ) {
+
+        var propertiesName: PropertiesName? = null
+            private set
+
+        fun withPropertiesName(propertiesName: PropertiesName?): Builder {
+            this.propertiesName = propertiesName
+            return this
+        }
+
+        fun build(): WidgetClickedMethodDecorator =
+            WidgetClickedMethodDecorator(this)
+    }
+}
