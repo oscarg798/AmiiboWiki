@@ -13,4 +13,4 @@
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.exceptions
 
 class IllegalMethodToBeProcesseedException(private val methodName: String) :
-    IllegalArgumentException("The method $methodName contains more than one parameter, what is not allowed")
+    IllegalArgumentException("The method $methodName contains more than one parameter, or paramter passed is not properly annotated")

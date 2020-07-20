@@ -222,4 +222,6 @@ ext {
     lomeno = "com.oscarg798.lomeno:Lomeno:1.0.8"
 
     kotlinpoet = 'com.squareup:kotlinpoet:1.6.0'
+
+    kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:1.2.9"
 }
