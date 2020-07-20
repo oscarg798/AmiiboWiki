@@ -10,31 +10,8 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger.events
+package com.oscarg798.amiibowiki.logger.annotations
 
-import com.oscarg798.amiibowiki.logger.sources.FirebaseSource
-import com.oscarg798.lomeno.event.LogEvent
-import com.oscarg798.lomeno.event.LogSource
-
-
-class ScreenViewEvent(
-    screenName: String,
-    private val extraProperties: Map<String, String>? = null
-) : LogEvent {
-
-    override val name: String =
-        SCREEN_VIEW_EVENT_NAME
-
-    override val properties: Map<String, String> = mutableMapOf<String, String>().apply {
-        put(SCREEN_NAME_EVENT_NAME, screenName)
-        extraProperties?.let {
-            putAll(extraProperties)
-        }
-
-    }
-
-    override fun isSourceSupported(logSource: LogSource): Boolean = logSource is FirebaseSource
-}
-
-private const val SCREEN_NAME_EVENT_NAME = "SCREEN_NAME"
-private const val SCREEN_VIEW_EVENT_NAME = "SCREEN_VIEW"
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
+annotation class WidgetClicked
