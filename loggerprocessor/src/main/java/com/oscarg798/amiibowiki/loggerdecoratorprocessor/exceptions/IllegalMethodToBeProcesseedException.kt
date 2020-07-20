@@ -10,11 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger.annotations
+package com.oscarg798.amiibowiki.loggerdecoratorprocessor.exceptions
 
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.FUNCTION)
-annotation class WidgetClicked(
-    val widgetName: String,
-    val widgetType: String
-)
+class IllegalMethodToBeProcesseedException(private val methodName: String) :
+    IllegalArgumentException("The method $methodName contains more than one parameter, what is not allowed")

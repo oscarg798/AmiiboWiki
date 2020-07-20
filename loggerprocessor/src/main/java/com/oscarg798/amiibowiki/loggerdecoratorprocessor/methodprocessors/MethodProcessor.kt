@@ -10,11 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger.annotations
+package com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors
 
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.FUNCTION)
-annotation class WidgetClicked(
-    val widgetName: String,
-    val widgetType: String
-)
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
+import javax.annotation.processing.Messager
+import javax.lang.model.element.Element
+
+interface MethodProcessor {
+
+    fun process(methodElement: Element, messager: Messager): MethodDecorator
+
+}
+
+internal const val PROPERTIES_POSITION_IN_PARAMETER = 0
+internal const val ALLOWED_PARAMETERS_SIZE = 1
+internal const val WRONG_NUMBERS_OF_PARAMTERS_FOR_ANNOTATED_METHODS =
+    "Annotated methods can only have 1 paramter"

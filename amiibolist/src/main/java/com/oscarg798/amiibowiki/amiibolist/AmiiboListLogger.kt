@@ -15,6 +15,8 @@ package com.oscarg798.amiibowiki.amiibolist
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
+import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
+import com.oscarg798.amiibowiki.logger.events.IMAGE_VIEW_TYPE_NAME
 
 
 @LoggerDecorator
@@ -23,8 +25,9 @@ interface AmiiboListLogger {
     @ScreenShown(AMIIBO_LIST_SCREEN_NAME)
     fun trackScreenViewed()
 
-    @ScreenShown("With_properties")
-    fun trackScreenViewed(@LogEventProperties properties: Map<String, String>)
+    @WidgetClicked(AMIIBO_ITEM_CLICK_WIDGET_NAME, IMAGE_VIEW_TYPE_NAME)
+    fun trackAmiiboClicked(@LogEventProperties properties: Map<String, String>)
 }
 
+private const val AMIIBO_ITEM_CLICK_WIDGET_NAME = "AMIIBO_ITEM"
 private const val AMIIBO_LIST_SCREEN_NAME = "AMIIBO_LIST"

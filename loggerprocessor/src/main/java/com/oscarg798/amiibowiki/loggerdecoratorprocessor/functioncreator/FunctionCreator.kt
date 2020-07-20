@@ -10,11 +10,17 @@
  *
  */
 
-package com.oscarg798.amiibowiki.logger.annotations
+package com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator
 
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.FUNCTION)
-annotation class WidgetClicked(
-    val widgetName: String,
-    val widgetType: String
-)
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
+
+interface FunctionCreator<Decorator : MethodDecorator> {
+
+    fun isApplicable(methodDecorator: MethodDecorator): Boolean
+
+    fun create(methodDecorator: Decorator): FunSpec
+
+    fun addEventImportToFileSpecBuilder(fileSpecBuilder: FileSpec.Builder)
+}
