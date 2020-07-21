@@ -17,7 +17,7 @@ import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
 import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException
-import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
+import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepositoryImpl
 import com.oscarg798.amiibowiki.nfcreader.utils.ArrayCloner
 import com.oscarg798.amiibowiki.nfcreader.utils.ByteWrapper
 import com.oscarg798.amiibowiki.nfcreader.utils.TagTech
@@ -44,7 +44,7 @@ class NFCReaderRepositoryTest {
     private val byteBuffer =
         relaxedMockk<ByteBuffer>()
 
-    private lateinit var repository: NFCReaderRepository
+    private lateinit var repository: NFCReaderRepositoryImpl
 
     @Before
     fun setup() {
@@ -52,7 +52,7 @@ class NFCReaderRepositoryTest {
         every { byteWrapper.wrap(any()) } answers { byteBuffer }
         every { byteBuffer.long } answers { LONG }
 
-        repository = NFCReaderRepository(nfcAdapter, tagTech, arrayCloner, byteWrapper)
+        repository = NFCReaderRepositoryImpl(nfcAdapter, tagTech, arrayCloner, byteWrapper)
     }
 
     @Test

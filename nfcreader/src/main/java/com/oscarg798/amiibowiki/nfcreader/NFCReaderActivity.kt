@@ -14,8 +14,6 @@ package com.oscarg798.amiibowiki.nfcreader
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.content.IntentFilter
-import android.content.IntentFilter.MalformedMimeTypeException
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -32,7 +30,6 @@ import com.oscarg798.amiibowiki.nfcreader.databinding.ActivityNFCReaderBinding
 import com.oscarg798.amiibowiki.nfcreader.di.DaggerNFCReaderComponent
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
-import kotlinx.android.synthetic.main.activity_n_f_c_reader.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn

@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.nfcreader.usecase
 
-import android.nfc.NfcAdapter
 import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.AmiiboIdentifier
 import com.oscarg798.amiibowiki.core.extensions.getOrTransform
