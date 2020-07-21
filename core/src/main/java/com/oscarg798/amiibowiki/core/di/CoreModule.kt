@@ -18,6 +18,8 @@ import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
+import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
+import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
@@ -54,5 +56,11 @@ object CoreModule {
 
     @CoreScope
     @Provides
-    fun provideAmiiboRepository(amiiboRepositoryImpl: AmiiboRepositoryImpl): AmiiboRepository = amiiboRepositoryImpl
+    fun provideAmiiboRepository(amiiboRepositoryImpl: AmiiboRepositoryImpl): AmiiboRepository =
+        amiiboRepositoryImpl
+
+    @CoreScope
+    @Provides
+    fun provideAmiiboTypeRepository(amiiboTypeRepositoryImpl: AmiiboTypeRepositoryImpl): AmiiboTypeRepository =
+        amiiboTypeRepositoryImpl
 }

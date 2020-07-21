@@ -19,6 +19,7 @@ import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
+import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepositoryImpl
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -46,7 +47,7 @@ class AmiiboTypeRepositoryTest {
         every { amiiboTypeDAO.insertType(DB_AMIIBO_TYPE[0]) } just Runs
         every { amiiboTypeDAO.getTypes() } answers { flowOf(DB_AMIIBO_TYPE) }
 
-        repository = AmiiboTypeRepository(
+        repository = AmiiboTypeRepositoryImpl(
             amiiboTypeService,
             amiiboTypeDAO
         )
