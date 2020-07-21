@@ -129,7 +129,7 @@ class LoggerDecoratorProcessorTest {
 
         val compilationResult = compileSource(kotlinSource)
 
-        Assert.assertEquals(compilationResult.exitCode, KotlinCompilation.ExitCode.COMPILATION_ERROR)
+        Assert.assertNotEquals(compilationResult.exitCode, KotlinCompilation.ExitCode.OK)
     }
 
     @Test
@@ -248,7 +248,7 @@ class LoggerDecoratorProcessorTest {
     }
 
     @Test
-    fun `given a valid class with widget click and not support ype as widget type method to be mapped when processor runs it should not compile`() {
+    fun `given a valid class with widget click and not support type as widget type method to be mapped when processor runs it should not compile`() {
         val kotlinSource = SourceFile.kotlin(
             "TestLoggerWithWidgetClick.kt", """
         import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
@@ -277,7 +277,7 @@ class LoggerDecoratorProcessorTest {
 
         val compilationResult = compileSource(kotlinSource)
 
-        Assert.assertEquals(compilationResult.exitCode, KotlinCompilation.ExitCode.COMPILATION_ERROR)
+        Assert.assertNotEquals(compilationResult.exitCode, KotlinCompilation.ExitCode.OK)
     }
 
     @Test
