@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
+import android.util.Log
 import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.extensions.getOrTransformNetworkException
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
@@ -26,6 +27,7 @@ import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -37,7 +39,12 @@ class AmiiboRepositoryImpl @Inject constructor(
     private val amiiboDAO: AmiiboDAO
 ) : AmiiboRepository {
 
-    override fun getAmiibos(): Flow<List<Amiibo>> = amiiboDAO.getAmiibos().map {
+    override fun getAmiibos(): Flow<List<Amiibo>> = amiiboDAO.getAmiibos()
+        .catch { cause->
+            Log.i("PENE", cause.stackTrace.toString())
+            Log.i("PENE","PENE")
+        }
+        .map {
         it.map { dbAmiibo ->
             dbAmiibo.map()
         }

@@ -12,27 +12,18 @@
  */
 
 apply from: "$rootProject.projectDir/sharedbase.gradle"
-apply from: "$rootProject.projectDir/ktlint.gradle"
 
 dependencies {
 
-    implementation kotlinJDK
+    implementation(kotlinJDK)
 
     implementation appCompat
-    implementation cardView
     implementation recyclerView
     implementation design
-    implementation constraintLayout
     implementation appCompatV4
-    implementation preferenceV7
-    implementation preferenceV14
-    implementation customTabs
+    implementation constraintLayout
     implementation multidex
     implementation activityx
-
-    implementation arrowCompat
-    implementation arrowSintax
-    kapt arrowMeta
 
     implementation airbnb
     kapt airbnbProcessor
@@ -60,24 +51,14 @@ dependencies {
     implementation skeleton
     implementation shimmerLayout
 
-    implementation lomeno
+    implementation(lomeno)
 
     implementation ktlintLib
     //Test
     testImplementation mockk
-    testImplementation mockitoCore
     testImplementation junit
     testImplementation kluent
-    testImplementation androidXCoreTest
-    testImplementation mockWebServer
-    testImplementation robolectric
-    testImplementation testRunner
-    testImplementation espressoIntents
-    testImplementation espressoCore
-    testImplementation truth
-    testImplementation androidXCoreTest
     testImplementation kotlinCoroutinesTest
-    debugImplementation fragmentTesting
 
     //Aceptance Testing
     androidTestImplementation androidAnnotations

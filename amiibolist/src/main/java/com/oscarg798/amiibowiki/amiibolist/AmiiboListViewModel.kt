@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki
 
+import android.util.Log
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
@@ -76,8 +77,8 @@ class AmiiboListViewModel @Inject constructor(
         AmiiboListResult.FetchSuccess(it) as AmiiboListResult
     }.onStart {
         emit(AmiiboListResult.Loading)
-    }.catch {
-        handleFailure(it)
+    }.catch { cause ->
+        handleFailure(cause)
     }.flowOn(coroutinesContextProvider.backgroundDispatcher)
 
     private suspend fun FlowCollector<AmiiboListResult>.handleFailure(failure: Throwable) {

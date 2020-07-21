@@ -21,6 +21,7 @@ import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.WidgetC
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.MethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.ScreenShownMethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.WidgetClickedMethodProcessor
+import com.oscarg798.lomeno.event.LogSource
 import com.oscarg798.lomeno.logger.Logger
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
@@ -120,6 +121,7 @@ class LoggerDecoratorProcessor : AbstractProcessor() {
 
             val fileBuilder = FileSpec.builder(decorator.classPackage, decorator.className)
                 .addImport(Logger::class.java.`package`.name, Logger::class.java.simpleName)
+                .addImport(LogSource::class.java.`package`.name, LogSource::class.java.simpleName)
 
             val classBuilder = TypeSpec.classBuilder(decorator.className)
                 .addModifiers(KModifier.PUBLIC, KModifier.FINAL)

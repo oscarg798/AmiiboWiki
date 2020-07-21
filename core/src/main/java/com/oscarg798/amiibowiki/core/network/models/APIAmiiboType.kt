@@ -12,7 +12,11 @@
 
 package com.oscarg798.amiibowiki.core.network.models
 
+import com.google.gson.annotations.SerializedName
+
 data class APIAmiiboType(
+    @SerializedName("key")
     val key: String,
+    @SerializedName("name")
     val name: String
 )

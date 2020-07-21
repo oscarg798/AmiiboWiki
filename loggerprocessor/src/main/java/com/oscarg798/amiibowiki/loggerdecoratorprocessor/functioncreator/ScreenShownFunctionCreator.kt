@@ -12,9 +12,11 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator
 
+import com.oscarg798.amiibowiki.logger.annotations.LogSources
 import com.oscarg798.amiibowiki.logger.events.ScreenViewEvent
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.ScreenShownMethodDecorator
+import com.oscarg798.lomeno.event.LogSource
 import com.squareup.kotlinpoet.FileSpec
 
 class ScreenShownFunctionCreator : AbstractFunctionCreator<ScreenShownMethodDecorator>() {
@@ -25,11 +27,15 @@ class ScreenShownFunctionCreator : AbstractFunctionCreator<ScreenShownMethodDeco
     override fun getMethodStatement(methodDecorator: ScreenShownMethodDecorator): String {
         return if (methodDecorator.propertiesName == null) {
             """
-                logger.log(ScreenViewEvent("${methodDecorator.screenShownName}"))
+                logger.log(ScreenViewEvent(screenName="${methodDecorator.screenShownName}"${getSourcesStatement(
+                methodDecorator.sources
+            )}))
             """.trimIndent()
         } else {
             """
-                logger.log(ScreenViewEvent("${methodDecorator.screenShownName}", extraProperties=${methodDecorator.propertiesName}))
+                logger.log(ScreenViewEvent(screenName="${methodDecorator.screenShownName}", extraProperties=${methodDecorator.propertiesName}${getSourcesStatement(
+                methodDecorator.sources
+            )}))
             """.trimIndent()
         }
     }

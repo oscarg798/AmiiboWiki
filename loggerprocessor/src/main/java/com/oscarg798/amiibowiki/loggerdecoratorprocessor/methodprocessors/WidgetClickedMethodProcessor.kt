@@ -29,6 +29,10 @@ class WidgetClickedMethodProcessor(nextProcessor: MethodProcessor? = null) :
     ): MethodDecorator {
         val methodDecoratorBuilder = getMethodMethodDecoratorBuilder(methodElement)
 
+        getSources(methodElement)?.let {
+            methodDecoratorBuilder.withSources(it)
+        }
+
         if (methodElement.parameters.size == ALLOWED_PARAMETERS_SIZE) {
             val paramether = methodElement.parameters[PROPERTIES_POSITION_IN_PARAMETER]
             methodDecoratorBuilder.withPropertiesName(paramether.simpleName.toString())

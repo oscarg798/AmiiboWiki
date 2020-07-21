@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
+import android.util.Log
 import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.extensions.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.models.AmiiboType
@@ -40,7 +41,7 @@ class AmiiboTypeRepositoryImpl @Inject constructor(
     override suspend fun updateTypes(): Result<List<AmiiboType>> {
         return runCatchingNetworkException {
             amiiboTypeService.getTypes().amiibo.map {
-                val type = it.toDBAmiibo()
+                val type = it.toAmiibo()
                 amiiboTypeDAO.insertType(type.toDBAmiibo())
                 type
             }
@@ -55,4 +56,4 @@ class AmiiboTypeRepositoryImpl @Inject constructor(
 private fun AmiiboType.toDBAmiibo() =
     DBAmiiboType(key, name)
 
-private fun APIAmiiboType.toDBAmiibo() = AmiiboType(key, name)
+private fun APIAmiiboType.toAmiibo() = AmiiboType(key, name)

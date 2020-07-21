@@ -13,11 +13,13 @@
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder
 
 import com.oscarg798.amiibowiki.logger.events.WidgetType
+import com.oscarg798.lomeno.event.LogSource
 
 data class WidgetClickedMethodDecorator(
     val widgetName: String,
     val widgetType: WidgetType,
     override val methodName: MethodName,
+    override val sources: Set<LogSource>?,
     override val propertiesName: PropertiesName?
 ) : MethodDecorator {
 
@@ -25,6 +27,7 @@ data class WidgetClickedMethodDecorator(
         builder.widgetName,
         builder.widgetType,
         builder.methodName,
+        builder.sources,
         builder.propertiesName
     )
 
@@ -37,6 +40,14 @@ data class WidgetClickedMethodDecorator(
 
         var propertiesName: PropertiesName? = null
             private set
+
+        var sources: Set<LogSource>? = null
+            private set
+
+        fun withSources(sources: Set<LogSource>): Builder {
+            this.sources = sources
+            return this
+        }
 
         fun withPropertiesName(propertiesName: PropertiesName?): Builder {
             this.propertiesName = propertiesName

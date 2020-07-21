@@ -33,7 +33,7 @@ dependencies {
 
     implementation kotlinCoroutinesTest
     implementation junit
-    implementation mockk
+    implementation mockkAndroid
 
     implementation scalars
 
@@ -47,7 +47,6 @@ dependencies {
     implementation espressoContrib
     implementation espressoIntents
     implementation uiAutomator
-    implementation mockk
 
     implementation idlingResource
 
