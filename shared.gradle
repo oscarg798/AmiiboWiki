@@ -53,7 +53,6 @@ dependencies {
 
     implementation(lomeno)
 
-    implementation ktlintLib
     //Test
     testImplementation mockk
     testImplementation junit
