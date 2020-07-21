@@ -12,21 +12,20 @@
 
 package com.oscarg798.amiibowiki.core.di
 
-import android.content.Context
-import androidx.room.Room
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
-import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
-import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
-import com.oscarg798.amiibowiki.core.persistence.database.CoreAmiiboDatabase
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.Retrofit
 import java.util.*
 
+@ExperimentalCoroutinesApi
 @Module
 object CoreModule {
 
@@ -52,4 +51,8 @@ object CoreModule {
     @Provides
     fun provideAmiiboTypeService(retrofit: Retrofit) =
         retrofit.create(AmiiboTypeService::class.java)
+
+    @CoreScope
+    @Provides
+    fun provideAmiiboRepository(amiiboRepositoryImpl: AmiiboRepositoryImpl): AmiiboRepository = amiiboRepositoryImpl
 }

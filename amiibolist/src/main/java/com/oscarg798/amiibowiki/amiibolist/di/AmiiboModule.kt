@@ -14,8 +14,6 @@ package com.oscarg798.amiibowiki.amiibolist.di
 
 import androidx.lifecycle.ViewModel
 import com.oscarg798.amiibowiki.AmiiboListViewModel
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListLoggerImpl
 import com.oscarg798.amiibowiki.core.ViewModelKey
 import dagger.Binds
 import dagger.Module

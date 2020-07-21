@@ -16,7 +16,7 @@ import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,7 +29,7 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class GetAmiiboDetailUseCaseTest {
 
-    private val repository = mockk<AmiiboRepository>()
+    private val repository = mockk<AmiiboRepositoryImpl>()
     private lateinit var usecase: GetAmiiboDetailUseCase
 
     @Before
