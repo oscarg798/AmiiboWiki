@@ -23,13 +23,16 @@ fun ImageView.setImage(url: String) {
 }
 
 fun ImageView.setImage(url: String, @DrawableRes fallback: Int) {
-    Picasso.with(context).load(url).into(this, object : Callback {
-        override fun onSuccess() {
-            //NO_OP
-        }
+    Picasso.with(context).load(url).into(
+        this,
+        object : Callback {
+            override fun onSuccess() {
+                // NO_OP
+            }
 
-        override fun onError() {
-            setImageDrawable(ContextCompat.getDrawable(context, fallback))
+            override fun onError() {
+                setImageDrawable(ContextCompat.getDrawable(context, fallback))
+            }
         }
-    })
+    )
 }

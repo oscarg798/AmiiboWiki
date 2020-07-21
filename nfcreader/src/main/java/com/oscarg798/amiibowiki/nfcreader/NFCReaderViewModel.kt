@@ -20,10 +20,15 @@ import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
-import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -32,7 +37,7 @@ class NFCReaderViewModel @Inject constructor(
     private val readTagUseCase: ReadTagUseCase,
     private val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<NFCReaderWish, NFCReaderResult,
-        NFCReaderViewState>(NFCReaderViewState.init()) {
+    NFCReaderViewState>(NFCReaderViewState.init()) {
 
     override suspend fun getResult(wish: NFCReaderWish): Flow<NFCReaderResult> {
         return when (wish) {

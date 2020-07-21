@@ -24,7 +24,7 @@ class AmiiboDetailRobot : TestRobot {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
-    fun isAmiiboDataDisplayed(){
+    fun isAmiiboDataDisplayed() {
         Espresso.onView(ViewMatchers.withText("Name: Mario"))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         Espresso.onView(ViewMatchers.withText("Game series: 11"))

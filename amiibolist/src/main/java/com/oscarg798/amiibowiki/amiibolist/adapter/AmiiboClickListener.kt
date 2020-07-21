@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.amiibolist.adapter
 
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 
-interface AmiiboClickListener  {
+interface AmiiboClickListener {
 
     fun onClick(viewAmiibo: ViewAmiibo)
 }

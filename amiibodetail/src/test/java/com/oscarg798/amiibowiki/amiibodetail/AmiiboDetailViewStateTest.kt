@@ -37,7 +37,6 @@ class AmiiboDetailViewStateTest {
             AMIIBO,
             (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiibo
         )
-
     }
 }
 

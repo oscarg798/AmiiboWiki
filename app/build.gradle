@@ -16,7 +16,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
-apply from : '../citask.gradle.kts'
+apply from: '../citask.gradle.kts'
 
 android {
     compileSdkVersion appCompileSdkVersion
@@ -29,18 +29,18 @@ android {
         versionCode appVersionCode
         versionName appVersionName
 
-       // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            buildConfigField "String", "BASE_URL","\"$baseUrl\""
+            buildConfigField "String", "BASE_URL", "\"$baseUrl\""
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug {
-            buildConfigField "String", "BASE_URL","\"$baseUrl\""
+            buildConfigField "String", "BASE_URL", "\"$baseUrl\""
             minifyEnabled false
         }
     }
@@ -71,6 +71,20 @@ android {
         exclude 'META-INF/metadata.kotlin_module'
         exclude 'META-INF/gradle/incremental.annotation.processors'
         exclude 'META-INF/gradle/incremental.annotation.processors'
+        exclude 'kotlin/coroutines/coroutines.kotlin_builtins'
+        exclude 'kotlin/kotlin.kotlin_builtins'
+        exclude 'META-INF/descriptors.kotlin_module'
+        exclude 'META-INF/type-system.kotlin_module'
+        exclude 'META-INF/descriptors.runtime.kotlin_module'
+        exclude 'META-INF/deserialization.kotlin_module'
+        exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
+        exclude 'kotlin/internal/internal.kotlin_builtins'
+        exclude 'kotlin/ranges/ranges.kotlin_builtins'
+        exclude 'META-INF/util.runtime.kotlin_module'
+        exclude 'kotlin/reflect/reflect.kotlin_builtins'
+        exclude 'kotlin/collections/collections.kotlin_builtins'
+        exclude 'kotlin/annotation/annotation.kotlin_builtins'
+        exclude 'META-INF/descriptors.jvm.kotlin_module'
 
     }
 }
@@ -157,8 +171,4 @@ dependencies {
     implementation 'androidx.ui:ui-tooling:0.1.0-dev10'
     implementation 'androidx.ui:ui-layout:0.1.0-dev10'
     implementation 'androidx.ui:ui-material:0.1.0-dev10'
-
-    //implementation 'com.oscarg798.lomeno:Lomeno:1.0.2'
-
-
 }

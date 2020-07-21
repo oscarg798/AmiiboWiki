@@ -16,7 +16,12 @@ import android.content.Context
 import android.nfc.NfcAdapter
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepositoryImpl
-import com.oscarg798.amiibowiki.nfcreader.utils.*
+import com.oscarg798.amiibowiki.nfcreader.utils.AmiiboArrayCloner
+import com.oscarg798.amiibowiki.nfcreader.utils.AmiiboByteWrapper
+import com.oscarg798.amiibowiki.nfcreader.utils.ArrayCloner
+import com.oscarg798.amiibowiki.nfcreader.utils.ByteWrapper
+import com.oscarg798.amiibowiki.nfcreader.utils.MifareTagTech
+import com.oscarg798.amiibowiki.nfcreader.utils.TagTech
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,5 +51,4 @@ object NFCReaderModule {
     @NFCReaderScope
     @Provides
     fun provideNFCReaderRepository(nfcReaderRepositoryImpl: NFCReaderRepositoryImpl): NFCReaderRepository = nfcReaderRepositoryImpl
-
 }

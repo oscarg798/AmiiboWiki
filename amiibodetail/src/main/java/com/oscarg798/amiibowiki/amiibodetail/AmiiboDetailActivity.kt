@@ -27,11 +27,11 @@ import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.setImage
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi

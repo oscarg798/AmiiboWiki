@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.loggerprocessor
 
-
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.LoggerDecoratorProcessor
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
@@ -24,7 +23,8 @@ class LoggerDecoratorProcessorTest {
     @Test
     fun `given a valid class with screen shown method to be mapped when processor runs then it should generate the implementation class`() {
         val kotlinSource = SourceFile.kotlin(
-            "TestLogger.kt", """
+            "TestLogger.kt",
+            """
         import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
         import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
         import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
@@ -54,15 +54,19 @@ class LoggerDecoratorProcessorTest {
         Assert.assertEquals(compilationResult.exitCode, KotlinCompilation.ExitCode.OK)
         val generatedClass = compilationResult.classLoader.loadClass("TestLoggerImpl")
 
-        Assert.assertEquals(1, generatedClass.declaredMethods.count {
-            it.name == "trackScreenViewed"
-        })
+        Assert.assertEquals(
+            1,
+            generatedClass.declaredMethods.count {
+                it.name == "trackScreenViewed"
+            }
+        )
     }
 
     @Test
     fun `given a valid class with screen shown method and properties to be mapped when processor runs then it should generate the implementation class`() {
         val kotlinSource = SourceFile.kotlin(
-            "TestLoggerWithProperties.kt", """
+            "TestLoggerWithProperties.kt",
+            """
         import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
         import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
         import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
@@ -92,9 +96,12 @@ class LoggerDecoratorProcessorTest {
         Assert.assertEquals(compilationResult.exitCode, KotlinCompilation.ExitCode.OK)
         val generatedClass = compilationResult.classLoader.loadClass("TestLoggerWithPropertiesImpl")
 
-        Assert.assertEquals(1, generatedClass.declaredMethods.count {
-            it.name == "trackScreenViewed"
-        })
+        Assert.assertEquals(
+            1,
+            generatedClass.declaredMethods.count {
+                it.name == "trackScreenViewed"
+            }
+        )
 
         Assert.assertEquals(1, generatedClass.declaredMethods[0].parameters.size)
     }
@@ -102,7 +109,8 @@ class LoggerDecoratorProcessorTest {
     @Test
     fun `given a valid class with screen shown method and a param not annotated properly when processor runs then it should not compile`() {
         val kotlinSource = SourceFile.kotlin(
-            "TestLoggerWithProperties.kt", """
+            "TestLoggerWithProperties.kt",
+            """
         import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
         import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
         import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
@@ -135,7 +143,8 @@ class LoggerDecoratorProcessorTest {
     @Test
     fun `given a valid class with widget click and IMAGE_VIEW as widget type method to be mapped when processor runs then it should generate the implementation class`() {
         val kotlinSource = SourceFile.kotlin(
-            "TestLoggerWithWidgetClick.kt", """
+            "TestLoggerWithWidgetClick.kt",
+            """
         import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
         import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
         import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
@@ -165,15 +174,19 @@ class LoggerDecoratorProcessorTest {
         Assert.assertEquals(compilationResult.exitCode, KotlinCompilation.ExitCode.OK)
         val generatedClass = compilationResult.classLoader.loadClass("TestLoggerWithWidgetClickImpl")
 
-        Assert.assertEquals(1, generatedClass.declaredMethods.count {
-            it.name == "trackWidgetClicked"
-        })
+        Assert.assertEquals(
+            1,
+            generatedClass.declaredMethods.count {
+                it.name == "trackWidgetClicked"
+            }
+        )
     }
 
     @Test
     fun `given a valid class with widget click and BUTTON as widget type method to be mapped when processor runs then it should generate the implementation class`() {
         val kotlinSource = SourceFile.kotlin(
-            "TestLoggerWithWidgetClick.kt", """
+            "TestLoggerWithWidgetClick.kt",
+            """
         import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
         import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
         import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
@@ -203,15 +216,19 @@ class LoggerDecoratorProcessorTest {
         Assert.assertEquals(compilationResult.exitCode, KotlinCompilation.ExitCode.OK)
         val generatedClass = compilationResult.classLoader.loadClass("TestLoggerWithWidgetClickImpl")
 
-        Assert.assertEquals(1, generatedClass.declaredMethods.count {
-            it.name == "trackWidgetClicked"
-        })
+        Assert.assertEquals(
+            1,
+            generatedClass.declaredMethods.count {
+                it.name == "trackWidgetClicked"
+            }
+        )
     }
 
     @Test
     fun `given a valid class with widget click and a supported widget type method and properties to be mapped when processor runs then it should generate the implementation class`() {
         val kotlinSource = SourceFile.kotlin(
-            "TestLoggerWithWidgetClick.kt", """
+            "TestLoggerWithWidgetClick.kt",
+            """
         import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
         import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
         import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
@@ -241,16 +258,20 @@ class LoggerDecoratorProcessorTest {
         Assert.assertEquals(compilationResult.exitCode, KotlinCompilation.ExitCode.OK)
         val generatedClass = compilationResult.classLoader.loadClass("TestLoggerWithWidgetClickImpl")
 
-        Assert.assertEquals(1, generatedClass.declaredMethods.count {
-            it.name == "trackWidgetClicked"
-        })
+        Assert.assertEquals(
+            1,
+            generatedClass.declaredMethods.count {
+                it.name == "trackWidgetClicked"
+            }
+        )
         Assert.assertEquals(1, generatedClass.declaredMethods[0].parameters.size)
     }
 
     @Test
     fun `given a valid class with widget click and not support type as widget type method to be mapped when processor runs it should not compile`() {
         val kotlinSource = SourceFile.kotlin(
-            "TestLoggerWithWidgetClick.kt", """
+            "TestLoggerWithWidgetClick.kt",
+            """
         import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
         import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
         import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
@@ -283,7 +304,8 @@ class LoggerDecoratorProcessorTest {
     @Test
     fun `given a valid class with widget click and screen show events when processor runs it should compile properly`() {
         val kotlinSource = SourceFile.kotlin(
-            "TestLoggerWithWidgetClick.kt", """
+            "TestLoggerWithWidgetClick.kt",
+            """
         import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
         import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
         import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
@@ -316,12 +338,18 @@ class LoggerDecoratorProcessorTest {
 
         val generatedClass = compilationResult.classLoader.loadClass("TestLoggerImpl")
 
-        Assert.assertEquals(1, generatedClass.declaredMethods.count {
-            it.name == "screenViewed"
-        })
-        Assert.assertEquals(1, generatedClass.declaredMethods.count {
-            it.name == "widgetClicked"
-        })
+        Assert.assertEquals(
+            1,
+            generatedClass.declaredMethods.count {
+                it.name == "screenViewed"
+            }
+        )
+        Assert.assertEquals(
+            1,
+            generatedClass.declaredMethods.count {
+                it.name == "widgetClicked"
+            }
+        )
         Assert.assertEquals(0, generatedClass.declaredMethods[0].parameters.size)
         Assert.assertEquals(1, generatedClass.declaredMethods[1].parameters.size)
     }

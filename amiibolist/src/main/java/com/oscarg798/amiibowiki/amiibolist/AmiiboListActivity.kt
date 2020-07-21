@@ -38,11 +38,15 @@ import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.startDeepLinkIntent
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
-import javax.inject.Inject
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -118,8 +122,6 @@ class AmiiboListActivity : AppCompatActivity() {
             }
         }.launchIn(lifecycleScope)
 
-
-
         merge(fetchAmiibos(), refresh(), onAmiiboClick())
             .onEach {
                 viewModel.onWish(it)
@@ -193,9 +195,12 @@ class AmiiboListActivity : AppCompatActivity() {
     }
 
     private fun showAmiiboDetail(tail: String) {
-        startDeepLinkIntent(AMIIBO_DETAIL_DEEPLINK, Bundle().apply {
-            putString(TAIL_ARGUMENT, tail)
-        })
+        startDeepLinkIntent(
+            AMIIBO_DETAIL_DEEPLINK,
+            Bundle().apply {
+                putString(TAIL_ARGUMENT, tail)
+            }
+        )
     }
 }
 

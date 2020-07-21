@@ -13,7 +13,6 @@ open class UnitTests : DefaultTask() {
         .redirectOutput(ProcessBuilder.Redirect.PIPE)
         .redirectError(ProcessBuilder.Redirect.PIPE)
 
-
     private fun command(
         command: String,
         arguments: List<String> = listOf()
@@ -26,7 +25,6 @@ open class UnitTests : DefaultTask() {
         return process.retrieveOutput()
     }
 
-
     private fun Process.retrieveOutput(): String {
         val outputText = inputStream.bufferedReader().use(java.io.BufferedReader::readText)
         val exitCode = exitValue()
@@ -38,7 +36,6 @@ open class UnitTests : DefaultTask() {
         }
         return outputText.trim()
     }
-
 }
 
 class ShellRunException(val exitCode: Int, override val message: String? = null) :
@@ -47,8 +44,4 @@ class ShellRunException(val exitCode: Int, override val message: String? = null)
 tasks.register<UnitTests>("splash_unit_tests") {
     group = "Unit Tests"
     description = "It runs the unit tests from app module"
-
 }
-
-
-

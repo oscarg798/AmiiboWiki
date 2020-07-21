@@ -31,7 +31,6 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.Exception
 
 @InternalCoroutinesApi
 @FlowPreview
@@ -165,7 +164,7 @@ class NFCReaderViewModelTest {
     @Test
     fun `given read tag wish when wish is process and there is an NFCReader Failure then  it should return it in status as error`() {
         val error = NFCReaderFailure.TagNotSupported(Exception())
-        every { readTagUseCase.execute(tag) } answers { throw  error }
+        every { readTagUseCase.execute(tag) } answers { throw error }
         viewModel.onWish(NFCReaderWish.Read(tag))
 
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)

@@ -17,8 +17,8 @@ import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.extensions.getOrTransform
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @AmiiboDetailScope

@@ -13,6 +13,9 @@
 package com.oscarg798.amiibowiki.core.base
 
 import androidx.lifecycle.ViewModel
+import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
+import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -21,14 +24,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.scan
-import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
-import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
-import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
-        ViewState : MVIViewState<Result>>(private val initialState: ViewState) : ViewModel() {
+    ViewState : MVIViewState<Result>>(private val initialState: ViewState) : ViewModel() {
 
     private val wishProcessor = ConflatedBroadcastChannel<Wish>()
 
@@ -53,5 +53,3 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
         super.onCleared()
     }
 }
-
-

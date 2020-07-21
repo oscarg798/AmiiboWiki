@@ -23,7 +23,7 @@ class MockWebServerTestRule(private val dispatcher: Dispatcher) : TestRule {
     private lateinit var mockWebServer: MockWebServer
 
     override fun apply(base: Statement, description: Description): Statement {
-        return object: Statement() {
+        return object : Statement() {
             override fun evaluate() {
                 mockWebServer = MockWebServer()
                 mockWebServer.start(MOCK_WEB_SERVER_PORT)

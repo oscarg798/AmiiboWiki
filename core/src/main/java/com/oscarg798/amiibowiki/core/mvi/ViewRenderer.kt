@@ -20,15 +20,12 @@ interface ViewRenderer<Result : MVIResult, State : ViewState<Result>, Actions : 
     fun render(state: State, actions: Actions)
 }
 
-interface ChildRenderer<Result : MVIResult, State : ViewState<Result>,
-        Actions : MVIActions> :
-    ViewRenderer<Result, State, Actions> {
+interface ChildRenderer<Result : MVIResult, State : ViewState<Result>, Actions : MVIActions> : ViewRenderer<Result, State, Actions> {
 
     fun isApplicable(state: State): Boolean
 }
 
-abstract class AbstractViewRenderer<Result : MVIResult,
-        State : ViewState<Result>, Actions : MVIActions>(
+abstract class AbstractViewRenderer<Result : MVIResult, State : ViewState<Result>, Actions : MVIActions>(
     private val childRenderers: List<ChildRenderer<Result, State, Actions>>
 ) : ViewRenderer<Result, State, Actions> {
 
@@ -37,5 +34,4 @@ abstract class AbstractViewRenderer<Result : MVIResult,
             it.isApplicable(state)
         }.render(state, actions)
     }
-
 }

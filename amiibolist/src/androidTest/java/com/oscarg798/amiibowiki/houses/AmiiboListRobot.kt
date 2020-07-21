@@ -15,10 +15,12 @@ package com.oscarg798.amiibowiki.houses
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.oscarg798.amiibowiki.amiibolist.R
-import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 import com.oscarg798.amiibowiki.testutils.idleresources.waitUntilViewIsDisplayed
+import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
 class AmiiboListRobot : TestRobot {
 

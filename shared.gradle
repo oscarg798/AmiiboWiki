@@ -12,6 +12,7 @@
  */
 
 apply from: "$rootProject.projectDir/sharedbase.gradle"
+apply from: "$rootProject.projectDir/ktlint.gradle"
 
 dependencies {
 
@@ -61,6 +62,7 @@ dependencies {
 
     implementation lomeno
 
+    implementation ktlintLib
     //Test
     testImplementation mockk
     testImplementation mockitoCore
@@ -90,8 +92,8 @@ dependencies {
 
     implementation project(path: ':logger')
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
-    testImplementation project(path: ':testutils')
 
+    testImplementation project(path: ':testutils')
     androidTestImplementation project(path: ':testutils')
 
 }

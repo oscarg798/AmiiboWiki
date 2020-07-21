@@ -33,9 +33,11 @@ object TestNetworkModule {
             .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
             .addInterceptor(ErrorInterceptor())
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                setLevel(HttpLoggingInterceptor.Level.BODY)
-            })
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    setLevel(HttpLoggingInterceptor.Level.BODY)
+                }
+            )
             .build()
     }
 

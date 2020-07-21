@@ -17,11 +17,11 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
-import org.junit.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
-
+import org.junit.Test
 
 class NFCReaderViewStateTest {
 

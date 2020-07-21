@@ -63,7 +63,6 @@ class SplashActivity : AppCompatActivity() {
                 )
                 state.error != null -> showFetchError()
             }
-
         }.launchIn(lifecycleScope)
 
         vm.onWish(SplashWish.GetTypes)

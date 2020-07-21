@@ -38,7 +38,6 @@ data class AmiiboListViewState(
     sealed class Status {
         object None : Status()
         data class AmiibosFetched(val amiibos: List<ViewAmiibo>) : Status()
-
     }
 
     sealed class ShowAmiiboDetail {
@@ -102,7 +101,6 @@ data class AmiiboListViewState(
         }
     }
 
-
     companion object {
         fun init() =
             AmiiboListViewState(
@@ -114,6 +112,4 @@ data class AmiiboListViewState(
                 null
             )
     }
-
-
 }

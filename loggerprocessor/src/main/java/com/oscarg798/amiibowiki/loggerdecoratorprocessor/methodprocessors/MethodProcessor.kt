@@ -19,7 +19,6 @@ import javax.lang.model.element.Element
 interface MethodProcessor {
 
     fun process(methodElement: Element, messager: Messager): MethodDecorator
-
 }
 
 internal const val PROPERTIES_POSITION_IN_PARAMETER = 0

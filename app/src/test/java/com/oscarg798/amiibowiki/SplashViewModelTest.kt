@@ -23,7 +23,8 @@ import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -57,7 +58,8 @@ class SplashViewModelTest {
             SplashViewState(
                 status = SplashViewState.FetchStatus.None,
                 error = null
-            ), SplashViewState(
+            ),
+            SplashViewState(
                 status = SplashViewState.FetchStatus.Success,
                 error = null
             )
@@ -81,9 +83,10 @@ class SplashViewModelTest {
             SplashViewState(
                 status = SplashViewState.FetchStatus.None,
                 error = null
-            ), SplashViewState(
+            ),
+            SplashViewState(
                 status = SplashViewState.FetchStatus.None,
-                error = FetchTypesFailure("something",error)
+                error = FetchTypesFailure("something", error)
             )
         )
 

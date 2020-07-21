@@ -18,6 +18,9 @@ Application to read and watch the Amiibo data.  It has a feature to read the nfc
 
 * Clean + MVI in presentation layer
 * Modules per feature + a common module called **Core**
+* We have interfaces for the repositories in order to respect the dependencies rule on the usecases,
+as they should not be aware of the repositories impl that will be in an upper layer than usecases
+* We do not have interfaces for usecases following YAGNI
 
 ## Built With
 

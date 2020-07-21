@@ -15,16 +15,13 @@ package com.oscarg798.amiibowiki.amiibodetail
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.platform.app.InstrumentationRegistry
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import com.oscarg798.amiibowiki.testutils.di.TestPersistenceModule
 import io.mockk.coEvery
-import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,26 +39,27 @@ class AmiiboDetailTest {
     private val amiiboListRobot = AmiiboDetailRobot()
 
     @Before
-    fun setup(){
+    fun setup() {
         coEvery {
             TestPersistenceModule.amiiboDAO.getById(AMIIBO_TAIL)
-        }answers {
+        } answers {
             AMIIBO
         }
-        intentTestRule.launchActivity(Intent().apply {
-            putExtra(TAIL_ARGUMENT,AMIIBO_TAIL)
-        })
+        intentTestRule.launchActivity(
+            Intent().apply {
+                putExtra(TAIL_ARGUMENT, AMIIBO_TAIL)
+            }
+        )
     }
 
     @Test
-    fun when_view_is_open_then_it_should_show_the_detail(){
+    fun when_view_is_open_then_it_should_show_the_detail() {
         amiiboListRobot.isViewDisplayed()
         amiiboListRobot.isAmiiboDataDisplayed()
     }
 }
 
 private const val AMIIBO_TAIL = "1"
-private  val AMIIBO = DBAmiibo(
-"11", "12", "13", "14", "15"
-, "16", "17", "Mario", DBAMiiboReleaseDate("19", "20", "21", "22")
+private val AMIIBO = DBAmiibo(
+    "11", "12", "13", "14", "15", "16", "17", "Mario", DBAMiiboReleaseDate("19", "20", "21", "22")
 )

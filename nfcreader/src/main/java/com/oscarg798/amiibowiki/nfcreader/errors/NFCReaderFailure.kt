@@ -21,6 +21,6 @@ sealed class NFCReaderFailure(
 
     object AdapterNotFound : NFCReaderFailure("NFC adapter not found in device")
     object AdapterDisabled : NFCReaderFailure("NFC Adapter is disabled")
-    class TagNotSupported(cause: Exception): NFCReaderFailure("Tag not supported", cause)
+    class TagNotSupported(cause: Exception) : NFCReaderFailure("Tag not supported", cause)
     class Unknow(cause: Exception) : NFCReaderFailure(cause.message, cause)
 }

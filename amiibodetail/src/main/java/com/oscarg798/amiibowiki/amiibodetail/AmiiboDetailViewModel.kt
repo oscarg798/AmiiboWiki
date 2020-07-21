@@ -16,13 +16,13 @@ import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -41,7 +41,7 @@ class AmiiboDetailViewModel @Inject constructor(
         emit(AmiiboDetailResult.DetailFetched(result) as AmiiboDetailResult)
     }.catch { cause ->
         if (cause !is AmiiboDetailFailure.AmiiboNotFoundByTail) {
-            throw  cause
+            throw cause
         }
         emit(AmiiboDetailResult.Error(cause))
     }.flowOn(coroutinesContextProvider.backgroundDispatcher)

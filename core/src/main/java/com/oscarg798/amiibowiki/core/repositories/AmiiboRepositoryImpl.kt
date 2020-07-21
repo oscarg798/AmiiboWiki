@@ -23,12 +23,12 @@ import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @CoreScope
@@ -66,9 +66,11 @@ class AmiiboRepositoryImpl @Inject constructor(
                 return@onEach
             }
 
-            amiiboDAO.insert(it.map { amiibo ->
-                amiibo.toDBAmiibo()
-            })
+            amiiboDAO.insert(
+                it.map { amiibo ->
+                    amiibo.toDBAmiibo()
+                }
+            )
         }
 
     override suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo> =
@@ -94,4 +96,3 @@ fun Amiibo.toDBAmiibo() =
         name,
         releaseDate.toDBAmiiboReleaseDate()
     )
-

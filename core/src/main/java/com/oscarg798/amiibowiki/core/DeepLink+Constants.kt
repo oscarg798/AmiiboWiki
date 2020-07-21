@@ -12,5 +12,5 @@
 
 package com.oscarg798.amiibowiki.core
 
-const val AMIIBO_LIST_DEEPLINK  = "amiibowiki://list"
+const val AMIIBO_LIST_DEEPLINK = "amiibowiki://list"
 const val AMIIBO_DETAIL_DEEPLINK = "amiibowiki://detail"

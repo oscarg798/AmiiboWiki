@@ -12,8 +12,6 @@
 
 package com.oscarg798.amiibowiki.testutils.di
 
-import android.content.Context
-import androidx.room.Room
 import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO

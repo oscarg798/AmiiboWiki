@@ -15,11 +15,10 @@ package com.oscarg798.amiibowiki.core.extensions
 import com.oscarg798.amiibowiki.core.failures.Failure
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 
-
 fun <R> Result<R>.getOrTransformNetworkException(
     exceptionMapper: ((NetworkException) -> Failure) = { throw it }
 ): R = getOrElse {
-    throw  when (it) {
+    throw when (it) {
         is NetworkException.TimeOut,
         NetworkException.UnknowHost(it.message),
         NetworkException.Connection -> exceptionMapper(it as NetworkException)
@@ -48,7 +47,6 @@ public inline fun <T, R> T.runCatchingNetworkException(
         } else {
             Result.failure(e)
         }
-
     }
 }
 

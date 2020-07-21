@@ -26,7 +26,7 @@ object PersistenceModule {
     @CoreScope
     @Provides
     fun provideDatabase(context: Context): CoreAmiiboDatabase {
-        return  Room.databaseBuilder(
+        return Room.databaseBuilder(
             context,
             CoreAmiiboDatabase::class.java, "core_amiibo_database"
         ).build()

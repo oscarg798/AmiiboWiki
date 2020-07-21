@@ -27,5 +27,4 @@ class TestApplication : Application(), CoreComponentProvider {
 
         return DaggerTestCoreComponent.factory().create(this, Config(MOCK_WEB_SERVER_URL))
     }
-
 }

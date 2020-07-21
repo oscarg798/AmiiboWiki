@@ -30,7 +30,7 @@ class ErrorInterceptor : Interceptor {
         val response = try {
             chain.proceed(request)
         } catch (e: IOException) {
-            throw  when (e) {
+            throw when (e) {
                 is ConnectException -> NetworkException.Connection
                 is TimeoutException,
                 is SocketTimeoutException -> NetworkException.TimeOut

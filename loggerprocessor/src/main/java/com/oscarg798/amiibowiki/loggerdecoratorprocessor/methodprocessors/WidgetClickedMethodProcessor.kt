@@ -19,7 +19,6 @@ import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.WidgetClickedMe
 import javax.annotation.processing.Messager
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
-import javax.tools.Diagnostic
 
 class WidgetClickedMethodProcessor(nextProcessor: MethodProcessor? = null) :
     AbstractMethodProcessor(nextProcessor) {
@@ -52,4 +51,3 @@ class WidgetClickedMethodProcessor(nextProcessor: MethodProcessor? = null) :
     override fun canMethodBeProcessed(methodElement: Element): Boolean =
         methodElement.getAnnotationsByType(WidgetClicked::class.java).isNotEmpty()
 }
-

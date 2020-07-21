@@ -16,7 +16,6 @@ import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-
 data class AmiiboDetailViewState(
     val status: Status,
     val error: AmiiboDetailFailure? = null

@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
-
 import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.extensions.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.models.AmiiboType
@@ -20,10 +19,10 @@ import com.oscarg798.amiibowiki.core.network.models.APIAmiiboType
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @CoreScope
