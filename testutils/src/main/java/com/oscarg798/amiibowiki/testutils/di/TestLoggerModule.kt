@@ -15,13 +15,14 @@ package com.oscarg798.amiibowiki.testutils.di
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.logger.FirebaseLogger
-import com.oscarg798.amiibowiki.logger.FirebaseSource
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.lomeno.logger.Logger
+import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.Response
 
+@Module
 object TestLoggerModule {
 
     @CoreScope
@@ -30,7 +31,7 @@ object TestLoggerModule {
 
     @CoreScope
     @Provides
-    fun provideLogger(firebaseLogger: FirebaseLogger): Logger = relaxedMockk<Logger>()
+    fun provideLogger(): Logger = relaxedMockk<Logger>()
 
     @CoreScope
     @Provides
