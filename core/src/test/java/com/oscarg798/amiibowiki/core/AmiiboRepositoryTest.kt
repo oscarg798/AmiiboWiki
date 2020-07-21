@@ -23,7 +23,7 @@ import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
-import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,7 +40,7 @@ class AmiiboRepositoryTest {
 
     private val amiiboDAO = mockk<AmiiboDAO>()
     private val amiiboService = mockk<AmiiboService>()
-    private lateinit var repository: AmiiboRepository
+    private lateinit var repository: AmiiboRepositoryImpl
 
     @Before
     fun before() {
@@ -59,7 +59,7 @@ class AmiiboRepositoryTest {
                 )
             )
         }
-        repository = AmiiboRepository(amiiboService, amiiboDAO)
+        repository = AmiiboRepositoryImpl(amiiboService, amiiboDAO)
     }
 
     @Test

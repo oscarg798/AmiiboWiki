@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki
 
-import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure

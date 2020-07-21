@@ -16,7 +16,7 @@ import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import io.mockk.coEvery
 import io.mockk.every
@@ -33,7 +33,7 @@ import org.junit.Test
 class GetAmiiboFilteredUseCaseTest {
 
     private val getDefaultAmiiboTypeUseCase = mockk<GetDefaultAmiiboTypeUseCase>()
-    private val repository = mockk<AmiiboRepository>()
+    private val repository = mockk<AmiiboRepositoryImpl>()
 
     private lateinit var usecase: GetAmiiboFilteredUseCase
 

@@ -25,7 +25,7 @@ import javax.inject.Inject
 class GetAmiiboDetailUseCase @Inject constructor(private val repository: AmiiboRepository) {
 
     suspend fun execute(tail: String): Amiibo {
-       return  runCatching {
+        return runCatching {
             repository.getAmiiboById(tail)
         }.getOrTransform {
             throw if (it is IllegalArgumentException) {

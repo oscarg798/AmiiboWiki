@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.core
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
 
 class CoroutineContextProvider(
     val mainDispatcher: CoroutineDispatcher,

@@ -20,6 +20,7 @@ import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
@@ -52,7 +53,6 @@ interface CoreComponent {
     fun provideCoroutineContextProvider(): CoroutineContextProvider
     fun provideLocale(): Locale
     fun provideAmiiboService(): AmiiboService
-    fun provideAmiiboRepository(): AmiiboRepository
     fun provideAmiiboTypeService(): AmiiboTypeService
     fun provideAmiiboTypeDao(): AmiiboTypeDAO
     fun provideAmiiboDAO(): AmiiboDAO
@@ -61,6 +61,7 @@ interface CoreComponent {
     fun provideUpdateAmiiboTypeUseCase(): UpdateAmiiboTypeUseCase
     fun provideContext(): Context
     fun provideLogger(): Logger
+    fun provideAmiiboRepository(): AmiiboRepository
 
 
 }
