@@ -24,10 +24,10 @@ import com.oscarg798.amiibowiki.nfcreader.utils.TagTech
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import io.mockk.every
 import io.mockk.verify
+import java.nio.ByteBuffer
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
-import java.nio.ByteBuffer
 
 class NFCReaderRepositoryTest {
 
@@ -82,7 +82,7 @@ class NFCReaderRepositoryTest {
 
     @Test(expected = Exception::class)
     fun `when there is an exception reading a tag  then it should throw UnknownReadError`() {
-        every { tagTech.readPages(any()) } answers {throw Exception()}
+        every { tagTech.readPages(any()) } answers { throw Exception() }
         val result = repository.getamiiboIdentifierFromTag(tag)
         result shouldBeEqualTo AMIIBO_IDENTIFIER
 
@@ -95,7 +95,7 @@ class NFCReaderRepositoryTest {
 
     @Test(expected = RuntimeException::class)
     fun `when there is an RuntimeException reading a tag  then it should throw the IOException`() {
-        every { tagTech.readPages(any()) } answers {throw RuntimeException()}
+        every { tagTech.readPages(any()) } answers { throw RuntimeException() }
         val result = repository.getamiiboIdentifierFromTag(tag)
         result shouldBeEqualTo AMIIBO_IDENTIFIER
 
@@ -108,7 +108,7 @@ class NFCReaderRepositoryTest {
 
     @Test(expected = InvalidTagDataException::class)
     fun `when there is an InvalidTagDataException reading a tag  then it should throw the InvalidTagDataException`() {
-        every { tagTech.readPages(any()) } answers {throw InvalidTagDataException()}
+        every { tagTech.readPages(any()) } answers { throw InvalidTagDataException() }
         val result = repository.getamiiboIdentifierFromTag(tag)
         result shouldBeEqualTo AMIIBO_IDENTIFIER
 
@@ -118,7 +118,6 @@ class NFCReaderRepositoryTest {
             byteWrapper.wrap(any())
         }
     }
-
 }
 
 private const val LONG = 1L

@@ -32,7 +32,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @FlowPreview
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -76,13 +75,11 @@ class AmiiboListTest : BaseUITest(DISPATCHER) {
         amiiboListRobot.areAmiibosFilteredDisplayed()
         amiiboListRobot.clearFilters()
         amiiboListRobot.areAmiibosDisplayed()
-
     }
 }
 
 private val DB_AMIIBO = DBAmiibo(
-    "11", "12", "13", "14", "15"
-    , "16", "17", "Mario", DBAMiiboReleaseDate("19", "20", "21", "22")
+    "11", "12", "13", "14", "15", "16", "17", "Mario", DBAMiiboReleaseDate("19", "20", "21", "22")
 )
 private val DB_AMIIBO_TYPES = listOf(DBAmiiboType("1", "Figure"))
 private val DISPATCHER = object : Dispatcher() {
@@ -90,47 +87,47 @@ private val DISPATCHER = object : Dispatcher() {
         return when (request.path) {
             "/api/amiibo/" -> MockResponse().setResponseCode(200).setBody(
                 "{\n" +
-                        "    \"amiibo\": [\n" +
-                        "        {\n" +
-                        "            \"amiiboSeries\": \"Super Smash Bros.\",\n" +
-                        "            \"character\": \"Mario\",\n" +
-                        "            \"gameSeries\": \"Super Mario\",\n" +
-                        "            \"head\": \"00000000\",\n" +
-                        "            \"image\": \"https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_00000000-00000002.png\",\n" +
-                        "            \"name\": \"Mario\",\n" +
-                        "            \"release\": {\n" +
-                        "                \"au\": \"2014-11-29\",\n" +
-                        "                \"eu\": \"2014-11-28\",\n" +
-                        "                \"jp\": \"2014-12-06\",\n" +
-                        "                \"na\": \"2014-11-21\"\n" +
-                        "            },\n" +
-                        "            \"tail\": \"00000002\",\n" +
-                        "            \"type\": \"Figure\"\n" +
-                        "        }\n" +
-                        "    ]\n" +
-                        "}"
+                    "    \"amiibo\": [\n" +
+                    "        {\n" +
+                    "            \"amiiboSeries\": \"Super Smash Bros.\",\n" +
+                    "            \"character\": \"Mario\",\n" +
+                    "            \"gameSeries\": \"Super Mario\",\n" +
+                    "            \"head\": \"00000000\",\n" +
+                    "            \"image\": \"https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_00000000-00000002.png\",\n" +
+                    "            \"name\": \"Mario\",\n" +
+                    "            \"release\": {\n" +
+                    "                \"au\": \"2014-11-29\",\n" +
+                    "                \"eu\": \"2014-11-28\",\n" +
+                    "                \"jp\": \"2014-12-06\",\n" +
+                    "                \"na\": \"2014-11-21\"\n" +
+                    "            },\n" +
+                    "            \"tail\": \"00000002\",\n" +
+                    "            \"type\": \"Figure\"\n" +
+                    "        }\n" +
+                    "    ]\n" +
+                    "}"
             )
             "/api/amiibo/?type=Figure" -> MockResponse().setResponseCode(200).setBody(
                 "{\n" +
-                        "    \"amiibo\": [\n" +
-                        "        {\n" +
-                        "            \"amiiboSeries\": \"Super Smash Bros.\",\n" +
-                        "            \"character\": \"Luigi\",\n" +
-                        "            \"gameSeries\": \"Super Mario\",\n" +
-                        "            \"head\": \"00000001\",\n" +
-                        "            \"image\": \"https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_00000001-00000003.png\",\n" +
-                        "            \"name\": \"Luigi\",\n" +
-                        "            \"release\": {\n" +
-                        "                \"au\": \"2014-11-29\",\n" +
-                        "                \"eu\": \"2014-11-28\",\n" +
-                        "                \"jp\": \"2014-12-06\",\n" +
-                        "                \"na\": \"2014-11-21\"\n" +
-                        "            },\n" +
-                        "            \"tail\": \"00000003\",\n" +
-                        "            \"type\": \"Figure\"\n" +
-                        "        }\n" +
-                        "    ]\n" +
-                        "}"
+                    "    \"amiibo\": [\n" +
+                    "        {\n" +
+                    "            \"amiiboSeries\": \"Super Smash Bros.\",\n" +
+                    "            \"character\": \"Luigi\",\n" +
+                    "            \"gameSeries\": \"Super Mario\",\n" +
+                    "            \"head\": \"00000001\",\n" +
+                    "            \"image\": \"https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_00000001-00000003.png\",\n" +
+                    "            \"name\": \"Luigi\",\n" +
+                    "            \"release\": {\n" +
+                    "                \"au\": \"2014-11-29\",\n" +
+                    "                \"eu\": \"2014-11-28\",\n" +
+                    "                \"jp\": \"2014-12-06\",\n" +
+                    "                \"na\": \"2014-11-21\"\n" +
+                    "            },\n" +
+                    "            \"tail\": \"00000003\",\n" +
+                    "            \"type\": \"Figure\"\n" +
+                    "        }\n" +
+                    "    ]\n" +
+                    "}"
             )
             else -> MockResponse().setResponseCode(500)
         }

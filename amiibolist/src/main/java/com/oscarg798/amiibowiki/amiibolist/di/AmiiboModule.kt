@@ -30,6 +30,4 @@ abstract class AmiiboModule {
     @IntoMap
     @ViewModelKey(AmiiboListViewModel::class)
     abstract fun bindHouseViewModel(amiiboListViewModel: AmiiboListViewModel): ViewModel
-
 }
-

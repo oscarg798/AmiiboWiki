@@ -25,9 +25,8 @@ data class APIAmiiboReleaseDate(
     val northAmerica: String?,
     @SerializedName("jp")
     val japan: String?
-){
+) {
     fun toAmiiboReleaseDate() = AmiiboReleaseDate(australia, europe, northAmerica, japan)
-
 }
 
 data class APIAmiibo(

@@ -49,7 +49,7 @@ class ViewIdlingResource(
      * {@inheritDoc}
      */
     override fun getName(): String? {
-        return "$this ${viewMatcher.toString()}"
+        return "$this $viewMatcher"
     }
     /**
      * Tries to find the view associated with the given [<].

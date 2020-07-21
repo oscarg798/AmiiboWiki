@@ -18,7 +18,6 @@ import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
 import com.oscarg798.amiibowiki.logger.events.IMAGE_VIEW_TYPE_NAME
 
-
 @LoggerDecorator
 interface AmiiboListLogger {
 

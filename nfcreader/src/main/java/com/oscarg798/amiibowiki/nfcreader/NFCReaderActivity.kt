@@ -30,11 +30,11 @@ import com.oscarg798.amiibowiki.nfcreader.databinding.ActivityNFCReaderBinding
 import com.oscarg798.amiibowiki.nfcreader.di.DaggerNFCReaderComponent
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -87,9 +87,12 @@ class NFCReaderActivity : AppCompatActivity() {
     }
 
     private fun showAmiibo(amiiboIdentifier: AmiiboIdentifier) {
-        startDeepLinkIntent(AMIIBO_DETAIL_DEEPLINK, Bundle().apply {
-            putString(TAIL_ARGUMENT, amiiboIdentifier.tail)
-        })
+        startDeepLinkIntent(
+            AMIIBO_DETAIL_DEEPLINK,
+            Bundle().apply {
+                putString(TAIL_ARGUMENT, amiiboIdentifier.tail)
+            }
+        )
     }
 
     override fun onResume() {
@@ -104,12 +107,16 @@ class NFCReaderActivity : AppCompatActivity() {
 
     private fun setupForegroundDispatch() {
         nfcAdapter.enableForegroundDispatch(
-            this, PendingIntent.getActivity(
-                this, 0, Intent(
+            this,
+            PendingIntent.getActivity(
+                this, 0,
+                Intent(
                     this,
                     javaClass
-                ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0
-            ), null, null
+                ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                0
+            ),
+            null, null
         )
     }
 
@@ -122,7 +129,7 @@ class NFCReaderActivity : AppCompatActivity() {
     }
 }
 
-private const val TAG_FILE_SIZE = 532;
+private const val TAG_FILE_SIZE = 532
 private const val PAGE_SIZE = 4
 private const val BULK_READ_PAGE_COUNT = 4
 private const val MIME_TEXT_PLAIN = "text/plain"

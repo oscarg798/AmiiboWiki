@@ -19,5 +19,4 @@ import com.oscarg798.amiibowiki.core.mvi.Result
 sealed class AmiiboDetailResult : Result {
     data class DetailFetched(val amiibo: Amiibo) : AmiiboDetailResult()
     data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
-
 }

@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.network.di
 
-import android.net.Network
 import com.google.gson.GsonBuilder
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
@@ -59,7 +58,6 @@ object NetworkModule {
             .addInterceptor(ErrorInterceptor())
             .addInterceptor(loggingInterceptor)
             .addInterceptor(networkLoggerInterceptor)
-
 
         return builder.build()
     }

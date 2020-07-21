@@ -20,9 +20,7 @@ import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
-import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepositoryImpl
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
@@ -30,15 +28,17 @@ import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.lomeno.logger.Logger
 import dagger.BindsInstance
 import dagger.Component
+import java.util.Locale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.Retrofit
-import java.util.*
 
 @ExperimentalCoroutinesApi
 @CoreScope
 @Component(
-    modules = [CoreModule::class, ViewModelsModule::class, NetworkModule::class,
-        PersistenceModule::class, LoggerModule::class]
+    modules = [
+        CoreModule::class, ViewModelsModule::class, NetworkModule::class,
+        PersistenceModule::class, LoggerModule::class
+    ]
 )
 interface CoreComponent {
 
@@ -65,5 +65,4 @@ interface CoreComponent {
     fun provideLogger(): Logger
     fun provideAmiiboRepository(): AmiiboRepository
     fun provideAmiiboTypeRepository(): AmiiboTypeRepository
-
 }

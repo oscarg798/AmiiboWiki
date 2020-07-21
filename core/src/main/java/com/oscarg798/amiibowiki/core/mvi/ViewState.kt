@@ -25,5 +25,4 @@ interface ViewState<Result : MVIResult> {
         object None : LoadingState()
         object Loading : LoadingState()
     }
-
 }

@@ -18,4 +18,3 @@ data class DecoratorBuilder(
     val interfaceName: String,
     val methodDecorators: Set<MethodDecorator>
 )
-

@@ -25,7 +25,6 @@ import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
 
-
 @ExperimentalCoroutinesApi
 class GetAmiiboDetailUseCaseTest {
 
@@ -55,7 +54,6 @@ class GetAmiiboDetailUseCaseTest {
         coEvery { repository.getAmiiboById("1") } throws Exception()
         runBlocking { usecase.execute("1") }
     }
-
 }
 
 private val AMIIBO = Amiibo(

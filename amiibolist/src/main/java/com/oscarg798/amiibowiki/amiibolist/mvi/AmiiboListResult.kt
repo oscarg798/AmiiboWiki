@@ -20,8 +20,7 @@ sealed class AmiiboListResult : Result {
     object Loading : AmiiboListResult()
     data class FetchSuccess(val amiibos: List<Amiibo>) : AmiiboListResult()
     data class AmiibosFiltered(val amiibos: List<Amiibo>) : AmiiboListResult()
-    data class FiltersFetched(val filters: List<AmiiboType>): AmiiboListResult()
+    data class FiltersFetched(val filters: List<AmiiboType>) : AmiiboListResult()
     data class ShowAmiiboDetail(val amiiboTail: String) : AmiiboListResult()
     data class Error(val error: AmiiboListFailure) : AmiiboListResult()
-
 }

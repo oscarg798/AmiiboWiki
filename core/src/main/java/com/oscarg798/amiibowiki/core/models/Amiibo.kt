@@ -30,4 +30,3 @@ data class Amiibo(
     val tail: String,
     val name: String
 )
-

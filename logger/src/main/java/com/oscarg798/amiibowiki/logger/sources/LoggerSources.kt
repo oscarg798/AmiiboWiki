@@ -14,6 +14,5 @@ package com.oscarg798.amiibowiki.logger.sources
 
 import com.oscarg798.lomeno.event.LogSource
 
-
-object FirebaseSource: LogSource
-object CrashlytcisSource: LogSource
+object FirebaseSource : LogSource
+object CrashlytcisSource : LogSource

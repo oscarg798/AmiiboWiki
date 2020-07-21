@@ -25,6 +25,5 @@ class GetDefaultAmiiboTypeUseCase @Inject constructor() {
     )
 }
 
-
 private const val DEFAULT_ITEM_NAME = "Clear Filters"
 private const val DEFAULT_ITEM_KEY = "1x11"

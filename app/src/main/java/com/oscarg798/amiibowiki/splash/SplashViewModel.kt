@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.splash
 
-import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.extensions.onException
@@ -25,7 +24,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 
 @FlowPreview

@@ -22,8 +22,11 @@ import kotlinx.coroutines.FlowPreview
 @ExperimentalCoroutinesApi
 @NFCReaderScope
 @Component(
-    dependencies = [CoreComponent::class], modules = [NFCReaderModule::class,
-        NFCReaderViewModelModule::class]
+    dependencies = [CoreComponent::class],
+    modules = [
+        NFCReaderModule::class,
+        NFCReaderViewModelModule::class
+    ]
 )
 interface NFCReaderComponent {
 

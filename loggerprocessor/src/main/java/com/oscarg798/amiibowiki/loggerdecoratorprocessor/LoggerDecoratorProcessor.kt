@@ -13,11 +13,8 @@
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor
 
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
-import com.oscarg798.amiibowiki.logger.events.ScreenViewEvent
-import com.oscarg798.amiibowiki.logger.events.WidgetClickedEvent
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.DecoratorBuilder
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
-import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.ScreenShownMethodDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.FunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.ScreenShownFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.WidgetClikedFunctionCreator
@@ -25,10 +22,18 @@ import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.Method
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.ScreenShownMethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.WidgetClickedMethodProcessor
 import com.oscarg798.lomeno.logger.Logger
-import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import java.util.*
-import javax.annotation.processing.*
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeSpec
+import java.util.Collections
+import javax.annotation.processing.AbstractProcessor
+import javax.annotation.processing.Filer
+import javax.annotation.processing.Messager
+import javax.annotation.processing.ProcessingEnvironment
+import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
@@ -52,7 +57,6 @@ class LoggerDecoratorProcessor : AbstractProcessor() {
     private lateinit var filer: Filer
     private lateinit var messager: Messager
     private lateinit var processingEnvironment: ProcessingEnvironment
-
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         return Collections.singleton(LoggerDecorator::class.java.canonicalName)

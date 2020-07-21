@@ -76,4 +76,3 @@ abstract class AbstractMethodProcessor(private val nextProcessor: MethodProcesso
 }
 
 private const val PROPERTIES_POSITION_IN_PARAMETERS = 0
-        

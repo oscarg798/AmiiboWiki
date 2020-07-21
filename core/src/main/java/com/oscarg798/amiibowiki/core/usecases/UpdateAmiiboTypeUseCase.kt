@@ -15,8 +15,8 @@ package com.oscarg798.amiibowiki.core.usecases
 import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @CoreScope
@@ -31,5 +31,4 @@ class UpdateAmiiboTypeUseCase @Inject constructor(
 
         Result.success(listOf<AmiiboType>())
     }.map { Unit }
-
 }

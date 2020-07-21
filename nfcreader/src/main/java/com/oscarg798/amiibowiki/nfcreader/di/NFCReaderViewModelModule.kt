@@ -24,7 +24,7 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 @ExperimentalCoroutinesApi
 @Module
-abstract class NFCReaderViewModelModule  {
+abstract class NFCReaderViewModelModule {
 
     @Binds
     @IntoMap

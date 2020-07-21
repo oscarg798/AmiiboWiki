@@ -43,4 +43,3 @@ data class ScreenShownMethodDecorator(
             ScreenShownMethodDecorator(this)
     }
 }
-

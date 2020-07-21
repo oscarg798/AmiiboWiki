@@ -24,8 +24,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @CoreScope
 @Component(
-    modules = [CoreModule::class, TestNetworkModule::class,
-        TestPersistenceModule::class, TestLoggerModule::class]
+    modules = [
+        CoreModule::class, TestNetworkModule::class,
+        TestPersistenceModule::class, TestLoggerModule::class
+    ]
 )
 interface TestCoreComponent : CoreComponent {
 

@@ -121,7 +121,6 @@ class NFCReaderRepositoryImpl @Inject constructor(
         )
     }
 
-
     private fun isPageAvailable(pages: ByteArray?) =
         pages == null || pages.size != PAGE_SIZE * BULK_READ_PAGE_COUNT
 }
@@ -136,6 +135,6 @@ private const val TAIL_MASK = 0x00000000FFFFFFFFL
 private const val HEAD_MASK = -0x100000000L
 private const val HEAD_BITSHIFT = 4 * 8
 private const val AMIIBO_ID_SIZE = 8
-private const val TAG_FILE_SIZE = 532;
+private const val TAG_FILE_SIZE = 532
 private const val PAGE_SIZE = 4
 private const val BULK_READ_PAGE_COUNT = 4

@@ -12,13 +12,11 @@
 
 package com.oscarg798.amiibowiki
 
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-
 
 class SplashViewStateTest {
 
@@ -29,7 +27,6 @@ class SplashViewStateTest {
         state = SplashViewState.init()
     }
 
-
     @Test
     fun `when result is Fetch success then view state should not be loading and should felect this`() {
         val newState = state.reduce(SplashResult.TypesFetched)
@@ -38,7 +35,8 @@ class SplashViewStateTest {
             SplashViewState(
                 SplashViewState.FetchStatus.Success,
                 null
-            ), newState
+            ),
+            newState
         )
     }
 
@@ -49,6 +47,5 @@ class SplashViewStateTest {
 
         assertEquals(SplashViewState.FetchStatus.None, newState.status)
         assert(newState.error != null)
-
     }
 }

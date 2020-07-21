@@ -14,5 +14,4 @@ package com.oscarg798.amiibowiki.nfcreader.errors
 
 import com.oscarg798.amiibowiki.core.failures.Failure
 
-
 class UnknownReadError(override val cause: Exception?) : Failure.Recoverable(null, cause = cause)

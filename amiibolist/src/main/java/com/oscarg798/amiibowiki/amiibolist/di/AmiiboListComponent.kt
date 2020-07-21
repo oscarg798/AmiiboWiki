@@ -26,4 +26,3 @@ interface AmiiboListComponent {
 
     fun inject(amiiboListActivity: AmiiboListActivity)
 }
-

@@ -16,8 +16,8 @@ import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailActivity
 import com.oscarg798.amiibowiki.core.di.CoreComponent
 import dagger.BindsInstance
 import dagger.Component
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Scope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @AmiiboDetailScope

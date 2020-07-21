@@ -12,10 +12,7 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator
 
-import com.oscarg798.amiibowiki.logger.events.ScreenViewEvent
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
-import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.WidgetClickedMethodDecorator
-import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy

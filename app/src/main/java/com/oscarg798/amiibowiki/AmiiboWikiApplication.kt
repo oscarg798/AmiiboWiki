@@ -32,4 +32,3 @@ class AmiiboWikiApplication : Application(), CoreComponentProvider {
         return coreComponent
     }
 }
-

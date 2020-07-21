@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.core.failures
 
-
 sealed class FilterAmiiboFailure(
     override val message: String?,
     override val cause: Exception?

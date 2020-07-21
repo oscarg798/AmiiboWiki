@@ -44,5 +44,4 @@ sealed class NetworkException(
 
     data class Unknown(override val message: String?, override val code: Int?) :
         NetworkException(message, code)
-
 }

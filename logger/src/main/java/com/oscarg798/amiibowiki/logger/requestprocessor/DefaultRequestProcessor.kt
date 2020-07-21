@@ -19,10 +19,8 @@ import retrofit2.Invocation
 
 class DefaultRequestProcessor : RequestProcessor {
 
-
     override fun getTrackingEvent(request: Request): String? {
         val invocation = request.tag(Invocation::class.java)
         return invocation?.method()?.getAnnotation(NetworkTrackingEvent::class.java)?.eventName
     }
-
 }

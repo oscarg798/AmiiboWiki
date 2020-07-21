@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.core.di
 
-
 interface CoreComponentProvider {
 
     fun provideCoreComponent(): CoreComponent

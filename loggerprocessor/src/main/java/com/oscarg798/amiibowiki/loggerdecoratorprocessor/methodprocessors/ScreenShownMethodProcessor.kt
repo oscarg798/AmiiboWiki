@@ -18,7 +18,6 @@ import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.ScreenShownMeth
 import javax.annotation.processing.Messager
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
-import javax.tools.Diagnostic
 
 class ScreenShownMethodProcessor(nextProcessor: MethodProcessor? = null) :
     AbstractMethodProcessor(nextProcessor) {
@@ -47,4 +46,3 @@ class ScreenShownMethodProcessor(nextProcessor: MethodProcessor? = null) :
     override fun canMethodBeProcessed(methodElement: Element): Boolean =
         methodElement.getAnnotationsByType(ScreenShown::class.java).isNotEmpty()
 }
-

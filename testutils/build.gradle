@@ -9,11 +9,27 @@
  *
  *
  */
-apply from: "$rootProject.projectDir/shared.gradle"
+apply from: "$rootProject.projectDir/sharedbase.gradle"
 
 dependencies {
     implementation project(path: ':core')
     implementation project(path: ':network')
+    implementation project(path: ':logger')
+
+    implementation dagger
+    implementation daggerAndroidSupport
+    kapt daggerCompiler
+    kapt daggerAndroidProcessor
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    //Coroutines
+    implementation kotlinCoroutines
+    implementation kotlinCoroutinesAndroid
+
+    implementation retrofit
+    implementation gsonConverter
+    implementation okhttp3
+    implementation okhttpLoggingInterceptor
 
     implementation kotlinCoroutinesTest
     implementation junit
@@ -38,5 +54,7 @@ dependencies {
     implementation roomRuntime
     implementation roomCompiler
     implementation roomKTX
+
+    implementation lomeno
     testImplementation roomTesting
 }

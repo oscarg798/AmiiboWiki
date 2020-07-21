@@ -67,7 +67,6 @@ class GetAmiiboFilteredUseCaseTest {
             usecase.execute(AmiiboType("3", "3")).toList().get(0)
         }
         NO_FILTERED_AMIIBOS shouldBeEqualTo result
-
     }
 }
 

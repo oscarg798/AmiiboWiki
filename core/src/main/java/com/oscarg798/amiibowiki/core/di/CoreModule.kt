@@ -22,10 +22,10 @@ import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepositoryImpl
 import dagger.Module
 import dagger.Provides
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.Retrofit
-import java.util.*
 
 @ExperimentalCoroutinesApi
 @Module

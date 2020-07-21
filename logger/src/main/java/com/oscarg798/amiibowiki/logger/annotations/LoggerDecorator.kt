@@ -14,4 +14,4 @@ package com.oscarg798.amiibowiki.logger.annotations
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
-public annotation class  LoggerDecorator
+public annotation class LoggerDecorator

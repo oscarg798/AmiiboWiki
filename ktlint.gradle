@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 Oscar David Gallon Rosero
  *
@@ -9,9 +10,12 @@
  *
  *
  */
-
-package com.oscarg798.amiibowiki.loggerprocessor
-
-class HelloWorld {
-
+ktlint {
+    verbose.set(true)
+    android.set(true)
+    outputToConsole.set(true)
+    filter {
+        exclude("**/generated/**")
+        include("**/kotlin/**")
+    }
 }

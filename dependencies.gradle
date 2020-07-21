@@ -224,4 +224,5 @@ ext {
     kotlinpoet = 'com.squareup:kotlinpoet:1.6.0'
 
     kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:1.2.9"
+    ktlintLib = "com.pinterest:ktlint:0.37.2"
 }

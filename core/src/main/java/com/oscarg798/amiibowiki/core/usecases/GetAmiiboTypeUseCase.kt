@@ -15,11 +15,11 @@ package com.oscarg798.amiibowiki.core.usecases
 import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @CoreScope
@@ -36,7 +36,4 @@ class GetAmiiboTypeUseCase @Inject constructor(
                 }
             }
     }
-
-
 }
-

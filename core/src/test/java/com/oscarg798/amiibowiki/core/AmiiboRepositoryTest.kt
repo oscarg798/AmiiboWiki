@@ -25,7 +25,11 @@ import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -33,7 +37,6 @@ import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
-
 
 @ExperimentalCoroutinesApi
 class AmiiboRepositoryTest {
@@ -99,7 +102,6 @@ class AmiiboRepositoryTest {
         }
     }
 
-
     @Test(expected = GetAmiibosFailure.ProblemInDataSource::class)
     fun `when there is an NetworkException_TimeOut updating amiibos then it should throw GetAmiibosFailure_ProblemInDataSource`() {
         coEvery { amiiboService.get() } throws NetworkException.TimeOut
@@ -164,11 +166,10 @@ class AmiiboRepositoryTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `given a non existen tail id when get by id is called then it should return IllegalArgumentException`(){
+    fun `given a non existen tail id when get by id is called then it should return IllegalArgumentException`() {
         coEvery { amiiboDAO.getById("1") } answers { null }
-         runBlocking { repository.getAmiiboById("1") }
+        runBlocking { repository.getAmiiboById("1") }
     }
-
 }
 
 private val AMIIBO = Amiibo(
@@ -182,8 +183,7 @@ private val AMIIBO = Amiibo(
     "11", "12"
 )
 private val DB_AMIIBO = DBAmiibo(
-    "11", "12", "13", "14", "15"
-    , "16", "17", "18", DBAMiiboReleaseDate("19", "20", "21", "22")
+    "11", "12", "13", "14", "15", "16", "17", "18", DBAMiiboReleaseDate("19", "20", "21", "22")
 )
 private val API_AMIIBO =
     APIAmiibo(
@@ -193,5 +193,6 @@ private val API_AMIIBO =
             "8",
             "9",
             "10"
-        ), "11", "12"
+        ),
+        "11", "12"
     )
