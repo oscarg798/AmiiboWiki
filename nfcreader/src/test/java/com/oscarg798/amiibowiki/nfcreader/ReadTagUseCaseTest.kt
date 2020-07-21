@@ -18,10 +18,10 @@ import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
+import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepositoryImpl
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import io.mockk.every
 import io.mockk.mockk
-import org.amshove.kluent.mock
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test

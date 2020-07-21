@@ -14,15 +14,11 @@ package com.oscarg798.amiibowiki.nfcreader.di
 
 import android.content.Context
 import android.nfc.NfcAdapter
-import androidx.lifecycle.ViewModel
-import com.oscarg798.amiibowiki.core.ViewModelKey
-import com.oscarg798.amiibowiki.nfcreader.NFCReaderViewModel
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
+import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepositoryImpl
 import com.oscarg798.amiibowiki.nfcreader.utils.*
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -46,5 +42,9 @@ object NFCReaderModule {
     @NFCReaderScope
     @Provides
     fun provideByteWrapper(amiiboByteWrapper: AmiiboByteWrapper): ByteWrapper = amiiboByteWrapper
+
+    @NFCReaderScope
+    @Provides
+    fun provideNFCReaderRepository(nfcReaderRepositoryImpl: NFCReaderRepositoryImpl): NFCReaderRepository = nfcReaderRepositoryImpl
 
 }
