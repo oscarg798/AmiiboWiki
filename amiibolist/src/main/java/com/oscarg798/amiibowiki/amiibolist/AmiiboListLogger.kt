@@ -13,19 +13,31 @@
 package com.oscarg798.amiibowiki.amiibolist
 
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
+import com.oscarg798.amiibowiki.logger.annotations.LogSources
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
+import com.oscarg798.amiibowiki.logger.events.BUTTON_TYPE_NAME
 import com.oscarg798.amiibowiki.logger.events.IMAGE_VIEW_TYPE_NAME
+import com.oscarg798.amiibowiki.logger.sources.CRASHLYTICS_LOG_SOURCE_NAME
+import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
+import com.oscarg798.lomeno.sources.NETWORK_LOG_SOURCE_NAME
 
 @LoggerDecorator
 interface AmiiboListLogger {
 
+    @LogSources([FIREBASE_LOG_SOURCE_NAME, NETWORK_LOG_SOURCE_NAME])
+    @ScreenShown(AMIIBO_LIST_SCREEN_NAME)
+    fun trackScreenViewed(@LogEventProperties culito: Map<String, String>)
+
+    @WidgetClicked("amibito", BUTTON_TYPE_NAME)
+    fun trackAmiiboCLicked()
+
+    @WidgetClicked("amibito", BUTTON_TYPE_NAME)
+    fun trackAmiiboCLicked(@LogEventProperties culito2: Map<String, String>)
+
     @ScreenShown(AMIIBO_LIST_SCREEN_NAME)
     fun trackScreenViewed()
-
-    @WidgetClicked(AMIIBO_ITEM_CLICK_WIDGET_NAME, IMAGE_VIEW_TYPE_NAME)
-    fun trackAmiiboClicked(@LogEventProperties properties: Map<String, String>)
 }
 
 private const val AMIIBO_ITEM_CLICK_WIDGET_NAME = "AMIIBO_ITEM"

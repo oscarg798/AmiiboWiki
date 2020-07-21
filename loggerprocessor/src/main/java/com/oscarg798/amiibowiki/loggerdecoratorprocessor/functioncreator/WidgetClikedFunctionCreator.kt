@@ -24,9 +24,17 @@ class WidgetClikedFunctionCreator : AbstractFunctionCreator<WidgetClickedMethodD
 
     override fun getMethodStatement(methodDecorator: WidgetClickedMethodDecorator): String =
         if (methodDecorator.propertiesName == null) {
-            "logger.log(WidgetClickedEvent(\"${methodDecorator.widgetName}\",\"${methodDecorator.widgetType}\"))"
+            """
+                logger.log(WidgetClickedEvent(widgetName="${methodDecorator.widgetName}",widgetType="${methodDecorator.widgetType}${getSourcesStatement(
+                methodDecorator.sources
+            )}"))
+           """.trimIndent()
         } else {
-            "logger.log(WidgetClickedEvent(\"${methodDecorator.widgetName}\",\"${methodDecorator.widgetType}\",${methodDecorator.propertiesName}))"
+            """
+                logger.log(WidgetClickedEvent(widgetName="${methodDecorator.widgetName}",widgetType="${methodDecorator.widgetType}",extraProperties=${methodDecorator.propertiesName}${getSourcesStatement(
+                methodDecorator.sources
+            )}))
+            """.trimIndent()
         }
 
     override fun addEventImportToFileSpecBuilder(fileSpecBuilder: FileSpec.Builder) {

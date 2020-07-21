@@ -19,6 +19,7 @@ import com.oscarg798.lomeno.event.LogSource
 class WidgetClickedEvent(
     widgetName: String,
     private val widgetType: String,
+    private val sources: Set<LogSource> = setOf<LogSource>(FirebaseSource),
     private val extraProperties: Map<String, String>? = null
 ) : LogEvent {
 
@@ -32,8 +33,10 @@ class WidgetClickedEvent(
         }
     }
 
-    override fun isSourceSupported(logSource: LogSource): Boolean = logSource is FirebaseSource
+    override fun isSourceSupported(logSource: LogSource): Boolean = sources.contains(logSource)
 }
 
 private const val WIDGET_NAME_SUFFIX = "_NAME"
 private const val WIDGET_ACTION_SUFFIX = "_CLICK"
+
+

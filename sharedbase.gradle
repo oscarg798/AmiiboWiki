@@ -18,10 +18,6 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 30
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
     defaultConfig {
         minSdkVersion appMinSdkVersion
         targetSdkVersion appTargetSdkVersion
@@ -67,5 +63,6 @@ android {
 
     kotlinOptions {
         freeCompilerArgs = ["-Xallow-result-return-type"]
+        jvmTarget = '1.8'
     }
 }

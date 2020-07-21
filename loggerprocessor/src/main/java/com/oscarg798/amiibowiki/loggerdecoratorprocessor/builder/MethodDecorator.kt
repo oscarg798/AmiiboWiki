@@ -12,6 +12,8 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder
 
+import com.oscarg798.lomeno.event.LogSource
+
 typealias MethodName = String
 typealias PropertiesName = String
 
@@ -19,4 +21,5 @@ interface MethodDecorator {
 
     val methodName: MethodName
     val propertiesName: PropertiesName?
+    val sources: Set<LogSource>?
 }

@@ -1,0 +1,2 @@
+-keep class com.oscarg798.amiibowiki.core.persistence.* { *; }
+-keep class com.oscarg798.amiibowiki.core.network.models.* { *; }

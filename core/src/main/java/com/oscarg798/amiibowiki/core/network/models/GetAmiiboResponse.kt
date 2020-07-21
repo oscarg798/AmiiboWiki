@@ -12,4 +12,6 @@
 
 package com.oscarg798.amiibowiki.core.network.models
 
-data class GetAmiiboResponse(val amiibo: List<APIAmiibo>)
+import com.google.gson.annotations.SerializedName
+
+data class GetAmiiboResponse(@SerializedName("amiibo") val amiibo: List<APIAmiibo>)

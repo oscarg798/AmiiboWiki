@@ -12,17 +12,21 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder
 
+import com.oscarg798.lomeno.event.LogSource
+
 typealias ScreenShownName = String
 
 data class ScreenShownMethodDecorator(
     val screenShownName: ScreenShownName,
     override val methodName: MethodName,
+    override val sources: Set<LogSource>?,
     override val propertiesName: PropertiesName?
 ) : MethodDecorator {
 
     private constructor(builder: Builder) : this(
         builder.screenShownName,
         builder.methodName,
+        builder.sources,
         builder.propertiesName
     )
 
@@ -33,6 +37,14 @@ data class ScreenShownMethodDecorator(
 
         var propertiesName: PropertiesName? = null
             private set
+
+        var sources: Set<LogSource>? = null
+            private set
+
+        fun withSources(sources: Set<LogSource>): Builder {
+            this.sources = sources
+            return this
+        }
 
         fun withPropertiesName(propertiesName: PropertiesName?): Builder {
             this.propertiesName = propertiesName

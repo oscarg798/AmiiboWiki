@@ -13,9 +13,12 @@
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors
 
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
+import com.oscarg798.amiibowiki.logger.annotations.LogSources
+import com.oscarg798.amiibowiki.logger.sources.toLogSource
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.exceptions.IllegalMethodToBeProcesseedException
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.exceptions.NoMethodProcessorFoundForMethodException
+import com.oscarg798.lomeno.event.LogSource
 import javax.annotation.processing.Messager
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
@@ -33,7 +36,7 @@ abstract class AbstractMethodProcessor(private val nextProcessor: MethodProcesso
 
     override fun process(methodElement: Element, messager: Messager): MethodDecorator {
         require(methodElement is ExecutableElement)
-        assert(canMethodBeProcceced(methodElement, messager))
+        assert(checkMethodParamterSize(methodElement, messager))
 
         return if (canMethodBeProcessed(methodElement)) {
             processInternally(methodElement, messager)
@@ -43,7 +46,7 @@ abstract class AbstractMethodProcessor(private val nextProcessor: MethodProcesso
         }
     }
 
-    private fun canMethodBeProcceced(
+    private fun checkMethodParamterSize(
         methodElement: ExecutableElement,
         messager: Messager
     ): Boolean {
@@ -69,6 +72,18 @@ abstract class AbstractMethodProcessor(private val nextProcessor: MethodProcesso
         }
 
         return true
+    }
+
+    protected fun getSources(methodElement: ExecutableElement): Set<LogSource>? {
+        if (methodElement.getAnnotationsByType(LogSources::class.java).isEmpty()) {
+            return null
+        }
+
+        val logSources = methodElement.getAnnotation(LogSources::class.java) as LogSources
+
+        return logSources.logSources.map {
+            it.toLogSource()
+        }.toSet()
     }
 
     protected fun getMethodName(methodElement: ExecutableElement) =

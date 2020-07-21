@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020 Oscar David Gallon Rosero
  *
@@ -10,12 +9,9 @@
  *
  *
  */
-ktlint {
-    verbose.set(true)
-    android.set(true)
-    outputToConsole.set(true)
-    filter {
-        exclude("**/generated/**")
-        include("**/kotlin/**")
-    }
-}
+
+package com.oscarg798.amiibowiki.logger.annotations
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
+annotation class LogSources(val logSources: Array<String>)

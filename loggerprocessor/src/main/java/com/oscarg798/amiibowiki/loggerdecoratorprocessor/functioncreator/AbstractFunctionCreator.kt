@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator
 
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
+import com.oscarg798.lomeno.event.LogSource
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -27,6 +28,17 @@ abstract class AbstractFunctionCreator<Decorator : MethodDecorator> : FunctionCr
         addReturnType(funBuilder, methodDecorator)
         return funBuilder.build()
     }
+
+    protected fun getSourcesStatement(sources: Set<LogSource>?): String = if (sources == null) {
+        ""
+    } else {
+        """
+            , sources=setOf<LogSource>(${sources.joinToString(",") {
+            it.javaClass.name
+        }})
+        """.trimIndent()
+    }
+
 
     private fun getFunSpecBuilder(methodDecorator: Decorator) =
         FunSpec.builder(methodDecorator.methodName)

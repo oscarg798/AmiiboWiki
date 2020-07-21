@@ -17,11 +17,10 @@ apply plugin: 'kotlin'
 dependencies {
     implementation kotlinJDK
     implementation kotlinpoet
-    implementation lomeno
+    implementation(lomeno)
     implementation project(path: ':logger')
 
     testImplementation junit
-    testImplementation kotlinCompileTesting
 }
 
 sourceCompatibility = "1.8"

@@ -12,12 +12,15 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors
 
+import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.ScreenShownMethodDecorator
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.exceptions.IllegalMethodToBeProcesseedException
 import javax.annotation.processing.Messager
 import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
+import javax.tools.Diagnostic
 
 class ScreenShownMethodProcessor(nextProcessor: MethodProcessor? = null) :
     AbstractMethodProcessor(nextProcessor) {
@@ -28,6 +31,10 @@ class ScreenShownMethodProcessor(nextProcessor: MethodProcessor? = null) :
     ): MethodDecorator {
         val methodDecoratorBuilder = getMethodMethodDecoratorBuilder(methodElement)
 
+        getSources(methodElement)?.let {
+            methodDecoratorBuilder.withSources(it)
+        }
+        
         if (methodElement.parameters.size == ALLOWED_PARAMETERS_SIZE) {
             val paramether = methodElement.parameters[PROPERTIES_POSITION_IN_PARAMETER]
             methodDecoratorBuilder.withPropertiesName(paramether.simpleName.toString())

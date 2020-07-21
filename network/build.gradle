@@ -14,7 +14,7 @@ apply from: "$rootProject.projectDir/sharedbase.gradle"
 
 dependencies {
 
-    implementation kotlinJDK
+    implementation(kotlinJDK)
     implementation dagger
     kapt daggerCompiler
 

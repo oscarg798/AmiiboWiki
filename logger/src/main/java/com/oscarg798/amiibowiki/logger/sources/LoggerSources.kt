@@ -13,6 +13,23 @@
 package com.oscarg798.amiibowiki.logger.sources
 
 import com.oscarg798.lomeno.event.LogSource
+import com.oscarg798.lomeno.sources.NETWORK_LOG_SOURCE_NAME
+import com.oscarg798.lomeno.sources.NetworkLogSource
 
-object FirebaseSource : LogSource
-object CrashlytcisSource : LogSource
+object FirebaseSource : LogSource {
+    override val name: String = FIREBASE_LOG_SOURCE_NAME
+}
+
+object CrashlytcisSource : LogSource {
+    override val name: String = CRASHLYTICS_LOG_SOURCE_NAME
+}
+
+fun String.toLogSource() = when(this){
+    FIREBASE_LOG_SOURCE_NAME-> FirebaseSource
+    CRASHLYTICS_LOG_SOURCE_NAME -> CrashlytcisSource
+    NETWORK_LOG_SOURCE_NAME -> NetworkLogSource
+    else -> throw IllegalArgumentException("There not LogSource with name: $this")
+}
+
+const val FIREBASE_LOG_SOURCE_NAME = "FIREBASE"
+const val CRASHLYTICS_LOG_SOURCE_NAME = "CRASHLYTICS"
