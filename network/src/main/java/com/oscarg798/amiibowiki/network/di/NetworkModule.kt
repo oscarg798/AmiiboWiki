@@ -17,13 +17,13 @@ import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.util.concurrent.TimeUnit
 
 @Module
 object NetworkModule {

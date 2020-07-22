@@ -40,15 +40,15 @@ class AmiiboRepositoryImpl @Inject constructor(
 ) : AmiiboRepository {
 
     override fun getAmiibos(): Flow<List<Amiibo>> = amiiboDAO.getAmiibos()
-        .catch { cause->
+        .catch { cause ->
             Log.i("PENE", cause.stackTrace.toString())
-            Log.i("PENE","PENE")
+            Log.i("PENE", "PENE")
         }
         .map {
-        it.map { dbAmiibo ->
-            dbAmiibo.map()
+            it.map { dbAmiibo ->
+                dbAmiibo.map()
+            }
         }
-    }
 
     override suspend fun getAmiiboById(tail: String): Amiibo {
         val amiibo = amiiboDAO.getById(tail)?.map()

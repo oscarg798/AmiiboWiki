@@ -13,14 +13,14 @@
 package com.oscarg798.amiibowiki.network.interceptors
 
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
-import okhttp3.Interceptor
-import okhttp3.Response
 import java.io.IOException
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
+import okhttp3.Interceptor
+import okhttp3.Response
 
 class ErrorInterceptor : Interceptor {
 

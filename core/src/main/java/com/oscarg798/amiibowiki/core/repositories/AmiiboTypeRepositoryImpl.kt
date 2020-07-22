@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
-import android.util.Log
 import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.extensions.runCatchingNetworkException
 import com.oscarg798.amiibowiki.core.models.AmiiboType
