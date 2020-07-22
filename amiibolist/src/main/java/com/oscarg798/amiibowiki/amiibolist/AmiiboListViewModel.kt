@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki
 
+import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
@@ -39,18 +40,43 @@ class AmiiboListViewModel @Inject constructor(
     private val getAmiibosUseCase: GetAmiibosUseCase,
     private val getAmiiboFilteredUseCase: GetAmiiboFilteredUseCase,
     private val getAmiiboTypeUseCase: GetAmiiboTypeUseCase,
+    private val amiiboListLogger: AmiiboListLogger,
     private val coroutinesContextProvider: CoroutineContextProvider
 ) :
     AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(AmiiboListViewState.init()) {
+
+    override fun onScreenShown() {
+        amiiboListLogger.trackScreenViewed()
+    }
 
     override suspend fun getResult(wish: AmiiboListWish): Flow<AmiiboListResult> {
         return when (wish) {
             is AmiiboListWish.RefreshAmiibos,
             is AmiiboListWish.GetAmiibos -> fetchAmiibos()
             is AmiiboListWish.FilterAmiibos -> filterAmiibos(wish.filter)
-            is AmiiboListWish.ShowFilters -> getFilters()
-            is AmiiboListWish.ShowAmiiboDetail -> showDetail(wish.viewAmiibo.tail)
+            is AmiiboListWish.ShowFilters -> {
+                trackShowFiltersWish()
+                getFilters()
+            }
+            is AmiiboListWish.ShowAmiiboDetail -> {
+                trackShowDetailsAmiiboWish(wish)
+                showDetail(wish.viewAmiibo.tail)
+            }
         }
+    }
+
+    private fun trackShowFiltersWish() {
+        amiiboListLogger.trackShownFiltersClicked()
+    }
+
+    private fun trackShowDetailsAmiiboWish(wish: AmiiboListWish.ShowAmiiboDetail) {
+        amiiboListLogger.trackAmiiboClicked(
+            mapOf(
+                TAIL_TRACKING_PROPERTY to wish.viewAmiibo.tail,
+                NAME_TRACKING_PROPERTY to wish.viewAmiibo.name,
+                GAME_SERIES_TRACKING_PROPERTY to wish.viewAmiibo.serie
+            )
+        )
     }
 
     private fun showDetail(tail: String) = flowOf(AmiiboListResult.ShowAmiiboDetail(tail))
@@ -88,3 +114,7 @@ class AmiiboListViewModel @Inject constructor(
         emit(AmiiboListResult.Error(AmiiboListFailure.FetchError(failure.message!!)))
     }
 }
+
+private const val TAIL_TRACKING_PROPERTY = "TAIL"
+private const val NAME_TRACKING_PROPERTY = "NAME"
+private const val GAME_SERIES_TRACKING_PROPERTY = "GAME_SERIES"

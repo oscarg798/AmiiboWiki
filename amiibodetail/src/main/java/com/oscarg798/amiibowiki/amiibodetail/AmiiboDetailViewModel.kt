@@ -16,6 +16,7 @@ import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -23,16 +24,36 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onEach
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class AmiiboDetailViewModel @Inject constructor(
     private val amiiboDetailTail: String,
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
+    private val amiiboDetailLogger: AmiiboDetailLogger,
     private val coroutinesContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
     AmiiboDetailViewState.init()
 ) {
+
+    init {
+        state.onEach {
+            if (it.status is AmiiboDetailViewState.Status.ShowingDetail) {
+                val amiibo = it.status.amiibo
+                amiiboDetailLogger.trackScreenShown(
+                    mapOf(
+                        TAIL_TRACKING_PROPERTY to amiibo.tail,
+                        HEAD_TRACKING_PROPERTY to amiibo.head,
+                        TYPE_TRACKING_PROPERTY to amiibo.type,
+                        NAME_TRACKING_PROPERTY to amiibo.name,
+                        GAME_SERIES_TRACKING_PROPERTY to amiibo.gameSeries
+                    )
+                )
+            }
+
+        }
+    }
 
     override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = getDetail()
 
@@ -46,3 +67,9 @@ class AmiiboDetailViewModel @Inject constructor(
         emit(AmiiboDetailResult.Error(cause))
     }.flowOn(coroutinesContextProvider.backgroundDispatcher)
 }
+
+private const val TAIL_TRACKING_PROPERTY = "TAIL"
+private const val HEAD_TRACKING_PROPERTY = "HEAD"
+private const val TYPE_TRACKING_PROPERTY = "TYPE"
+private const val NAME_TRACKING_PROPERTY = "NAME"
+private const val GAME_SERIES_TRACKING_PROPERTY = "GAME_SERIES"

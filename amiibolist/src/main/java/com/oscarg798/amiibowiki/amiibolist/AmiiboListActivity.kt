@@ -101,6 +101,7 @@ class AmiiboListActivity : AppCompatActivity() {
 
     private fun setupViewModelInteractions() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(AmiiboListViewModel::class.java)
+        viewModel.onScreenShown()
 
         viewModel.state.onEach {
             val state = it

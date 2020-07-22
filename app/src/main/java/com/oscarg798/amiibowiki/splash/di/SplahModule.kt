@@ -14,9 +14,13 @@ package com.oscarg798.amiibowiki.splash.di
 
 import androidx.lifecycle.ViewModel
 import com.oscarg798.amiibowiki.core.ViewModelKey
+import com.oscarg798.amiibowiki.splash.SplashLogger
+import com.oscarg798.amiibowiki.splash.SplashLoggerImpl
 import com.oscarg798.amiibowiki.splash.SplashViewModel
+import com.oscarg798.lomeno.logger.Logger
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.multibindings.IntoMap
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -24,10 +28,15 @@ import kotlinx.coroutines.FlowPreview
 @ExperimentalCoroutinesApi
 @FlowPreview
 @Module
-abstract class SplahModule {
+object SplahModule {
 
-    @Binds
     @IntoMap
     @ViewModelKey(SplashViewModel::class)
-    abstract fun bindHouseViewModel(amiiboListViewModel: SplashViewModel): ViewModel
+    @Provides
+    fun provideHouseViewModel(amiiboListViewModel: SplashViewModel): ViewModel = amiiboListViewModel
+
+    @SplashScope
+    @Provides
+    fun provideSplashLogger(logger: Logger): SplashLogger = SplashLoggerImpl(logger)
+
 }

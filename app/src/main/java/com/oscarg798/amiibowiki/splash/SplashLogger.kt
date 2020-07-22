@@ -10,9 +10,19 @@
  *
  */
 
-apply from: "$rootProject.projectDir/shared.gradle"
+package com.oscarg798.amiibowiki.splash
 
-dependencies {
-    implementation project(path: ':core')
-    implementation project(path: ':network')
+import com.oscarg798.amiibowiki.logger.annotations.LogSources
+import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
+import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
+import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
+
+@LoggerDecorator
+interface SplashLogger {
+
+    @LogSources([FIREBASE_LOG_SOURCE_NAME])
+    @ScreenShown(SCREEN_NAME)
+    fun trackScreenShown()
 }
+
+private const val SCREEN_NAME = "SPLASH_SCREEN"
