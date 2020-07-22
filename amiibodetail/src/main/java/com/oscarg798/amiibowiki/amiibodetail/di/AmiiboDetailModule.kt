@@ -13,20 +13,32 @@
 package com.oscarg798.amiibowiki.amiibodetail.di
 
 import androidx.lifecycle.ViewModel
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailLogger
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailLoggerImpl
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
 import com.oscarg798.amiibowiki.core.ViewModelKey
+import com.oscarg798.lomeno.logger.Logger
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.multibindings.IntoMap
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
 @ExperimentalCoroutinesApi
+@FlowPreview
 @Module
-abstract class AmiiboDetailModule {
+object AmiiboDetailModule {
+
 
     @AmiiboDetailScope
-    @Binds
     @IntoMap
     @ViewModelKey(AmiiboDetailViewModel::class)
-    abstract fun bindAmiiboDetailViewModel(amiiboDetailViewModel: AmiiboDetailViewModel): ViewModel
+    @Provides
+    fun provideAmiiboDetailViewModel(amiiboDetailViewModel: AmiiboDetailViewModel): ViewModel =
+        amiiboDetailViewModel
+
+    @AmiiboDetailScope
+    @Provides
+    fun provideAmiiboDetailLogger(logger: Logger): AmiiboDetailLogger = AmiiboDetailLoggerImpl(logger)
 }

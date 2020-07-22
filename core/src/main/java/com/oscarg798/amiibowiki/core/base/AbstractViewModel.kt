@@ -23,12 +23,13 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
-    ViewState : MVIViewState<Result>>(private val initialState: ViewState) : ViewModel() {
+    ViewState : MVIViewState<Result>>(initialState: ViewState) : ViewModel() {
 
     private val wishProcessor = ConflatedBroadcastChannel<Wish>()
 
@@ -43,6 +44,10 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
         CoroutineExceptionHandler { _, exception -> throw exception }
 
     protected abstract suspend fun getResult(wish: Wish): Flow<Result>
+
+    open fun onScreenShown(){
+        //DO_NOTHING
+    }
 
     fun onWish(wish: Wish) {
         wishProcessor.offer(wish)

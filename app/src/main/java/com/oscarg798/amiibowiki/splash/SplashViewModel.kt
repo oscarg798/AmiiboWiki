@@ -30,9 +30,14 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class SplashViewModel @Inject constructor(
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
-    private val coroutineContextProvider: CoroutineContextProvider
+    private val coroutineContextProvider: CoroutineContextProvider,
+    private val splashLogger: SplashLogger
 ) :
     AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.init()) {
+
+    override fun onScreenShown() {
+        splashLogger.trackScreenShown()
+    }
 
     override suspend fun getResult(wish: SplashWish): Flow<SplashResult> = fetchTypes()
 

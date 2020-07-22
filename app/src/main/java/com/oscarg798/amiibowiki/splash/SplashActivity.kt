@@ -55,6 +55,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun setup() {
         val vm = ViewModelProvider(this, viewModelFactory).get(SplashViewModel::class.java)
+        vm.onScreenShown()
 
         vm.state.onEach { state ->
             when {

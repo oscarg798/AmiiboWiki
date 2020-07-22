@@ -108,6 +108,8 @@ dependencies {
 
     implementation lottie
 
+    kapt project(':loggerprocessor')
+
     //Test
     testImplementation mockk
     testImplementation junit

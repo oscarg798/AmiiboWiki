@@ -25,9 +25,9 @@ class WidgetClikedFunctionCreator : AbstractFunctionCreator<WidgetClickedMethodD
     override fun getMethodStatement(methodDecorator: WidgetClickedMethodDecorator): String =
         if (methodDecorator.propertiesName == null) {
             """
-                logger.log(WidgetClickedEvent(widgetName="${methodDecorator.widgetName}",widgetType="${methodDecorator.widgetType}${getSourcesStatement(
+                logger.log(WidgetClickedEvent(widgetName="${methodDecorator.widgetName}",widgetType="${methodDecorator.widgetType}"${getSourcesStatement(
                 methodDecorator.sources
-            )}"))
+            )}))
            """.trimIndent()
         } else {
             """
