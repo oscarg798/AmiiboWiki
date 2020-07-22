@@ -18,11 +18,9 @@ import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.RegularEvent
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
-import com.oscarg798.amiibowiki.logger.events.BUTTON_TYPE_NAME
 import com.oscarg798.amiibowiki.logger.events.MENU_ITEM_TYPE_NAME
 import com.oscarg798.amiibowiki.logger.events.RECYCLER_VIEW_ITEM_TYPE_NAME
 import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
-import com.oscarg798.lomeno.sources.NETWORK_LOG_SOURCE_NAME
 
 @LoggerDecorator
 interface AmiiboListLogger {

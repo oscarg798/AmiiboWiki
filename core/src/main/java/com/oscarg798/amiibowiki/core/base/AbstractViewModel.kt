@@ -23,7 +23,6 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 
 @FlowPreview
@@ -45,8 +44,8 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
 
     protected abstract suspend fun getResult(wish: Wish): Flow<Result>
 
-    open fun onScreenShown(){
-        //DO_NOTHING
+    open fun onScreenShown() {
+        // DO_NOTHING
     }
 
     fun onWish(wish: Wish) {
