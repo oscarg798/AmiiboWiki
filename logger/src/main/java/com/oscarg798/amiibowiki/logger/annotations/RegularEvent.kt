@@ -10,21 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors
+package com.oscarg798.amiibowiki.logger.annotations
 
-import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
-import javax.annotation.processing.Messager
-import javax.lang.model.element.Element
-
-/**
- * A Method Processor is in charge of transform an Element of ExecutableElement into a MethodDecorator
- */
-interface MethodProcessor {
-
-    fun process(methodElement: Element, messager: Messager): MethodDecorator
-}
-
-internal const val PROPERTIES_POSITION_IN_PARAMETER = 0
-internal const val ALLOWED_PARAMETERS_SIZE = 1
-internal const val WRONG_NUMBERS_OF_PARAMTERS_FOR_ANNOTATED_METHODS =
-    "Annotated methods can only have 1 paramter and it should be annotated withLogEventProperties"
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
+annotation class RegularEvent(
+    val eventName: String,
+    val eventValue: String
+)

@@ -16,9 +16,11 @@ import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.DecoratorBuilder
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.FunctionCreator
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.RegularEventFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.ScreenShownFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.WidgetClikedFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.MethodProcessor
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.RegularEventMethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.ScreenShownMethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.WidgetClickedMethodProcessor
 import com.oscarg798.lomeno.event.LogSource
@@ -46,13 +48,17 @@ import javax.tools.Diagnostic
  */
 class LoggerDecoratorProcessor : AbstractProcessor() {
 
+    /**
+     * Will be nice if we inject this params but AFAIK it's not possible
+     */
     private val decoratorBuilders = mutableSetOf<DecoratorBuilder>()
     private val screenShownMethodProcessor: MethodProcessor =
-        ScreenShownMethodProcessor(WidgetClickedMethodProcessor())
+        ScreenShownMethodProcessor(WidgetClickedMethodProcessor(RegularEventMethodProcessor()))
 
     private val functionCreators = setOf<FunctionCreator<MethodDecorator>>(
         ScreenShownFunctionCreator() as FunctionCreator<MethodDecorator>,
-        WidgetClikedFunctionCreator() as FunctionCreator<MethodDecorator>
+        WidgetClikedFunctionCreator() as FunctionCreator<MethodDecorator>,
+        RegularEventFunctionCreator() as FunctionCreator<MethodDecorator>
     )
 
     private lateinit var filer: Filer

@@ -16,6 +16,11 @@ import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 
+/**
+ * A Function Creator is in charge of create a FunSpec from a MethodDecorator,
+ * as It has a Generic Param involved it has a isApplicable method to determinate
+ * if a creator can convert a instance of a MethodDecorator
+ */
 interface FunctionCreator<Decorator : MethodDecorator> {
 
     fun isApplicable(methodDecorator: MethodDecorator): Boolean
