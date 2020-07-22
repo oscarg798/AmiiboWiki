@@ -25,7 +25,9 @@ class TestCollector<T> {
     private val values = mutableListOf<T>()
 
     fun test(scope: CoroutineScope, flow: Flow<T>): Job {
-        return scope.launch { flow.collect { values.add(it) } }
+        return scope.launch {
+            flow.collect { values.add(it) }
+        }
     }
 
     fun assertValues(vararg _values: T) {

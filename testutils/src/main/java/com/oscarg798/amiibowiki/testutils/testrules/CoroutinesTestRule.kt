@@ -15,6 +15,8 @@ package com.oscarg798.amiibowiki.testutils.testrules
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.resetMain
@@ -26,8 +28,9 @@ import org.junit.runners.model.Statement
 @ExperimentalCoroutinesApi
 class CoroutinesTestRule : TestRule {
 
+    private val job = SupervisorJob()
     val testDispatcher = TestCoroutineDispatcher()
-    val testCoroutineScope = TestCoroutineScope(testDispatcher)
+    val testCoroutineScope = TestCoroutineScope(testDispatcher + job)
     val coroutineContextProvider = CoroutineContextProvider(testDispatcher, testDispatcher)
 
     override fun apply(base: Statement, description: Description): Statement {
@@ -35,6 +38,7 @@ class CoroutinesTestRule : TestRule {
             override fun evaluate() {
                 Dispatchers.setMain(testDispatcher)
                 base.evaluate()
+                job.cancel()
                 Dispatchers.resetMain()
             }
         }

@@ -16,11 +16,13 @@ import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.cancelAndJoin
@@ -35,9 +37,9 @@ import org.junit.Test
 class AmiiboDetailViewModelTest {
 
     @get: Rule
-    val coroutinesRule =
-        CoroutinesTestRule()
+    val coroutinesRule = CoroutinesTestRule()
 
+    private val logger = relaxedMockk<AmiiboDetailLogger>()
     private val getAmiiboDetailUseCase = mockk<GetAmiiboDetailUseCase>()
     private lateinit var viewModel: AmiiboDetailViewModel
     private lateinit var testCollector: TestCollector<AmiiboDetailViewState>
@@ -49,6 +51,7 @@ class AmiiboDetailViewModelTest {
         viewModel = AmiiboDetailViewModel(
             TAIL,
             getAmiiboDetailUseCase,
+            logger,
             coroutinesRule.coroutineContextProvider
         )
     }
@@ -105,8 +108,31 @@ class AmiiboDetailViewModelTest {
             viewModel.state.launchIn(this).cancelAndJoin()
         }
     }
+
+    @Test
+    fun `when amiibo detail view state is emitted  then it should track the view as shown with the properties`() {
+        viewModel.onWish(AmiiboDetailWish.ShowDetail)
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+
+        verify {
+            logger.trackScreenShown(
+                mapOf(
+                    TAIL_TRACKING_PROPERTY to AMIIBO.tail,
+                    HEAD_TRACKING_PROPERTY to AMIIBO.head,
+                    TYPE_TRACKING_PROPERTY to AMIIBO.type,
+                    NAME_TRACKING_PROPERTY to AMIIBO.name,
+                    GAME_SERIES_TRACKING_PROPERTY to AMIIBO.gameSeries
+                )
+            )
+        }
+    }
 }
 
+private const val TAIL_TRACKING_PROPERTY = "TAIL"
+private const val HEAD_TRACKING_PROPERTY = "HEAD"
+private const val TYPE_TRACKING_PROPERTY = "TYPE"
+private const val NAME_TRACKING_PROPERTY = "NAME"
+private const val GAME_SERIES_TRACKING_PROPERTY = "GAME_SERIES"
 private val AMIIBO = Amiibo(
     "1",
     "2",

@@ -14,15 +14,18 @@ package com.oscarg798.amiibowiki
 
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.splash.SplashLogger
 import com.oscarg798.amiibowiki.splash.SplashViewModel
 import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.junit.Before
@@ -37,6 +40,7 @@ class SplashViewModelTest {
     val coroutinesRule =
         CoroutinesTestRule()
 
+    private val logger = relaxedMockk<SplashLogger>()
     private val updateAmiiboTypeUseCase = mockk<UpdateAmiiboTypeUseCase>()
     private lateinit var viewModel: SplashViewModel
     private lateinit var testCollector: TestCollector<SplashViewState>
@@ -46,7 +50,7 @@ class SplashViewModelTest {
         coEvery { updateAmiiboTypeUseCase.execute() } answers { Result.success(Unit) }
         testCollector = TestCollector()
         viewModel =
-            SplashViewModel(updateAmiiboTypeUseCase, coroutinesRule.coroutineContextProvider)
+            SplashViewModel(updateAmiiboTypeUseCase, logger, coroutinesRule.coroutineContextProvider)
     }
 
     @Test
@@ -92,6 +96,15 @@ class SplashViewModelTest {
 
         coVerify {
             updateAmiiboTypeUseCase.execute()
+        }
+    }
+
+    @Test
+    fun `when view is shown then it should track the event`(){
+        viewModel.onScreenShown()
+
+        verify {
+            logger.trackScreenShown()
         }
     }
 }

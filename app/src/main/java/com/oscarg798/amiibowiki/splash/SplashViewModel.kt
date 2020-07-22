@@ -30,8 +30,8 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class SplashViewModel @Inject constructor(
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
-    private val coroutineContextProvider: CoroutineContextProvider,
-    private val splashLogger: SplashLogger
+    private val splashLogger: SplashLogger,
+    private val coroutineContextProvider: CoroutineContextProvider
 ) :
     AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.init()) {
 

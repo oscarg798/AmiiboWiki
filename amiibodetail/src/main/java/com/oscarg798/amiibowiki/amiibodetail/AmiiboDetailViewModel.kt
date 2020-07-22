@@ -16,7 +16,7 @@ import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.models.Amiibo
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -37,25 +37,23 @@ class AmiiboDetailViewModel @Inject constructor(
     AmiiboDetailViewState.init()
 ) {
 
-    init {
-        state.onEach {
-            if (it.status is AmiiboDetailViewState.Status.ShowingDetail) {
-                val amiibo = it.status.amiibo
-                amiiboDetailLogger.trackScreenShown(
-                    mapOf(
-                        TAIL_TRACKING_PROPERTY to amiibo.tail,
-                        HEAD_TRACKING_PROPERTY to amiibo.head,
-                        TYPE_TRACKING_PROPERTY to amiibo.type,
-                        NAME_TRACKING_PROPERTY to amiibo.name,
-                        GAME_SERIES_TRACKING_PROPERTY to amiibo.gameSeries
-                    )
-                )
-            }
-
+    override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = getDetail().onEach {
+        if (it is AmiiboDetailResult.DetailFetched) {
+            trackViewShown(it.amiibo)
         }
     }
 
-    override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = getDetail()
+    private fun trackViewShown(amiibo: Amiibo) {
+        amiiboDetailLogger.trackScreenShown(
+            mapOf(
+                TAIL_TRACKING_PROPERTY to amiibo.tail,
+                HEAD_TRACKING_PROPERTY to amiibo.head,
+                TYPE_TRACKING_PROPERTY to amiibo.type,
+                NAME_TRACKING_PROPERTY to amiibo.name,
+                GAME_SERIES_TRACKING_PROPERTY to amiibo.gameSeries
+            )
+        )
+    }
 
     private suspend fun getDetail(): Flow<AmiiboDetailResult> = flow {
         val result = getAmiiboDetailUseCase.execute(amiiboDetailTail)

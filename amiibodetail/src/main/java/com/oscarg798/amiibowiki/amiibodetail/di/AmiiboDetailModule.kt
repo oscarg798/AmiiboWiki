@@ -18,7 +18,6 @@ import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailLoggerImpl
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
 import com.oscarg798.amiibowiki.core.ViewModelKey
 import com.oscarg798.lomeno.logger.Logger
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -29,7 +28,6 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 @Module
 object AmiiboDetailModule {
-
 
     @AmiiboDetailScope
     @IntoMap
