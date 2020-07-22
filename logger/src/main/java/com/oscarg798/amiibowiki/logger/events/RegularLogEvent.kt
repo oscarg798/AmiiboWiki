@@ -10,21 +10,25 @@
  *
  */
 
-package com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors
+package com.oscarg798.amiibowiki.logger.events
 
-import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
-import javax.annotation.processing.Messager
-import javax.lang.model.element.Element
+import com.oscarg798.lomeno.event.LogEvent
+import com.oscarg798.lomeno.event.LogSource
+import kotlin.math.log
 
-/**
- * A Method Processor is in charge of transform an Element of ExecutableElement into a MethodDecorator
- */
-interface MethodProcessor {
+class RegularLogEvent(
+    override val name: String,
+    private val eventValue: String,
+    private val sources: Set<LogSource>,
+    private val extraProperties: Map<String, String>? = null
+) : LogEvent {
 
-    fun process(methodElement: Element, messager: Messager): MethodDecorator
+    override val properties: Map<String, String> = mutableMapOf<String, String>().apply {
+        put(name, eventValue)
+        extraProperties?.let {
+            putAll(extraProperties)
+        }
+    }
+
+    override fun isSourceSupported(logSource: LogSource): Boolean = sources.contains(logSource)
 }
-
-internal const val PROPERTIES_POSITION_IN_PARAMETER = 0
-internal const val ALLOWED_PARAMETERS_SIZE = 1
-internal const val WRONG_NUMBERS_OF_PARAMTERS_FOR_ANNOTATED_METHODS =
-    "Annotated methods can only have 1 paramter and it should be annotated withLogEventProperties"

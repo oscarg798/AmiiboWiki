@@ -24,6 +24,11 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.tools.Diagnostic
 
+/**
+ * We use nextProcessor params as a Chain Pattern in order to chain different MethodProcessors
+ * for different methods annotated with different event annotations. The method
+ * canMethodBeProcessed determinates if a proccesor can be applied for a Element
+ */
 abstract class AbstractMethodProcessor(private val nextProcessor: MethodProcessor? = null) :
     MethodProcessor {
 

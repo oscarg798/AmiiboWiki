@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.amiibolist
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.LogSources
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
+import com.oscarg798.amiibowiki.logger.annotations.RegularEvent
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
 import com.oscarg798.amiibowiki.logger.events.BUTTON_TYPE_NAME
@@ -35,10 +36,16 @@ interface AmiiboListLogger {
     fun trackShownFiltersClicked()
 
     @LogSources([FIREBASE_LOG_SOURCE_NAME])
+    @RegularEvent(FILTER_APPLIED_EVENT_NAME, FILTER_APPLIED_EVENT_VALUE)
+    fun trackFilterApplied(@LogEventProperties properties: Map<String, String>)
+
+    @LogSources([FIREBASE_LOG_SOURCE_NAME])
     @WidgetClicked(AMIIBO_ITEM_CLICK_WIDGET_NAME, RECYCLER_VIEW_ITEM_TYPE_NAME)
     fun trackAmiiboClicked(@LogEventProperties properties: Map<String, String>)
 }
 
+private const val FILTER_APPLIED_EVENT_VALUE = "AMIIBO_FILTER_APPLIED"
+private const val FILTER_APPLIED_EVENT_NAME = "FILTER_APPLIED"
 private const val FILTERS_NAME = "AMIIBO_FILTERS"
 private const val AMIIBO_ITEM_CLICK_WIDGET_NAME = "AMIIBO_ITEM"
 private const val AMIIBO_LIST_SCREEN_NAME = "AMIIBO_LIST"

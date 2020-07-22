@@ -53,7 +53,10 @@ class AmiiboListViewModel @Inject constructor(
         return when (wish) {
             is AmiiboListWish.RefreshAmiibos,
             is AmiiboListWish.GetAmiibos -> fetchAmiibos()
-            is AmiiboListWish.FilterAmiibos -> filterAmiibos(wish.filter)
+            is AmiiboListWish.FilterAmiibos -> {
+                trackFilterApplied(wish)
+                filterAmiibos(wish.filter)
+            }
             is AmiiboListWish.ShowFilters -> {
                 trackShowFiltersWish()
                 getFilters()
@@ -63,6 +66,10 @@ class AmiiboListViewModel @Inject constructor(
                 showDetail(wish.viewAmiibo.tail)
             }
         }
+    }
+
+    private fun trackFilterApplied(wish: AmiiboListWish.FilterAmiibos) {
+        amiiboListLogger.trackFilterApplied(mapOf(APPLIED_FILTER_PROPERTY to wish.filter.name))
     }
 
     private fun trackShowFiltersWish() {
@@ -115,6 +122,7 @@ class AmiiboListViewModel @Inject constructor(
     }
 }
 
+private const val APPLIED_FILTER_PROPERTY = "APPLIED_AMIIBO_TYPE_FILTER"
 private const val TAIL_TRACKING_PROPERTY = "TAIL"
 private const val NAME_TRACKING_PROPERTY = "NAME"
 private const val GAME_SERIES_TRACKING_PROPERTY = "GAME_SERIES"
