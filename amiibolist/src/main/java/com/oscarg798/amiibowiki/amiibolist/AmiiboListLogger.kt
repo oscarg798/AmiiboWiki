@@ -18,8 +18,6 @@ import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
 import com.oscarg798.amiibowiki.logger.events.BUTTON_TYPE_NAME
-import com.oscarg798.amiibowiki.logger.events.IMAGE_VIEW_TYPE_NAME
-import com.oscarg798.amiibowiki.logger.sources.CRASHLYTICS_LOG_SOURCE_NAME
 import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
 import com.oscarg798.lomeno.sources.NETWORK_LOG_SOURCE_NAME
 
