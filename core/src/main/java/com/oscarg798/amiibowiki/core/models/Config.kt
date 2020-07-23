@@ -12,4 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.models
 
-data class Config(val baseUrl: String)
+data class Config(
+    val amiiboBaseUrl: String,
+    val gameBaseUrl: String
+)

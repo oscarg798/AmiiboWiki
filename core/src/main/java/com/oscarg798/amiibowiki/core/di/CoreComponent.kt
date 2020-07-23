@@ -23,8 +23,12 @@ import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.usecases.GetGamesUseCase
+import com.oscarg798.amiibowiki.core.usecases.SearchGameByAmiiboUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.network.di.NetworkModule
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
 import com.oscarg798.lomeno.logger.Logger
 import dagger.BindsInstance
 import dagger.Component
@@ -51,18 +55,29 @@ interface CoreComponent {
         ): CoreComponent
     }
 
-    fun provideRetrofit(): Retrofit
+    @AmiiboApiQualifier
+    fun provideAmiiboAPIRetrofit(): Retrofit
+    @GameApiQualifier
+    fun provideGameAPIRetrofit(): Retrofit
+
     fun provideCoroutineContextProvider(): CoroutineContextProvider
     fun provideLocale(): Locale
+
     fun provideAmiiboService(): AmiiboService
     fun provideAmiiboTypeService(): AmiiboTypeService
-    fun provideAmiiboTypeDao(): AmiiboTypeDAO
-    fun provideAmiiboDAO(): AmiiboDAO
+
+    fun provideAmiiboRepository(): AmiiboRepository
+    fun provideAmiiboTypeRepository(): AmiiboTypeRepository
+
     fun provideGetAmiiboTypeUseCase(): GetAmiiboTypeUseCase
     fun provideGetDefaulAmiiboTypeUseCase(): GetDefaultAmiiboTypeUseCase
     fun provideUpdateAmiiboTypeUseCase(): UpdateAmiiboTypeUseCase
+    fun provideGetGamesUseCase(): GetGamesUseCase
+    fun provideSearchGameUseCase(): SearchGameByAmiiboUseCase
+
     fun provideContext(): Context
     fun provideLogger(): Logger
-    fun provideAmiiboRepository(): AmiiboRepository
-    fun provideAmiiboTypeRepository(): AmiiboTypeRepository
+
+    fun provideAmiiboTypeDao(): AmiiboTypeDAO
+    fun provideAmiiboDAO(): AmiiboDAO
 }

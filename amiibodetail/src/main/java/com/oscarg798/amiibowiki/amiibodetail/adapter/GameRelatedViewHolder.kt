@@ -10,43 +10,31 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.amiibodetail.adapter
 
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.oscarg798.amiibowiki.amiibodetail.databinding.GameRelatedItemBinding
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
+import kotlinx.android.extensions.LayoutContainer
 
-class AmiiboDetailViewStateTest {
+class GameRelatedViewHolder(private val gameRelatedItemBinding: GameRelatedItemBinding) :
+    RecyclerView.ViewHolder(gameRelatedItemBinding.root), LayoutContainer {
 
-    private lateinit var state: AmiiboDetailViewState
+    override val containerView: View?
+        get() = gameRelatedItemBinding.root
 
-    @Before
-    fun setup() {
-        state = AmiiboDetailViewState.init()
+
+    fun bind(viewGameSearchResult: ViewGameSearchResult) {
+        gameRelatedItemBinding.tvGameName.text = viewGameSearchResult.gameName
+        if(viewGameSearchResult.alternativeName.isNullOrEmpty()) {
+            gameRelatedItemBinding.tvGameAlternativeName.visibility = View.GONE
+        }else{
+            gameRelatedItemBinding.tvGameAlternativeName.visibility = View.VISIBLE
+            gameRelatedItemBinding.tvGameAlternativeName.text = viewGameSearchResult.alternativeName
+        }
+
     }
 
-    @Test
-    fun `when amiibo detail fetch is success then state should reflect the change`() {
-        val newState =
-            state.reduce(AmiiboDetailResult.DetailFetched(AMIIBO)) as AmiiboDetailViewState
-        Assert.assertNull(newState.error)
-        assert(newState.detailStatus is AmiiboDetailViewState.DetailStatus.ShowingDetail)
-        Assert.assertEquals(
-            AMIIBO,
-            (newState.detailStatus as AmiiboDetailViewState.DetailStatus.ShowingDetail).amiibo
-        )
-    }
+
 }
-
-private val AMIIBO = Amiibo(
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    AmiiboReleaseDate("7", "8", "9", "10"),
-    "11", "12"
-)

@@ -16,6 +16,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    tools:background="@color/colorPrimaryDark"
     tools:context=".AmiiboDetailActivity">
 
     <ImageView
@@ -37,19 +38,6 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/tvName"
-        style="@style/Styles.AmiiboWiki.Default"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.S"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"
-        tools:text="Name" />
-
-    <TextView
         android:id="@+id/tvSerie"
         style="@style/Styles.AmiiboWiki.Default"
         android:layout_width="0dp"
@@ -59,7 +47,7 @@
         android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.M"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvName"
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
         tools:text="Serie" />
 
     <TextView
@@ -88,4 +76,14 @@
         app:layout_constraintTop_toBottomOf="@+id/tvCharacter"
         tools:text="Type" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGamesRelated"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvType"
+        tools:listitem="@layout/game_related_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

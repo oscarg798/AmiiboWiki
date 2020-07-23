@@ -10,43 +10,36 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.core.models
 
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+sealed class GameCategory {
+    object MainGame : GameCategory()
+    object DLCAddOn : GameCategory()
+    object Expansion : GameCategory()
+    object Bundle : GameCategory()
+    object StandAloneExpainsion : GameCategory()
+    object Mod : GameCategory()
+    object Episode : GameCategory()
 
-class AmiiboDetailViewStateTest {
+    companion object {
 
-    private lateinit var state: AmiiboDetailViewState
-
-    @Before
-    fun setup() {
-        state = AmiiboDetailViewState.init()
-    }
-
-    @Test
-    fun `when amiibo detail fetch is success then state should reflect the change`() {
-        val newState =
-            state.reduce(AmiiboDetailResult.DetailFetched(AMIIBO)) as AmiiboDetailViewState
-        Assert.assertNull(newState.error)
-        assert(newState.detailStatus is AmiiboDetailViewState.DetailStatus.ShowingDetail)
-        Assert.assertEquals(
-            AMIIBO,
-            (newState.detailStatus as AmiiboDetailViewState.DetailStatus.ShowingDetail).amiibo
-        )
+        fun createFromCategoryId(id: Id) = when (id) {
+            MAIN_GAME -> MainGame
+            DLC_ADD_ON -> DLCAddOn
+            EXPAINSION -> Expansion
+            BUNDLE -> Bundle
+            STANDALONG_EXPANSION -> StandAloneExpainsion
+            MOD -> Mod
+            EPISODE -> Episode
+            else -> throw IllegalArgumentException("Thre is no game category associated with id: $id")
+        }
     }
 }
 
-private val AMIIBO = Amiibo(
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    AmiiboReleaseDate("7", "8", "9", "10"),
-    "11", "12"
-)
+private const val MAIN_GAME = 0
+private const val DLC_ADD_ON = 1
+private const val EXPAINSION = 2
+private const val BUNDLE = 3
+private const val STANDALONG_EXPANSION = 4
+private const val MOD = 5
+private const val EPISODE = 6

@@ -21,6 +21,8 @@
     <color name="colorAccent">#F1AF3D</color>
     <color name="silver_chalice">#AAAAAA</color>
 
+    <color name="white">#ffffff</color>
+
     <!-- amiibo colors -->
     <color name="cinnabar">#EB322C</color>
     <color name="atlantis">#A7C73E</color>
