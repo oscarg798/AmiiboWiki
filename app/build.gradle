@@ -32,13 +32,17 @@ android {
 
     buildTypes {
         release {
-            buildConfigField "String", "BASE_URL", "\"$baseUrl\""
+            buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
+            buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug {
-            buildConfigField "String", "BASE_URL", "\"$baseUrl\""
+            minifyEnabled false
+            buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
+            buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
+
         }
     }
 
@@ -135,5 +139,6 @@ dependencies {
     implementation project(path: ':amiibolist')
     implementation project(path: ':amiibodetail')
     implementation project(path: ':nfcreader')
+    implementation project(path: ':network')
     testImplementation project(path: ':testutils')
 }

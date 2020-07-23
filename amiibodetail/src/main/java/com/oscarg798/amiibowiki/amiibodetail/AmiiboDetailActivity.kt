@@ -13,15 +13,21 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.MenuItem
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.snackbar.Snackbar
+import com.oscarg798.amiibowiki.amiibodetail.adapter.GamesRelatedAdapter
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
 import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
+import com.oscarg798.amiibowiki.core.TextWatcherAdapter
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
@@ -30,7 +36,11 @@ import com.oscarg798.amiibowiki.core.setImage
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 
 @FlowPreview
@@ -73,37 +83,53 @@ class AmiiboDetailActivity : AppCompatActivity() {
             }
         }
 
+        with(binding.rvGamesRelated) {
+            layoutManager = LinearLayoutManager(context)
+            adapter = GamesRelatedAdapter()
+        }
+
         val vm = ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
         vm.state.onEach {
-            if (it.status is AmiiboDetailViewState.Status.ShowingDetail) {
-                showDetail(it.status.amiibo)
-            } else if (it.error != null) {
-                Snackbar.make(binding.ivImage, it.error.message ?: "Error", Snackbar.LENGTH_LONG)
-                    .show()
+            when {
+                it.status is AmiiboDetailViewState.Status.ShowingDetail -> showDetail(it.status.amiiboDetails)
+                it.error != null -> {
+                    Snackbar.make(
+                        binding.ivImage,
+                        it.error.message ?: "Error",
+                        Snackbar.LENGTH_LONG
+                    )
+                        .show()
+                }
             }
         }.launchIn(lifecycleScope)
 
         vm.onWish(AmiiboDetailWish.ShowDetail)
     }
 
-    private fun showDetail(amiibo: Amiibo) {
-        supportActionBar?.title = amiibo.name
+    private fun showDetail(viewAmiiboDetails: ViewAmiiboDetails) {
+        supportActionBar?.title = viewAmiiboDetails.name
         with(binding) {
-            ivImage.setImage(amiibo.image)
-            tvName.setText(String.format(getString(R.string.name_string_format), amiibo.name))
+            ivImage.setImage(viewAmiiboDetails.imageUrl)
             tvCharacter.setText(
                 String.format(
                     getString(R.string.character_string_format),
-                    amiibo.character
+                    viewAmiiboDetails.character
                 )
             )
             tvSerie.setText(
                 String.format(
                     getString(R.string.game_series_string_format),
-                    amiibo.amiiboSeries
+                    viewAmiiboDetails.gameSeries
                 )
             )
-            tvType.setText(String.format(getString(R.string.type_string_format), amiibo.type))
+            tvType.setText(
+                String.format(
+                    getString(R.string.type_string_format),
+                    viewAmiiboDetails.type
+                )
+            )
+
+            (rvGamesRelated.adapter as GamesRelatedAdapter).submitList(viewAmiiboDetails.gameSearchResults.toList())
         }
     }
 }

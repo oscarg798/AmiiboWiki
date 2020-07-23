@@ -10,43 +10,15 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.core.network.models
 
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import com.google.gson.annotations.SerializedName
 
-class AmiiboDetailViewStateTest {
-
-    private lateinit var state: AmiiboDetailViewState
-
-    @Before
-    fun setup() {
-        state = AmiiboDetailViewState.init()
-    }
-
-    @Test
-    fun `when amiibo detail fetch is success then state should reflect the change`() {
-        val newState =
-            state.reduce(AmiiboDetailResult.DetailFetched(AMIIBO)) as AmiiboDetailViewState
-        Assert.assertNull(newState.error)
-        assert(newState.detailStatus is AmiiboDetailViewState.DetailStatus.ShowingDetail)
-        Assert.assertEquals(
-            AMIIBO,
-            (newState.detailStatus as AmiiboDetailViewState.DetailStatus.ShowingDetail).amiibo
-        )
-    }
-}
-
-private val AMIIBO = Amiibo(
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    AmiiboReleaseDate("7", "8", "9", "10"),
-    "11", "12"
+data class APIWebsite(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("url")
+    val url: String,
+    @SerializedName("trusted")
+    val trusted: Boolean
 )

@@ -17,7 +17,9 @@ import com.oscarg798.amiibowiki.core.di.CoreComponent
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.di.DaggerCoreComponent
 import com.oscarg798.amiibowiki.core.models.Config
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class AmiiboWikiApplication : Application(), CoreComponentProvider {
 
     private lateinit var coreComponent: CoreComponent
@@ -25,7 +27,10 @@ class AmiiboWikiApplication : Application(), CoreComponentProvider {
     override fun provideCoreComponent(): CoreComponent {
         if (!::coreComponent.isInitialized) {
             coreComponent = DaggerCoreComponent.factory().create(
-                this, Config(BuildConfig.BASE_URL)
+                this, Config(
+                    BuildConfig.BASE_AMIIBO_API_URL,
+                    BuildConfig.BASE_GAME_API_URL
+                )
             )
         }
 

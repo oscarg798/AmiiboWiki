@@ -63,11 +63,11 @@ class AmiiboDetailViewModelTest {
 
         testCollector.assertValues(
             AmiiboDetailViewState(
-                status = AmiiboDetailViewState.Status.None,
+                detailStatus = AmiiboDetailViewState.DetailStatus.None,
                 error = null
             ),
             AmiiboDetailViewState(
-                status = AmiiboDetailViewState.Status.ShowingDetail(AMIIBO),
+                detailStatus = AmiiboDetailViewState.DetailStatus.ShowingDetail(AMIIBO),
                 error = null
             )
         )
@@ -87,11 +87,11 @@ class AmiiboDetailViewModelTest {
 
         testCollector.assertValues(
             AmiiboDetailViewState(
-                status = AmiiboDetailViewState.Status.None,
+                detailStatus = AmiiboDetailViewState.DetailStatus.None,
                 error = null
             ),
             AmiiboDetailViewState(
-                status = AmiiboDetailViewState.Status.None,
+                detailStatus = AmiiboDetailViewState.DetailStatus.None,
                 error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)
             )
         )

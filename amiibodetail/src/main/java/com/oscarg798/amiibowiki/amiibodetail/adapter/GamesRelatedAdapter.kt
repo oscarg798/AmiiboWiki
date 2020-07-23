@@ -10,15 +10,35 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.amiibodetail.adapter
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import com.oscarg798.amiibowiki.amiibodetail.databinding.GameRelatedItemBinding
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.mvi.Result
 
-sealed class AmiiboDetailResult : Result {
-    data class DetailFetched(val amiibo: ViewAmiiboDetails) : AmiiboDetailResult()
-    data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
+class GamesRelatedAdapter : ListAdapter<ViewGameSearchResult, GameRelatedViewHolder>(object :
+    DiffUtil.ItemCallback<ViewGameSearchResult>() {
+
+    override fun areItemsTheSame(
+        oldItem: ViewGameSearchResult,
+        newItem: ViewGameSearchResult
+    ): Boolean = oldItem.gameId == newItem.gameId
+
+    override fun areContentsTheSame(
+        oldItem: ViewGameSearchResult,
+        newItem: ViewGameSearchResult
+    ): Boolean = oldItem == newItem
+
+}) {
+
+    override fun onBindViewHolder(holder: GameRelatedViewHolder, position: Int) =
+        holder.bind(getItem(position))
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameRelatedViewHolder =
+        GameRelatedViewHolder(
+            GameRelatedItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
 }

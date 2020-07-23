@@ -10,43 +10,14 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.core.usecases
 
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import com.oscarg798.amiibowiki.core.repositories.GameRepository
+import javax.inject.Inject
 
-class AmiiboDetailViewStateTest {
+class GetGamesUseCase @Inject constructor(private val gameRepository: GameRepository) {
 
-    private lateinit var state: AmiiboDetailViewState
+    suspend fun execute(gameName: String) = gameRepository.getGames(gameName)
 
-    @Before
-    fun setup() {
-        state = AmiiboDetailViewState.init()
-    }
 
-    @Test
-    fun `when amiibo detail fetch is success then state should reflect the change`() {
-        val newState =
-            state.reduce(AmiiboDetailResult.DetailFetched(AMIIBO)) as AmiiboDetailViewState
-        Assert.assertNull(newState.error)
-        assert(newState.detailStatus is AmiiboDetailViewState.DetailStatus.ShowingDetail)
-        Assert.assertEquals(
-            AMIIBO,
-            (newState.detailStatus as AmiiboDetailViewState.DetailStatus.ShowingDetail).amiibo
-        )
-    }
 }
-
-private val AMIIBO = Amiibo(
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    AmiiboReleaseDate("7", "8", "9", "10"),
-    "11", "12"
-)

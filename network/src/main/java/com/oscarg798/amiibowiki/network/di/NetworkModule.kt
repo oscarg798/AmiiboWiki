@@ -13,6 +13,10 @@
 package com.oscarg798.amiibowiki.network.di
 
 import com.google.gson.GsonBuilder
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
 import dagger.Provides
@@ -20,6 +24,7 @@ import dagger.Reusable
 import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -62,11 +67,13 @@ object NetworkModule {
         return builder.build()
     }
 
+    @AmiiboApiQualifier
     @Reusable
     @Provides
-    fun provideRetrofit(
+    fun provideAmiiboAPIRetrofit(
         gsonConverterFactory: GsonConverterFactory,
         httpClient: OkHttpClient,
+        @AmiiboAPIBaseUrl
         baseUrl: String
     ): Retrofit {
         return Retrofit.Builder()
@@ -74,6 +81,32 @@ object NetworkModule {
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(gsonConverterFactory)
             .client(httpClient)
+            .build()
+    }
+
+    @GameApiQualifier
+    @Reusable
+    @Provides
+    fun provideGameAPIRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        httpClient: OkHttpClient,
+        @GameAPIBaseUrl
+        baseUrl: String
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(gsonConverterFactory)
+            .client(httpClient.newBuilder().addInterceptor(object: Interceptor {
+                override fun intercept(chain: Interceptor.Chain): Response {
+                    val request= chain.request()
+                    val newRequest = request.newBuilder().addHeader("user-key","399e51a2e10e9f385f1590bffdd09dce")
+                        .build()
+
+                    return chain.proceed(newRequest)
+
+                }
+            }).build())
             .build()
     }
 }
