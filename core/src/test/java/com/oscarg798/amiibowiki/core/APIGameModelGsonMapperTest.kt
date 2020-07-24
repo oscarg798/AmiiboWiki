@@ -22,7 +22,8 @@ class APIGameModelGsonMapperTest {
     @Test
     fun `given a json with a game information when its parse using gson then it should return an api model`() {
 
-        val gameJson = """
+        val gameJson =
+            """
             {
                 "id": 41829,
                 "category": 2,
@@ -101,7 +102,7 @@ class APIGameModelGsonMapperTest {
                 ],
                 "checksum": "93d388df-fcb5-4065-72f5-1b44ee96b2d6"
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val gson = Gson()
         val game = gson.fromJson(gameJson, APIGame::class.java)
@@ -113,6 +114,5 @@ class APIGameModelGsonMapperTest {
         Assert.assertNotNull(game.summary)
         Assert.assertEquals(setOf(50428), game.webSiteIds)
         Assert.assertEquals(setOf(14759), game.videosId)
-
     }
 }

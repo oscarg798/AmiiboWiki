@@ -34,8 +34,8 @@ import kotlinx.coroutines.flow.flowOn
 class AmiiboDetailViewModel @Inject constructor(
     private val amiiboDetailTail: String,
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
-    private val amiiboDetailLogger: AmiiboDetailLogger,
     private val searchGameByAmiiboUseCase: SearchGameByAmiiboUseCase,
+    private val amiiboDetailLogger: AmiiboDetailLogger,
     private val coroutinesContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
     AmiiboDetailViewState.init()
@@ -44,10 +44,9 @@ class AmiiboDetailViewModel @Inject constructor(
 
     private suspend fun getDetail(): Flow<AmiiboDetailResult> = flow {
         emit(getAmiiboDetailUseCase.execute(amiiboDetailTail))
-
     }.flatMapConcat { amiibo ->
+        trackViewShown(amiibo)
         val searchResult = searchGameByAmiiboUseCase.execute(amiibo)
-
         flowOf(
             AmiiboDetailResult.DetailFetched(
                 ViewAmiiboDetails(
@@ -57,6 +56,9 @@ class AmiiboDetailViewModel @Inject constructor(
             )
         ) as Flow<AmiiboDetailResult>
     }.catch { cause ->
+        /**
+         * TODO: searchGameByAmiiboUseCase is not mapping exceptions then errors there will crash
+         */
         if (cause !is AmiiboDetailFailure.AmiiboNotFoundByTail) {
             throw cause
         }

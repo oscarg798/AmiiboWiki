@@ -116,7 +116,8 @@ class APIGameQueryTest {
     @Test(expected = QueryWithSearchAndWhereClauseIsNotSupportedException::class)
     fun `given a query without field, with limit, where clause and  with search when its converted to string then it should thrown`() {
         val query = APIGameQuery(
-            searchClause = SEARCH_QUERY, limit = 40, whereClause = WhereClause.Id(
+            searchClause = SEARCH_QUERY, limit = 40,
+            whereClause = WhereClause.Id(
                 ID
             )
         )
@@ -129,7 +130,8 @@ class APIGameQueryTest {
     @Test(expected = QueryWithSearchAndWhereClauseIsNotSupportedException::class)
     fun `given a query without field, with where clause and with search when its converted to string then it should thrown`() {
         val query = APIGameQuery(
-            searchClause = SEARCH_QUERY, whereClause = WhereClause.Id(
+            searchClause = SEARCH_QUERY,
+            whereClause = WhereClause.Id(
                 ID
             )
         )

@@ -32,5 +32,6 @@ data class ViewAmiiboDetails(
         amiibo.type,
         gameSearchResults.map { gameSearchResult ->
             ViewGameSearchResult(gameSearchResult)
-        })
+        }
+    )
 }

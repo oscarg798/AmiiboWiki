@@ -10,28 +10,40 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.testutils
 
+import android.annotation.SuppressLint
+import android.view.View
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
-import com.oscarg798.amiibowiki.testutils.isViewContainingTextDisplayed
-import com.oscarg798.amiibowiki.testutils.utils.TestRobot
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 
-class AmiiboDetailRobot : TestRobot {
+fun isViewContainingTextDisplayed(text: String, index: Int = FIRST_MATCH_INDEX) {
+    Espresso.onView(withIndex(ViewMatchers.withText(text), FIRST_MATCH_INDEX))
+        .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+}
 
-    override fun isViewDisplayed() {
-        Espresso.onView(ViewMatchers.withId(R.id.ivImage))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-    }
+fun withIndex(matcher: Matcher<View?>, index: Int): Matcher<View?>? {
+    return object : TypeSafeMatcher<View?>() {
+        var currentIndex = 0
+        var viewObjHash = 0
 
-    fun isAmiiboDataDisplayed() {
-        isViewContainingTextDisplayed("Mario")
-        isViewContainingTextDisplayed("Super Mario Bros")
-        isViewContainingTextDisplayed("Figure")
-        isViewContainingTextDisplayed("Mario", CHARACTER_VIEW_INDEX)
-        isViewContainingTextDisplayed("Related Games")
+        @SuppressLint("DefaultLocale")
+        override fun describeTo(description: Description) {
+            description.appendText(String.format("with index: %d ", index))
+            matcher.describeTo(description)
+        }
+
+        override fun matchesSafely(view: View?): Boolean {
+            if (matcher.matches(view) && currentIndex++ == index) {
+                viewObjHash = view.hashCode()
+            }
+            return view.hashCode() === viewObjHash
+        }
     }
 }
 
-private const val CHARACTER_VIEW_INDEX = 1
+private const val FIRST_MATCH_INDEX = 0

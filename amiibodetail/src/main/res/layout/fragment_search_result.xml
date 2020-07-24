@@ -15,19 +15,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:padding="8dp"
+    tools:background="?colorPrimary"
     tools:context=".SearchResultFragment">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Related Games"
-        android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.M"
+    <ImageView
+        android:id="@+id/tvSlideUpIndicator"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_toggle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/Styles.AmiiboWiki.Default"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/related_games_title"
+        android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.M"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSlideUpIndicator" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvGamesRelated"

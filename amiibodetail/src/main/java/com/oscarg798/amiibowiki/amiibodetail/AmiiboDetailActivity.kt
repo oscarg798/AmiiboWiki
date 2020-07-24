@@ -13,37 +13,26 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import android.os.Bundle
-import android.text.Editable
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.oscarg798.amiibowiki.amiibodetail.adapter.GamesRelatedAdapter
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
 import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
-import com.oscarg798.amiibowiki.core.TextWatcherAdapter
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
-import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.setImage
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 
 @FlowPreview
@@ -82,6 +71,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
 
     private fun setup() {
         supportActionBar?.let {
+            it.elevation = 0f
             with(it) {
                 setDisplayHomeAsUpEnabled(true)
                 setHomeAsUpIndicator(R.drawable.ic_close)
@@ -105,25 +95,16 @@ class AmiiboDetailActivity : AppCompatActivity() {
 
         vm.onWish(AmiiboDetailWish.ShowDetail)
 
-        val searchResultFragment =
-            supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
-                ?: return
-
-        configureBackDrop(searchResultFragment)
+        configureBackDrop()
 
         binding.searchResultFragment.setOnClickListener {
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         }
-
     }
 
-    private fun configureBackDrop(fragment: SearchResultFragment) {
-        val fragmentView = fragment.view ?: return
-
-        bottomSheetBehavior = BottomSheetBehavior.from<View>(fragmentView)
-
+    private fun configureBackDrop() {
+        bottomSheetBehavior = BottomSheetBehavior.from<View>(binding.searchResultFragment)
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-
     }
 
     override fun onBackPressed() {
@@ -138,30 +119,15 @@ class AmiiboDetailActivity : AppCompatActivity() {
         supportActionBar?.title = viewAmiiboDetails.name
         with(binding) {
             ivImage.setImage(viewAmiiboDetails.imageUrl)
-            tvCharacter.setText(
-                String.format(
-                    getString(R.string.character_string_format),
-                    viewAmiiboDetails.character
-                )
-            )
-            tvSerie.setText(
-                String.format(
-                    getString(R.string.game_series_string_format),
-                    viewAmiiboDetails.gameSeries
-                )
-            )
-            tvType.setText(
-                String.format(
-                    getString(R.string.type_string_format),
-                    viewAmiiboDetails.type
-                )
-            )
+
+            tvGameCharacter.setText(viewAmiiboDetails.character)
+            tvSerie.setText(viewAmiiboDetails.gameSeries)
+            tvType.setText(viewAmiiboDetails.type)
 
             val searchResultFragment =
                 supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
                     ?: return
             searchResultFragment.showGameResults(viewAmiiboDetails.gameSearchResults.toList())
-
         }
     }
 }

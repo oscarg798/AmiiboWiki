@@ -57,7 +57,6 @@ data class APIGame(
         raiting
     )
 
-
     private fun mapVideos(
         videos: Map<Id, VideoId>
     ): List<VideoId>? {
@@ -78,5 +77,3 @@ data class APIGame(
         }
     }
 }
-
-

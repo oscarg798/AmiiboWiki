@@ -24,51 +24,18 @@ import com.oscarg798.amiibowiki.core.network.gameapiquery.WhereClause
 import com.oscarg798.amiibowiki.core.network.models.APIGame
 import com.oscarg798.amiibowiki.core.network.models.APISearchResult
 import com.oscarg798.amiibowiki.core.network.services.GameService
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import javax.inject.Inject
-
 
 class GameRepositoryImpl @Inject constructor(private val gameService: GameService) :
     GameRepository {
 
-    /**
-     * This was intend to get a list of games after searching for the name but this will get just the games based on an id sent by the presenter
-     * rather tan search based on a name.
-     */
-    override suspend fun getGames(gameName: String): Collection<Game> = coroutineScope {
-        val gameIds = getGamesFromAPI(gameName)
-            .mapNotNull { it.game }
-
-        if (gameIds.isEmpty()) {
-            return@coroutineScope listOf<Game>()
-        }
-
-        val apiGames = gameIds.map {
-            async(start = CoroutineStart.LAZY) {
-                gameService.getGames(
-                    APIGameQuery(
-                        whereClause = WhereClause.Id(
-                            it
-                        )
-                    ).toString()
-                )
-            }
-        }.awaitAll().mapNotNull {
-            it.firstOrNull()
-        }
-
-        val webSites = getWebSites(apiGames)
-        val videos = getVideos(apiGames)
-        val covers = getCovers(apiGames)
-
-        apiGames.map { apiGame ->
-            apiGame.toGame(gameName, covers, webSites, videos)
-        }
+    override suspend fun getGames(gameName: String): Collection<Game> {
+        TODO()
     }
-
 
     override suspend fun searchGame(query: String): Collection<GameSearchResult> =
         getGamesFromAPI(query)
