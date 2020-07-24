@@ -15,12 +15,15 @@ package com.oscarg798.amiibowiki.amiibodetail
 import android.os.Bundle
 import android.text.Editable
 import android.view.MenuItem
+import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibodetail.adapter.GamesRelatedAdapter
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
@@ -53,6 +56,8 @@ class AmiiboDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAmiiboDetailBinding
 
+    private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAmiiboDetailBinding.inflate(layoutInflater)
@@ -83,11 +88,6 @@ class AmiiboDetailActivity : AppCompatActivity() {
             }
         }
 
-        with(binding.rvGamesRelated) {
-            layoutManager = LinearLayoutManager(context)
-            adapter = GamesRelatedAdapter()
-        }
-
         val vm = ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
         vm.state.onEach {
             when {
@@ -104,6 +104,34 @@ class AmiiboDetailActivity : AppCompatActivity() {
         }.launchIn(lifecycleScope)
 
         vm.onWish(AmiiboDetailWish.ShowDetail)
+
+        val searchResultFragment =
+            supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
+                ?: return
+
+        configureBackDrop(searchResultFragment)
+
+        binding.searchResultFragment.setOnClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+    }
+
+    private fun configureBackDrop(fragment: SearchResultFragment) {
+        val fragmentView = fragment.view ?: return
+
+        bottomSheetBehavior = BottomSheetBehavior.from<View>(fragmentView)
+
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+
+    }
+
+    override fun onBackPressed() {
+        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun showDetail(viewAmiiboDetails: ViewAmiiboDetails) {
@@ -129,7 +157,11 @@ class AmiiboDetailActivity : AppCompatActivity() {
                 )
             )
 
-            (rvGamesRelated.adapter as GamesRelatedAdapter).submitList(viewAmiiboDetails.gameSearchResults.toList())
+            val searchResultFragment =
+                supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
+                    ?: return
+            searchResultFragment.showGameResults(viewAmiiboDetails.gameSearchResults.toList())
+
         }
     }
 }
