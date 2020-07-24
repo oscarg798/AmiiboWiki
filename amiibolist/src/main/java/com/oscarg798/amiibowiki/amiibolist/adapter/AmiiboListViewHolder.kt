@@ -33,6 +33,6 @@ class AmiiboListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), 
     fun bind(amiibo: ViewAmiibo) {
         tvAmiiboName.text = amiibo.name
         tvAmiiboSeries.text = amiibo.serie
-        ivImage.setImage(amiibo.image, R.drawable.ic_amiibo_logo)
+        ivImage.setImage(amiibo.image, R.drawable.ic_placeholder)
     }
 }

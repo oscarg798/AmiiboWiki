@@ -21,7 +21,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_amiibo_logo"
+        android:src="@drawable/ic_placeholder_gray"
         android:tint="@color/silver_chalice"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
