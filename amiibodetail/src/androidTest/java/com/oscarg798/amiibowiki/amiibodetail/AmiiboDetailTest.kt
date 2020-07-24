@@ -18,10 +18,14 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
+import com.oscarg798.amiibowiki.testutils.BaseUITest
 import com.oscarg798.amiibowiki.testutils.di.TestPersistenceModule
 import io.mockk.coEvery
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import okhttp3.mockwebserver.Dispatcher
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.RecordedRequest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +34,7 @@ import org.junit.runner.RunWith
 @ExperimentalCoroutinesApi
 @FlowPreview
 @RunWith(AndroidJUnit4ClassRunner::class)
-class AmiiboDetailTest {
+class AmiiboDetailTest : BaseUITest(DISPATCHER) {
 
     @get:Rule
     val intentTestRule: IntentsTestRule<AmiiboDetailActivity> =
@@ -61,5 +65,26 @@ class AmiiboDetailTest {
 
 private const val AMIIBO_TAIL = "1"
 private val AMIIBO = DBAmiibo(
-    "11", "12", "13", "14", "15", "16", "17", "Mario", DBAMiiboReleaseDate("19", "20", "21", "22")
+    "Super Mario Bros", "Mario", "Super Mario Bros", "14", "15", "Figure", "17", "Mario", DBAMiiboReleaseDate("19", "20", "21", "22")
 )
+
+private val DISPATCHER = object : Dispatcher() {
+    override fun dispatch(request: RecordedRequest): MockResponse {
+        return when {
+            request.path!!.contains("/search") -> MockResponse().setResponseCode(200).setBody(
+                """
+                    [
+                      {
+                        "id": 10458975,
+                        "alternative_name": "Mario Golf GB マリオゴルフGB",
+                        "game": 135389,
+                        "name": "Mario Golf",
+                        "published_at": 934243200
+                      }
+                    ]
+                """.trimIndent()
+            )
+            else -> MockResponse().setResponseCode(500)
+        }
+    }
+}

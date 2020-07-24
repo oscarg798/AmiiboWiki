@@ -97,16 +97,17 @@ object NetworkModule {
             .baseUrl(baseUrl)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(gsonConverterFactory)
-            .client(httpClient.newBuilder().addInterceptor(object: Interceptor {
-                override fun intercept(chain: Interceptor.Chain): Response {
-                    val request= chain.request()
-                    val newRequest = request.newBuilder().addHeader("user-key","399e51a2e10e9f385f1590bffdd09dce")
-                        .build()
+            .client(
+                httpClient.newBuilder().addInterceptor(object : Interceptor {
+                    override fun intercept(chain: Interceptor.Chain): Response {
+                        val request = chain.request()
+                        val newRequest = request.newBuilder().addHeader("user-key", "399e51a2e10e9f385f1590bffdd09dce")
+                            .build()
 
-                    return chain.proceed(newRequest)
-
-                }
-            }).build())
+                        return chain.proceed(newRequest)
+                    }
+                }).build()
+            )
             .build()
     }
 }

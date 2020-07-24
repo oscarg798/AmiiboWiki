@@ -13,10 +13,6 @@
 <resources>
 
     <style name="AppTheme.AmiiboDetail" parent="AppTheme">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/cerise</item>
-        <item name="colorPrimaryDark">@color/tulip_tree</item>
-        <item name="colorAccent">@color/cinnabar</item>
         <item name="android:windowAnimationStyle">@style/BottomToTopAnimation</item>
     </style>
 

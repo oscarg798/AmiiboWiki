@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Copyright 2020 Oscar David Gallon Rosero
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -10,31 +10,12 @@
   ~
   -->
 
-<resources>
-    <attr name="textColor" format="color" />
-    <attr name="TextColorSecondary" format="color" />
-
-    <color name="textColor">#1a1824</color>
-    <color name="secondaryTextColor">#919099</color>
-    <color name="colorPrimary">@color/mine_shaft_900</color>
-    <color name="colorPrimaryDark">@color/mine_shaft_800</color>
-    <color name="colorAccent">@color/mine_shaft_700</color>
-
-
-    <color name="silver_chalice">#AAAAAA</color>
-
-    <color name="white">#ffffff</color>
-
-    <color name="mine_shaft_700">#616161</color>
-    <color name="mine_shaft_800">#424242</color>
-    <color name="mine_shaft_900">#212121</color>
-
-
-    <!-- amiibo colors -->
-    <color name="cinnabar">#EB322C</color>
-    <color name="atlantis">#A7C73E</color>
-    <color name="picton_blue">#4AAAE6</color>
-    <color name="viridian">#3A8365</color>
-    <color name="tulip_tree">#F1AF3D</color>
-    <color name="cerise">#D63080</color>
-</resources>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="42dp"
+    android:height="42dp"
+    android:viewportWidth="42"
+    android:viewportHeight="42">
+  <path
+      android:fillColor="#AAAAAA"
+      android:pathData="M37.059,16H26H16H4.941C2.224,16 0,18.282 0,21s2.224,5 4.941,5H16h10h11.059C39.776,26 42,23.718 42,21S39.776,16 37.059,16z"/>
+</vector>

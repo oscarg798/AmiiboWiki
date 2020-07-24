@@ -18,6 +18,4 @@ import javax.inject.Inject
 class GetGamesUseCase @Inject constructor(private val gameRepository: GameRepository) {
 
     suspend fun execute(gameName: String) = gameRepository.getGames(gameName)
-
-
 }

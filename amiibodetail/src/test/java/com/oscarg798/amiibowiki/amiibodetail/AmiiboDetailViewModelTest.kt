@@ -13,9 +13,12 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.models.GameSearchResult
+import com.oscarg798.amiibowiki.core.usecases.SearchGameByAmiiboUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
@@ -41,16 +44,19 @@ class AmiiboDetailViewModelTest {
 
     private val logger = relaxedMockk<AmiiboDetailLogger>()
     private val getAmiiboDetailUseCase = mockk<GetAmiiboDetailUseCase>()
+    private val searchGameAmiiboUseCase = mockk<SearchGameByAmiiboUseCase>()
     private lateinit var viewModel: AmiiboDetailViewModel
     private lateinit var testCollector: TestCollector<AmiiboDetailViewState>
 
     @Before
     fun setup() {
+        coEvery { searchGameAmiiboUseCase.execute(AMIIBO) } answers { GAME_SEARCH_RESULTS }
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } answers { AMIIBO }
         testCollector = TestCollector()
         viewModel = AmiiboDetailViewModel(
             TAIL,
             getAmiiboDetailUseCase,
+            searchGameAmiiboUseCase,
             logger,
             coroutinesRule.coroutineContextProvider
         )
@@ -63,17 +69,18 @@ class AmiiboDetailViewModelTest {
 
         testCollector.assertValues(
             AmiiboDetailViewState(
-                detailStatus = AmiiboDetailViewState.DetailStatus.None,
+                status = AmiiboDetailViewState.Status.None,
                 error = null
             ),
             AmiiboDetailViewState(
-                detailStatus = AmiiboDetailViewState.DetailStatus.ShowingDetail(AMIIBO),
+                status = AmiiboDetailViewState.Status.ShowingDetail(VIEW_AMIIBO_DETAIL),
                 error = null
             )
         )
 
         coVerify {
             getAmiiboDetailUseCase.execute(TAIL)
+            searchGameAmiiboUseCase.execute(AMIIBO)
         }
     }
 
@@ -87,11 +94,11 @@ class AmiiboDetailViewModelTest {
 
         testCollector.assertValues(
             AmiiboDetailViewState(
-                detailStatus = AmiiboDetailViewState.DetailStatus.None,
+                status = AmiiboDetailViewState.Status.None,
                 error = null
             ),
             AmiiboDetailViewState(
-                detailStatus = AmiiboDetailViewState.DetailStatus.None,
+                status = AmiiboDetailViewState.Status.None,
                 error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)
             )
         )
@@ -133,6 +140,7 @@ private const val HEAD_TRACKING_PROPERTY = "HEAD"
 private const val TYPE_TRACKING_PROPERTY = "TYPE"
 private const val NAME_TRACKING_PROPERTY = "NAME"
 private const val GAME_SERIES_TRACKING_PROPERTY = "GAME_SERIES"
+private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", 4))
 private val AMIIBO = Amiibo(
     "1",
     "2",
@@ -142,5 +150,8 @@ private val AMIIBO = Amiibo(
     "6",
     AmiiboReleaseDate("7", "8", "9", "10"),
     "11", "12"
+)
+private val VIEW_AMIIBO_DETAIL = ViewAmiiboDetails(
+    AMIIBO, GAME_SEARCH_RESULTS
 )
 private const val TAIL = "1"

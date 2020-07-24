@@ -12,8 +12,10 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -30,23 +32,28 @@ class AmiiboDetailViewStateTest {
     @Test
     fun `when amiibo detail fetch is success then state should reflect the change`() {
         val newState =
-            state.reduce(AmiiboDetailResult.DetailFetched(AMIIBO)) as AmiiboDetailViewState
+            state.reduce(AmiiboDetailResult.DetailFetched(VIEW_AMIIBO_DETAIL)) as AmiiboDetailViewState
+
         Assert.assertNull(newState.error)
-        assert(newState.detailStatus is AmiiboDetailViewState.DetailStatus.ShowingDetail)
+        assert(newState.status is AmiiboDetailViewState.Status.ShowingDetail)
         Assert.assertEquals(
-            AMIIBO,
-            (newState.detailStatus as AmiiboDetailViewState.DetailStatus.ShowingDetail).amiibo
+            VIEW_AMIIBO_DETAIL,
+            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiiboDetails
         )
     }
 }
 
-private val AMIIBO = Amiibo(
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    AmiiboReleaseDate("7", "8", "9", "10"),
-    "11", "12"
+private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", 4))
+private val VIEW_AMIIBO_DETAIL = ViewAmiiboDetails(
+    Amiibo(
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        AmiiboReleaseDate("7", "8", "9", "10"),
+        "11", "12"
+    ),
+    GAME_SEARCH_RESULTS
 )

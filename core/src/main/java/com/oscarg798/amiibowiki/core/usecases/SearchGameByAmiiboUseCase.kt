@@ -15,29 +15,34 @@ package com.oscarg798.amiibowiki.core.usecases
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import javax.inject.Inject
 
 class SearchGameByAmiiboUseCase @Inject constructor(private val gameRepository: GameRepository) {
 
     suspend fun execute(amiibo: Amiibo): Collection<GameSearchResult> = coroutineScope {
         val searches = mutableListOf<Deferred<Collection<GameSearchResult>>>()
-        searches.add(async(start = CoroutineStart.LAZY) {
-            gameRepository.searchGame(amiibo.name)
-        })
+        searches.add(
+            async(start = CoroutineStart.LAZY) {
+                gameRepository.searchGame(amiibo.name)
+            }
+        )
 
-        searches.add(async(start = CoroutineStart.LAZY) {
-            gameRepository.searchGame(amiibo.gameSeries)
-        })
+        searches.add(
+            async(start = CoroutineStart.LAZY) {
+                gameRepository.searchGame(amiibo.gameSeries)
+            }
+        )
 
-        searches.add(async(start = CoroutineStart.LAZY) {
-            gameRepository.searchGame(amiibo.character)
-        })
-
+        searches.add(
+            async(start = CoroutineStart.LAZY) {
+                gameRepository.searchGame(amiibo.character)
+            }
+        )
 
         val result = HashSet<GameSearchResult>()
 

@@ -14,9 +14,10 @@ package com.oscarg798.amiibowiki.core.network.services
 
 import com.oscarg798.amiibowiki.core.network.models.APIGame
 import com.oscarg798.amiibowiki.core.network.models.APIGameCover
-import com.oscarg798.amiibowiki.core.network.models.APISearchResult
 import com.oscarg798.amiibowiki.core.network.models.APIGameVideo
+import com.oscarg798.amiibowiki.core.network.models.APISearchResult
 import com.oscarg798.amiibowiki.core.network.models.APIWebsite
+import com.oscarg798.lomeno.event.NetworkTrackingEvent
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -25,6 +26,7 @@ interface GameService {
     @POST(GAMES_PATH)
     suspend fun getGames(@Body gameQuery: String): List<APIGame>
 
+    @NetworkTrackingEvent(SEARCH_GAME_EVENT_NAME)
     @POST(SEARCH_PATH)
     suspend fun searchGame(@Body searchQuery: String): List<APISearchResult>
 
@@ -35,9 +37,10 @@ interface GameService {
     suspend fun getWebSites(@Body searchQuery: String): List<APIWebsite>
 
     @POST(COVER_PATH)
-    suspend  fun getCover(@Body searchQuery: String): List<APIGameCover>
+    suspend fun getCover(@Body searchQuery: String): List<APIGameCover>
 }
 
+private const val SEARCH_GAME_EVENT_NAME = "POST_SEARCH_GAME"
 private const val COVER_PATH = "/covers"
 private const val WEB_SITES_PATH = "/websites"
 private const val GAME_VIDEOS_PATH = "/game_videos"

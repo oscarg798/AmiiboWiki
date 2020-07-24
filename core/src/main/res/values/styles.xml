@@ -17,8 +17,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="textColor">@color/textColor</item>
-        <item name="TextColorSecondary">@color/secondaryTextColor</item>
+        <item name="textColor">@color/white</item>
+        <item name="TextColorSecondary">#e0e0e0</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">

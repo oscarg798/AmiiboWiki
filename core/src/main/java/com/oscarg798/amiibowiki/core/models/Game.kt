@@ -18,7 +18,6 @@ typealias WebSiteUrl = String
 typealias VideoId = String
 typealias CoverUrl = String
 
-
 data class Game(
     val id: Id,
     val name: String,

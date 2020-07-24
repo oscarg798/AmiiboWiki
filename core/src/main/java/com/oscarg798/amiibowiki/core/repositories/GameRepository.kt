@@ -14,9 +14,6 @@ package com.oscarg798.amiibowiki.core.repositories
 
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
-import com.oscarg798.amiibowiki.core.models.Id
-import com.oscarg798.amiibowiki.core.network.gameapiquery.APIGameQuery
-import com.oscarg798.amiibowiki.core.network.models.APIGame
 
 interface GameRepository {
 

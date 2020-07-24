@@ -16,11 +16,14 @@
     android:id="@+id/srlMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+
     tools:context=".AmiiboListActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_amiibo_list">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAmiiboList"

@@ -15,19 +15,17 @@ package com.oscarg798.amiibowiki.core
 import android.text.Editable
 import android.text.TextWatcher
 
-interface TextWatcherAdapter: TextWatcher  {
+interface TextWatcherAdapter : TextWatcher {
 
     override fun afterTextChanged(p0: Editable?) {
-        //DO_NOTHING
+        // DO_NOTHING
     }
 
     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        //DO_NOTHING
+        // DO_NOTHING
     }
 
     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        //DO_NOTHING
+        // DO_NOTHING
     }
-
-
 }
