@@ -15,6 +15,7 @@ apply plugin: 'kotlin-android'
 
 dependencies {
     implementation cardView
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation project(path: ':core')
     implementation project(path: ':network')
     testImplementation project(path: ':testutils')
