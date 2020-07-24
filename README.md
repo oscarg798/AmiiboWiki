@@ -38,9 +38,9 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-Amiibo image (**ic_amiibo_logo**) and  Nintendo Amiibo figures belongs to the Nintendo Company are licensed by them.
-
-**ic_amiibo_silhouette** was taken from www.flaticon.com and was designed by https://www.flaticon.es/autores/nikita-golubev
+*ic_placeholder.xml* made by [FreePick](https://www.freepik.com/) from [www.flaticon.com](www.flaticon.com)
+*ic_placeholder_gray.xml* made by [FreePick](https://www.freepik.com/) from [www.flaticon.com](www.flaticon.com)
+*ic_amiibo_silhouette.xml* made by [Nikita Golubev](https://www.flaticon.com/authors/nikita-golubev) from [www.flaticon.com](www.flaticon.com)
 
 The font used by the project is https://fonts.google.com/specimen/Rubik
 
