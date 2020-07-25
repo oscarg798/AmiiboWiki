@@ -61,7 +61,7 @@ class AmiiboListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAmiiboListBinding
     private lateinit var viewModel: AmiiboListViewModel
 
-    private  var filterMenuItem: MenuItem? = null
+    private var filterMenuItem: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
