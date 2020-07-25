@@ -1,6 +1,7 @@
 # AmiiboWiki
-
 [<img src="http://oscarg-teamcity.eu.ngrok.io.ngrok.io/app/rest/builds/aggregated/strob:(buildType:(project:(id:amiibo_wiki)))/statusIcon?guest=guest"/>](http://oscarg-teamcity.eu.ngrok.io.ngrok.io/project.html?projectId=amiibo_wiki&tab=projectOverview)
+
+<img src="https://github.com/oscarg798/AmiiboWiki/blob/master/logo.png"  width="200" height="400"/>
 
 Application to read and watch the Amiibo data.  It has a feature to read the nfc tag associated with it and watch the detail of the scanned Amiibo.
 
@@ -38,9 +39,14 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-*ic_placeholder.xml* made by [FreePick](https://www.freepik.com/) from [www.flaticon.com](www.flaticon.com)
-*ic_placeholder_gray.xml* made by [FreePick](https://www.freepik.com/) from [www.flaticon.com](www.flaticon.com)
-*ic_amiibo_silhouette.xml* made by [Nikita Golubev](https://www.flaticon.com/authors/nikita-golubev) from [www.flaticon.com](www.flaticon.com)
+Coins made by FreePick from www.flaticon.com
+Coins made by FreePick from www.flaticon.com
+Pawn made by Nikita Golubev from www.flaticon.com
+pokeball made by Those Icons from www.flaticon.com
+Mushroom made by Those Icons from www.flaticon.com
+Psyduck made by Those Icons from www.flaticon.com
+
+Amiibo is a Nintendo trademark and all the rights belongs to them
 
 The font used by the project is https://fonts.google.com/specimen/Rubik
 

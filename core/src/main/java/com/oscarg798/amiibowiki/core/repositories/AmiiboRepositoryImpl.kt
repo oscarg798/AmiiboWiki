@@ -101,5 +101,5 @@ fun Amiibo.toDBAmiibo() =
         type,
         tail,
         name,
-        releaseDate.toDBAmiiboReleaseDate()
+        releaseDate?.toDBAmiiboReleaseDate()
     )

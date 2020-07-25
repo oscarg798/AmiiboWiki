@@ -17,16 +17,11 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 
 data class APIAmiiboReleaseDate(
-    @SerializedName("au")
-    val australia: String?,
-    @SerializedName("eu")
-    val europe: String?,
-    @SerializedName("na")
-    val northAmerica: String?,
-    @SerializedName("jp")
-    val japan: String?
+    @SerializedName("au") val australia : String?,
+    @SerializedName("eu") val europe : String?,
+    @SerializedName("jp") val japan : String?,
+    @SerializedName("na") val northAmerica : String?
 ) {
-    fun toAmiiboReleaseDate() = AmiiboReleaseDate(australia, europe, northAmerica, japan)
 }
 
 data class APIAmiibo(
@@ -43,7 +38,7 @@ data class APIAmiibo(
     @SerializedName("type")
     val type: String,
     @SerializedName("release")
-    val releaseDate: APIAmiiboReleaseDate,
+    val releaseDate: APIAmiiboReleaseDate?,
     @SerializedName("tail")
     val tail: String,
     @SerializedName("name")
@@ -51,14 +46,16 @@ data class APIAmiibo(
 ) {
     fun toAmiibo() =
         Amiibo(
-            amiiboSeries,
-            character,
-            gameSeries,
-            head,
-            image,
-            type,
-            releaseDate.toAmiiboReleaseDate(),
-            tail,
-            name
+            amiiboSeries = amiiboSeries,
+            character = character,
+            gameSeries = gameSeries,
+            head = head,
+            image = image,
+           type =  type,
+            releaseDate = releaseDate?.toAmiiboReleaseDate(),
+            tail = tail,
+            name = name
         )
 }
+
+fun APIAmiiboReleaseDate.toAmiiboReleaseDate() = AmiiboReleaseDate(australia = australia,europe =  europe, northAmerica =  northAmerica, japan =  japan)

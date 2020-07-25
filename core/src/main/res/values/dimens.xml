@@ -21,6 +21,10 @@
     <dimen name="textappearence_titlem_line_spacing">6sp</dimen>
     <dimen name="textappearence_titlem_letter_spacing">-0.01</dimen>
 
+    <dimen name="textappearence_titlel_text_size">28sp</dimen>
+    <dimen name="textappearence_titlel_line_spacing">6sp</dimen>
+    <dimen name="textappearence_titlel_letter_spacing">-0.01</dimen>
+
     <dimen name="textappearence_bodys_text_size">12sp</dimen>
     <dimen name="textappearence_bodys_line_spacing">5sp</dimen>
     <dimen name="textappearence_bodys_letter_spacing">-0.01</dimen>
