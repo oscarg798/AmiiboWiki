@@ -40,10 +40,15 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 Coins made by FreePick from www.flaticon.com
+
 Coins made by FreePick from www.flaticon.com
+
 Pawn made by Nikita Golubev from www.flaticon.com
+
 pokeball made by Those Icons from www.flaticon.com
+
 Mushroom made by Those Icons from www.flaticon.com
+
 Psyduck made by Those Icons from www.flaticon.com
 
 Amiibo is a Nintendo trademark and all the rights belongs to them

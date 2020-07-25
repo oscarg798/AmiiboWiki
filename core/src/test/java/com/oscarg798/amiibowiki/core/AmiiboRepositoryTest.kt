@@ -94,7 +94,7 @@ class AmiiboRepositoryTest {
                 listOf(
                     DBAmiibo(
                         "1", "2", "3", "4", "5", "6", "11", "12",
-                        DBAMiiboReleaseDate("7", "8", "9", "10")
+                        DBAMiiboReleaseDate("7", "8", "10", "9")
                     )
                 )
             )
@@ -179,7 +179,7 @@ private val AMIIBO = Amiibo(
     "4",
     "5",
     "6",
-    AmiiboReleaseDate("7", "8", "9", "10"),
+    AmiiboReleaseDate("7", "8", "10", "9"),
     "11", "12"
 )
 private val DB_AMIIBO = DBAmiibo(
