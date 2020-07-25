@@ -61,6 +61,8 @@ class AmiiboListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAmiiboListBinding
     private lateinit var viewModel: AmiiboListViewModel
 
+    private  var filterMenuItem: MenuItem? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAmiiboListBinding.inflate(layoutInflater)
@@ -77,6 +79,7 @@ class AmiiboListActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.amiibo_list_menu, menu)
+        filterMenuItem = menu.findItem(R.id.action_filter)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -131,6 +134,8 @@ class AmiiboListActivity : AppCompatActivity() {
 
     private fun showLoading() {
         binding.srlMain.isRefreshing = true
+        binding.rvAmiiboList.isEnabled = false
+        filterMenuItem?.isEnabled = false
         if (skeleton == null) {
             skeleton = Skeleton.bind(binding.rvAmiiboList)
                 .adapter(binding.rvAmiiboList.adapter)
@@ -140,6 +145,13 @@ class AmiiboListActivity : AppCompatActivity() {
         } else {
             skeleton?.show()
         }
+    }
+
+    private fun hideLoading() {
+        filterMenuItem?.isEnabled = true
+        binding.rvAmiiboList.isEnabled = true
+        skeleton?.hide()
+        binding.srlMain.isRefreshing = false
     }
 
     private fun showFilters(filters: List<ViewAmiiboType>) {
@@ -156,11 +168,6 @@ class AmiiboListActivity : AppCompatActivity() {
             viewModel.onWish(AmiiboListWish.FilterAmiibos(filter))
         }
         builder.show()
-    }
-
-    private fun hideLoading() {
-        skeleton?.hide()
-        binding.srlMain.isRefreshing = false
     }
 
     private fun showAmiibos(amiibos: List<ViewAmiibo>) {

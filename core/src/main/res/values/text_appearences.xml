@@ -36,6 +36,14 @@
         <item name="android:letterSpacing">@dimen/textappearence_titlem_letter_spacing</item>
     </style>
 
+    <style name="TextAppearance.AmiiboWiki.Title.L">
+        <item name="android:fontFamily">@font/sketch_block</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/textappearence_titlel_text_size</item>
+        <item name="android:lineSpacingExtra">@dimen/textappearence_titlel_line_spacing</item>
+        <item name="android:letterSpacing">@dimen/textappearence_titlel_letter_spacing</item>
+    </style>
+
     <style name="TextAppearance.AmiiboWiki.Body.M">
         <item name="android:fontFamily">@font/rubik</item>
         <item name="android:textStyle">normal</item>

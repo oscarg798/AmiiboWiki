@@ -26,7 +26,7 @@ data class Amiibo(
     val head: String,
     val image: String,
     val type: String,
-    val releaseDate: AmiiboReleaseDate,
+    val releaseDate: AmiiboReleaseDate?,
     val tail: String,
     val name: String
 )

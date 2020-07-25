@@ -39,7 +39,6 @@ android {
 
         debug {
             buildConfigField "String", "BASE_URL", "\"$baseUrl\""
-            minifyEnabled false
         }
     }
 

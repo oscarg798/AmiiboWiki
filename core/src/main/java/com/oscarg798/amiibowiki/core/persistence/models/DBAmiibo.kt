@@ -52,7 +52,7 @@ data class DBAmiibo(
     @ColumnInfo(name = "name")
     val name: String,
     @Embedded
-    val releaseDate: DBAMiiboReleaseDate
+    val releaseDate: DBAMiiboReleaseDate?
 
 ) {
 
@@ -63,7 +63,7 @@ data class DBAmiibo(
         head,
         image,
         type,
-        releaseDate.map(),
+        releaseDate?.map(),
         tail,
         name
     )
