@@ -1,7 +1,7 @@
 # AmiiboWiki
 [<img src="http://oscarg-teamcity.eu.ngrok.io.ngrok.io/app/rest/builds/aggregated/strob:(buildType:(project:(id:amiibo_wiki)))/statusIcon?guest=guest"/>](http://oscarg-teamcity.eu.ngrok.io.ngrok.io/project.html?projectId=amiibo_wiki&tab=projectOverview)
 
-<img src="https://github.com/oscarg798/AmiiboWiki/blob/master/logo.png"  width="512" height="512"/>
+<img src="https://github.com/oscarg798/AmiiboWiki/blob/master/logo.png"  width="312" height="312"/>
 
 Application to read and watch the Amiibo data.  It has a feature to read the nfc tag associated with it and watch the detail of the scanned Amiibo.
 
