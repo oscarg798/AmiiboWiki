@@ -24,11 +24,6 @@ class TestApplication : Application(), CoreComponentProvider {
 
     @ExperimentalCoroutinesApi
     override fun provideCoreComponent(): CoreComponent {
-
         return DaggerTestCoreComponent.factory().create(this, Config(MOCK_WEB_SERVER_URL, MOCK_WEB_SERVER_URL))
-    }
-
-    override fun onCreate() {
-        super.onCreate()
     }
 }
