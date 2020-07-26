@@ -131,12 +131,10 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/searchResultFragment"
-        class="com.oscarg798.amiibowiki.amiibodetail.SearchResultFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_game_results_fragment"
         android:elevation="5dp"
-        android:tag="@string/search_result_fragment_tag"
         app:behavior_hideable="false"
         app:behavior_peekHeight="?attr/actionBarSize"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
