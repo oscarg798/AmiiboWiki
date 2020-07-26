@@ -12,8 +12,8 @@
 
 <resources>
 
+
     <style name="AppTheme.AmiiboDetail" parent="AppTheme">
         <item name="android:windowAnimationStyle">@style/BottomToTopAnimation</item>
     </style>
-
 </resources>

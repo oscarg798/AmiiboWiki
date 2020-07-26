@@ -15,6 +15,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply from: '../signing.gradle'
 
 android {
     compileSdkVersion appCompileSdkVersion
@@ -44,6 +45,18 @@ android {
             buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
 
         }
+
+        alpha {
+            versionNameSuffix "-ALPHA"
+            applicationIdSuffix ".alpha"
+            manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
+            signingConfig signingConfigs.alpha
+            buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
+            buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
     }
 
     compileOptions {

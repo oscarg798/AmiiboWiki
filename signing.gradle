@@ -10,13 +10,20 @@
  *
  */
 
-apply from: "$rootProject.projectDir/shared.gradle"
-apply plugin: 'kotlin-android'
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def keystoreAlias = properties.getProperty('keystoreAlias')
+def keystorePassword = properties.getProperty('keystorePassword')
+def keystorepath = properties.getProperty('keystorepath')
 
-dependencies {
-    implementation cardView
+android {
 
-    implementation project(path: ':core')
-    implementation project(path: ':network')
-    testImplementation project(path: ':testutils')
+    signingConfigs {
+        alpha {
+            keyAlias keystoreAlias
+            keyPassword keystorePassword
+            storePassword keystorePassword
+            storeFile file(keystorepath)
+        }
+    }
 }
