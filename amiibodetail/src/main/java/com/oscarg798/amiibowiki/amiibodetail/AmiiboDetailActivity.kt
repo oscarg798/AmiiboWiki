@@ -70,6 +70,10 @@ class AmiiboDetailActivity : AppCompatActivity() {
     }
 
     private fun setup() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.searchResultFragment,SearchResultFragment.newInstance(),getString(R.string.search_result_fragment_tag))
+            .commit()
+
         supportActionBar?.let {
             it.elevation = 0f
             with(it) {
