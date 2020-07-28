@@ -21,14 +21,20 @@ import com.oscarg798.amiibowiki.core.featureflaghandler.FirebaseRemoteConfig
 import com.oscarg798.amiibowiki.core.featureflaghandler.LocalFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import com.oscarg798.flagly.remoteconfig.RemoteConfig
 import dagger.Module
 import dagger.Provides
 
 @Module
 object FeatureFlagHandlerModule {
 
-    private val firebaseFeatureFlagHandler = FirebaseFeatureFlagHandler(FirebaseRemoteConfig())
+    private val remoteConfig = FirebaseRemoteConfig()
+    private val firebaseFeatureFlagHandler = FirebaseFeatureFlagHandler(remoteConfig)
     private val localFeatureFlagHandler = LocalFeatureFlagHandler(firebaseFeatureFlagHandler)
+
+    @CoreScope
+    @Provides
+    fun provideRemoteConfig(): RemoteConfig = remoteConfig
 
     @RemoteFeatureFlagHandler
     @CoreScope

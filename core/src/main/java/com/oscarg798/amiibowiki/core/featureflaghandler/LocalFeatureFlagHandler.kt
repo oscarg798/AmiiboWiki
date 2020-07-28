@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.core.featureflaghandler
 import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlag
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import com.oscarg798.flagy.exceptions.FeatureFlagNotPresentInHandlerException
 
 class LocalFeatureFlagHandler(private val remoteHandler: FeatureFlagHandler) :
     DynamicFeatureFlagHandler {
@@ -26,6 +27,15 @@ class LocalFeatureFlagHandler(private val remoteHandler: FeatureFlagHandler) :
     }
 
     override fun isFeatureEnabled(featureFlag: FeatureFlag): Boolean {
-        return featureMap[featureFlag.name] ?: remoteHandler.isFeatureEnabled(featureFlag)
+        return featureMap[featureFlag.name] ?: throw FeatureFlagNotPresentInHandlerException(
+            featureFlag
+        )
+    }
+
+    override fun isValueOverriden(featureFlag: FeatureFlag): Boolean =
+        featureMap.containsKey(featureFlag.name)
+
+    override fun removeOverridenValue(featureFlag: FeatureFlag) {
+        featureMap.remove(featureFlag.name)
     }
 }

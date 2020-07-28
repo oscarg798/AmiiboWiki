@@ -31,5 +31,10 @@
       <option name="name" value="maven2" />
       <option name="url" value="https://dl.bintray.com/oscarg798/lomeno" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven2" />
+      <option name="name" value="maven2" />
+      <option name="url" value="https://dl.bintray.com/Flagly/" />
+    </remote-repository>
   </component>
 </project>

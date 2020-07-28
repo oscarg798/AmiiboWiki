@@ -17,6 +17,7 @@ import com.oscarg798.amiibowiki.core.di.qualifier.RemoteFeatureFlagHandler
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import com.oscarg798.flagly.remoteconfig.RemoteConfig
 import dagger.Module
 import dagger.Provides
 
@@ -26,6 +27,10 @@ object TestFeatureFlagHandlerModule {
     val firebaseFeatureFlagHandler = relaxedMockk<FeatureFlagHandler>()
     val localFeatureFlagHandler = relaxedMockk<DynamicFeatureFlagHandler>()
     val mainFeatureFlagHandler = relaxedMockk<FeatureFlagHandler>()
+    val remoteConfig = relaxedMockk<RemoteConfig>()
+
+    @Provides
+    fun provideRemoteConfig() = remoteConfig
 
     @RemoteFeatureFlagHandler
     @Provides

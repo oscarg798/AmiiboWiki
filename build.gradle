@@ -44,6 +44,9 @@ allprojects {
         maven {
             url 'https://dl.bintray.com/oscarg798/lomeno/Lomeno/'
         }
+        maven {
+            url 'https://dl.bintray.com/Flagly/'
+        }
 
         flatDir {
             dirs 'libs'
