@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2020 Oscar David Gallon Rosero
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -10,17 +10,20 @@
   ~
   -->
 
-<resources>
-    <string name="name_string_format">Name: %s</string>
-    <string name="character_string_format">Character: %s</string>
-    <string name="game_series_string_format">Game series: %s</string>
-    <string name="type_string_format">Type: %s</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="search_result_fragment_tag">search_result_fragment_tag</string>
-    <string name="serie_title">Game Serie:</string>
-    <string name="character_title_label">Character:</string>
-    <string name="type_title">Type:</string>
-    <string name="related_games_title">Related Games</string>
-    <string name="general_error">There was an eror please try again later</string>
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_filter"
+        android:iconTint="@android:color/black"
+        android:title="Filter"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_development_options"
+        android:icon="@drawable/ic_settings"
+        android:iconTint="@android:color/black"
+        android:title="Settings"
+        app:showAsAction="always" />
+</menu>

@@ -23,7 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
 import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
 import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
@@ -71,11 +71,15 @@ class AmiiboDetailActivity : AppCompatActivity() {
 
     private fun setup() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.searchResultFragment,SearchResultFragment.newInstance(),getString(R.string.search_result_fragment_tag))
+            .replace(
+                R.id.searchResultFragment,
+                SearchResultFragment.newInstance(),
+                getString(R.string.search_result_fragment_tag)
+            )
             .commit()
 
         supportActionBar?.let {
-            it.elevation = 0f
+            it.elevation = NO_ELEVATION
             with(it) {
                 setDisplayHomeAsUpEnabled(true)
                 setHomeAsUpIndicator(R.drawable.ic_close)
@@ -85,14 +89,13 @@ class AmiiboDetailActivity : AppCompatActivity() {
         val vm = ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
         vm.state.onEach {
             when {
-                it.status is AmiiboDetailViewState.Status.ShowingDetail -> showDetail(it.status.amiiboDetails)
+                it.status is AmiiboDetailViewState.Status.ShowingDetail -> showDetail(it.status)
                 it.error != null -> {
                     Snackbar.make(
                         binding.ivImage,
-                        it.error.message ?: "Error",
+                        it.error.message ?: getString(R.string.general_error),
                         Snackbar.LENGTH_LONG
-                    )
-                        .show()
+                    ).show()
                 }
             }
         }.launchIn(lifecycleScope)
@@ -119,7 +122,8 @@ class AmiiboDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDetail(viewAmiiboDetails: ViewAmiiboDetails) {
+    private fun showDetail(state: AmiiboDetailViewState.Status.ShowingDetail) {
+        val viewAmiiboDetails = state.amiiboDetails
         supportActionBar?.title = viewAmiiboDetails.name
         with(binding) {
             ivImage.setImage(viewAmiiboDetails.imageUrl)
@@ -128,10 +132,24 @@ class AmiiboDetailActivity : AppCompatActivity() {
             tvSerie.setText(viewAmiiboDetails.gameSeries)
             tvType.setText(viewAmiiboDetails.type)
 
-            val searchResultFragment =
-                supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
-                    ?: return
-            searchResultFragment.showGameResults(viewAmiiboDetails.gameSearchResults.toList())
+            if (state.isRelatedGamesSectionEnabled) {
+                showRelatedGames(viewAmiiboDetails.gameSearchResults)
+                searchResultFragment.visibility = View.VISIBLE
+            } else {
+                searchResultFragment.visibility = View.GONE
+            }
         }
     }
+
+    private fun showRelatedGames(
+        gameSearchResults: Collection<ViewGameSearchResult>
+    ) {
+        val searchResultFragment =
+            supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
+                ?: return
+
+        searchResultFragment.showGameResults(gameSearchResults.toList())
+    }
 }
+
+private const val NO_ELEVATION = 0f

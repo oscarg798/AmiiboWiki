@@ -10,17 +10,31 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.testutils.di
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.core.mvi.Result
+import com.oscarg798.amiibowiki.core.di.qualifier.MainFeatureFlagHandler
+import com.oscarg798.amiibowiki.core.di.qualifier.RemoteFeatureFlagHandler
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
+import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import dagger.Module
+import dagger.Provides
 
-sealed class AmiiboDetailResult : Result {
-    data class DetailFetched(
-        val amiibo: ViewAmiiboDetails,
-        val isRelatedGamesSectionEnabled: Boolean
-    ) : AmiiboDetailResult()
+@Module
+object TestFeatureFlagHandlerModule {
 
-    data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
+    val firebaseFeatureFlagHandler = relaxedMockk<FeatureFlagHandler>()
+    val localFeatureFlagHandler = relaxedMockk<DynamicFeatureFlagHandler>()
+    val mainFeatureFlagHandler = relaxedMockk<FeatureFlagHandler>()
+
+    @RemoteFeatureFlagHandler
+    @Provides
+    fun provideRemoteFeatureFlagHandler(): FeatureFlagHandler = firebaseFeatureFlagHandler
+
+    @Provides
+    fun provideDynamicFeatureFlag(): DynamicFeatureFlagHandler = localFeatureFlagHandler
+
+    @MainFeatureFlagHandler
+    @Provides
+    fun provideAmiiboWikiFeatureFlagHandler(): FeatureFlagHandler = mainFeatureFlagHandler
 }

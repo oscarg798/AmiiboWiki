@@ -17,7 +17,9 @@ import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
+import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.usecases.SearchGameByAmiiboUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,6 +38,7 @@ class AmiiboDetailViewModel @Inject constructor(
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
     private val searchGameByAmiiboUseCase: SearchGameByAmiiboUseCase,
     private val amiiboDetailLogger: AmiiboDetailLogger,
+    private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val coroutinesContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
     AmiiboDetailViewState.init()
@@ -46,13 +49,22 @@ class AmiiboDetailViewModel @Inject constructor(
         emit(getAmiiboDetailUseCase.execute(amiiboDetailTail))
     }.flatMapConcat { amiibo ->
         trackViewShown(amiibo)
-        val searchResult = searchGameByAmiiboUseCase.execute(amiibo)
+
+        val isRelatedGamesSectionEnabled =
+            isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames)
+
+        val searchResult = if (isRelatedGamesSectionEnabled) {
+            getRelatedGames(amiibo)
+        } else {
+            setOf()
+        }
         flowOf(
             AmiiboDetailResult.DetailFetched(
                 ViewAmiiboDetails(
                     amiibo,
                     searchResult
-                )
+                ),
+                isRelatedGamesSectionEnabled
             )
         ) as Flow<AmiiboDetailResult>
     }.catch { cause ->
@@ -64,6 +76,8 @@ class AmiiboDetailViewModel @Inject constructor(
         }
         emit(AmiiboDetailResult.Error(cause))
     }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+
+    private suspend fun getRelatedGames(amiibo: Amiibo) = searchGameByAmiiboUseCase.execute(amiibo)
 
     private fun trackViewShown(amiibo: Amiibo) {
         amiiboDetailLogger.trackScreenShown(

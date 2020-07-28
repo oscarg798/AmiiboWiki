@@ -12,8 +12,11 @@
 
 package com.oscarg798.amiibowiki.core.di
 
+import android.app.Application
 import android.content.Context
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
+import com.oscarg798.amiibowiki.core.di.qualifier.MainFeatureFlagHandler
+import com.oscarg798.amiibowiki.core.di.qualifier.RemoteFeatureFlagHandler
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
@@ -29,6 +32,8 @@ import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
+import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import com.oscarg798.lomeno.logger.Logger
 import dagger.BindsInstance
 import dagger.Component
@@ -41,7 +46,7 @@ import retrofit2.Retrofit
 @Component(
     modules = [
         CoreModule::class, ViewModelsModule::class, NetworkModule::class,
-        PersistenceModule::class, LoggerModule::class
+        PersistenceModule::class, LoggerModule::class, FeatureFlagHandlerModule::class
     ]
 )
 interface CoreComponent {
@@ -54,6 +59,16 @@ interface CoreComponent {
             @BindsInstance config: Config
         ): CoreComponent
     }
+
+    fun inject(application: Application)
+
+    @RemoteFeatureFlagHandler
+    fun provideRemoteFeatureFlagHandler(): FeatureFlagHandler
+
+    fun provideDynamicFeatureFlag(): DynamicFeatureFlagHandler
+
+    @MainFeatureFlagHandler
+    fun provideAmiiboWikiFeatureFlagHandler(): FeatureFlagHandler
 
     @AmiiboApiQualifier
     fun provideAmiiboAPIRetrofit(): Retrofit

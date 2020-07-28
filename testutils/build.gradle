@@ -54,6 +54,8 @@ dependencies {
     implementation roomCompiler
     implementation roomKTX
 
+    implementation(name:'app-release', ext:'aar')
+
     implementation lomeno
     testImplementation roomTesting
 }

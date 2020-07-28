@@ -10,17 +10,15 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.core.featureflaghandler
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.core.mvi.Result
+import com.oscarg798.flagly.featureflag.FeatureFlag
 
-sealed class AmiiboDetailResult : Result {
-    data class DetailFetched(
-        val amiibo: ViewAmiiboDetails,
-        val isRelatedGamesSectionEnabled: Boolean
-    ) : AmiiboDetailResult()
+sealed class AmiiboWikiFeatureFlag(override val name: String) : FeatureFlag {
 
-    data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
+    object ShowRelatedGames : AmiiboWikiFeatureFlag("show_related_games")
+
+    companion object {
+        fun getValues(): Set<FeatureFlag> = setOf(ShowRelatedGames)
+    }
 }

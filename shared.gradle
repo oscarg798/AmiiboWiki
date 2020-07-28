@@ -73,6 +73,7 @@ dependencies {
     androidTestImplementation mockkAndroid
 
     implementation project(path: ':logger')
+    implementation(name:'app-release', ext:'aar')
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     testImplementation project(path: ':testutils')

@@ -23,13 +23,16 @@ data class AmiiboDetailViewState(
 
     sealed class Status {
         object None : Status()
-        data class ShowingDetail(val amiiboDetails: ViewAmiiboDetails) : Status()
+        data class ShowingDetail(
+            val amiiboDetails: ViewAmiiboDetails,
+            val isRelatedGamesSectionEnabled: Boolean
+        ) : Status()
     }
 
     override fun reduce(result: AmiiboDetailResult): ViewState<AmiiboDetailResult> {
         return when (result) {
             is AmiiboDetailResult.DetailFetched -> copy(
-                status = Status.ShowingDetail(result.amiibo),
+                status = Status.ShowingDetail(result.amiibo, result.isRelatedGamesSectionEnabled),
                 error = null
             )
             is AmiiboDetailResult.Error -> copy(
