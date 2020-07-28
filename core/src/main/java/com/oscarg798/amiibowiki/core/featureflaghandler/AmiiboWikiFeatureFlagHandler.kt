@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.core.featureflaghandler
 import com.oscarg798.flagly.featureflag.FeatureFlag
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagProvider
+import com.oscarg798.flagy.exceptions.FeatureFlagNotPresentInHandlerException
 
 class AmiiboWikiFeatureFlagHandler(
     private val localFeatureFlagHandler: FeatureFlagHandler? = null,
@@ -22,8 +23,20 @@ class AmiiboWikiFeatureFlagHandler(
 ) : FeatureFlagHandler, FeatureFlagProvider {
 
     override fun isFeatureEnabled(featureFlag: FeatureFlag): Boolean {
-        return localFeatureFlagHandler?.isFeatureEnabled(featureFlag)
-            ?: remoteConfigFeatureFlagHandler.isFeatureEnabled(featureFlag)
+        return if (localFeatureFlagHandler != null) {
+            getLocalValueOrFallbackToRemote(featureFlag)
+        } else {
+            remoteConfigFeatureFlagHandler.isFeatureEnabled(featureFlag)
+        }
+    }
+
+    private fun getLocalValueOrFallbackToRemote(featureFlag: FeatureFlag): Boolean {
+        require(localFeatureFlagHandler != null)
+        return try {
+            localFeatureFlagHandler.isFeatureEnabled(featureFlag)
+        } catch (e: FeatureFlagNotPresentInHandlerException) {
+            remoteConfigFeatureFlagHandler.isFeatureEnabled(featureFlag)
+        }
     }
 
     override fun provideAppSupportedFeatureflags(): Collection<FeatureFlag> {

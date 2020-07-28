@@ -9,21 +9,15 @@
  *
  *
  */
-apply from: "$rootProject.projectDir/shared.gradle"
 
+package com.oscarg798.amiibowiki.splash.usecases
 
-dependencies {
+import com.oscarg798.flagly.remoteconfig.RemoteConfig
+import javax.inject.Inject
 
-    implementation picasso
-    implementation project(path: ':network')
+class ActivateRemoteConfigUseCase @Inject constructor(private val remoteConfig: RemoteConfig) {
 
-    implementation firebaseAnalytics
-    implementation firebaseRemoteConfig
-
-    implementation roomRuntime
-    implementation roomCompiler
-    implementation roomKTX
-    testImplementation roomTesting
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
-    implementation(name:'app-release', ext:'aar')
+    suspend fun execute() {
+        remoteConfig.activateAsync().await()
+    }
 }

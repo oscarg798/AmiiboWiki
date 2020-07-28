@@ -34,6 +34,7 @@ import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
 import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import com.oscarg798.flagly.remoteconfig.RemoteConfig
 import com.oscarg798.lomeno.logger.Logger
 import dagger.BindsInstance
 import dagger.Component
@@ -69,6 +70,8 @@ interface CoreComponent {
 
     @MainFeatureFlagHandler
     fun provideAmiiboWikiFeatureFlagHandler(): FeatureFlagHandler
+
+    fun provideRemoteConfig(): RemoteConfig
 
     @AmiiboApiQualifier
     fun provideAmiiboAPIRetrofit(): Retrofit
