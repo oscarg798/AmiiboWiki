@@ -44,6 +44,10 @@ allprojects {
         maven {
             url 'https://dl.bintray.com/oscarg798/lomeno/Lomeno/'
         }
+
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 

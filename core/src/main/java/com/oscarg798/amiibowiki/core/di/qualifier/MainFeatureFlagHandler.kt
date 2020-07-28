@@ -10,17 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.core.di.qualifier
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.core.mvi.Result
+import javax.inject.Qualifier
 
-sealed class AmiiboDetailResult : Result {
-    data class DetailFetched(
-        val amiibo: ViewAmiiboDetails,
-        val isRelatedGamesSectionEnabled: Boolean
-    ) : AmiiboDetailResult()
-
-    data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
-}
+@Qualifier
+annotation class MainFeatureFlagHandler

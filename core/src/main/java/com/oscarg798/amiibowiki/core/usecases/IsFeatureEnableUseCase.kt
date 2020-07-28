@@ -10,17 +10,14 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.core.usecases
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.core.mvi.Result
+import com.oscarg798.amiibowiki.core.di.qualifier.MainFeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlag
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import javax.inject.Inject
 
-sealed class AmiiboDetailResult : Result {
-    data class DetailFetched(
-        val amiibo: ViewAmiiboDetails,
-        val isRelatedGamesSectionEnabled: Boolean
-    ) : AmiiboDetailResult()
+class IsFeatureEnableUseCase @Inject constructor(@MainFeatureFlagHandler private val featureFlagHandler: FeatureFlagHandler) {
 
-    data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
+    fun execute(featureFlag: FeatureFlag) = featureFlagHandler.isFeatureEnabled(featureFlag)
 }

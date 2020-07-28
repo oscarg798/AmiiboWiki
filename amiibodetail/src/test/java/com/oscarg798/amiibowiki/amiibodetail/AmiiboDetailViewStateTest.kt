@@ -32,13 +32,34 @@ class AmiiboDetailViewStateTest {
     @Test
     fun `when amiibo detail fetch is success then state should reflect the change`() {
         val newState =
-            state.reduce(AmiiboDetailResult.DetailFetched(VIEW_AMIIBO_DETAIL)) as AmiiboDetailViewState
+            state.reduce(AmiiboDetailResult.DetailFetched(VIEW_AMIIBO_DETAIL, false)) as AmiiboDetailViewState
 
         Assert.assertNull(newState.error)
         assert(newState.status is AmiiboDetailViewState.Status.ShowingDetail)
         Assert.assertEquals(
             VIEW_AMIIBO_DETAIL,
             (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiiboDetails
+        )
+        Assert.assertEquals(
+            false,
+            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).isRelatedGamesSectionEnabled
+        )
+    }
+
+    @Test
+    fun `when amiibo detail fetch is success and related games are enable then state should reflect the change`() {
+        val newState =
+            state.reduce(AmiiboDetailResult.DetailFetched(VIEW_AMIIBO_DETAIL, true)) as AmiiboDetailViewState
+
+        Assert.assertNull(newState.error)
+        assert(newState.status is AmiiboDetailViewState.Status.ShowingDetail)
+        Assert.assertEquals(
+            VIEW_AMIIBO_DETAIL,
+            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiiboDetails
+        )
+        Assert.assertEquals(
+            true,
+            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).isRelatedGamesSectionEnabled
         )
     }
 }

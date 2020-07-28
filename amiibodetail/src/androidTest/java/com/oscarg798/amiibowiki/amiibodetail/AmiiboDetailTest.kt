@@ -16,11 +16,14 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
+import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import com.oscarg798.amiibowiki.testutils.BaseUITest
+import com.oscarg798.amiibowiki.testutils.di.TestFeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.testutils.di.TestPersistenceModule
 import io.mockk.coEvery
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import okhttp3.mockwebserver.Dispatcher
@@ -44,11 +47,12 @@ class AmiiboDetailTest : BaseUITest(DISPATCHER) {
 
     @Before
     fun setup() {
-        coEvery {
-            TestPersistenceModule.amiiboDAO.getById(AMIIBO_TAIL)
-        } answers {
-            AMIIBO
-        }
+        coEvery { TestPersistenceModule.amiiboDAO.getById(AMIIBO_TAIL) } answers { AMIIBO }
+        every {
+            TestFeatureFlagHandlerModule.mainFeatureFlagHandler.isFeatureEnabled(
+                AmiiboWikiFeatureFlag.ShowRelatedGames
+            )
+        } answers { true }
         intentTestRule.launchActivity(
             Intent().apply {
                 putExtra(TAIL_ARGUMENT, AMIIBO_TAIL)
@@ -65,7 +69,15 @@ class AmiiboDetailTest : BaseUITest(DISPATCHER) {
 
 private const val AMIIBO_TAIL = "1"
 private val AMIIBO = DBAmiibo(
-    "Super Mario Bros", "Mario", "Super Mario Bros", "14", "15", "Figure", "17", "Mario", DBAMiiboReleaseDate("19", "20", "21", "22")
+    "Super Mario Bros",
+    "Mario",
+    "Super Mario Bros",
+    "14",
+    "15",
+    "Figure",
+    "17",
+    "Mario",
+    DBAMiiboReleaseDate("19", "20", "21", "22")
 )
 
 private val DISPATCHER = object : Dispatcher() {
