@@ -40,6 +40,9 @@ android {
         }
 
         debug {
+            versionNameSuffix "-DEBUG"
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [appName: "AmiiboWiki-Debug"]
             minifyEnabled false
             buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
             buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""

@@ -12,9 +12,6 @@
 
 package com.oscarg798.amiibowiki
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
@@ -38,8 +35,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -94,10 +89,10 @@ class AmiiboListViewModel @Inject constructor(
     }
 
     private fun showDetail(tail: String) = if (isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowAmiiboDetail)) {
-            flowOf(AmiiboListResult.ShowAmiiboDetail(tail))
-        } else {
-            flowOf(AmiiboListResult.None)
-        }
+        flowOf(AmiiboListResult.ShowAmiiboDetail(tail))
+    } else {
+        flowOf(AmiiboListResult.None)
+    }
 
     private fun getFilters(): Flow<AmiiboListResult> = getAmiiboTypeUseCase.execute()
         .map {

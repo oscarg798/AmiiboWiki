@@ -10,22 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.testutils
+package com.oscarg798.amiibowiki.gamedetail
 
-import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert.assertEquals
+import junit.framework.Assert.assertEquals
 import org.junit.Test
 
 /**
- * Instrumented test, which will execute on an Android device.
+ * Example local unit test, which will execute on the development machine (host).
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleInstrumentedTest {
+class ExampleUnitTest {
     @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.oscarg798.amiibowiki.testutils.test", appContext.packageName)
+    fun addition_isCorrect() {
+        assertEquals(4, 2 + 2)
     }
 }

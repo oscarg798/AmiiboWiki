@@ -70,7 +70,7 @@ ext {
     //Firebase
     firebase_messaging = "17.3.4"
     firebase_core = "16.0.7"
-    firebase_remote_config = '16.5.0'
+    firebase_remote_config = '19.2.0'
     crashlitycs_version = '2.10.1'
 
     // Data Persistense
