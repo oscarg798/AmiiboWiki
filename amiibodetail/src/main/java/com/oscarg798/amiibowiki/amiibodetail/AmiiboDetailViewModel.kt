@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -75,6 +76,8 @@ class AmiiboDetailViewModel @Inject constructor(
             throw cause
         }
         emit(AmiiboDetailResult.Error(cause))
+    }.onStart {
+        emit(AmiiboDetailResult.Loading)
     }.flowOn(coroutinesContextProvider.backgroundDispatcher)
 
     private suspend fun getRelatedGames(amiibo: Amiibo) = searchGameByAmiiboUseCase.execute(amiibo)

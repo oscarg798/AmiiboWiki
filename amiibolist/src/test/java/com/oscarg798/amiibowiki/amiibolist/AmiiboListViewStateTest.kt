@@ -43,6 +43,19 @@ class AmiiboListViewStateTest {
     }
 
     @Test
+    fun `when result is None and reduce is called then state should be just copy`() {
+        val newState =
+            state.reduce(AmiiboListResult.None) as AmiiboListViewState
+
+        assertEquals(ViewState.LoadingState.None, newState.loading)
+        assertEquals(AmiiboListViewState.Status.None, newState.status)
+        assertEquals(AmiiboListViewState.Filtering.None, newState.filtering)
+        assertEquals(AmiiboListViewState.ShowingFilters.None, newState.showingFilters)
+        assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, newState.showAmiiboDetail)
+        assertNull(newState.error)
+    }
+
+    @Test
     fun `when result is success then loading is none and status success`() {
         val newState =
             state.reduce(AmiiboListResult.FetchSuccess(AMIIBO_RESULT)) as AmiiboListViewState
@@ -100,19 +113,6 @@ class AmiiboListViewStateTest {
         assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, newState.showAmiiboDetail)
     }
 
-    @Test
-    fun `when result is show detail then state is ShowAmiiboDetail`() {
-        val newState =
-            state.reduce(AmiiboListResult.ShowAmiiboDetail("1")) as AmiiboListViewState
-
-        assertEquals(ViewState.LoadingState.None, newState.loading)
-        assertNull(newState.error)
-        assertEquals(AmiiboListViewState.Status.None, newState.status)
-        assert(newState.showingFilters is AmiiboListViewState.ShowingFilters.None)
-        assert(newState.filtering is AmiiboListViewState.Filtering.None)
-        assert(newState.showAmiiboDetail is AmiiboListViewState.ShowAmiiboDetail.Show)
-        assertEquals("1", (newState.showAmiiboDetail as AmiiboListViewState.ShowAmiiboDetail.Show).tail)
-    }
 }
 
 private val AMIIBO_TYPE = listOf(AmiiboType("1", "2"))

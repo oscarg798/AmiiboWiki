@@ -98,6 +98,7 @@ data class AmiiboListViewState(
                 showAmiiboDetail = ShowAmiiboDetail.Show(result.amiiboTail),
                 error = null
             )
+            is AmiiboListResult.None -> copy()
         }
     }
 

@@ -124,7 +124,7 @@ dependencies {
 
     implementation lottie
 
-    implementation(name:'app-release', ext:'aar')
+    implementation flagly
 
     kapt project(':loggerprocessor')
 

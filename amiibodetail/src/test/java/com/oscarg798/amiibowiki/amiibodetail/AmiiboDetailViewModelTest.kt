@@ -19,6 +19,7 @@ import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
+import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.usecases.SearchGameByAmiiboUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
@@ -77,10 +78,17 @@ class AmiiboDetailViewModelTest {
 
         testCollector.assertValues(
             AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.None,
                 error = null
             ),
             AmiiboDetailViewState(
+                loading = ViewState.LoadingState.Loading,
+                status = AmiiboDetailViewState.Status.None,
+                error = null
+            ),
+            AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.ShowingDetail(VIEW_AMIIBO_DETAIL.copy(gameSearchResults = listOf()), false),
                 error = null
             )
@@ -100,10 +108,17 @@ class AmiiboDetailViewModelTest {
 
         testCollector.assertValues(
             AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.None,
                 error = null
             ),
             AmiiboDetailViewState(
+                loading = ViewState.LoadingState.Loading,
+                status = AmiiboDetailViewState.Status.None,
+                error = null
+            ),
+            AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.ShowingDetail(VIEW_AMIIBO_DETAIL, true),
                 error = null
             )
@@ -124,10 +139,17 @@ class AmiiboDetailViewModelTest {
 
         testCollector.assertValues(
             AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.None,
                 error = null
             ),
             AmiiboDetailViewState(
+                loading = ViewState.LoadingState.Loading,
+                status = AmiiboDetailViewState.Status.None,
+                error = null
+            ),
+            AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.None,
                 error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)
             )

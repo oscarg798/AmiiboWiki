@@ -25,5 +25,5 @@ dependencies {
     implementation roomKTX
     testImplementation roomTesting
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
-    implementation(name:'app-release', ext:'aar')
+    implementation flagly
 }
