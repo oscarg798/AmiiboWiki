@@ -13,12 +13,16 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.ethanhua.skeleton.Skeleton
+import com.ethanhua.skeleton.SkeletonScreen
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
@@ -28,6 +32,7 @@ import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.setImage
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -86,11 +91,19 @@ class AmiiboDetailActivity : AppCompatActivity() {
             }
         }
 
+        binding.searchResultFragment.setOnClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        configureBackDrop()
+
         val vm = ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
         vm.state.onEach {
             when {
+                it.loading == ViewState.LoadingState.Loading -> showLoading()
                 it.status is AmiiboDetailViewState.Status.ShowingDetail -> showDetail(it.status)
                 it.error != null -> {
+                    hideLoading()
                     Snackbar.make(
                         binding.ivImage,
                         it.error.message ?: getString(R.string.general_error),
@@ -101,12 +114,6 @@ class AmiiboDetailActivity : AppCompatActivity() {
         }.launchIn(lifecycleScope)
 
         vm.onWish(AmiiboDetailWish.ShowDetail)
-
-        configureBackDrop()
-
-        binding.searchResultFragment.setOnClickListener {
-            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-        }
     }
 
     private fun configureBackDrop() {
@@ -123,6 +130,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
     }
 
     private fun showDetail(state: AmiiboDetailViewState.Status.ShowingDetail) {
+        hideLoading()
         val viewAmiiboDetails = state.amiiboDetails
         supportActionBar?.title = viewAmiiboDetails.name
         with(binding) {
@@ -138,6 +146,28 @@ class AmiiboDetailActivity : AppCompatActivity() {
             } else {
                 searchResultFragment.visibility = View.GONE
             }
+        }
+    }
+
+    private fun showLoading() {
+        with(binding){
+            shimmer.root.visibility = View.VISIBLE
+            shimmer.shimmerViewContainer.startShimmer()
+            tvCharacterTitle.visibility = View.GONE
+            tvSerieTitle.visibility = View.GONE
+            tvTypeTitle.visibility = View.GONE
+            searchResultFragment.visibility = View.GONE
+        }
+    }
+
+    private fun hideLoading() {
+        with(binding){
+            shimmer.root.visibility = View.GONE
+            shimmer.shimmerViewContainer.stopShimmer()
+            tvCharacterTitle.visibility = View.VISIBLE
+            tvSerieTitle.visibility = View.VISIBLE
+            tvTypeTitle.visibility = View.VISIBLE
+            searchResultFragment.visibility = View.VISIBLE
         }
     }
 

@@ -17,8 +17,9 @@ import com.oscarg798.flagly.featureflag.FeatureFlag
 sealed class AmiiboWikiFeatureFlag(override val name: String) : FeatureFlag {
 
     object ShowRelatedGames : AmiiboWikiFeatureFlag("show_related_games")
+    object ShowAmiiboDetail : AmiiboWikiFeatureFlag("amiibo_detail")
 
     companion object {
-        fun getValues(): Set<FeatureFlag> = setOf(ShowRelatedGames)
+        fun getValues(): Set<FeatureFlag> = setOf(ShowRelatedGames, ShowAmiiboDetail)
     }
 }

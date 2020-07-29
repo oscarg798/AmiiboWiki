@@ -33,7 +33,6 @@ dependencies {
     implementation daggerAndroidSupport
     kapt daggerCompiler
     kapt daggerAndroidProcessor
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     //Coroutines
     implementation kotlinCoroutines
@@ -52,6 +51,8 @@ dependencies {
     implementation shimmerLayout
 
     implementation(lomeno)
+
+    implementation flagly
 
     kapt project(':loggerprocessor')
 
@@ -73,7 +74,6 @@ dependencies {
     androidTestImplementation mockkAndroid
 
     implementation project(path: ':logger')
-    implementation(name:'app-release', ext:'aar')
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     testImplementation project(path: ':testutils')

@@ -13,6 +13,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorPrimary"
@@ -70,8 +71,8 @@
                 style="@style/Styles.AmiiboWiki.Secondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
                 android:gravity="left"
                 android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.M"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -86,18 +87,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="left"
+                android:text="@string/character_title_label"
                 android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.M"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSerie"
-                android:text="@string/character_title_label" />
+                app:layout_constraintTop_toBottomOf="@+id/tvSerie" />
 
             <TextView
                 android:id="@+id/tvGameCharacter"
                 style="@style/Styles.AmiiboWiki.Secondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
                 android:layout_marginStart="8dp"
+                android:gravity="left"
                 android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.M"
                 app:layout_constraintStart_toEndOf="@+id/tvCharacterTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvSerie"
@@ -109,22 +110,33 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="left"
+                android:text="@string/type_title"
                 android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.M"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvGameCharacter"
-                android:text="@string/type_title" />
+                app:layout_constraintTop_toBottomOf="@+id/tvGameCharacter" />
 
             <TextView
                 android:id="@+id/tvType"
                 style="@style/Styles.AmiiboWiki.Secondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
                 android:layout_marginStart="8dp"
+                android:gravity="left"
                 android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.M"
                 app:layout_constraintStart_toEndOf="@+id/tvTypeTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvGameCharacter"
                 tools:text="Type" />
+
+            <include
+                android:id="@+id/shimmer"
+                layout="@layout/amiibo_detail_skeleton"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

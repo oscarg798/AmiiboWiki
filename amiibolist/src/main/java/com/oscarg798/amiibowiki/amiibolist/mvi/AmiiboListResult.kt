@@ -17,6 +17,7 @@ import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.mvi.Result
 
 sealed class AmiiboListResult : Result {
+    object None : AmiiboListResult()
     object Loading : AmiiboListResult()
     data class FetchSuccess(val amiibos: List<Amiibo>) : AmiiboListResult()
     data class AmiibosFiltered(val amiibos: List<Amiibo>) : AmiiboListResult()
