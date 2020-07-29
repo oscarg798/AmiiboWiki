@@ -12,8 +12,11 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.models.GameSearchResult
+import com.oscarg798.amiibowiki.core.mvi.ViewState
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -30,23 +33,62 @@ class AmiiboDetailViewStateTest {
     @Test
     fun `when amiibo detail fetch is success then state should reflect the change`() {
         val newState =
-            state.reduce(AmiiboDetailResult.DetailFetched(AMIIBO)) as AmiiboDetailViewState
+            state.reduce(AmiiboDetailResult.DetailFetched(VIEW_AMIIBO_DETAIL, false)) as AmiiboDetailViewState
+
         Assert.assertNull(newState.error)
+        assert(newState.loading is ViewState.LoadingState.None)
         assert(newState.status is AmiiboDetailViewState.Status.ShowingDetail)
         Assert.assertEquals(
-            AMIIBO,
-            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiibo
+            VIEW_AMIIBO_DETAIL,
+            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiiboDetails
+        )
+        Assert.assertEquals(
+            false,
+            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).isRelatedGamesSectionEnabled
         )
     }
+
+    @Test
+    fun `when amiibo detail fetch is success and related games are enable then state should reflect the change`() {
+        val newState =
+            state.reduce(AmiiboDetailResult.DetailFetched(VIEW_AMIIBO_DETAIL, true)) as AmiiboDetailViewState
+
+        Assert.assertNull(newState.error)
+        assert(newState.loading is ViewState.LoadingState.None)
+        assert(newState.status is AmiiboDetailViewState.Status.ShowingDetail)
+        Assert.assertEquals(
+            VIEW_AMIIBO_DETAIL,
+            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiiboDetails
+        )
+        Assert.assertEquals(
+            true,
+            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).isRelatedGamesSectionEnabled
+        )
+    }
+
+    @Test
+    fun `when result is loading then statte should reflect this status`() {
+        val newState =
+            state.reduce(AmiiboDetailResult.Loading) as AmiiboDetailViewState
+
+        Assert.assertNull(newState.error)
+        assert(newState.status is AmiiboDetailViewState.Status.None)
+        assert(newState.loading is ViewState.LoadingState.Loading)
+    }
+
 }
 
-private val AMIIBO = Amiibo(
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    AmiiboReleaseDate("7", "8", "9", "10"),
-    "11", "12"
+private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", 4))
+private val VIEW_AMIIBO_DETAIL = ViewAmiiboDetails(
+    Amiibo(
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        AmiiboReleaseDate("7", "8", "9", "10"),
+        "11", "12"
+    ),
+    GAME_SEARCH_RESULTS
 )

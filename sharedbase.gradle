@@ -35,10 +35,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
-
         alpha {
             manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
         }
+
     }
 
     viewBinding {

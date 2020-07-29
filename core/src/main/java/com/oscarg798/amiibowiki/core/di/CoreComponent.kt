@@ -12,8 +12,11 @@
 
 package com.oscarg798.amiibowiki.core.di
 
+import android.app.Application
 import android.content.Context
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
+import com.oscarg798.amiibowiki.core.di.qualifier.MainFeatureFlagHandler
+import com.oscarg798.amiibowiki.core.di.qualifier.RemoteFeatureFlagHandler
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
@@ -23,8 +26,15 @@ import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.usecases.GetGamesUseCase
+import com.oscarg798.amiibowiki.core.usecases.SearchGameByAmiiboUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.network.di.NetworkModule
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
+import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import com.oscarg798.flagly.remoteconfig.RemoteConfig
 import com.oscarg798.lomeno.logger.Logger
 import dagger.BindsInstance
 import dagger.Component
@@ -37,7 +47,7 @@ import retrofit2.Retrofit
 @Component(
     modules = [
         CoreModule::class, ViewModelsModule::class, NetworkModule::class,
-        PersistenceModule::class, LoggerModule::class
+        PersistenceModule::class, LoggerModule::class, FeatureFlagHandlerModule::class
     ]
 )
 interface CoreComponent {
@@ -51,18 +61,41 @@ interface CoreComponent {
         ): CoreComponent
     }
 
-    fun provideRetrofit(): Retrofit
+    fun inject(application: Application)
+
+    @RemoteFeatureFlagHandler
+    fun provideRemoteFeatureFlagHandler(): FeatureFlagHandler
+
+    fun provideDynamicFeatureFlag(): DynamicFeatureFlagHandler
+
+    @MainFeatureFlagHandler
+    fun provideAmiiboWikiFeatureFlagHandler(): FeatureFlagHandler
+
+    fun provideRemoteConfig(): RemoteConfig
+
+    @AmiiboApiQualifier
+    fun provideAmiiboAPIRetrofit(): Retrofit
+    @GameApiQualifier
+    fun provideGameAPIRetrofit(): Retrofit
+
     fun provideCoroutineContextProvider(): CoroutineContextProvider
     fun provideLocale(): Locale
+
     fun provideAmiiboService(): AmiiboService
     fun provideAmiiboTypeService(): AmiiboTypeService
-    fun provideAmiiboTypeDao(): AmiiboTypeDAO
-    fun provideAmiiboDAO(): AmiiboDAO
+
+    fun provideAmiiboRepository(): AmiiboRepository
+    fun provideAmiiboTypeRepository(): AmiiboTypeRepository
+
     fun provideGetAmiiboTypeUseCase(): GetAmiiboTypeUseCase
     fun provideGetDefaulAmiiboTypeUseCase(): GetDefaultAmiiboTypeUseCase
     fun provideUpdateAmiiboTypeUseCase(): UpdateAmiiboTypeUseCase
+    fun provideGetGamesUseCase(): GetGamesUseCase
+    fun provideSearchGameUseCase(): SearchGameByAmiiboUseCase
+
     fun provideContext(): Context
     fun provideLogger(): Logger
-    fun provideAmiiboRepository(): AmiiboRepository
-    fun provideAmiiboTypeRepository(): AmiiboTypeRepository
+
+    fun provideAmiiboTypeDao(): AmiiboTypeDAO
+    fun provideAmiiboDAO(): AmiiboDAO
 }

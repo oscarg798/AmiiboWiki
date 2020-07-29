@@ -19,6 +19,7 @@ import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
+import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
     private val splashLogger: SplashLogger,
+    private val activateRemoteConfigUseCase: ActivateRemoteConfigUseCase,
     private val coroutineContextProvider: CoroutineContextProvider
 ) :
     AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.init()) {
@@ -42,6 +44,7 @@ class SplashViewModel @Inject constructor(
     override suspend fun getResult(wish: SplashWish): Flow<SplashResult> = fetchTypes()
 
     private fun fetchTypes() = flow<SplashResult> {
+        activateRemoteConfigUseCase.execute()
         updateAmiiboTypeUseCase.execute().map {
             emit(SplashResult.TypesFetched)
         }.onException {

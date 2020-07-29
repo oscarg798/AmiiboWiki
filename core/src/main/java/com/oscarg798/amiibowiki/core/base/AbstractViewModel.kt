@@ -22,8 +22,11 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.scan
+import kotlin.reflect.KClass
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -35,7 +38,8 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
     val state: Flow<ViewState> = wishProcessor.asFlow()
         .flatMapMerge {
             getResult(it)
-        }.scan(initialState) { state, result ->
+        }
+        .scan(initialState) { state, result ->
             state.reduce(result) as ViewState
         }
 

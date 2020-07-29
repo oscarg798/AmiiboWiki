@@ -14,7 +14,10 @@ apply from: "$rootProject.projectDir/shared.gradle"
 apply plugin: 'kotlin-android'
 
 dependencies {
+    implementation cardView
+
     implementation project(path: ':core')
     implementation project(path: ':network')
     testImplementation project(path: ':testutils')
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 }

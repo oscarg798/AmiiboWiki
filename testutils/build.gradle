@@ -54,6 +54,8 @@ dependencies {
     implementation roomCompiler
     implementation roomKTX
 
+    implementation flagly
+
     implementation lomeno
     testImplementation roomTesting
 }

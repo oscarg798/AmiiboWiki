@@ -13,14 +13,22 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
+import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.models.GameSearchResult
+import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
+import com.oscarg798.amiibowiki.core.usecases.SearchGameByAmiiboUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
+import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,39 +49,83 @@ class AmiiboDetailViewModelTest {
 
     private val logger = relaxedMockk<AmiiboDetailLogger>()
     private val getAmiiboDetailUseCase = mockk<GetAmiiboDetailUseCase>()
+    private val searchGameAmiiboUseCase = mockk<SearchGameByAmiiboUseCase>()
+    private val isFeatureFlagEnableUseCase = mockk<IsFeatureEnableUseCase>()
     private lateinit var viewModel: AmiiboDetailViewModel
     private lateinit var testCollector: TestCollector<AmiiboDetailViewState>
 
     @Before
     fun setup() {
+        coEvery { searchGameAmiiboUseCase.execute(AMIIBO) } answers { GAME_SEARCH_RESULTS }
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } answers { AMIIBO }
+        every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { false }
+
         testCollector = TestCollector()
         viewModel = AmiiboDetailViewModel(
             TAIL,
             getAmiiboDetailUseCase,
+            searchGameAmiiboUseCase,
             logger,
+            isFeatureFlagEnableUseCase,
             coroutinesRule.coroutineContextProvider
         )
     }
 
     @Test
-    fun `given ShowDetail wish when view model process it then it should update the state with the amiibo result`() {
+    fun `given showrelated games FF is off and ShowDetail wish when view model process it then it should update the state with the amiibo result`() {
         viewModel.onWish(AmiiboDetailWish.ShowDetail)
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
         testCollector.assertValues(
             AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.None,
                 error = null
             ),
             AmiiboDetailViewState(
-                status = AmiiboDetailViewState.Status.ShowingDetail(AMIIBO),
+                loading = ViewState.LoadingState.Loading,
+                status = AmiiboDetailViewState.Status.None,
+                error = null
+            ),
+            AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
+                status = AmiiboDetailViewState.Status.ShowingDetail(VIEW_AMIIBO_DETAIL.copy(gameSearchResults = listOf()), false),
                 error = null
             )
         )
 
         coVerify {
             getAmiiboDetailUseCase.execute(TAIL)
+            searchGameAmiiboUseCase wasNot Called
+        }
+    }
+
+    @Test
+    fun `given show related games FF is on and ShowDetail wish when view model process it then it should update the state with the amiibo result`() {
+        every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { true }
+        viewModel.onWish(AmiiboDetailWish.ShowDetail)
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+
+        testCollector.assertValues(
+            AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
+                status = AmiiboDetailViewState.Status.None,
+                error = null
+            ),
+            AmiiboDetailViewState(
+                loading = ViewState.LoadingState.Loading,
+                status = AmiiboDetailViewState.Status.None,
+                error = null
+            ),
+            AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
+                status = AmiiboDetailViewState.Status.ShowingDetail(VIEW_AMIIBO_DETAIL, true),
+                error = null
+            )
+        )
+
+        coVerify {
+            searchGameAmiiboUseCase.execute(AMIIBO)
         }
     }
 
@@ -87,10 +139,17 @@ class AmiiboDetailViewModelTest {
 
         testCollector.assertValues(
             AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.None,
                 error = null
             ),
             AmiiboDetailViewState(
+                loading = ViewState.LoadingState.Loading,
+                status = AmiiboDetailViewState.Status.None,
+                error = null
+            ),
+            AmiiboDetailViewState(
+                loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.None,
                 error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)
             )
@@ -133,6 +192,7 @@ private const val HEAD_TRACKING_PROPERTY = "HEAD"
 private const val TYPE_TRACKING_PROPERTY = "TYPE"
 private const val NAME_TRACKING_PROPERTY = "NAME"
 private const val GAME_SERIES_TRACKING_PROPERTY = "GAME_SERIES"
+private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", 4))
 private val AMIIBO = Amiibo(
     "1",
     "2",
@@ -142,5 +202,8 @@ private val AMIIBO = Amiibo(
     "6",
     AmiiboReleaseDate("7", "8", "9", "10"),
     "11", "12"
+)
+private val VIEW_AMIIBO_DETAIL = ViewAmiiboDetails(
+    AMIIBO, GAME_SEARCH_RESULTS
 )
 private const val TAIL = "1"

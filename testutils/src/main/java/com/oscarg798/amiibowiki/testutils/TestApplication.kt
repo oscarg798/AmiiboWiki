@@ -15,16 +15,36 @@ package com.oscarg798.amiibowiki.testutils
 import android.app.Application
 import com.oscarg798.amiibowiki.core.di.CoreComponent
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.testutils.di.DaggerTestCoreComponent
+import com.oscarg798.amiibowiki.testutils.di.TestFeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.testutils.testrules.MOCK_WEB_SERVER_URL
+import com.oscarg798.flagly.developeroptions.FeatureHandleResourceProvider
+import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlag
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlagProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class TestApplication : Application(), CoreComponentProvider {
+class TestApplication : Application(), CoreComponentProvider, FeatureHandleResourceProvider {
 
     @ExperimentalCoroutinesApi
     override fun provideCoreComponent(): CoreComponent {
-
-        return DaggerTestCoreComponent.factory().create(this, Config(MOCK_WEB_SERVER_URL))
+        return DaggerTestCoreComponent.factory()
+            .create(this, Config(MOCK_WEB_SERVER_URL, MOCK_WEB_SERVER_URL))
     }
+
+    override fun getFeatureFlagProvider(): FeatureFlagProvider = object : FeatureFlagProvider {
+
+        override fun provideAppSupportedFeatureflags(): Collection<FeatureFlag> {
+            return AmiiboWikiFeatureFlag.getValues()
+        }
+    }
+
+    override fun getLocalFeatureflagHandler(): DynamicFeatureFlagHandler =
+        TestFeatureFlagHandlerModule.localFeatureFlagHandler
+
+    override fun getRemoteFeatureFlagHandler(): FeatureFlagHandler =
+        TestFeatureFlagHandlerModule.firebaseFeatureFlagHandler
 }

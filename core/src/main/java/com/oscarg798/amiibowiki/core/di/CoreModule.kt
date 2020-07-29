@@ -16,10 +16,17 @@ import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
+import com.oscarg798.amiibowiki.core.network.services.GameService
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepositoryImpl
+import com.oscarg798.amiibowiki.core.repositories.GameRepository
+import com.oscarg798.amiibowiki.core.repositories.GameRepositoryImpl
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
 import dagger.Module
 import dagger.Provides
 import java.util.Locale
@@ -42,17 +49,27 @@ object CoreModule {
 
     @CoreScope
     @Provides
-    fun provideAmiibo(retrofit: Retrofit): AmiiboService =
+    fun provideAmiibo(@AmiiboApiQualifier retrofit: Retrofit): AmiiboService =
         retrofit.create(AmiiboService::class.java)
 
+    @AmiiboAPIBaseUrl
     @CoreScope
     @Provides
-    fun provideBaseUrl(config: Config) = config.baseUrl
+    fun provideAmiiboAPIBaseUrl(config: Config) = config.amiiboBaseUrl
+
+    @GameAPIBaseUrl
+    @CoreScope
+    @Provides
+    fun provideGameAPIBaseUrl(config: Config) = config.gameBaseUrl
 
     @CoreScope
     @Provides
-    fun provideAmiiboTypeService(retrofit: Retrofit) =
+    fun provideAmiiboTypeService(@AmiiboApiQualifier retrofit: Retrofit): AmiiboTypeService =
         retrofit.create(AmiiboTypeService::class.java)
+
+    @CoreScope
+    @Provides
+    fun provideGameService(@GameApiQualifier retrofit: Retrofit): GameService = retrofit.create(GameService::class.java)
 
     @CoreScope
     @Provides
@@ -63,4 +80,8 @@ object CoreModule {
     @Provides
     fun provideAmiiboTypeRepository(amiiboTypeRepositoryImpl: AmiiboTypeRepositoryImpl): AmiiboTypeRepository =
         amiiboTypeRepositoryImpl
+
+    @CoreScope
+    @Provides
+    fun provideGameRepository(gameRepositoryImpl: GameRepositoryImpl): GameRepository = gameRepositoryImpl
 }

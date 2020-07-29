@@ -15,7 +15,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
-
 apply from: '../signing.gradle'
 
 android {
@@ -34,13 +33,17 @@ android {
 
     buildTypes {
         release {
-            buildConfigField "String", "BASE_URL", "\"$baseUrl\""
+            buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
+            buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug {
-            buildConfigField "String", "BASE_URL", "\"$baseUrl\""
+            minifyEnabled false
+            buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
+            buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
+
         }
 
         alpha {
@@ -48,10 +51,12 @@ android {
             applicationIdSuffix ".alpha"
             manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
             signingConfig signingConfigs.alpha
-            buildConfigField "String", "BASE_URL", "\"$baseUrl\""
+            buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
+            buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
     }
 
     compileOptions {
@@ -119,6 +124,8 @@ dependencies {
 
     implementation lottie
 
+    implementation flagly
+
     kapt project(':loggerprocessor')
 
     //Test
@@ -147,5 +154,6 @@ dependencies {
     implementation project(path: ':amiibolist')
     implementation project(path: ':amiibodetail')
     implementation project(path: ':nfcreader')
+    implementation project(path: ':network')
     testImplementation project(path: ':testutils')
 }
