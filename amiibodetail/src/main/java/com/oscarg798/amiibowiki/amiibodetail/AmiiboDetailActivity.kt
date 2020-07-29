@@ -13,16 +13,12 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.ethanhua.skeleton.Skeleton
-import com.ethanhua.skeleton.SkeletonScreen
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
@@ -150,7 +146,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
     }
 
     private fun showLoading() {
-        with(binding){
+        with(binding) {
             shimmer.root.visibility = View.VISIBLE
             shimmer.shimmerViewContainer.startShimmer()
             tvCharacterTitle.visibility = View.GONE
@@ -161,7 +157,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
     }
 
     private fun hideLoading() {
-        with(binding){
+        with(binding) {
             shimmer.root.visibility = View.GONE
             shimmer.shimmerViewContainer.stopShimmer()
             tvCharacterTitle.visibility = View.VISIBLE

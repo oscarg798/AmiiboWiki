@@ -15,7 +15,6 @@ package com.oscarg798.amiibowiki.amiibodetail
 import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.mvi.Result
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 
 sealed class AmiiboDetailResult : Result {
     data class DetailFetched(
@@ -23,7 +22,7 @@ sealed class AmiiboDetailResult : Result {
         val isRelatedGamesSectionEnabled: Boolean
     ) : AmiiboDetailResult()
 
-    object Loading: AmiiboDetailResult()
+    object Loading : AmiiboDetailResult()
 
     data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
 }

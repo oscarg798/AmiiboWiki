@@ -9,6 +9,7 @@
  *
  *
  */
+include ':gamedetail'
 include ':logger'
 
 rootProject.name = "AmiiboWiki"

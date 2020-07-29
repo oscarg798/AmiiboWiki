@@ -112,7 +112,6 @@ class AmiiboListViewStateTest {
         assert(newState.filtering is AmiiboListViewState.Filtering.FetchSuccess)
         assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, newState.showAmiiboDetail)
     }
-
 }
 
 private val AMIIBO_TYPE = listOf(AmiiboType("1", "2"))

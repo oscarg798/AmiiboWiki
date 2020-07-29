@@ -75,7 +75,6 @@ class AmiiboDetailViewStateTest {
         assert(newState.status is AmiiboDetailViewState.Status.None)
         assert(newState.loading is ViewState.LoadingState.Loading)
     }
-
 }
 
 private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", 4))
