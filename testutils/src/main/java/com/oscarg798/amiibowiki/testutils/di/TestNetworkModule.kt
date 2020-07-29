@@ -13,6 +13,10 @@
 package com.oscarg798.amiibowiki.testutils.di
 
 import com.google.gson.GsonBuilder
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
 import dagger.Provides
@@ -49,10 +53,28 @@ object TestNetworkModule {
         return GsonConverterFactory.create(gson)
     }
 
+    @AmiiboApiQualifier
     @Reusable
     @Provides
     fun provideRetrofit(
         gsonConverterFactory: GsonConverterFactory,
+        @AmiiboAPIBaseUrl
+        baseUrl: String
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(gsonConverterFactory)
+            .client(okHttpClient)
+            .build()
+    }
+
+    @GameApiQualifier
+    @Reusable
+    @Provides
+    fun provideGameAPIRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        @GameAPIBaseUrl
         baseUrl: String
     ): Retrofit {
         return Retrofit.Builder()

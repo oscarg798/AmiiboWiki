@@ -12,6 +12,9 @@
 
 package com.oscarg798.amiibowiki
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
@@ -22,7 +25,9 @@ import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -33,6 +38,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -41,9 +48,9 @@ class AmiiboListViewModel @Inject constructor(
     private val getAmiiboFilteredUseCase: GetAmiiboFilteredUseCase,
     private val getAmiiboTypeUseCase: GetAmiiboTypeUseCase,
     private val amiiboListLogger: AmiiboListLogger,
+    private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val coroutinesContextProvider: CoroutineContextProvider
-) :
-    AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(AmiiboListViewState.init()) {
+) : AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(AmiiboListViewState.init()) {
 
     override fun onScreenShown() {
         amiiboListLogger.trackScreenViewed()
@@ -86,7 +93,11 @@ class AmiiboListViewModel @Inject constructor(
         )
     }
 
-    private fun showDetail(tail: String) = flowOf(AmiiboListResult.ShowAmiiboDetail(tail))
+    private fun showDetail(tail: String) = if (isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowAmiiboDetail)) {
+            flowOf(AmiiboListResult.ShowAmiiboDetail(tail))
+        } else {
+            flowOf(AmiiboListResult.None)
+        }
 
     private fun getFilters(): Flow<AmiiboListResult> = getAmiiboTypeUseCase.execute()
         .map {

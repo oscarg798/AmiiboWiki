@@ -16,10 +16,19 @@
 
     <color name="textColor">#1a1824</color>
     <color name="secondaryTextColor">#919099</color>
-    <color name="colorPrimary">#4AAAE6</color>
-    <color name="colorPrimaryDark">#A7C73E</color>
-    <color name="colorAccent">#F1AF3D</color>
+    <color name="colorPrimary">@color/mine_shaft_900</color>
+    <color name="colorPrimaryDark">@color/mine_shaft_800</color>
+    <color name="colorAccent">@color/mine_shaft_700</color>
+
+
     <color name="silver_chalice">#AAAAAA</color>
+
+    <color name="white">#ffffff</color>
+
+    <color name="mine_shaft_700">#616161</color>
+    <color name="mine_shaft_800">#424242</color>
+    <color name="mine_shaft_900">#212121</color>
+
 
     <!-- amiibo colors -->
     <color name="cinnabar">#EB322C</color>

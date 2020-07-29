@@ -19,6 +19,7 @@ import com.oscarg798.amiibowiki.splash.SplashViewModel
 import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
+import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
@@ -42,6 +43,7 @@ class SplashViewModelTest {
 
     private val logger = relaxedMockk<SplashLogger>()
     private val updateAmiiboTypeUseCase = mockk<UpdateAmiiboTypeUseCase>()
+    private val activateRemoteConfigUseCase = relaxedMockk<ActivateRemoteConfigUseCase>()
     private lateinit var viewModel: SplashViewModel
     private lateinit var testCollector: TestCollector<SplashViewState>
 
@@ -50,7 +52,7 @@ class SplashViewModelTest {
         coEvery { updateAmiiboTypeUseCase.execute() } answers { Result.success(Unit) }
         testCollector = TestCollector()
         viewModel =
-            SplashViewModel(updateAmiiboTypeUseCase, logger, coroutinesRule.coroutineContextProvider)
+            SplashViewModel(updateAmiiboTypeUseCase, logger, activateRemoteConfigUseCase, coroutinesRule.coroutineContextProvider)
     }
 
     @Test
@@ -71,6 +73,7 @@ class SplashViewModelTest {
 
         coVerify {
             updateAmiiboTypeUseCase.execute()
+            activateRemoteConfigUseCase.execute()
         }
     }
 

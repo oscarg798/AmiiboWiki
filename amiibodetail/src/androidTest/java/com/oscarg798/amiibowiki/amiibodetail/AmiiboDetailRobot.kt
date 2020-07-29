@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.amiibodetail
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import com.oscarg798.amiibowiki.testutils.isViewContainingTextDisplayed
 import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
 class AmiiboDetailRobot : TestRobot {
@@ -25,13 +26,12 @@ class AmiiboDetailRobot : TestRobot {
     }
 
     fun isAmiiboDataDisplayed() {
-        Espresso.onView(ViewMatchers.withText("Name: Mario"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withText("Game series: 11"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withText("Type: 16"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withText("Character: 12"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        isViewContainingTextDisplayed("Mario")
+        isViewContainingTextDisplayed("Super Mario Bros")
+        isViewContainingTextDisplayed("Figure")
+        isViewContainingTextDisplayed("Mario", CHARACTER_VIEW_INDEX)
+        isViewContainingTextDisplayed("Related Games")
     }
 }
+
+private const val CHARACTER_VIEW_INDEX = 1

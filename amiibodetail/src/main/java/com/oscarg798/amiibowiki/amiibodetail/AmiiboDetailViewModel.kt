@@ -13,35 +13,74 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
+import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
+import com.oscarg798.amiibowiki.core.usecases.SearchGameByAmiiboUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class AmiiboDetailViewModel @Inject constructor(
     private val amiiboDetailTail: String,
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
+    private val searchGameByAmiiboUseCase: SearchGameByAmiiboUseCase,
     private val amiiboDetailLogger: AmiiboDetailLogger,
+    private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val coroutinesContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
     AmiiboDetailViewState.init()
 ) {
+    override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = getDetail()
 
-    override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = getDetail().onEach {
-        if (it is AmiiboDetailResult.DetailFetched) {
-            trackViewShown(it.amiibo)
+    private suspend fun getDetail(): Flow<AmiiboDetailResult> = flow {
+        emit(getAmiiboDetailUseCase.execute(amiiboDetailTail))
+    }.flatMapConcat { amiibo ->
+        trackViewShown(amiibo)
+
+        val isRelatedGamesSectionEnabled =
+            isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames)
+
+        val searchResult = if (isRelatedGamesSectionEnabled) {
+            getRelatedGames(amiibo)
+        } else {
+            setOf()
         }
-    }
+        flowOf(
+            AmiiboDetailResult.DetailFetched(
+                ViewAmiiboDetails(
+                    amiibo,
+                    searchResult
+                ),
+                isRelatedGamesSectionEnabled
+            )
+        ) as Flow<AmiiboDetailResult>
+    }.catch { cause ->
+        /**
+         * TODO: searchGameByAmiiboUseCase is not mapping exceptions then errors there will crash
+         */
+        if (cause !is AmiiboDetailFailure.AmiiboNotFoundByTail) {
+            throw cause
+        }
+        emit(AmiiboDetailResult.Error(cause))
+    }.onStart {
+        emit(AmiiboDetailResult.Loading)
+    }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+
+    private suspend fun getRelatedGames(amiibo: Amiibo) = searchGameByAmiiboUseCase.execute(amiibo)
 
     private fun trackViewShown(amiibo: Amiibo) {
         amiiboDetailLogger.trackScreenShown(
@@ -54,16 +93,6 @@ class AmiiboDetailViewModel @Inject constructor(
             )
         )
     }
-
-    private suspend fun getDetail(): Flow<AmiiboDetailResult> = flow {
-        val result = getAmiiboDetailUseCase.execute(amiiboDetailTail)
-        emit(AmiiboDetailResult.DetailFetched(result) as AmiiboDetailResult)
-    }.catch { cause ->
-        if (cause !is AmiiboDetailFailure.AmiiboNotFoundByTail) {
-            throw cause
-        }
-        emit(AmiiboDetailResult.Error(cause))
-    }.flowOn(coroutinesContextProvider.backgroundDispatcher)
 }
 
 private const val TAIL_TRACKING_PROPERTY = "TAIL"
