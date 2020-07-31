@@ -50,5 +50,6 @@ class SplashViewModel @Inject constructor(
         }.onException {
             emit(SplashResult.Error(it))
         }
-    }.flowOn(coroutineContextProvider.backgroundDispatcher)
+    }
+        .flowOn(coroutineContextProvider.backgroundDispatcher)
 }

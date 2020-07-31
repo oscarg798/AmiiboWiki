@@ -12,9 +12,12 @@
 
 package com.oscarg798.amiibowiki.core.network.services
 
+import com.oscarg798.amiibowiki.core.network.models.APIAgeRating
+import com.oscarg798.amiibowiki.core.network.models.APIArtworks
 import com.oscarg798.amiibowiki.core.network.models.APIGame
 import com.oscarg798.amiibowiki.core.network.models.APIGameCover
 import com.oscarg798.amiibowiki.core.network.models.APIGameVideo
+import com.oscarg798.amiibowiki.core.network.models.APIScreenshots
 import com.oscarg798.amiibowiki.core.network.models.APISearchResult
 import com.oscarg798.amiibowiki.core.network.models.APIWebsite
 import com.oscarg798.lomeno.event.NetworkTrackingEvent
@@ -38,10 +41,21 @@ interface GameService {
 
     @POST(COVER_PATH)
     suspend fun getCover(@Body searchQuery: String): List<APIGameCover>
-}
 
+    @POST(ARTWORKS_PATH)
+    suspend fun getArtworks(@Body searchQuery: String): List<APIArtworks>
+
+    @POST(AGE_RAITING_PATH)
+    suspend fun getAgeRatings(@Body searchQuery: String): List<APIAgeRating>
+
+    @POST(SCREEN_SHOT_PATH)
+    suspend fun getScreenshots(@Body searchQuery: String): List<APIScreenshots>
+}
 private const val SEARCH_GAME_EVENT_NAME = "POST_SEARCH_GAME"
+private const val AGE_RAITING_PATH = "age_ratings"
+private const val ARTWORKS_PATH = "artworks"
 private const val COVER_PATH = "/covers"
+private const val SCREEN_SHOT_PATH = "/screenshots"
 private const val WEB_SITES_PATH = "/websites"
 private const val GAME_VIDEOS_PATH = "/game_videos"
 private const val SEARCH_PATH = "/search"

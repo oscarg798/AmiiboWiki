@@ -16,7 +16,9 @@ import com.google.gson.GsonBuilder
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIKey
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
+import com.oscarg798.amiibowiki.network.interceptors.APIKeyInterceptor
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
 import dagger.Provides
@@ -24,7 +26,6 @@ import dagger.Reusable
 import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -84,12 +85,17 @@ object NetworkModule {
             .build()
     }
 
+    @Reusable
+    @Provides
+    fun provideAPIKeyInterceptor(@GameAPIKey apiKey: String) = APIKeyInterceptor(apiKey)
+
     @GameApiQualifier
     @Reusable
     @Provides
     fun provideGameAPIRetrofit(
         gsonConverterFactory: GsonConverterFactory,
         httpClient: OkHttpClient,
+        apiKeyInterceptor: APIKeyInterceptor,
         @GameAPIBaseUrl
         baseUrl: String
     ): Retrofit {
@@ -98,15 +104,7 @@ object NetworkModule {
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(gsonConverterFactory)
             .client(
-                httpClient.newBuilder().addInterceptor(object : Interceptor {
-                    override fun intercept(chain: Interceptor.Chain): Response {
-                        val request = chain.request()
-                        val newRequest = request.newBuilder().addHeader("user-key", "399e51a2e10e9f385f1590bffdd09dce")
-                            .build()
-
-                        return chain.proceed(newRequest)
-                    }
-                }).build()
+                httpClient.newBuilder().addInterceptor(apiKeyInterceptor).build()
             )
             .build()
     }

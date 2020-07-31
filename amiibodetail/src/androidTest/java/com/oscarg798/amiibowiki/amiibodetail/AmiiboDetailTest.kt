@@ -24,8 +24,6 @@ import com.oscarg798.amiibowiki.testutils.di.TestFeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.testutils.di.TestPersistenceModule
 import io.mockk.coEvery
 import io.mockk.every
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
@@ -34,8 +32,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 @RunWith(AndroidJUnit4ClassRunner::class)
 class AmiiboDetailTest : BaseUITest(DISPATCHER) {
 

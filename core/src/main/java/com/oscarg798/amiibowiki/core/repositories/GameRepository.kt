@@ -14,10 +14,11 @@ package com.oscarg798.amiibowiki.core.repositories
 
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
+import com.oscarg798.amiibowiki.core.models.Id
 
 interface GameRepository {
 
-    suspend fun getGames(gameName: String): Collection<Game>
+    suspend fun getGame(gameSeries: String, gameId: Id): Game
 
     suspend fun searchGame(query: String): Collection<GameSearchResult>
 }

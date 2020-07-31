@@ -15,10 +15,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="#424242"
-    app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="?colorPrimaryDark"
+    app:cardCornerRadius="@dimen/corner_radius_small"
     app:cardUseCompatPadding="true"
-    app:contentPadding="16dp">
+    app:contentPadding="@dimen/spacing_small">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
         <TextView
             android:id="@+id/tvGameName"
             style="@style/Styles.AmiiboWiki.Default"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/match_constraint"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.M"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
         <TextView
             android:id="@+id/tvGameAlternativeName"
             style="@style/Styles.AmiiboWiki.Secondary"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/match_constraint"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"

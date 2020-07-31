@@ -12,19 +12,36 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.oscarg798.amiibowiki.amiibodetail.adapter.GameRelatedClickListener
 import com.oscarg798.amiibowiki.amiibodetail.adapter.GamesRelatedAdapter
 import com.oscarg798.amiibowiki.amiibodetail.databinding.FragmentSearchResultBinding
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class SearchResultFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchResultBinding
+
+    private lateinit var gameRelatedClickListener: GameRelatedClickListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context !is GameRelatedClickListener) {
+            throw RuntimeException("Fragment should be added in an context implementing game related listenr")
+        }
+
+        gameRelatedClickListener = context
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +57,7 @@ class SearchResultFragment : Fragment() {
 
         with(binding.rvGamesRelated) {
             layoutManager = LinearLayoutManager(context)
-            adapter = GamesRelatedAdapter()
+            adapter = GamesRelatedAdapter(gameRelatedClickListener)
         }
     }
 

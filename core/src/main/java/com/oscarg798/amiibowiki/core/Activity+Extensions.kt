@@ -12,10 +12,13 @@
 
 package com.oscarg798.amiibowiki.core
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 
 typealias DeepLink = String
 
@@ -49,3 +52,28 @@ private fun createDeepLinkIntent(deepLink: DeepLink): Intent {
     intent.data = Uri.parse(deepLink)
     return intent
 }
+
+fun AppCompatActivity.verifyNightMode() {
+    if (!isAndroidQOrHigher()) {
+        return
+    }
+
+    val preference = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+    val userSelectedNigthMode = getNightMode(preference.getString(DARK_MODE_SELECTION_KEY, null))
+    val nightMode = AppCompatDelegate.getDefaultNightMode()
+
+    if (nightMode == userSelectedNigthMode) {
+        return
+    }
+
+    AppCompatDelegate.setDefaultNightMode(userSelectedNigthMode)
+}
+
+private fun AppCompatActivity.getNightMode(nigthMode: String?) = when (nigthMode) {
+    getString(R.string.system_default_dark_mode_option),
+    null -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    getString(R.string.ligth_dark_mode_option) -> AppCompatDelegate.MODE_NIGHT_NO
+    else -> AppCompatDelegate.MODE_NIGHT_YES
+}
+
+fun isAndroidQOrHigher() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q

@@ -21,8 +21,5 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-        <activity
-            android:name="com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity"
-            android:theme="@style/AppTheme" />
     </application>
 </manifest>

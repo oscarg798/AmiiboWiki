@@ -16,7 +16,7 @@
         <activity
             android:name="com.oscarg798.amiibowiki.splash.SplashActivity"
             android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

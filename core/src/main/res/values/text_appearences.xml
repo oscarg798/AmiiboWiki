@@ -17,20 +17,23 @@
 
     <style name="TextAppearance.AmiiboWiki" />
 
-    <style name="TextAppearance.AmiiboWiki.Title" />
-    <style name="TextAppearance.AmiiboWiki.Body"/>
-
-    <style name="TextAppearance.AmiiboWiki.Title.S">
+    <style name="TextAppearance.AmiiboWiki.Title">
         <item name="android:fontFamily">@font/rubik_medium</item>
         <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TextAppearance.AmiiboWiki.Body">
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TextAppearance.AmiiboWiki.Title.S">
         <item name="android:textSize">@dimen/textappearence_titles_text_size</item>
         <item name="android:lineSpacingExtra">@dimen/textappearence_titles_line_spacing</item>
         <item name="android:letterSpacing">@dimen/textappearence_titles_letter_spacing</item>
     </style>
 
     <style name="TextAppearance.AmiiboWiki.Title.M">
-        <item name="android:fontFamily">@font/rubik_medium</item>
-        <item name="android:textStyle">normal</item>
         <item name="android:textSize">@dimen/textappearence_titlem_text_size</item>
         <item name="android:lineSpacingExtra">@dimen/textappearence_titlem_line_spacing</item>
         <item name="android:letterSpacing">@dimen/textappearence_titlem_letter_spacing</item>
@@ -38,26 +41,29 @@
 
     <style name="TextAppearance.AmiiboWiki.Title.L">
         <item name="android:fontFamily">@font/sketch_block</item>
-        <item name="android:textStyle">normal</item>
         <item name="android:textSize">@dimen/textappearence_titlel_text_size</item>
         <item name="android:lineSpacingExtra">@dimen/textappearence_titlel_line_spacing</item>
         <item name="android:letterSpacing">@dimen/textappearence_titlel_letter_spacing</item>
     </style>
 
+    <style name="TextAppearance.AmiiboWiki.Body.S">
+        <item name="android:textSize">@dimen/textappearence_bodys_text_size</item>
+        <item name="android:lineSpacingExtra">@dimen/textappearence_bodys_line_spacing</item>
+        <item name="android:letterSpacing">@dimen/textappearence_bodys_letter_spacing</item>
+    </style>
+
     <style name="TextAppearance.AmiiboWiki.Body.M">
-        <item name="android:fontFamily">@font/rubik</item>
-        <item name="android:textStyle">normal</item>
         <item name="android:textSize">@dimen/textappearence_bodym_text_size</item>
         <item name="android:lineSpacingExtra">@dimen/textappearence_bodym_line_spacing</item>
         <item name="android:letterSpacing">@dimen/textappearence_bodym_letter_spacing</item>
     </style>
 
-    <style name="TextAppearance.AmiiboWiki.Body.S">
-        <item name="android:fontFamily">@font/rubik</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:textSize">@dimen/textappearence_bodys_text_size</item>
-        <item name="android:lineSpacingExtra">@dimen/textappearence_bodys_line_spacing</item>
-        <item name="android:letterSpacing">@dimen/textappearence_bodys_letter_spacing</item>
+    <style name="TextAppearance.AmiiboWiki.Body.L">
+        <item name="android:textSize">@dimen/textappearence_bodyl_text_size</item>
+        <item name="android:lineSpacingExtra">@dimen/textappearence_bodyl_line_spacing</item>
+        <item name="android:letterSpacing">@dimen/textappearence_bodyl_letter_spacing</item>
     </style>
+
+
 
 </resources>

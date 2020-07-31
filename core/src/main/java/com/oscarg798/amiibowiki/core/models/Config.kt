@@ -14,5 +14,15 @@ package com.oscarg798.amiibowiki.core.models
 
 data class Config(
     val amiiboBaseUrl: String,
-    val gameBaseUrl: String
+    val gameBaseUrl: String,
+    val flavor: Flavor,
+    val googleAPIKey: String,
+    val gameAPIKey: String
 )
+
+sealed class Flavor {
+
+    object Debug : Flavor()
+    object Alpha : Flavor()
+    object Release : Flavor()
+}

@@ -39,7 +39,7 @@ import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.startDeepLinkIntent
-import com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity
+import com.oscarg798.amiibowiki.settings.SettingsActivity
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -81,11 +81,7 @@ class AmiiboListActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(
-            if (BuildConfig.DEBUG) {
-                R.menu.amiibo_list_debug_menu
-            } else {
-                R.menu.amiibo_list_menu
-            },
+            R.menu.amiibo_list_menu,
             menu
         )
         filterMenuItem = menu.findItem(R.id.action_filter)
@@ -95,8 +91,8 @@ class AmiiboListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_filter) {
             viewModel.onWish(AmiiboListWish.ShowFilters)
-        } else if (item.itemId == R.id.action_development_options) {
-            startActivity(Intent(this, FeatureFlagHandlerActivity::class.java))
+        } else if (item.itemId == R.id.action_settings) {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         return super.onOptionsItemSelected(item)

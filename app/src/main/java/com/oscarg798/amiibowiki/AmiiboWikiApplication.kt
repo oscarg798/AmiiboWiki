@@ -17,6 +17,7 @@ import com.oscarg798.amiibowiki.core.di.CoreComponent
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.di.DaggerCoreComponent
 import com.oscarg798.amiibowiki.core.models.Config
+import com.oscarg798.amiibowiki.core.models.Flavor
 import com.oscarg798.flagly.developeroptions.FeatureHandleResourceProvider
 import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
@@ -35,7 +36,14 @@ class AmiiboWikiApplication : Application(), CoreComponentProvider,
             coreComponent = DaggerCoreComponent.factory().create(
                 this, Config(
                     BuildConfig.BASE_AMIIBO_API_URL,
-                    BuildConfig.BASE_GAME_API_URL
+                    BuildConfig.BASE_GAME_API_URL,
+                    when{
+                        BuildConfig.DEBUG -> Flavor.Debug
+                        BuildConfig.ALPHA -> Flavor.Alpha
+                        else -> Flavor.Release
+                    },
+                    BuildConfig.GOOGLE_API_KEY,
+                    BuildConfig.GAME_API_KEY
                 )
             )
         }
