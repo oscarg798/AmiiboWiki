@@ -24,7 +24,14 @@ class GameRelatedViewHolder(private val gameRelatedItemBinding: GameRelatedItemB
     override val containerView: View?
         get() = gameRelatedItemBinding.root
 
-    fun bind(viewGameSearchResult: ViewGameSearchResult) {
+    fun bind(
+        viewGameSearchResult: ViewGameSearchResult,
+        gameRelatedClickListener: GameRelatedClickListener
+    ) {
+        gameRelatedItemBinding.root.setOnClickListener {
+            gameRelatedClickListener.onGameRelatedClick(viewGameSearchResult)
+        }
+
         gameRelatedItemBinding.tvGameName.text = viewGameSearchResult.gameName
         if (viewGameSearchResult.alternativeName.isNullOrEmpty()) {
             gameRelatedItemBinding.tvGameAlternativeName.visibility = View.INVISIBLE

@@ -13,6 +13,10 @@
 package com.oscarg798.amiibowiki.amiibodetail.errors
 
 sealed class AmiiboDetailFailure(override val message: String?) : Exception(message) {
-    data class AmiiboNotFoundByTail(val tail: String) : AmiiboDetailFailure("Amiibo with tail $tail not found")
+    data class AmiiboNotFoundByTail(val tail: String) :
+        AmiiboDetailFailure("Amiibo with tail $tail not found")
+
+    class GamesRelatedNotFound : AmiiboDetailFailure("There was an error getting related games")
+
     object UnknowError : AmiiboDetailFailure("There was an error please try again later")
 }

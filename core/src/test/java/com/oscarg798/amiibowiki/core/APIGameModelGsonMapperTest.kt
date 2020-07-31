@@ -110,7 +110,7 @@ class APIGameModelGsonMapperTest {
         Assert.assertEquals(41829, game.id)
         Assert.assertEquals(2, game.category)
         Assert.assertEquals(98625, game.coverId)
-        assert(89.3828696532286 == game.raiting)
+        assert(89.3828696532286 == game.rating)
         Assert.assertNotNull(game.summary)
         Assert.assertEquals(setOf(50428), game.webSiteIds)
         Assert.assertEquals(setOf(14759), game.videosId)

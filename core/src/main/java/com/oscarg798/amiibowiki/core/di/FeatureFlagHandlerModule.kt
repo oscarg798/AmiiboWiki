@@ -30,7 +30,7 @@ object FeatureFlagHandlerModule {
 
     private val remoteConfig = FirebaseRemoteConfig()
     private val firebaseFeatureFlagHandler = FirebaseFeatureFlagHandler(remoteConfig)
-    private val localFeatureFlagHandler = LocalFeatureFlagHandler(firebaseFeatureFlagHandler)
+    private val localFeatureFlagHandler = LocalFeatureFlagHandler()
 
     @CoreScope
     @Provides

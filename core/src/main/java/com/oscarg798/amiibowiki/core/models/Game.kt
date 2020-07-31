@@ -25,7 +25,10 @@ data class Game(
     val cover: String?,
     val gameSeries: String,
     val summary: String?,
+    val raiting: Double?,
     val webSites: Collection<String>?,
     val videosId: Collection<String>?,
-    val raiting: Double?
+    val artworks: Collection<String>?,
+    val ageRating: List<AgeRating>?,
+    val screenshots: Collection<String>?
 )

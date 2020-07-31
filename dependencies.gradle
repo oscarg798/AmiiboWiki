@@ -111,7 +111,7 @@ ext {
     recyclerView = "androidx.recyclerview:recyclerview:$recylerViewVersion"
     constraintLayout = "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     appCompatV4 = "androidx.legacy:legacy-support-v4:$legacy_support_version"
-    preferenceV7 = "androidx.preference:preference:$preference_version"
+    preference = "androidx.preference:preference:$preference_version"
     preferenceV14 = "androidx.legacy:legacy-preference-v14:$preference_v14_version"
     customTabs = "androidx.browser:browser:$android_x_browser_version"
     multidex = "androidx.multidex:multidex:$android_x_multidex_version"
@@ -226,6 +226,8 @@ ext {
     flagly =  "com.oscarg798.flagly:Flagly:1.0.2"
 
     kotlinpoet = 'com.squareup:kotlinpoet:1.6.0'
+
+    shimmer = "com.facebook.shimmer:shimmer:0.5.0"
 
     kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:1.2.9"
     ktlintLib = "com.pinterest:ktlint:0.37.2"

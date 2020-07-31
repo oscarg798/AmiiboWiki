@@ -17,6 +17,7 @@ import com.oscarg798.amiibowiki.core.di.CoreComponent
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Config
+import com.oscarg798.amiibowiki.core.models.Flavor
 import com.oscarg798.amiibowiki.testutils.di.DaggerTestCoreComponent
 import com.oscarg798.amiibowiki.testutils.di.TestFeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.testutils.testrules.MOCK_WEB_SERVER_URL
@@ -32,7 +33,16 @@ class TestApplication : Application(), CoreComponentProvider, FeatureHandleResou
     @ExperimentalCoroutinesApi
     override fun provideCoreComponent(): CoreComponent {
         return DaggerTestCoreComponent.factory()
-            .create(this, Config(MOCK_WEB_SERVER_URL, MOCK_WEB_SERVER_URL))
+            .create(
+                this,
+                Config(
+                    MOCK_WEB_SERVER_URL,
+                    MOCK_WEB_SERVER_URL,
+                    Flavor.Debug,
+                    MOCK_API_KEY,
+                    MOCK_API_KEY
+                )
+            )
     }
 
     override fun getFeatureFlagProvider(): FeatureFlagProvider = object : FeatureFlagProvider {
@@ -48,3 +58,5 @@ class TestApplication : Application(), CoreComponentProvider, FeatureHandleResou
     override fun getRemoteFeatureFlagHandler(): FeatureFlagHandler =
         TestFeatureFlagHandlerModule.firebaseFeatureFlagHandler
 }
+
+private const val MOCK_API_KEY = "MOCK_API_KEY"

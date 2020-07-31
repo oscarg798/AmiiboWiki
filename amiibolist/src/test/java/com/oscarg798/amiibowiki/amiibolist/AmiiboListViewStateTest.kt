@@ -112,6 +112,13 @@ class AmiiboListViewStateTest {
         assert(newState.filtering is AmiiboListViewState.Filtering.FetchSuccess)
         assertEquals(AmiiboListViewState.ShowAmiiboDetail.None, newState.showAmiiboDetail)
     }
+
+    @Test
+    fun `when result is none then it should return a copy like the init state`() {
+        val newState =
+            state.reduce(AmiiboListResult.None) as AmiiboListViewState
+        assertEquals(AmiiboListViewState.init(), newState)
+    }
 }
 
 private val AMIIBO_TYPE = listOf(AmiiboType("1", "2"))

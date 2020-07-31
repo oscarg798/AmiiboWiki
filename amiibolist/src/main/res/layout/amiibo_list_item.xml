@@ -18,8 +18,8 @@
 
     <ImageView
         android:id="@+id/ivImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="@dimen/amiibo_item_icon_size"
+        android:layout_height="@dimen/amiibo_item_icon_size"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,9 +30,9 @@
     <TextView
         android:id="@+id/tvAmiiboName"
         style="@style/Styles.AmiiboWiki.Default"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/match_constraint"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_small"
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.S"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
     <TextView
         android:id="@+id/tvAmiiboSeries"
         style="@style/Styles.AmiiboWiki.Secondary"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/match_constraint"
         android:layout_height="wrap_content"
         android:fontFamily="@font/rubik"
         android:gravity="center"

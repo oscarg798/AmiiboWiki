@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?appBackgroundColor"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:requiresFadingEdge="vertical">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/toolbarImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="false"
+                    android:foreground="@drawable/image_overlay"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax"
+                    tools:src="@drawable/bg" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/toolbarImageSkeleton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/silver_chalice"
+                    android:fillViewport="false"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    app:layout_collapseMode="parallax" />
+
+                <TextView
+                    android:id="@+id/tvTrailer"
+                    style="@style/Styles.AmiiboWiki.Trailer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_trailer"
+                    android:drawableLeft="@drawable/ic_play"
+                    android:drawablePadding="@dimen/spacing_small"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing_small"
+                    android:text="Trailer  "
+                    android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.M" />
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:layout_scrollFlags="scroll|enterAlways" />
+            </FrameLayout>
+
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/gameDetailContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="false"
+        android:padding="@dimen/spacing_medium"
+        app:behavior_overlapTop="50dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivGameCover"
+                android:layout_width="150dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:clipToPadding="false"
+                app:layout_anchorGravity="bottom"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/m" />
+
+            <TextView
+                android:id="@+id/tvGameName"
+                style="@style/Styles.AmiiboWiki.Default"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_medium"
+                android:layout_marginTop="@dimen/spacing_extra_small"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.M"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivGameCover"
+                app:layout_constraintTop_toTopOf="@+id/ivGameCover"
+                tools:text="The Legeng of Zelda Breath of the Wild" />
+
+            <TextView
+                android:id="@+id/tvGameSeries"
+                style="@style/Styles.AmiiboWiki.Default"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_medium"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:maxLines="2"
+                android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.L"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivGameCover"
+                app:layout_constraintTop_toBottomOf="@+id/tvGameName"
+                tools:text="The Lengend of zelda" />
+
+
+            <TextView
+                android:id="@+id/tvGameRating"
+                style="@style/Styles.AmiiboWiki.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.L"
+                android:translationZ="6dp"
+                app:layout_constraintStart_toStartOf="@+id/tvGameSeries"
+                app:layout_constraintTop_toBottomOf="@+id/tvGameSeries"
+                tools:text="89.9" />
+
+            <ImageView
+                android:id="@+id/ivGameRating"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_rating"
+                app:layout_constraintStart_toEndOf="@+id/tvGameRating"
+                app:layout_constraintTop_toTopOf="@+id/tvGameRating" />
+
+            <ImageView
+                android:id="@+id/ivPegiRating"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@+id/ivEsrbRating"
+                app:layout_constraintStart_toStartOf="@+id/tvGameRating"
+                app:layout_constraintTop_toBottomOf="@+id/tvGameRating"
+                tools:src="@drawable/ic_pegi_3"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/ivEsrbRating"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="4dp"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@+id/ivPegiRating"
+                app:layout_constraintTop_toTopOf="@+id/ivPegiRating"
+                tools:src="@drawable/ic_esrb_everyone_10"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tvGameSummary"
+                style="@style/Styles.AmiiboWiki.Default"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:justificationMode="inter_word"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivGameCover"
+                tools:text="Lorem Ipsum Dolor"
+                tools:textAppearance="@style/TextAppearance.AmiiboWiki.Body.L" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/shimmer"
+        layout="@layout/game_detail_content_skeleton"
+        android:visibility="gone" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
