@@ -63,4 +63,8 @@ sealed class WhereClause {
     data class Id(val id: Int) : WhereClause() {
         override fun toString(): String = "where id=$id"
     }
+
+    data class In(val ids: Collection<Int>) : WhereClause() {
+        override fun toString(): String = "where id=(${ids.joinToString(",")})"
+    }
 }

@@ -16,7 +16,12 @@
     <item
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_filter"
-        android:iconTint="@android:color/black"
         android:title="Filter"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Settings"
         app:showAsAction="always" />
 </menu>

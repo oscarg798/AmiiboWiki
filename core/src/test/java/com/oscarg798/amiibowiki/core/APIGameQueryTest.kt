@@ -122,9 +122,7 @@ class APIGameQueryTest {
             )
         )
 
-        query.toString() shouldBeEqualTo """
-            fields *;search "zelda";limit 40;
-        """.trimIndent()
+        query.toString()
     }
 
     @Test(expected = QueryWithSearchAndWhereClauseIsNotSupportedException::class)
@@ -136,9 +134,7 @@ class APIGameQueryTest {
             )
         )
 
-        query.toString() shouldBeEqualTo """
-            fields *;search "zelda";limit 40;
-        """.trimIndent()
+        query.toString()
     }
 
     @Test(expected = QueryWithSearchAndWhereClauseIsNotSupportedException::class)
@@ -149,12 +145,23 @@ class APIGameQueryTest {
             whereClause = WhereClause.Id(ID)
         )
 
+        query.toString()
+    }
+
+    @Test
+    fun `given a query with field and with where in clause when its converted to string then it should return the right value`() {
+        val query = APIGameQuery(
+            fields = FIELDS,
+            whereClause = WhereClause.In(SEARCH_IN_QUERY)
+        )
+
         query.toString() shouldBeEqualTo """
-            fields *;search "zelda";limit 40;
+            fields id,game,name;where id=(1,2,3);
         """.trimIndent()
     }
 }
 
+private val SEARCH_IN_QUERY = setOf<Int>(1, 2, 3)
 private val SEARCH_QUERY = "zelda"
 private val FIELDS = setOf("id", "game", "name")
 private const val ID = 14759

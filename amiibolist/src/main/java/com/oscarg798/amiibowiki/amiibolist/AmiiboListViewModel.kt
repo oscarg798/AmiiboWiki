@@ -88,11 +88,12 @@ class AmiiboListViewModel @Inject constructor(
         )
     }
 
-    private fun showDetail(tail: String) = if (isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowAmiiboDetail)) {
-        flowOf(AmiiboListResult.ShowAmiiboDetail(tail))
-    } else {
-        flowOf(AmiiboListResult.None)
-    }
+    private fun showDetail(tail: String) =
+        if (isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowAmiiboDetail)) {
+            flowOf(AmiiboListResult.ShowAmiiboDetail(tail))
+        } else {
+            flowOf(AmiiboListResult.None)
+        }
 
     private fun getFilters(): Flow<AmiiboListResult> = getAmiiboTypeUseCase.execute()
         .map {
@@ -103,13 +104,14 @@ class AmiiboListViewModel @Inject constructor(
         .flowOn(coroutinesContextProvider.backgroundDispatcher)
 
     private suspend fun filterAmiibos(filter: ViewAmiiboType) =
-        getAmiiboFilteredUseCase.execute(filter.map()).map {
-            AmiiboListResult.AmiibosFiltered(it) as AmiiboListResult
-        }.onStart {
-            emit(AmiiboListResult.Loading)
-        }.catch { cause ->
-            handleFailure(cause)
-        }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+        getAmiiboFilteredUseCase.execute(filter.map())
+            .map {
+                AmiiboListResult.AmiibosFiltered(it) as AmiiboListResult
+            }.onStart {
+                emit(AmiiboListResult.Loading)
+            }.catch { cause ->
+                handleFailure(cause)
+            }.flowOn(coroutinesContextProvider.backgroundDispatcher)
 
     private suspend fun fetchAmiibos(): Flow<AmiiboListResult> = getAmiibosUseCase.execute().map {
         AmiiboListResult.FetchSuccess(it) as AmiiboListResult

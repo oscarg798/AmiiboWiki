@@ -16,30 +16,37 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.oscarg798.amiibowiki.amiibodetail.adapter.GameRelatedClickListener
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
 import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
+import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.setImage
+import com.oscarg798.amiibowiki.gamedetail.GameDetailActivity
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 @DeepLink(AMIIBO_DETAIL_DEEPLINK)
-class AmiiboDetailActivity : AppCompatActivity() {
+class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -47,6 +54,9 @@ class AmiiboDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAmiiboDetailBinding
 
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+
+    private val showGameDetailsStateFlow =
+        MutableStateFlow<AmiiboDetailWish>(AmiiboDetailWish.ShowAmiiboDetail)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,34 +97,33 @@ class AmiiboDetailActivity : AppCompatActivity() {
             }
         }
 
+        ViewCompat.isNestedScrollingEnabled(binding.searchResultFragment)
+
         binding.searchResultFragment.setOnClickListener {
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
         configureBackDrop()
 
-        val vm = ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
-        vm.state.onEach {
+        val viewModel =
+            ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
+
+        viewModel.state.onEach {
             when {
                 it.loading == ViewState.LoadingState.Loading -> showLoading()
-                it.status is AmiiboDetailViewState.Status.ShowingDetail -> showDetail(it.status)
-                it.error != null -> {
-                    hideLoading()
-                    Snackbar.make(
-                        binding.ivImage,
-                        it.error.message ?: getString(R.string.general_error),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
+                it.status is AmiiboDetailViewState.Status.ShowingAmiiboDetails -> showDetail(it.status)
+                it.status is AmiiboDetailViewState.Status.ShowingGameDetails -> showGameDetails(
+                    it.status.gameId,
+                    it.status.gameSeries
+                )
+                it.error != null -> showError(it.error)
             }
         }.launchIn(lifecycleScope)
 
-        vm.onWish(AmiiboDetailWish.ShowDetail)
-    }
-
-    private fun configureBackDrop() {
-        bottomSheetBehavior = BottomSheetBehavior.from<View>(binding.searchResultFragment)
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        showGameDetailsStateFlow
+            .onEach {
+                viewModel.onWish(it)
+            }.launchIn(lifecycleScope)
     }
 
     override fun onBackPressed() {
@@ -125,7 +134,32 @@ class AmiiboDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDetail(state: AmiiboDetailViewState.Status.ShowingDetail) {
+    override fun onGameRelatedClick(gameSearchResult: ViewGameSearchResult) {
+        showGameDetailsStateFlow.value = AmiiboDetailWish.ShowGameDetail(
+            gameSearchResult.gameId,
+            binding.tvSerie.text.toString()
+        )
+    }
+
+    private fun showError(amiiboDetailFailure: AmiiboDetailFailure) {
+        hideLoading()
+        Snackbar.make(
+            binding.ivImage,
+            amiiboDetailFailure.message ?: getString(R.string.general_error),
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+    private fun showGameDetails(gameId: Int, gameSeries: String) {
+        GameDetailActivity.newInstance(this, gameId, gameSeries)
+    }
+
+    private fun configureBackDrop() {
+        bottomSheetBehavior = BottomSheetBehavior.from<View>(binding.searchResultFragment)
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    private fun showDetail(state: AmiiboDetailViewState.Status.ShowingAmiiboDetails) {
         hideLoading()
         val viewAmiiboDetails = state.amiiboDetails
         supportActionBar?.title = viewAmiiboDetails.name
@@ -170,10 +204,10 @@ class AmiiboDetailActivity : AppCompatActivity() {
     private fun showRelatedGames(
         gameSearchResults: Collection<ViewGameSearchResult>
     ) {
+
         val searchResultFragment =
             supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
                 ?: return
-
         searchResultFragment.showGameResults(gameSearchResults.toList())
     }
 }

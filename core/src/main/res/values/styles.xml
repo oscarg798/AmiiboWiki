@@ -12,13 +12,16 @@
 
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="textColor">@color/white</item>
-        <item name="TextColorSecondary">#e0e0e0</item>
+        <item name="textColor">@color/textColor</item>
+        <item name="TextColorSecondary">@color/secondaryTextColor</item>
+        <item name="iconColor">@color/themeIconColor</item>
+        <item name="appBackgroundColor">@color/background_color</item>
+        <item name="android:statusBarColor">@color/status_bar_color</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -40,7 +43,6 @@
     <style name="Styles.AmiiboWiki.Default">
         <item name="android:textColor">?textColor</item>
     </style>
-
 
     <style name="Styles.AmiiboWiki.Secondary">
         <item name="android:textColor">?TextColorSecondary</item>

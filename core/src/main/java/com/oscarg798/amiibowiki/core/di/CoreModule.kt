@@ -23,9 +23,14 @@ import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepositoryImpl
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.repositories.GameRepositoryImpl
+import com.oscarg798.amiibowiki.core.sharepreferences.AmiiboWikiPreferenceWrapper
+import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.utils.ResourceProvider
+import com.oscarg798.amiibowiki.core.utils.StringResourceProvider
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIKey
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
 import dagger.Module
 import dagger.Provides
@@ -69,7 +74,8 @@ object CoreModule {
 
     @CoreScope
     @Provides
-    fun provideGameService(@GameApiQualifier retrofit: Retrofit): GameService = retrofit.create(GameService::class.java)
+    fun provideGameService(@GameApiQualifier retrofit: Retrofit): GameService =
+        retrofit.create(GameService::class.java)
 
     @CoreScope
     @Provides
@@ -83,5 +89,21 @@ object CoreModule {
 
     @CoreScope
     @Provides
-    fun provideGameRepository(gameRepositoryImpl: GameRepositoryImpl): GameRepository = gameRepositoryImpl
+    fun provideGameRepository(gameRepositoryImpl: GameRepositoryImpl): GameRepository =
+        gameRepositoryImpl
+
+    @CoreScope
+    @Provides
+    fun provideStringResourceProvider(stringResourceProvider: StringResourceProvider): ResourceProvider<String> =
+        stringResourceProvider
+
+    @CoreScope
+    @Provides
+    fun providePreferenceWrapper(amiiboWikiPreferenceWrapper: AmiiboWikiPreferenceWrapper): SharedPreferencesWrapper =
+        amiiboWikiPreferenceWrapper
+
+    @GameAPIKey
+    @CoreScope
+    @Provides
+    fun provideGameAPIKey(config: Config) = config.gameAPIKey
 }

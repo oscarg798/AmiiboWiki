@@ -13,15 +13,18 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
+import com.oscarg798.amiibowiki.amiibodetail.usecase.SearchRelatedGamesUseCase
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
-import com.oscarg798.amiibowiki.core.usecases.SearchGameByAmiiboUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
@@ -49,7 +52,7 @@ class AmiiboDetailViewModelTest {
 
     private val logger = relaxedMockk<AmiiboDetailLogger>()
     private val getAmiiboDetailUseCase = mockk<GetAmiiboDetailUseCase>()
-    private val searchGameAmiiboUseCase = mockk<SearchGameByAmiiboUseCase>()
+    private val searchGameAmiiboUseCase = mockk<SearchRelatedGamesUseCase>()
     private val isFeatureFlagEnableUseCase = mockk<IsFeatureEnableUseCase>()
     private lateinit var viewModel: AmiiboDetailViewModel
     private lateinit var testCollector: TestCollector<AmiiboDetailViewState>
@@ -59,6 +62,7 @@ class AmiiboDetailViewModelTest {
         coEvery { searchGameAmiiboUseCase.execute(AMIIBO) } answers { GAME_SEARCH_RESULTS }
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } answers { AMIIBO }
         every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { false }
+        every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowGameDetail) } answers { false }
 
         testCollector = TestCollector()
         viewModel = AmiiboDetailViewModel(
@@ -73,7 +77,7 @@ class AmiiboDetailViewModelTest {
 
     @Test
     fun `given showrelated games FF is off and ShowDetail wish when view model process it then it should update the state with the amiibo result`() {
-        viewModel.onWish(AmiiboDetailWish.ShowDetail)
+        viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
         testCollector.assertValues(
@@ -89,7 +93,10 @@ class AmiiboDetailViewModelTest {
             ),
             AmiiboDetailViewState(
                 loading = ViewState.LoadingState.None,
-                status = AmiiboDetailViewState.Status.ShowingDetail(VIEW_AMIIBO_DETAIL.copy(gameSearchResults = listOf()), false),
+                status = AmiiboDetailViewState.Status.ShowingAmiiboDetails(
+                    VIEW_AMIIBO_DETAIL.copy(gameSearchResults = listOf()),
+                    false
+                ),
                 error = null
             )
         )
@@ -103,7 +110,7 @@ class AmiiboDetailViewModelTest {
     @Test
     fun `given show related games FF is on and ShowDetail wish when view model process it then it should update the state with the amiibo result`() {
         every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { true }
-        viewModel.onWish(AmiiboDetailWish.ShowDetail)
+        viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
         testCollector.assertValues(
@@ -119,7 +126,10 @@ class AmiiboDetailViewModelTest {
             ),
             AmiiboDetailViewState(
                 loading = ViewState.LoadingState.None,
-                status = AmiiboDetailViewState.Status.ShowingDetail(VIEW_AMIIBO_DETAIL, true),
+                status = AmiiboDetailViewState.Status.ShowingAmiiboDetails(
+                    VIEW_AMIIBO_DETAIL,
+                    true
+                ),
                 error = null
             )
         )
@@ -130,14 +140,14 @@ class AmiiboDetailViewModelTest {
     }
 
     @Test
-    fun `given ShowDetail wish when view model process and there is an AmiiboNotFoundByTail failure it then it should update the state with the error`() {
+    fun `given show amiibo detail wish when view model process and there is an AmiiboNotFoundByTail failure it then it should update the state with the error`() {
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } throws AmiiboDetailFailure.AmiiboNotFoundByTail(
             TAIL
         )
-        viewModel.onWish(AmiiboDetailWish.ShowDetail)
+        viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
-        testCollector.assertValues(
+        testCollector wereValuesEmitted listOf(
             AmiiboDetailViewState(
                 loading = ViewState.LoadingState.None,
                 status = AmiiboDetailViewState.Status.None,
@@ -154,6 +164,7 @@ class AmiiboDetailViewModelTest {
                 error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)
             )
         )
+
         coVerify {
             getAmiiboDetailUseCase.execute(TAIL)
         }
@@ -163,14 +174,14 @@ class AmiiboDetailViewModelTest {
     fun `given ShowDetail wish when view model process and there is an Exception failure it then it should throw it`() {
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } throws NullPointerException()
         runBlockingTest {
-            viewModel.onWish(AmiiboDetailWish.ShowDetail)
+            viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
             viewModel.state.launchIn(this).cancelAndJoin()
         }
     }
 
     @Test
-    fun `when amiibo detail view state is emitted  then it should track the view as shown with the properties`() {
-        viewModel.onWish(AmiiboDetailWish.ShowDetail)
+    fun `when show amiibo details wish is emitted then it should track the view as shown with the properties`() {
+        viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
         verify {
@@ -185,18 +196,72 @@ class AmiiboDetailViewModelTest {
             )
         }
     }
+
+    @Test
+    fun `when show game result wish is emitted and feature flag is on then it should return a result to show the detail`() {
+        every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowGameDetail) } answers { true }
+
+        viewModel.onWish(AmiiboDetailWish.ShowGameDetail(GAME_ID, GAME_SERIES))
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+
+        testCollector.wereValuesEmitted(
+            listOf(
+                AmiiboDetailViewState(
+                    loading = ViewState.LoadingState.None,
+                    status = AmiiboDetailViewState.Status.None,
+                    error = null
+                ),
+                AmiiboDetailViewState(
+                    loading = ViewState.LoadingState.None,
+                    status = AmiiboDetailViewState.Status.ShowingGameDetails(GAME_ID, GAME_SERIES),
+                    error = null
+                )
+            )
+        )
+
+        verify {
+            logger.trackGameSearchResultClicked(mapOf("GAME_ID" to GAME_ID.toString()))
+        }
+    }
+
+    @Test
+    fun `when show game result wish is emitted and feature flag is off then it should return a none state`() {
+        viewModel.onWish(AmiiboDetailWish.ShowGameDetail(GAME_ID, GAME_SERIES))
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+
+        testCollector.wereValuesEmitted(
+            listOf(
+                AmiiboDetailViewState(
+                    loading = ViewState.LoadingState.None,
+                    status = AmiiboDetailViewState.Status.None,
+                    error = null
+                ),
+                AmiiboDetailViewState(
+                    loading = ViewState.LoadingState.None,
+                    status = AmiiboDetailViewState.Status.None,
+                    error = null
+                )
+            )
+        )
+
+        verify {
+            logger.trackGameSearchResultClicked(mapOf("GAME_ID" to GAME_ID.toString()))
+        }
+    }
 }
 
+private const val GAME_ID = 4
+private const val GAME_SERIES = "22"
 private const val TAIL_TRACKING_PROPERTY = "TAIL"
 private const val HEAD_TRACKING_PROPERTY = "HEAD"
 private const val TYPE_TRACKING_PROPERTY = "TYPE"
 private const val NAME_TRACKING_PROPERTY = "NAME"
 private const val GAME_SERIES_TRACKING_PROPERTY = "GAME_SERIES"
-private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", 4))
+private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", GAME_ID))
 private val AMIIBO = Amiibo(
     "1",
     "2",
-    "3",
+    GAME_SERIES,
     "4",
     "5",
     "6",
