@@ -7,6 +7,8 @@
 
 Application to read and watch the Amiibo data.  It has a feature to read the nfc tag associated with it and watch the detail of the scanned Amiibo.
 
+<img src="./demo.gif"  width="200" height="400"/>
+
 ## Setup
 
 In order to setup the project and be able to run it please follow [Out Setup Guide](./SETUP.md)
