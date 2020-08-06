@@ -24,11 +24,7 @@ import com.oscarg798.amiibowiki.nfcreader.utils.MifareTagTech
 import com.oscarg798.amiibowiki.nfcreader.utils.TagTech
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @Module
 object NFCReaderModule {
 

@@ -36,10 +36,8 @@ import dagger.Module
 import dagger.Provides
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.Retrofit
 
-@ExperimentalCoroutinesApi
 @Module
 object CoreModule {
 

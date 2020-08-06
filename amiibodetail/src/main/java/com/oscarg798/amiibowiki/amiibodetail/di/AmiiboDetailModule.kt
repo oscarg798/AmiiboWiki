@@ -21,11 +21,7 @@ import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 @Module
 object AmiiboDetailModule {
 

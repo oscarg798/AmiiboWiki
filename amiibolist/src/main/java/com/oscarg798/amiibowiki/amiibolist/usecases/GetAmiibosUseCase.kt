@@ -17,13 +17,11 @@ import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.merge
 
-@ExperimentalCoroutinesApi
 @AmiiboListScope
 class GetAmiibosUseCase @Inject constructor(private val repository: AmiiboRepository) {
 

@@ -19,14 +19,14 @@ import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.models.Config
 import dagger.BindsInstance
 import dagger.Component
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @CoreScope
 @Component(
     modules = [
-        CoreModule::class, TestNetworkModule::class,
-        TestPersistenceModule::class, TestLoggerModule::class,
+        CoreModule::class,
+        TestNetworkModule::class,
+        TestPersistenceModule::class,
+        TestLoggerModule::class,
         TestFeatureFlagHandlerModule::class
     ]
 )

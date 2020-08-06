@@ -26,11 +26,9 @@ import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlag
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class TestApplication : Application(), CoreComponentProvider, FeatureHandleResourceProvider {
 
-    @ExperimentalCoroutinesApi
     override fun provideCoreComponent(): CoreComponent {
         return DaggerTestCoreComponent.factory()
             .create(

@@ -17,13 +17,11 @@ import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
 class UpdateAmiibosTypeUseCaseTest {
 
     private lateinit var usecase: UpdateAmiiboTypeUseCase

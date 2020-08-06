@@ -17,16 +17,12 @@ import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.scan
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
     ViewState : MVIViewState<Result>>(initialState: ViewState) : ViewModel() {
 

@@ -18,11 +18,7 @@ import com.oscarg798.amiibowiki.nfcreader.NFCReaderViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @Module
 abstract class NFCReaderViewModelModule {
 

@@ -11,7 +11,7 @@ Application to read and watch the Amiibo data.  It has a feature to read the nfc
 
 ## Setup
 
-In order to setup the project and be able to run it please follow [Out Setup Guide](./SETUP.md)
+In order to setup the project and be able to run it please follow [Our Setup Guide](./SETUP.md)
 
 ## Features
 

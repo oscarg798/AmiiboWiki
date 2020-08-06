@@ -10,27 +10,18 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail.usecase
+package com.oscarg798.amiibowiki.core.di.qualifier
 
-import com.oscarg798.amiibowiki.amiibodetail.di.AmiiboDetailScope
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.core.extensions.getOrTransform
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
-import javax.inject.Inject
+import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 
-@AmiiboDetailScope
-class GetAmiiboDetailUseCase @Inject constructor(private val repository: AmiiboRepository) {
+interface FeatureHandlerProvider {
 
-    suspend fun execute(tail: String): Amiibo {
-        return runCatching {
-            repository.getAmiiboById(tail)
-        }.getOrTransform {
-            throw if (it is IllegalArgumentException) {
-                AmiiboDetailFailure.AmiiboNotFoundByTail(tail)
-            } else {
-                it
-            }
-        }
-    }
+    @RemoteFeatureFlagHandler
+    fun provideRemoteFeatureFlagHandler(): FeatureFlagHandler
+
+    fun provideDynamicFeatureFlag(): DynamicFeatureFlagHandler
+
+    @MainFeatureFlagHandler
+    fun provideAmiiboWikiFeatureFlagHandler(): FeatureFlagHandler
 }

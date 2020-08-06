@@ -15,6 +15,7 @@ properties.load(project.rootProject.file("local.properties").newDataInputStream(
 
 def googleApiKey = properties.getProperty("googleApiKey")
 def gameApiKey = properties.getProperty("gameAPIKey")
+def accountJsonPath = properties.getProperty("googleAccountServiceFile")
 
 def getReleaseVersionCode() {
     return "${versionMajor}".toInteger() * 10000 + "${versionMinor}".toInteger() * 1000 + "${versionMicro}".toInteger() * 100 + "${buildNumber}".toInteger()
@@ -29,4 +30,5 @@ ext {
     appBuildToolsVersion = "30.0.0"
     googleAPIKey = googleApiKey
     gameAPIKey = gameApiKey
+    googleAccountServiceFile = accountJsonPath
 }

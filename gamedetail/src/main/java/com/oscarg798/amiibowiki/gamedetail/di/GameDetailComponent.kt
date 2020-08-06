@@ -15,9 +15,7 @@ package com.oscarg798.amiibowiki.gamedetail.di
 import com.oscarg798.amiibowiki.core.di.CoreComponent
 import com.oscarg798.amiibowiki.gamedetail.GameDetailActivity
 import dagger.Component
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @GameDetailScope
 @Component(dependencies = [CoreComponent::class], modules = [GameDetailModule::class])
 interface GameDetailComponent {

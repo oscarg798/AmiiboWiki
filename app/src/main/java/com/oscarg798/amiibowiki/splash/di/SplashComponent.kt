@@ -19,8 +19,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Scope
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
+
 @SplashScope
 @Component(dependencies = [CoreComponent::class], modules = [SplahModule::class])
 interface SplashComponent {

@@ -25,5 +25,12 @@ android {
             storePassword keystorePassword
             storeFile file(keystorepath)
         }
+
+        release{
+            keyAlias keystoreAlias
+            keyPassword keystorePassword
+            storePassword keystorePassword
+            storeFile file(keystorepath)
+        }
     }
 }

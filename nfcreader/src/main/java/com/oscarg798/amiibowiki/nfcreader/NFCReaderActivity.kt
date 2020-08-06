@@ -31,13 +31,9 @@ import com.oscarg798.amiibowiki.nfcreader.di.DaggerNFCReaderComponent
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class NFCReaderActivity : AppCompatActivity() {
 
     @Inject
