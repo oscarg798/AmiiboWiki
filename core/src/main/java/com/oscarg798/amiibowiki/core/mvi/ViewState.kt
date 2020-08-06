@@ -13,7 +13,7 @@
 package com.oscarg798.amiibowiki.core.mvi
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 
-interface ViewState<Result : MVIResult> {
+interface ViewState<in Result : MVIResult> {
 
     /**
      * TODO: This should be perform by a recuder class,

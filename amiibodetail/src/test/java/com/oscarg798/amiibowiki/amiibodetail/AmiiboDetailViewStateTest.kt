@@ -13,10 +13,13 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -33,41 +36,51 @@ class AmiiboDetailViewStateTest {
     @Test
     fun `when amiibo detail fetch is success then state should reflect the change`() {
         val newState =
-            state.reduce(AmiiboDetailResult.DetailFetched(VIEW_AMIIBO_DETAIL, false)) as AmiiboDetailViewState
+            state.reduce(
+                AmiiboDetailResult.DetailFetched(
+                    VIEW_AMIIBO_DETAIL,
+                    false
+                )
+            ) as AmiiboDetailViewState
 
         Assert.assertNull(newState.error)
         assert(newState.loading is ViewState.LoadingState.None)
-        assert(newState.status is AmiiboDetailViewState.Status.ShowingDetail)
+        assert(newState.status is AmiiboDetailViewState.Status.ShowingAmiiboDetails)
         Assert.assertEquals(
             VIEW_AMIIBO_DETAIL,
-            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiiboDetails
+            (newState.status as AmiiboDetailViewState.Status.ShowingAmiiboDetails).amiiboDetails
         )
         Assert.assertEquals(
             false,
-            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).isRelatedGamesSectionEnabled
+            (newState.status as AmiiboDetailViewState.Status.ShowingAmiiboDetails).isRelatedGamesSectionEnabled
         )
     }
 
     @Test
     fun `when amiibo detail fetch is success and related games are enable then state should reflect the change`() {
         val newState =
-            state.reduce(AmiiboDetailResult.DetailFetched(VIEW_AMIIBO_DETAIL, true)) as AmiiboDetailViewState
+            state.reduce(
+                AmiiboDetailResult.DetailFetched(
+                    VIEW_AMIIBO_DETAIL,
+                    true
+                )
+            ) as AmiiboDetailViewState
 
         Assert.assertNull(newState.error)
         assert(newState.loading is ViewState.LoadingState.None)
-        assert(newState.status is AmiiboDetailViewState.Status.ShowingDetail)
+        assert(newState.status is AmiiboDetailViewState.Status.ShowingAmiiboDetails)
         Assert.assertEquals(
             VIEW_AMIIBO_DETAIL,
-            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).amiiboDetails
+            (newState.status as AmiiboDetailViewState.Status.ShowingAmiiboDetails).amiiboDetails
         )
         Assert.assertEquals(
             true,
-            (newState.status as AmiiboDetailViewState.Status.ShowingDetail).isRelatedGamesSectionEnabled
+            (newState.status as AmiiboDetailViewState.Status.ShowingAmiiboDetails).isRelatedGamesSectionEnabled
         )
     }
 
     @Test
-    fun `when result is loading then statte should reflect this status`() {
+    fun `when result is loading then state should reflect this status`() {
         val newState =
             state.reduce(AmiiboDetailResult.Loading) as AmiiboDetailViewState
 
@@ -75,8 +88,38 @@ class AmiiboDetailViewStateTest {
         assert(newState.status is AmiiboDetailViewState.Status.None)
         assert(newState.loading is ViewState.LoadingState.Loading)
     }
+
+    @Test
+    fun `when result is show game details then state should reflect this status`() {
+        val newState =
+            state.reduce(
+                AmiiboDetailResult.ShowGameDetails(
+                    GAME_ID,
+                    VIEW_AMIIBO_DETAIL.gameSeries
+                )
+            ) as AmiiboDetailViewState
+
+        Assert.assertNull(newState.error)
+        assert(newState.status is AmiiboDetailViewState.Status.ShowingGameDetails)
+        Assert.assertEquals(
+            AmiiboDetailViewState.Status.ShowingGameDetails(
+                GAME_ID,
+                VIEW_AMIIBO_DETAIL.gameSeries
+            ),
+            newState.status
+        )
+        assert(newState.loading is ViewState.LoadingState.None)
+    }
+
+    @Test
+    fun `when result is none then state should be same as the init one`() {
+        val newState = state.reduce(AmiiboDetailResult.None) as AmiiboDetailViewState
+
+        newState shouldBeEqualTo AmiiboDetailViewState.init()
+    }
 }
 
+private const val GAME_ID = 1
 private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", 4))
 private val VIEW_AMIIBO_DETAIL = ViewAmiiboDetails(
     Amiibo(

@@ -18,8 +18,14 @@ sealed class AmiiboWikiFeatureFlag(override val name: String) : FeatureFlag {
 
     object ShowRelatedGames : AmiiboWikiFeatureFlag("show_related_games")
     object ShowAmiiboDetail : AmiiboWikiFeatureFlag("amiibo_detail")
+    object ShowGameDetail : AmiiboWikiFeatureFlag("show_game_detail")
 
     companion object {
-        fun getValues(): Set<FeatureFlag> = setOf(ShowRelatedGames, ShowAmiiboDetail)
+        fun getValues(): Set<FeatureFlag> =
+            setOf(
+                ShowRelatedGames,
+                ShowAmiiboDetail,
+                ShowGameDetail
+            )
     }
 }

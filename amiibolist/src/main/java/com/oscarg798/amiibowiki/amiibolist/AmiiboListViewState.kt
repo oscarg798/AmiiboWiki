@@ -98,7 +98,14 @@ data class AmiiboListViewState(
                 showAmiiboDetail = ShowAmiiboDetail.Show(result.amiiboTail),
                 error = null
             )
-            is AmiiboListResult.None -> copy()
+            is AmiiboListResult.None -> copy(
+                loading = ViewState.LoadingState.None,
+                status = Status.None,
+                filtering = Filtering.None,
+                showingFilters = ShowingFilters.None,
+                showAmiiboDetail = ShowAmiiboDetail.None,
+                error = null
+            )
         }
     }
 

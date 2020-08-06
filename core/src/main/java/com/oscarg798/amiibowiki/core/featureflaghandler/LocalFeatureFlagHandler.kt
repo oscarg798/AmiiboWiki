@@ -14,11 +14,9 @@ package com.oscarg798.amiibowiki.core.featureflaghandler
 
 import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlag
-import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import com.oscarg798.flagy.exceptions.FeatureFlagNotPresentInHandlerException
 
-class LocalFeatureFlagHandler(private val remoteHandler: FeatureFlagHandler) :
-    DynamicFeatureFlagHandler {
+class LocalFeatureFlagHandler : DynamicFeatureFlagHandler {
 
     private val featureMap: HashMap<String, Boolean> = HashMap()
 

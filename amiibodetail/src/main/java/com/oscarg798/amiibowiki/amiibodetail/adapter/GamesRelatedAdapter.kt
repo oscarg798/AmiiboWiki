@@ -19,22 +19,23 @@ import androidx.recyclerview.widget.ListAdapter
 import com.oscarg798.amiibowiki.amiibodetail.databinding.GameRelatedItemBinding
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
 
-class GamesRelatedAdapter : ListAdapter<ViewGameSearchResult, GameRelatedViewHolder>(object :
-        DiffUtil.ItemCallback<ViewGameSearchResult>() {
+class GamesRelatedAdapter(private val gameResultRelatedClickListener: GameRelatedClickListener) :
+    ListAdapter<ViewGameSearchResult, GameRelatedViewHolder>(object :
+            DiffUtil.ItemCallback<ViewGameSearchResult>() {
 
-        override fun areItemsTheSame(
-            oldItem: ViewGameSearchResult,
-            newItem: ViewGameSearchResult
-        ): Boolean = oldItem.gameId == newItem.gameId
+            override fun areItemsTheSame(
+                oldItem: ViewGameSearchResult,
+                newItem: ViewGameSearchResult
+            ): Boolean = oldItem.gameId == newItem.gameId
 
-        override fun areContentsTheSame(
-            oldItem: ViewGameSearchResult,
-            newItem: ViewGameSearchResult
-        ): Boolean = oldItem == newItem
-    }) {
+            override fun areContentsTheSame(
+                oldItem: ViewGameSearchResult,
+                newItem: ViewGameSearchResult
+            ): Boolean = oldItem == newItem
+        }) {
 
     override fun onBindViewHolder(holder: GameRelatedViewHolder, position: Int) =
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), gameResultRelatedClickListener)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameRelatedViewHolder =
         GameRelatedViewHolder(

@@ -13,10 +13,12 @@
 package com.oscarg798.amiibowiki.core.network.models
 
 import com.google.gson.annotations.SerializedName
-import com.oscarg798.amiibowiki.core.models.CoverUrl
+import com.oscarg798.amiibowiki.core.models.AgeRating
+import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.GameCategory
 import com.oscarg798.amiibowiki.core.models.Id
+import com.oscarg798.amiibowiki.core.models.Rating
 import com.oscarg798.amiibowiki.core.models.VideoId
 import com.oscarg798.amiibowiki.core.models.WebSiteId
 import com.oscarg798.amiibowiki.core.models.WebSiteUrl
@@ -37,24 +39,49 @@ data class APIGame(
     @SerializedName("videos")
     val videosId: Set<Int>?,
     @SerializedName("rating")
-    val raiting: Double?
+    val rating: Double?,
+    @SerializedName("age_ratings")
+    val ageRatings: Set<Int>?,
+    @SerializedName("artworks")
+    val artworks: Set<Int>?,
+    @SerializedName("screenshots")
+    val screenshots: Set<Int>?
 ) {
 
     fun toGame(
-        gameName: String,
-        covers: Map<Id, CoverUrl>,
-        webSites: Map<WebSiteId, WebSiteUrl>,
-        videos: Map<Id, VideoId>
+        gameSeries: String,
+        covers: APIGameCover?,
+        webSites: List<APIWebsite>?,
+        videos: List<APIGameVideo>?,
+        artworks: List<APIArtworks>?,
+        ageRatings: List<APIAgeRating>?,
+        screenshots: List<APIScreenshots>?
     ) = Game(
         id,
         name,
         GameCategory.createFromCategoryId(category),
-        covers[coverId],
-        gameName,
+        covers?.url,
+        gameSeries,
         summary,
-        mapWebSites(webSites),
-        mapVideos(videos),
-        raiting
+        rating,
+        webSites?.map { apiWebSite ->
+            apiWebSite.url
+        },
+        videos?.map { apiGameView ->
+            apiGameView.videoId
+        },
+        artworks?.map { apiArtwork ->
+            apiArtwork.url
+        },
+        ageRatings?.map { apiAgeRaiting ->
+            AgeRating(
+                AgeRatingCategory.getCategory(apiAgeRaiting.category),
+                Rating.getRating(apiAgeRaiting.rating)
+            )
+        },
+        screenshots?.map {
+            it.url
+        }
     )
 
     private fun mapVideos(

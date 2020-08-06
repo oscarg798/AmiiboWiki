@@ -11,30 +11,20 @@
   -->
 
 <resources>
+    <attr name="appBackgroundColor" format="color"/>
     <attr name="textColor" format="color" />
     <attr name="TextColorSecondary" format="color" />
+    <attr name="iconColor" format="color"/>
 
-    <color name="textColor">#1a1824</color>
-    <color name="secondaryTextColor">#919099</color>
-    <color name="colorPrimary">@color/mine_shaft_900</color>
-    <color name="colorPrimaryDark">@color/mine_shaft_800</color>
-    <color name="colorAccent">@color/mine_shaft_700</color>
+    <color name="textColor">@color/mine_shaft_900</color>
+    <color name="secondaryTextColor">@color/mine_shaft_800</color>
+    <color name="invertedTextColor"></color>
+    <color name="themeIconColor">@color/mine_shaft_900</color>
 
+    <color name="colorPrimary">@color/alabaster_50</color>
+    <color name="colorPrimaryDark">@color/alabaster_100</color>
+    <color name="colorAccent">@color/alabaster_200</color>
 
-    <color name="silver_chalice">#AAAAAA</color>
-
-    <color name="white">#ffffff</color>
-
-    <color name="mine_shaft_700">#616161</color>
-    <color name="mine_shaft_800">#424242</color>
-    <color name="mine_shaft_900">#212121</color>
-
-
-    <!-- amiibo colors -->
-    <color name="cinnabar">#EB322C</color>
-    <color name="atlantis">#A7C73E</color>
-    <color name="picton_blue">#4AAAE6</color>
-    <color name="viridian">#3A8365</color>
-    <color name="tulip_tree">#F1AF3D</color>
-    <color name="cerise">#D63080</color>
+    <color name="background_color">@color/alabaster_200</color>
+    <color name="status_bar_color">@color/mine_shaft_900</color>
 </resources>

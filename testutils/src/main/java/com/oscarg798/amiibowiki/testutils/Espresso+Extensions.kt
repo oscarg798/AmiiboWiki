@@ -22,7 +22,12 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
 fun isViewContainingTextDisplayed(text: String, index: Int = FIRST_MATCH_INDEX) {
-    Espresso.onView(withIndex(ViewMatchers.withText(text), FIRST_MATCH_INDEX))
+    Espresso.onView(withIndex(ViewMatchers.withText(text), index))
+        .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+}
+
+fun isViewWithIdDisplayed(id: Int, index: Int = FIRST_MATCH_INDEX) {
+    Espresso.onView(withIndex(ViewMatchers.withId(id), index))
         .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 }
 

@@ -1,0 +1,60 @@
+<!--
+  ~ Copyright 2020 Oscar David Gallon Rosero
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  ~
+  ~
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="389.43dp"
+    android:height="527.02dp"
+    android:viewportWidth="389.43"
+    android:viewportHeight="527.02">
+  <path
+      android:pathData="m2.83,2.82l383.76,-0l0,521.38l-383.76,-0l0,-521.38z"
+      android:fillColor="#1b1615"/>
+  <path
+      android:pathData="m383.76,521.35l-378.11,-0l0,-515.71l378.11,-0l0,515.71zM389.43,0l-5.67,-0 -378.12,-0 -5.64,-0l0,5.65 0,515.7 0,5.67l5.64,-0 378.12,-0 5.67,-0l0,-5.67 0,-515.7 0,-5.65z"
+      android:fillColor="#fff"/>
+  <path
+      android:pathData="m363.39,24.95l-337.22,-0l0,78.65l337.22,-0l0,-78.65z"
+      android:fillColor="#fff"/>
+  <path
+      android:pathData="m26.82,123.03l336.61,-0l0,306.74l-336.61,-0l0,-306.74z"
+      android:fillColor="#fff"/>
+  <path
+      android:pathData="m27.198,496.716l0,-46.14l67.8,-0l0,10.8l-40.57,-0l0,6.58l34.33,-0l0,10.77l-34.33,-0l0,7.22l42.12,-0l0,10.77l-69.35,-0z"
+      android:fillColor="#fff"/>
+  <path
+      android:pathData="m154.143,464.01c-0.4,-1.56 -1.94,-2.55 -3.92,-3.11 -1.93,-0.6 -4.32,-0.85 -7.02,-0.85 -5.99,-0 -8.67,0.97 -8.67,2.69 0,6.81 47.79,2.55 47.79,19.32 0,10.68 -16.07,15.89 -38.9,15.89 -21.94,-0 -36.24,-7.11 -36.83,-15.45l26.09,-0c0.57,1.69 2.22,2.86 4.53,3.64 2.17,0.77 5.03,1.17 7.75,1.17 6.81,-0 11.31,-1.21 11.31,-3.39 0,-6.99 -47.82,-2.19 -47.82,-19.77 0,-9.81 15.25,-14.71 36.03,-14.71 23.07,-0 33.59,6.53 35.58,14.57l-25.92,-0z"
+      android:fillColor="#fff"/>
+  <path
+      android:pathData="m223.098,470.587l10.71,-0c8.45,-0 12.96,-1.22 12.96,-4.37 0,-3.27 -4.59,-4.84 -10.96,-4.84l-12.71,-0l0,9.21zM223.098,480.647l0,16.07l-27.21,-0l0,-46.14l39.23,-0c27.68,-0 36.83,4.23 36.83,13.19 0,5.34 -4.25,9.77 -13.95,11.31 8.74,1.75 14.05,2.86 14.05,12.16 0,6 -0.35,8.07 2.89,8.07l0,1.41l-27.59,-0c-0.7,-1.02 -1.39,-3.97 -1.39,-8.06 0,-6.06 -1.82,-8.01 -14.52,-8.01l-8.34,-0z"
+      android:fillColor="#fff"/>
+  <path
+      android:pathData="m315.915,461.376l0,7.73l11.33,-0c5.43,-0 9.36,-1.41 9.36,-4.04 0,-3.6 -5.35,-3.69 -11.06,-3.69l-9.63,-0zM315.915,477.456l0,8.49l11.87,-0c6.75,-0 11.8,-0.77 11.8,-4.22 0,-4.02 -6.33,-4.27 -15.02,-4.27l-8.65,-0zM288.675,496.716l0,-46.14l39.73,-0c18.71,-0 33.6,2.49 33.6,11.66 0,4.74 -5.55,8.19 -10.85,10 8.99,1.3 13.83,5.62 13.83,10.58 0,10.28 -14.17,13.9 -35.78,13.9l-40.53,-0z"
+      android:fillColor="#fff"/>
+  <path
+      android:pathData="m285.186,38.434l22.53,-0l26.13,29.2 -0.89,-12.21l0,-16.99l23.04,-0l0,53.47l-22.5,-0l-26.22,-29.13 0.46,12.63 0.47,16.5l-23.02,-0l0,-53.47z"
+      android:fillColor="#1b1615"/>
+  <path
+      android:pathData="m204.001,38.434l59.76,-0l0,12.42l-35.76,-0l0,7.7l30.25,-0l0,12.48l-30.25,-0l0,8.37l37.18,-0l0,12.5l-61.18,-0l0,-53.47z"
+      android:fillColor="#1b1615"/>
+  <path
+      android:pathData="m119.991,38.434l59.76,-0l0,12.42l-35.74,-0l0,7.7l30.23,-0l0,12.48l-30.23,-0l0,8.37l37.2,-0l0,12.5l-61.22,-0l0,-53.47z"
+      android:fillColor="#1b1615"/>
+  <path
+      android:pathData="m32.359,38.434l67.21,-0l0,14.02l-21.57,-0l0,39.45l-24.04,-0l0,-39.45l-21.6,-0l0,-14.02z"
+      android:fillColor="#1b1615"/>
+  <path
+      android:pathData="m51.707,191.743 l244.53,-60.78 18.81,64.92 -78.57,19.52 52.67,182.4 -87.42,21.75 -52.72,-182.43 -78.55,19.52 -18.75,-64.9z"
+      android:fillColor="#1b1615"/>
+  <path
+      android:pathData="m334.71,400.451c3.16,-0.09 3.94,-1.38 3.94,-2.86 0,-1.52 -0.78,-2.33 -3.47,-2.33l-4.08,-0l0,5.19l3.61,-0zM331.1,403.621l0,8.64l-3.37,-0l0,-20.16l7.03,-0c3.99,-0 8.03,1.02 8.03,5.58 0,2.31 -1.45,4.16 -4.35,4.72l0,0.07c2.93,0.54 3.33,1.84 3.67,4 0.31,1.88 0.52,4 1.26,5.79l-4.32,-0c-0.24,-1.12 -0.57,-2.46 -0.7,-3.59 -0.23,-1.74 -0.23,-3.38 -1.23,-4.32 -0.86,-0.73 -2,-0.65 -3.16,-0.73l-2.86,-0zM350.19,402.431c0,-7.76 -6.76,-14.04 -15.13,-14.04 -8.42,-0 -15.25,6.28 -15.25,14.04 0,7.8 6.83,14.16 15.25,14.16 8.37,-0 15.13,-6.36 15.13,-14.16m-33.66,-0c0,-9.42 8.22,-17.08 18.53,-17.08 10.17,-0 18.39,7.66 18.39,17.08 0,9.49 -8.22,17.17 -18.39,17.17 -10.31,-0 -18.53,-7.68 -18.53,-17.17"
+      android:fillColor="#1b1615"/>
+</vector>

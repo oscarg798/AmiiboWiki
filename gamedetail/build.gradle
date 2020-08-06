@@ -13,10 +13,13 @@
 apply from: "$rootProject.projectDir/shared.gradle"
 
 dependencies {
-    implementation cardView
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
 
+    implementation cardView
+    implementation shimmer
     implementation project(path: ':core')
     implementation project(path: ':network')
+    
     testImplementation project(path: ':testutils')
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
 }

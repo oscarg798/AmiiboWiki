@@ -24,11 +24,11 @@ import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
+import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.core.usecases.GetGamesUseCase
-import com.oscarg798.amiibowiki.core.usecases.SearchGameByAmiiboUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.utils.ResourcesDependenciesProvider
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
@@ -50,7 +50,10 @@ import retrofit2.Retrofit
         PersistenceModule::class, LoggerModule::class, FeatureFlagHandlerModule::class
     ]
 )
-interface CoreComponent {
+interface CoreComponent :
+    ResourcesDependenciesProvider,
+    ConfigProvider,
+    SharedPreferenceProvider {
 
     @Component.Factory
     interface Builder {
@@ -75,6 +78,7 @@ interface CoreComponent {
 
     @AmiiboApiQualifier
     fun provideAmiiboAPIRetrofit(): Retrofit
+
     @GameApiQualifier
     fun provideGameAPIRetrofit(): Retrofit
 
@@ -86,12 +90,11 @@ interface CoreComponent {
 
     fun provideAmiiboRepository(): AmiiboRepository
     fun provideAmiiboTypeRepository(): AmiiboTypeRepository
+    fun provideGameRepository(): GameRepository
 
     fun provideGetAmiiboTypeUseCase(): GetAmiiboTypeUseCase
     fun provideGetDefaulAmiiboTypeUseCase(): GetDefaultAmiiboTypeUseCase
     fun provideUpdateAmiiboTypeUseCase(): UpdateAmiiboTypeUseCase
-    fun provideGetGamesUseCase(): GetGamesUseCase
-    fun provideSearchGameUseCase(): SearchGameByAmiiboUseCase
 
     fun provideContext(): Context
     fun provideLogger(): Logger

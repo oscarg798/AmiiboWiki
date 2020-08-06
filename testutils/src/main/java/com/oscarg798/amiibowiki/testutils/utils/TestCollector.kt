@@ -17,6 +17,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.junit.Assert
 
 /**
  * Took from https://www.thuytrinh.dev/test-receiving-events-hot-flow-coroutines/
@@ -30,7 +31,23 @@ class TestCollector<T> {
         }
     }
 
+    fun clear() {
+        values.clear()
+    }
+
+    @Deprecated(
+        "This is depreacted as is better to use a collection",
+        ReplaceWith("wereValuesEmitted")
+    )
     fun assertValues(vararg _values: T) {
         assert(values.containsAll(_values.toList()))
     }
+
+    infix fun wereValuesEmitted(_values: Collection<T>) {
+        assert(values.containsAll(_values))
+    }
+
+    infix fun wasValueEmiited(value: T) = assert(values.contains(value))
+
+    infix fun hasSize(size: Int) = Assert.assertEquals(size, values.size)
 }

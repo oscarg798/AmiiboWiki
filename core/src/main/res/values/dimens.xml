@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2020 Oscar David Gallon Rosero
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -33,4 +32,16 @@
     <dimen name="textappearence_bodym_line_spacing">5sp</dimen>
     <dimen name="textappearence_bodym_letter_spacing">-0.01</dimen>
 
+    <dimen name="textappearence_bodyl_text_size">16sp</dimen>
+    <dimen name="textappearence_bodyl_line_spacing">5sp</dimen>
+    <dimen name="textappearence_bodyl_letter_spacing">-0.01</dimen>
+
+    <dimen name="spacing_extra_small">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+
+    <dimen name="corner_radius_small">8dp</dimen>
+    <dimen name="corner_radius_medium">16dp</dimen>
+    <dimen name="corner_radius_large">24dp</dimen>
 </resources>

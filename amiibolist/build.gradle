@@ -14,5 +14,6 @@ apply from: "$rootProject.projectDir/shared.gradle"
 
 dependencies {
     implementation project(path: ':core')
+    implementation project(path: ':settings')
     implementation project(path: ':network')
 }

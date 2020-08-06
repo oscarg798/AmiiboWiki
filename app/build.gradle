@@ -28,38 +28,42 @@ android {
         versionCode appVersionCode
         versionName appVersionName
 
-        // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
+        buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
+        buildConfigField "String", "GAME_API_KEY", "\"$gameAPIKey\""
+        buildConfigField "String", "GOOGLE_API_KEY", "\"$googleAPIKey\""
     }
 
     buildTypes {
         release {
-            buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
-            buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
+            buildConfigField "Boolean", "ALPHA", "false"
+
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug {
+            buildConfigField "Boolean", "ALPHA", "false"
+
             versionNameSuffix "-DEBUG"
             applicationIdSuffix ".debug"
             manifestPlaceholders = [appName: "AmiiboWiki-Debug"]
-            minifyEnabled false
-            buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
-            buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
 
+            minifyEnabled false
         }
 
         alpha {
+            buildConfigField "Boolean", "ALPHA", "true"
+
             versionNameSuffix "-ALPHA"
             applicationIdSuffix ".alpha"
             manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
+
             signingConfig signingConfigs.alpha
-            buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
-            buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
+
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-
     }
 
     compileOptions {
@@ -68,7 +72,7 @@ android {
     }
 
     kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
+        freeCompilerArgs = ["-Xallow-result-return-type", "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi", "-Xopt-in=kotlinx.coroutines.FlowPreview", "-Xopt-in=kotlin.contracts.ExperimentalContracts"]
         jvmTarget = "1.8"
     }
 
@@ -158,5 +162,6 @@ dependencies {
     implementation project(path: ':amiibodetail')
     implementation project(path: ':nfcreader')
     implementation project(path: ':network')
+    implementation project(path: ':gamedetail')
     testImplementation project(path: ':testutils')
 }
