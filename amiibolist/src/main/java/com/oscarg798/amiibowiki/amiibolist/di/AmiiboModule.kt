@@ -18,11 +18,7 @@ import com.oscarg798.amiibowiki.core.ViewModelKey
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 @Module
 abstract class AmiiboModule {
 

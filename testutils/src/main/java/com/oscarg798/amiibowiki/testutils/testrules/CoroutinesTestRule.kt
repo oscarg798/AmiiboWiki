@@ -14,7 +14,6 @@ package com.oscarg798.amiibowiki.testutils.testrules
 
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -25,7 +24,6 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-@ExperimentalCoroutinesApi
 class CoroutinesTestRule : TestRule {
 
     private val job = SupervisorJob()

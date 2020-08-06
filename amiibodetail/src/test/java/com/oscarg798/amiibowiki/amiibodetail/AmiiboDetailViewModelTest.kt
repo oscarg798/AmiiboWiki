@@ -34,8 +34,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.test.runBlockingTest
@@ -43,8 +41,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class AmiiboDetailViewModelTest {
 
     @get: Rule

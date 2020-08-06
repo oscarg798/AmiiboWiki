@@ -56,4 +56,16 @@ gameAPIKey=<Game API Key>
 2. Create Google API Key for **YouTube* Player** https://developers.google.com/youtube/android/player/register
 3. Create Game API Key https://api-docs.igdb.com/#about
 
+## Properties.gradle
+
+In order to automate the apk publishing to the playstore, we are this plugin using https://github.com/Triple-T/gradle-play-publisher, its
+we setup the configuration in the `signing.gradle`, and as you see it's using a property `googleAccountServiceFile` that is the json file to
+for authentication purposes in the PlayStore. So you can ignore this step commenting/removing the line
+
+```groovy
+apply from: '../release.gradle'
+```
+
+In the `build.gradle` file in the `app` module
+
 ## You are done!!

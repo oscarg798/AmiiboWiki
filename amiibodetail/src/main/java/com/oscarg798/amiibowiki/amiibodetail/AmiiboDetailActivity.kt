@@ -37,14 +37,10 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.setImage
 import com.oscarg798.amiibowiki.gamedetail.GameDetailActivity
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @DeepLink(AMIIBO_DETAIL_DEEPLINK)
 class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
 

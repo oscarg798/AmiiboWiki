@@ -17,9 +17,7 @@ import com.oscarg798.amiibowiki.core.di.CoreComponent
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Scope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @AmiiboDetailScope
 @Component(dependencies = [CoreComponent::class], modules = [AmiiboDetailModule::class])
 interface AmiiboDetailComponent {

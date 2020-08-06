@@ -27,8 +27,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
+
 class SplashViewModel @Inject constructor(
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
     private val splashLogger: SplashLogger,

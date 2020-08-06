@@ -21,8 +21,6 @@ import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import com.oscarg798.amiibowiki.testutils.BaseUITest
 import com.oscarg798.amiibowiki.testutils.di.TestPersistenceModule
 import io.mockk.every
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flowOf
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -32,8 +30,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4ClassRunner::class)
 class AmiiboListTest : BaseUITest(DISPATCHER) {
 

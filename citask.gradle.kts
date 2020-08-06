@@ -4,7 +4,7 @@ open class UnitTests : DefaultTask() {
 
     @TaskAction
     fun run() {
-        val result = command("./gradlew", listOf("app:testDebugUnitTest"))
+        val result = command("./gradlew", listOf("testDebugUnitTest"))
         print(result)
     }
 
@@ -41,7 +41,7 @@ open class UnitTests : DefaultTask() {
 class ShellRunException(val exitCode: Int, override val message: String? = null) :
     kotlin.Exception(message)
 
-tasks.register<UnitTests>("splash_unit_tests") {
+tasks.register<UnitTests>("unitTests") {
     group = "Unit Tests"
     description = "It runs the unit tests from app module"
 }

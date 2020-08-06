@@ -25,16 +25,13 @@ import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @InternalCoroutinesApi
-@FlowPreview
-@ExperimentalCoroutinesApi
+
 class NFCReaderViewModelTest {
 
     @get: Rule

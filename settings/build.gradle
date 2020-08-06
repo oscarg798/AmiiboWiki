@@ -10,7 +10,6 @@
  *
  */
 apply from: "$rootProject.projectDir/shared.gradle"
-apply plugin: 'kotlin-android'
 
 dependencies {
     implementation cardView

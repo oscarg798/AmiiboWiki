@@ -17,6 +17,7 @@ apply plugin: 'kotlin-android-extensions'
 
 apply from: '../ktlint.gradle'
 apply from: '../signing.gradle'
+apply from: '../citask.gradle.kts'
 
 android {
     compileSdkVersion 30

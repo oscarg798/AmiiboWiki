@@ -16,9 +16,7 @@ import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @CoreScope
 class UpdateAmiiboTypeUseCase @Inject constructor(
     private val amiiboTypeRepository: AmiiboTypeRepository

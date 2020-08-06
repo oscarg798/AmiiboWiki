@@ -25,7 +25,7 @@ import com.oscarg798.flagly.featureflag.FeatureFlagProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
+
 class AmiiboWikiApplication : Application(), CoreComponentProvider,
     FeatureHandleResourceProvider {
 
@@ -47,7 +47,6 @@ class AmiiboWikiApplication : Application(), CoreComponentProvider,
                 )
             )
         }
-
 
         return coreComponent
     }

@@ -9,13 +9,19 @@
  *
  *
  */
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id  'kotlin-kapt'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+}
+
 apply from: '../signing.gradle'
+apply from: '../citask.gradle.kts'
+apply from: '../release.gradle'
 
 android {
     compileSdkVersion appCompileSdkVersion
@@ -37,6 +43,8 @@ android {
     buildTypes {
         release {
             buildConfigField "Boolean", "ALPHA", "false"
+
+            signingConfig signingConfigs.release
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -91,7 +99,6 @@ android {
         exclude 'kotlin/annotation/annotation.kotlin_builtins'
         exclude 'META-INF/**/*'
         exclude 'META-INF/*'
-
     }
 }
 

@@ -33,8 +33,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
-@FlowPreview
+
+
 class SplashViewModelTest {
 
     @get: Rule

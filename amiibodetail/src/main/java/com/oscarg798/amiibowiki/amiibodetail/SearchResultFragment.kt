@@ -23,11 +23,7 @@ import com.oscarg798.amiibowiki.amiibodetail.adapter.GameRelatedClickListener
 import com.oscarg798.amiibowiki.amiibodetail.adapter.GamesRelatedAdapter
 import com.oscarg798.amiibowiki.amiibodetail.databinding.FragmentSearchResultBinding
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 class SearchResultFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchResultBinding

@@ -41,8 +41,6 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.startDeepLinkIntent
 import com.oscarg798.amiibowiki.settings.SettingsActivity
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOf
@@ -50,8 +48,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 
-@ExperimentalCoroutinesApi
-@FlowPreview
 @DeepLink(AMIIBO_LIST_DEEPLINK)
 class AmiiboListActivity : AppCompatActivity() {
 
