@@ -15,28 +15,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/spacing_extra_small"
     app:cardBackgroundColor="?colorPrimaryDark"
-    app:cardCornerRadius="@dimen/corner_radius_small"
-    app:cardUseCompatPadding="true"
-    app:contentPadding="@dimen/spacing_small">
+    app:cardCornerRadius="@dimen/corner_radius_small">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivGameSearchCover"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_placeholder" />
 
         <TextView
             android:id="@+id/tvGameName"
             style="@style/Styles.AmiiboWiki.Default"
             android:layout_width="@dimen/match_constraint"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
             android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.M"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivGameSearchCover"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2"
             tools:text="Mario Golf" />
 
         <TextView
@@ -48,7 +59,7 @@
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.S"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvGameName"
             app:layout_constraintTop_toBottomOf="@+id/tvGameName"
             tools:text="Mario Golf GB マリオゴルフGB" />
 

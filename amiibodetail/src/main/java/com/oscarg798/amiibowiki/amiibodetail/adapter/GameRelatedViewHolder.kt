@@ -16,6 +16,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.oscarg798.amiibowiki.amiibodetail.databinding.GameRelatedItemBinding
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
+import com.oscarg798.amiibowiki.core.setImage
 import kotlinx.android.extensions.LayoutContainer
 
 class GameRelatedViewHolder(private val gameRelatedItemBinding: GameRelatedItemBinding) :
@@ -33,11 +34,16 @@ class GameRelatedViewHolder(private val gameRelatedItemBinding: GameRelatedItemB
         }
 
         gameRelatedItemBinding.tvGameName.text = viewGameSearchResult.gameName
+
         if (viewGameSearchResult.alternativeName.isNullOrEmpty()) {
             gameRelatedItemBinding.tvGameAlternativeName.visibility = View.INVISIBLE
         } else {
             gameRelatedItemBinding.tvGameAlternativeName.visibility = View.VISIBLE
             gameRelatedItemBinding.tvGameAlternativeName.text = viewGameSearchResult.alternativeName
+        }
+
+        viewGameSearchResult.cover?.let {
+            gameRelatedItemBinding.ivGameSearchCover.setImage(it)
         }
     }
 }

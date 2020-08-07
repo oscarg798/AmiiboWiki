@@ -51,6 +51,7 @@ interface GameService {
     @POST(SCREEN_SHOT_PATH)
     suspend fun getScreenshots(@Body searchQuery: String): List<APIScreenshots>
 }
+
 private const val SEARCH_GAME_EVENT_NAME = "POST_SEARCH_GAME"
 private const val AGE_RAITING_PATH = "age_ratings"
 private const val ARTWORKS_PATH = "artworks"

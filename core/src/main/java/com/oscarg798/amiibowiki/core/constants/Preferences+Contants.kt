@@ -10,17 +10,6 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.repositories
+package com.oscarg798.amiibowiki.core.constants
 
-import com.oscarg798.amiibowiki.core.models.Game
-import com.oscarg798.amiibowiki.core.models.GameSearchResult
-import com.oscarg798.amiibowiki.core.models.Id
-
-interface GameRepository {
-
-    suspend fun getGame(gameSeries: String, gameId: Id): Game
-
-    suspend fun getGameCover(gameId: Int): String?
-
-    suspend fun searchGame(query: String): Collection<GameSearchResult>
-}
+const val MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY = "max_number_of_search_results"

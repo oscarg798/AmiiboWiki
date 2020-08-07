@@ -20,7 +20,7 @@ import com.oscarg798.amiibowiki.settings.mvi.SettingsResult
 import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
-import com.oscarg798.flagly.featurepoint.FeaturePoint
+import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.onStart
 
 class SettingsViewModel @Inject constructor(
     private val saveDarkModeSelectionUseCase: SaveDarkModeSelectionUseCase,
-    private val featurePoint: FeaturePoint<@JvmSuppressWildcards PreferenceBuilder, @JvmSuppressWildcards Unit>,
+    private val featurePoint: SuspendFeaturePoint<@JvmSuppressWildcards PreferenceBuilder, @JvmSuppressWildcards Unit>,
     private val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<SettingsWish, SettingsResult, SettingsViewState>(SettingsViewState.init()) {
 

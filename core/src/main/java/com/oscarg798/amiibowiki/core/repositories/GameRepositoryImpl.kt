@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
+import com.oscarg798.amiibowiki.core.constants.MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.core.extensions.getOrTransformNetworkException
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
@@ -22,9 +23,13 @@ import com.oscarg798.amiibowiki.core.network.gameapiquery.APIGameQuery
 import com.oscarg798.amiibowiki.core.network.gameapiquery.WhereClause
 import com.oscarg798.amiibowiki.core.network.models.APISearchResult
 import com.oscarg798.amiibowiki.core.network.services.GameService
+import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
 import javax.inject.Inject
 
-class GameRepositoryImpl @Inject constructor(private val gameService: GameService) :
+class GameRepositoryImpl @Inject constructor(
+    private val gameService: GameService,
+    private val sharedPreferencesWrapper: SharedPreferencesWrapper
+) :
     GameRepository {
 
     override suspend fun getGame(gameSeries: String, gameId: Id): Game {
@@ -76,6 +81,18 @@ class GameRepositoryImpl @Inject constructor(private val gameService: GameServic
         }
     }
 
+    override suspend fun getGameCover(gameId: Int): String? {
+        val coverId = gameService.getGames(
+            APIGameQuery(
+                fields = setOf(COVER_FIELD),
+                whereClause = WhereClause.Id(gameId),
+                limit = GAME_COVER_LIMIT
+            ).toString()
+        ).firstOrNull()?.coverId ?: return null
+
+        return getCovers(coverId).url
+    }
+
     override suspend fun searchGame(query: String): Collection<GameSearchResult> = runCatching {
         getGamesFromAPI(query)
     }.getOrTransformNetworkException { networkException ->
@@ -106,9 +123,22 @@ class GameRepositoryImpl @Inject constructor(private val gameService: GameServic
         gameService.searchGame(
             APIGameQuery(
                 searchClause = gameName,
-                limit = MAX_NUMBER_OF_RESULTS
+                limit = getMaxNumberOfNumberOfResult()
             ).toString()
         )
+
+    private fun getMaxNumberOfNumberOfResult(): Int {
+        val maxNumber = sharedPreferencesWrapper.getIntValueFromUserPreferences(
+            MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
+        )
+        return if (maxNumber < MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT) {
+            MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT
+        } else {
+            maxNumber
+        }
+    }
 }
 
-private const val MAX_NUMBER_OF_RESULTS = 100
+private const val MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT = 10
+private const val GAME_COVER_LIMIT = 1
+private const val COVER_FIELD = "cover"

@@ -11,10 +11,6 @@
   -->
 
 <resources>
-    <attr name="appBackgroundColor" format="color"/>
-    <attr name="textColor" format="color" />
-    <attr name="TextColorSecondary" format="color" />
-    <attr name="iconColor" format="color"/>
 
     <color name="textColor">@color/mine_shaft_900</color>
     <color name="secondaryTextColor">@color/mine_shaft_800</color>

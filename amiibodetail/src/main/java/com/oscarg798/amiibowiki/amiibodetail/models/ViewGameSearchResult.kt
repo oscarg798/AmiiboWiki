@@ -20,12 +20,14 @@ import kotlinx.android.parcel.Parcelize
 data class ViewGameSearchResult(
     val gameId: Int,
     val gameName: String,
-    val alternativeName: String?
+    val alternativeName: String?,
+    val cover: String?
 ) : Parcelable {
 
     constructor(gameSearchResult: GameSearchResult) : this(
         gameSearchResult.gameId,
         gameSearchResult.name,
-        gameSearchResult.alternativeName
+        gameSearchResult.alternativeName,
+        gameSearchResult.coverUrl
     )
 }

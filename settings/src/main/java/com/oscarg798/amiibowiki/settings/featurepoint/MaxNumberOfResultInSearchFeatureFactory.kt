@@ -12,25 +12,27 @@
 
 package com.oscarg798.amiibowiki.settings.featurepoint
 
-import com.oscarg798.amiibowiki.core.models.Config
-import com.oscarg798.amiibowiki.core.models.Flavor
+import com.oscarg798.amiibowiki.core.constants.MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.core.utils.ResourceProvider
 import com.oscarg798.amiibowiki.settings.R
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
+import com.oscarg798.amiibowiki.settings.models.PreferenceType
 import com.oscarg798.flagly.featurepoint.SuspendFeatureFactory
 import javax.inject.Inject
 
-class DevelopmentActivityFeatureFactory @Inject constructor(
-    private val config: Config,
+class MaxNumberOfResultInSearchFeatureFactory @Inject constructor(
     private val stringResourceProvider: ResourceProvider<String>
 ) : SuspendFeatureFactory<PreferenceBuilder, Unit> {
 
     override suspend fun create(): PreferenceBuilder = PreferenceBuilder(
-        DEVELOPMENT_ACTIVITY_PREFERENCE_KEY,
-        stringResourceProvider.provide(R.string.development_activity_preference_title)
+        MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY,
+        preferenceType = PreferenceType.Text(
+            DEFAULT_MAX_NUMBER_OF_RESULTS
+        ),
+        title = stringResourceProvider.provide(R.string.max_number_of_search_results_preference_title)
     )
 
-    override suspend fun isApplicable(params: Unit): Boolean = config.flavor is Flavor.Debug
+    override suspend fun isApplicable(params: Unit): Boolean = true
 }
 
-const val DEVELOPMENT_ACTIVITY_PREFERENCE_KEY = "development_activity"
+private const val DEFAULT_MAX_NUMBER_OF_RESULTS = "20"

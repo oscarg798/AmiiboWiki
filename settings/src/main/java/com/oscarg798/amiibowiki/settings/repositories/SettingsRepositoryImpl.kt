@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.settings.repositories
 
 import com.oscarg798.amiibowiki.core.DARK_MODE_SELECTION_KEY
+import com.oscarg798.amiibowiki.core.constants.MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
 import javax.inject.Inject
 
@@ -26,4 +27,9 @@ class SettingsRepositoryImpl @Inject constructor(private val sharedPreferencesWr
     override suspend fun saveDarkModeSelection(selection: String) {
         sharedPreferencesWrapper.addStringValue(DARK_MODE_SELECTION_KEY, selection)
     }
+
+    override suspend fun getMaxNumberOfSearchResults() =
+        sharedPreferencesWrapper.getIntValueFromUserPreferences(
+            MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
+        )
 }

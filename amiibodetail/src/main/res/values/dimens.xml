@@ -12,7 +12,7 @@
   -->
 
 <resources>
-    <dimen name="slide_up_indicator_icon_size">30dp</dimen>
+    <dimen name="slide_up_indicator_icon_size">20dp</dimen>
     <dimen name="amiibo_detail_skeleton_image_size">200dp</dimen>
     <dimen name="amiibo_detail_card_elevation">5dp</dimen>
     <dimen name="search_result_elevation">10dp</dimen>

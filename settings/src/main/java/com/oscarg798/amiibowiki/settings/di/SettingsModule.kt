@@ -17,11 +17,12 @@ import com.oscarg798.amiibowiki.core.ViewModelKey
 import com.oscarg798.amiibowiki.settings.SettingsViewModel
 import com.oscarg798.amiibowiki.settings.featurepoint.DarkModelPreferenceFeatureFactory
 import com.oscarg798.amiibowiki.settings.featurepoint.DevelopmentActivityFeatureFactory
+import com.oscarg798.amiibowiki.settings.featurepoint.MaxNumberOfResultInSearchFeatureFactory
 import com.oscarg798.amiibowiki.settings.featurepoint.PreferenceFeaturePoint
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 import com.oscarg798.amiibowiki.settings.repositories.SettingsRepository
 import com.oscarg798.amiibowiki.settings.repositories.SettingsRepositoryImpl
-import com.oscarg798.flagly.featurepoint.FeaturePoint
+import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -33,11 +34,13 @@ object SettingsModule {
     @Provides
     fun bindFeaturePoint(
         developmentActivityFeatureFactory: DevelopmentActivityFeatureFactory,
-        darkModelPreferenceFeatureFactory: DarkModelPreferenceFeatureFactory
-    ): FeaturePoint<PreferenceBuilder, Unit> =
+        darkModelPreferenceFeatureFactory: DarkModelPreferenceFeatureFactory,
+        maxNumberOfResultInSearchFeatureFactory: MaxNumberOfResultInSearchFeatureFactory
+    ): SuspendFeaturePoint<PreferenceBuilder, Unit> =
         PreferenceFeaturePoint(
             setOf(
                 darkModelPreferenceFeatureFactory,
+                maxNumberOfResultInSearchFeatureFactory,
                 developmentActivityFeatureFactory
             )
         )

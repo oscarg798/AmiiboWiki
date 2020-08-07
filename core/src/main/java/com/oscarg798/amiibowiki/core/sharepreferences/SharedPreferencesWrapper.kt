@@ -18,5 +18,6 @@ interface SharedPreferencesWrapper {
 
     fun addStringValue(key: String, value: String, preferenceName: String = PREFERENCE_NAME)
     fun getStringValue(key: String, preferenceName: String = PREFERENCE_NAME): String?
+    fun getIntValueFromUserPreferences(key: String): Int
     fun removePreferenceKey(key: String, preferenceName: String = PREFERENCE_NAME)
 }

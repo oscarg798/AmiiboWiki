@@ -17,4 +17,6 @@ interface SettingsRepository {
     suspend fun saveDarkModeSelection(selection: String)
 
     suspend fun clearDarkModeSelection()
+
+    suspend fun getMaxNumberOfSearchResults(): Int
 }
