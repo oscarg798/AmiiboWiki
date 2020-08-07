@@ -10,14 +10,18 @@
  *
  */
 
-apply from: '../gradlescripts/shared.gradle'
+package tasks
 
-dependencies {
-    implementation cardView
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+import runCommand
 
-    implementation project(path: ':core')
-    implementation project(path: ':network')
-    testImplementation project(path: ':testutils')
-    implementation project(path: ':gamedetail')
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+open class UnitTests : DefaultTask() {
+
+    @TaskAction
+    fun run() {
+        val result = runCommand("./gradlew", listOf("testDebugUnitTest"))
+        print(result)
+    }
+
 }

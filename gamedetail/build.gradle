@@ -10,7 +10,7 @@
  *
  */
 
-apply from: "$rootProject.projectDir/shared.gradle"
+apply from: "../gradlescripts/shared.gradle"
 
 dependencies {
     implementation files('libs/YouTubeAndroidPlayerApi.jar')

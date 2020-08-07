@@ -15,9 +15,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
-apply from: '../ktlint.gradle'
-apply from: '../signing.gradle'
-apply from: '../citask.gradle.kts'
+apply from: "$rootProject.projectDir/gradlescripts/ktlint.gradle"
+apply from: "$rootProject.projectDir/gradlescripts/signing.gradle"
+apply from: "$rootProject.projectDir/gradlescripts/tests.gradle.kts"
 
 android {
     compileSdkVersion 30

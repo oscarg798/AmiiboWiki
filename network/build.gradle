@@ -10,7 +10,7 @@
  *
  */
 
-apply from: "$rootProject.projectDir/sharedbase.gradle"
+apply from: "../gradlescripts/shared.gradle"
 
 dependencies {
 

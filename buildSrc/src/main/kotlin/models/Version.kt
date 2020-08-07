@@ -10,14 +10,26 @@
  *
  */
 
-apply from: '../gradlescripts/shared.gradle'
+package models
 
-dependencies {
-    implementation cardView
+import javax.sound.midi.Patch
+import kotlin.math.min
 
-    implementation project(path: ':core')
-    implementation project(path: ':network')
-    testImplementation project(path: ':testutils')
-    implementation project(path: ':gamedetail')
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+/**
+ * Using semantic versioning
+ * https://semver.org/lang/es/
+ */
+data class Version(
+    val major: Int,
+    val minor: Int,
+    val patch: Int,
+    val buildNumber: Int
+) {
+
+    override fun toString(): String = "$major.$minor.$patch($buildNumber)"
 }
+
+const val MAJOR_ATTRIBUTE_NAME = "major"
+const val MINOR_ATTRIBUTE_NAME = "minor"
+const val PATCH_ATTRIBUTE_NAME = "patch"
+const val BUILD_NUMBER_ATTRIBUTE_NAME = "buildNumber"
