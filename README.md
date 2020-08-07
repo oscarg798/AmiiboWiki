@@ -44,7 +44,7 @@ as they should not be aware of the repositories impl that will be in an upper la
 
 ## Gradle Tasks 
 
-[Read](./Tasks.md)
+[Read](./TASKS.md)
 
 ## License & Acknowledgments
 
