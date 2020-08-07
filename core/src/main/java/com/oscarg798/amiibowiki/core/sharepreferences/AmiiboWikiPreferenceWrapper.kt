@@ -14,25 +14,48 @@ package com.oscarg798.amiibowiki.core.sharepreferences
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import javax.inject.Inject
 
 class AmiiboWikiPreferenceWrapper @Inject constructor(private val context: Context) :
     SharedPreferencesWrapper {
 
+    private lateinit var preferences: SharedPreferences
+    private lateinit var currentPreferencesName: String
+    private val userPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
     override fun addStringValue(key: String, value: String, preferenceName: String) {
-        val preferenceEditor = context.getSharedPreferences(preferenceName, MODE_PRIVATE).edit()
+        val preferenceEditor = getPreferences(preferenceName).edit()
         preferenceEditor.putString(key, value)
         preferenceEditor.apply()
     }
 
     override fun getStringValue(key: String, preferenceName: String): String? {
-        val preference = context.getSharedPreferences(preferenceName, MODE_PRIVATE)
+        val preference = getPreferences(preferenceName)
         return preference.getString(key, null)
     }
 
+    override fun getIntValueFromUserPreferences(key: String): Int {
+        val preference = getPreferences(USER_PREFERENCES_NAME)
+        return (preference.getString(key, null) ?: DEFAULT_USER_PREFERENCES_INT_VALUE).toInt()
+    }
+
     override fun removePreferenceKey(key: String, preferenceName: String) {
-        val preferenceEditor = context.getSharedPreferences(preferenceName, MODE_PRIVATE).edit()
+        val preferenceEditor = getPreferences(preferenceName).edit()
         preferenceEditor.remove(key)
         preferenceEditor.apply()
     }
+
+    private fun getPreferences(preferenceName: String) =
+        if (preferenceName == USER_PREFERENCES_NAME) {
+            userPreferences
+        } else if (!::preferences.isInitialized || preferenceName != currentPreferencesName) {
+            context.getSharedPreferences(preferenceName, MODE_PRIVATE)
+        } else {
+            preferences
+        }
 }
+
+const val DEFAULT_USER_PREFERENCES_INT_VALUE = "0"
+const val USER_PREFERENCES_NAME = "USER_PREFERENCES_NAME"

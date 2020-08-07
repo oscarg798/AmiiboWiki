@@ -12,6 +12,10 @@
   -->
 
 <resources>
+    <attr name="appBackgroundColor" format="color"/>
+    <attr name="textColor" format="color" />
+    <attr name="TextColorSecondary" format="color" />
+    <attr name="iconColor" format="color"/>
 
     <color name="silver_chalice">#AAAAAA</color>
     <color name="white">#ffffff</color>
@@ -27,7 +31,6 @@
     <color name="alabaster_50">#FAFAFA</color>
     <color name="alabaster_100">#F5F5F5</color>
     <color name="alabaster_200">#EEEEEE</color>
-
 
     <!-- amiibo colors -->
     <color name="cinnabar">#EB322C</color>

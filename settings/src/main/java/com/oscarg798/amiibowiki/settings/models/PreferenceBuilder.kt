@@ -15,5 +15,12 @@ package com.oscarg798.amiibowiki.settings.models
 data class PreferenceBuilder(
     val key: String,
     val title: String,
+    val preferenceType: PreferenceType = PreferenceType.Preference,
     val iconResourceId: Int? = null
 )
+
+sealed class PreferenceType {
+
+    object Preference : PreferenceType()
+    data class Text(val defaultValue: String) : PreferenceType()
+}

@@ -18,6 +18,7 @@ import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
+import com.oscarg798.amiibowiki.core.usecases.FillGameResultCoverUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
@@ -25,7 +26,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
-class SearchRelatedGamesUseCase @Inject constructor(private val gameRepository: GameRepository) {
+class SearchRelatedGamesUseCase @Inject constructor(
+    private val gameRepository: GameRepository,
+    private val fillGameResultCoverUseCase: FillGameResultCoverUseCase
+) {
 
     suspend fun execute(amiibo: Amiibo): Collection<GameSearchResult> = coroutineScope {
         runCatching {
@@ -54,7 +58,7 @@ class SearchRelatedGamesUseCase @Inject constructor(private val gameRepository: 
                 result.addAll(gameResults)
             }
 
-            result.sortedBy { it.name }
+            fillGameResultCoverUseCase.execute(result).sortedBy { it.name }
         }.getOrTransform {
             if (it is SearchGameFailure.DateSourceError) {
                 throw AmiiboDetailFailure.GamesRelatedNotFound()
