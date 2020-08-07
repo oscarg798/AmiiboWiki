@@ -10,14 +10,7 @@
  *
  */
 
-apply from: '../gradlescripts/shared.gradle'
-
-dependencies {
-    implementation cardView
-
-    implementation project(path: ':core')
-    implementation project(path: ':network')
-    testImplementation project(path: ':testutils')
-    implementation project(path: ':gamedetail')
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+tasks.register<tasks.UnitTests>("unitTests") {
+    group = "CI Tasks"
+    description = "It runs the unit tests"
 }

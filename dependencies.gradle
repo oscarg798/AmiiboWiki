@@ -18,7 +18,7 @@ allprojects {
 }
 
 ext {
-    appVersionName = "${versionMajor}.${versionMinor}.${versionMicro}"
+    appVersionName = "${major}.${minor}.${patch}"
 
     archLifecycleVersion = "1.1.1"
 

@@ -9,9 +9,7 @@
  *
  *
  */
-
-apply from: "$rootProject.projectDir/shared.gradle"
-apply plugin: 'kotlin-android'
+apply from: "../gradlescripts/shared.gradle"
 
 dependencies {
     implementation project(path: ':core')

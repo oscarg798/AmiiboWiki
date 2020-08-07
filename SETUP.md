@@ -63,8 +63,27 @@ we setup the configuration in the `signing.gradle`, and as you see it's using a 
 for authentication purposes in the PlayStore. So you can ignore this step commenting/removing the line
 
 ```groovy
-apply from: '../release.gradle'
+apply from: '../gradlescripts/release.gradle'
 ```
+
+## CiTask.Gradle.kts
+
+In order to run some tasks on the CI we have create the file `citask.gradle`, it uses some properties that should be
+in the `local.properties` file. To make the app work comment/remove  the following line from the `app` module gradle file
+
+```
+apply from: '../gradlescripts/citask.gradle.kts'
+```
+
+If you do not want to comment this file and you one to use those tasks add the following properties to `local.properties`
+
+```
+firebaseProjectId=[Firebase Project ID]
+firebaseToken=[Firebase Auth Token]
+```
+
+Where `firebaseProjectId` is the firebase project id that you created on firebase, and  `firebaseToken` is the firebase token
+from the `firebase cli` tool. https://firebase.google.com/docs/cli
 
 In the `build.gradle` file in the `app` module
 

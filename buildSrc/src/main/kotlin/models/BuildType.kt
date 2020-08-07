@@ -10,14 +10,28 @@
  *
  */
 
-apply from: '../gradlescripts/shared.gradle'
+package models
 
-dependencies {
-    implementation cardView
+sealed class BuildType(val task: String, val type: String) {
 
-    implementation project(path: ':core')
-    implementation project(path: ':network')
-    testImplementation project(path: ':testutils')
-    implementation project(path: ':gamedetail')
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    object Debug : BuildType(DEBUG_BUILD_TAKS, DEBUG_TYPE)
+    object Alpha : BuildType(ALPHA_BUILD_TASK, ALPHA_TYPE)
+    object Release : BuildType(RELEASE_BUILD_TASK, RELEASE_TYPE)
+
+    companion object {
+
+        fun createFromParam(param: String) = when (param) {
+            "debug" -> Debug
+            "alpha" -> Alpha
+            "release" -> Release
+            else -> throw IllegalArgumentException("There is no BuildType associated with param $param")
+        }
+    }
 }
+
+private const val DEBUG_TYPE = "debug"
+private const val ALPHA_TYPE = "alpha"
+private const val RELEASE_TYPE = "release"
+private const val DEBUG_BUILD_TAKS = "assembleDebug"
+private const val ALPHA_BUILD_TASK = "assembleAlpha"
+private const val RELEASE_BUILD_TASK = "assembleRelease"

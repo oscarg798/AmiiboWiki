@@ -11,7 +11,7 @@
  *
  */
 
-apply from: "$rootProject.projectDir/sharedbase.gradle"
+apply from: "$rootProject.projectDir/gradlescripts/sharedbase.gradle"
 
 dependencies {
 

@@ -19,9 +19,10 @@ plugins {
     id 'com.google.firebase.crashlytics'
 }
 
-apply from: '../signing.gradle'
-apply from: '../citask.gradle.kts'
-apply from: '../release.gradle'
+apply from: '../gradlescripts/signing.gradle'
+apply from: '../gradlescripts/tests.gradle.kts'
+apply from: '../gradlescripts/citask.gradle.kts'
+apply from: '../gradlescripts/release.gradle'
 
 android {
     compileSdkVersion appCompileSdkVersion

@@ -10,16 +10,25 @@
  *
  */
 
-apply plugin: 'com.github.triplet.play'
+Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
+def googleApiKey = properties.getProperty("googleApiKey")
+def gameApiKey = properties.getProperty("gameAPIKey")
+def accountJsonPath = properties.getProperty("googleAccountServiceFile")
 
-play {
-    track = "internal"
-    serviceAccountCredentials = file(googleAccountServiceFile)
-    defaultToAppBundles = true
-    fromTrack = "internal"
-    promoteTrack = "alpha"
+def getReleaseVersionCode() {
+    return "${major}".toInteger() * 10000 + "${minor}".toInteger() * 1000 + "${patch}".toInteger() * 100 + "${buildNumber}".toInteger()
 }
 
-
-
+ext {
+    appVersionName = "${major}.${minor}.${patch}"
+    appMinSdkVersion = 23
+    appTargetSdkVersion = 30
+    appCompileSdkVersion = 30
+    appVersionCode = getReleaseVersionCode()
+    appBuildToolsVersion = "30.0.0"
+    googleAPIKey = googleApiKey
+    gameAPIKey = gameApiKey
+    googleAccountServiceFile = accountJsonPath
+}

@@ -9,26 +9,4 @@
  *
  *
  */
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file("local.properties").newDataInputStream())
-
-def googleApiKey = properties.getProperty("googleApiKey")
-def gameApiKey = properties.getProperty("gameAPIKey")
-def accountJsonPath = properties.getProperty("googleAccountServiceFile")
-
-def getReleaseVersionCode() {
-    return "${versionMajor}".toInteger() * 10000 + "${versionMinor}".toInteger() * 1000 + "${versionMicro}".toInteger() * 100 + "${buildNumber}".toInteger()
-}
-
-ext {
-    appVersionName = "${versionMajor}.${versionMinor}.${versionMicro}"
-    appMinSdkVersion = 23
-    appTargetSdkVersion = 30
-    appCompileSdkVersion = 30
-    appVersionCode = getReleaseVersionCode()
-    appBuildToolsVersion = "30.0.0"
-    googleAPIKey = googleApiKey
-    gameAPIKey = gameApiKey
-    googleAccountServiceFile = accountJsonPath
-}
+class ShellRunException(val exitCode: Int, override val message: String? = null) : Exception(message)
