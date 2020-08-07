@@ -42,6 +42,10 @@ as they should not be aware of the repositories impl that will be in an upper la
 * Espresso
 * [Mockk](https://mockk.io/)
 
+## Gradle Tasks 
+
+[Read](./Tasks.md)
+
 ## License & Acknowledgments
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details

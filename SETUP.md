@@ -60,7 +60,7 @@ gameAPIKey=<Game API Key>
 
 In order to automate the apk publishing to the playstore, we are this plugin using https://github.com/Triple-T/gradle-play-publisher, its
 we setup the configuration in the `signing.gradle`, and as you see it's using a property `googleAccountServiceFile` that is the json file to
-for authentication purposes in the PlayStore. So you can ignore this step commenting/removing the line
+for authentication purposes in the PlayStore. So you can ignore this step commenting/removing the following line from the `build.gradle` file in the `app` module
 
 ```groovy
 apply from: '../gradlescripts/release.gradle'
@@ -69,7 +69,7 @@ apply from: '../gradlescripts/release.gradle'
 ## CiTask.Gradle.kts
 
 In order to run some tasks on the CI we have create the file `citask.gradle`, it uses some properties that should be
-in the `local.properties` file. To make the app work comment/remove  the following line from the `app` module gradle file
+in the `local.properties` file. To make the app work comment/remove  the following line from  the `build.gradle` file in the `app` module
 
 ```
 apply from: '../gradlescripts/citask.gradle.kts'
@@ -85,6 +85,5 @@ firebaseToken=[Firebase Auth Token]
 Where `firebaseProjectId` is the firebase project id that you created on firebase, and  `firebaseToken` is the firebase token
 from the `firebase cli` tool. https://firebase.google.com/docs/cli
 
-In the `build.gradle` file in the `app` module
 
 ## You are done!!
