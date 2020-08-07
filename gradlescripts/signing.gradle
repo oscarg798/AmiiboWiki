@@ -19,14 +19,7 @@ def keystorepath = properties.getProperty('keystorepath')
 android {
 
     signingConfigs {
-        alpha {
-            keyAlias keystoreAlias
-            keyPassword keystorePassword
-            storePassword keystorePassword
-            storeFile file(keystorepath)
-        }
-
-        release{
+        locker {
             keyAlias keystoreAlias
             keyPassword keystorePassword
             storePassword keystorePassword

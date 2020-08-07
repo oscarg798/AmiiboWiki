@@ -13,4 +13,5 @@
 tasks.register<tasks.UnitTests>("unitTests") {
     group = "CI Tasks"
     description = "It runs the unit tests"
+    dependsOn("lint")
 }

@@ -9,7 +9,6 @@
  *
  *
  */
-
 tasks.register<tasks.VersionUpdate>("updateVersion") {
     group = "CI Tasks"
     description =
