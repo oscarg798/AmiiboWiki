@@ -65,13 +65,14 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel.state.onEach { state ->
             when {
-                state.status == SplashViewState.FetchStatus.Success -> {
+                state.error != null -> showFetchError()
+                state.fetchWasSuccess -> {
                     startDeepLinkIntent(
                         AMIIBO_LIST_DEEPLINK
 
                     )
                 }
-                state.error != null -> showFetchError()
+
             }
         }.launchIn(lifecycleScope)
 

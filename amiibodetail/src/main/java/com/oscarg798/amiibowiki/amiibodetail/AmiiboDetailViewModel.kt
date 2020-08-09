@@ -26,6 +26,7 @@ import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -42,7 +43,8 @@ class AmiiboDetailViewModel @Inject constructor(
     private val searchRelatedGamesUseCase: SearchRelatedGamesUseCase,
     private val amiiboDetailLogger: AmiiboDetailLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
-    private val coroutinesContextProvider: CoroutineContextProvider
+    override val reducer: Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState>,
+    override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
     AmiiboDetailViewState.init()
 ) {
@@ -65,7 +67,7 @@ class AmiiboDetailViewModel @Inject constructor(
             } else {
                 emit(AmiiboDetailResult.None)
             }
-        }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+        }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private suspend fun getAmiiboDetail(): Flow<AmiiboDetailResult> = flow {
         emit(getAmiiboDetailUseCase.execute(amiiboDetailTail))
@@ -92,7 +94,7 @@ class AmiiboDetailViewModel @Inject constructor(
         emit(AmiiboDetailResult.Error(cause as AmiiboDetailFailure))
     }.onStart {
         emit(AmiiboDetailResult.Loading)
-    }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+    }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private suspend fun getRelatedGames(
         isRelatedGamesSectionEnabled: Boolean,

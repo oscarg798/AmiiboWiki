@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.gamedetail
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
-import com.oscarg798.amiibowiki.core.models.Game
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailResult
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
@@ -31,34 +31,26 @@ import kotlinx.coroutines.flow.onStart
 class GameDetailViewModel @Inject constructor(
     private val getGameUseCase: GetGamesUseCase,
     private val gameDetailLogger: GameDetailLogger,
-    private val coroutinesContextProvider: CoroutineContextProvider
+    override val reducer: Reducer<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewState>,
+    override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<GameDetailWish, GameDetailResult, GameDetailViewState>(GameDetailViewState.init()) {
-
-    private lateinit var game: Game
 
     override suspend fun getResult(wish: GameDetailWish): Flow<GameDetailResult> = when (wish) {
         is GameDetailWish.ShowGameDetail -> getGame(wish)
-        is GameDetailWish.PlayGameTrailer -> getGameTrailer()
+        is GameDetailWish.PlayGameTrailer -> getGameTrailer(wish)
     }
 
-    private fun getGameTrailer(): Flow<GameDetailResult> = flow {
-        trackTrailerClick(game.id.toString())
-        if (game.videosId.isNullOrEmpty()) {
-            throw GameDetailFailure.GameDoesNotIncludeTrailer(game.id)
-        }
-
-        val trailerId =
-            game.videosId?.firstOrNull()
-                ?: throw GameDetailFailure.GameDoesNotIncludeTrailer(game.id)
-        emit(GameDetailResult.GameTrailerFound(trailerId) as GameDetailResult)
-    }.onStart {
-        emit(GameDetailResult.Loading)
-    }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+    private fun getGameTrailer(wish: GameDetailWish.PlayGameTrailer): Flow<GameDetailResult> =
+        flow {
+            trackTrailerClick(wish.gameId.toString())
+            emit(GameDetailResult.GameTrailerFound(wish.trailerId) as GameDetailResult)
+        }.onStart {
+            emit(GameDetailResult.Loading)
+        }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private fun getGame(wish: GameDetailWish.ShowGameDetail) = flow<GameDetailResult> {
         trackScreenShown(wish)
-        game = getGameUseCase.execute(wish.gameSeries, wish.gameId)
-        emit(GameDetailResult.GameFetched(game))
+        emit(GameDetailResult.GameFetched(getGameUseCase.execute(wish.gameSeries, wish.gameId)))
     }.onStart {
         emit(GameDetailResult.Loading)
     }.catch { cause ->
@@ -67,7 +59,7 @@ class GameDetailViewModel @Inject constructor(
         }
 
         emit(GameDetailResult.Error(cause))
-    }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+    }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private fun trackScreenShown(wish: GameDetailWish.ShowGameDetail) {
         gameDetailLogger.trackScreenShown(mapOf(GAME_ID_PROPERTY_NAME to wish.gameId.toString()))

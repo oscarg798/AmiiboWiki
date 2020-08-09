@@ -15,17 +15,17 @@ package com.oscarg798.amiibowiki.core.mvi
 import com.oscarg798.amiibowiki.core.mvi.Actions as MVIActions
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 
-interface ViewRenderer<Result : MVIResult, State : ViewState<Result>, Actions : MVIActions> {
+interface ViewRenderer<Result : MVIResult, State : ViewState, Actions : MVIActions> {
 
     fun render(state: State, actions: Actions)
 }
 
-interface ChildRenderer<Result : MVIResult, State : ViewState<Result>, Actions : MVIActions> : ViewRenderer<Result, State, Actions> {
+interface ChildRenderer<Result : MVIResult, State : ViewState, Actions : MVIActions> : ViewRenderer<Result, State, Actions> {
 
     fun isApplicable(state: State): Boolean
 }
 
-abstract class AbstractViewRenderer<Result : MVIResult, State : ViewState<Result>, Actions : MVIActions>(
+abstract class AbstractViewRenderer<Result : MVIResult, State : ViewState, Actions : MVIActions>(
     private val childRenderers: List<ChildRenderer<Result, State, Actions>>
 ) : ViewRenderer<Result, State, Actions> {
 

@@ -29,7 +29,6 @@ import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 import com.oscarg798.amiibowiki.settings.models.PreferenceType
-import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity
 import javax.inject.Inject
@@ -65,22 +64,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(SettingsViewModel::class.java)
         viewModel.state.onEach {
             when {
-                it.createPreferencesStatus is SettingsViewState.CreatePreferencesStatus.PreferencesCreated -> {
+                it.showDarkModeDialog -> showDarkModeDialog()
+                it.showDevelopmentActivity -> startActivity(
+                    Intent(
+                        requireContext(),
+                        FeatureFlagHandlerActivity::class.java
+                    )
+                )
+                it.shouldActivityBeRecreated -> {
+                    startActivity(Intent(requireContext(), SettingsActivity::class.java))
+                    requireActivity().finish()
+                }
+                it.preferences != null -> {
                     /**
                      * Preferences must exists before setting click listener
                      */
                     setupPreferencesClickListener(viewModel)
-                    addPreferences(it.createPreferencesStatus.preferences)
-                }
-                it.showDarkModeDialog -> {
-                    showDarkModeDialog()
-                }
-                it.showDevelopmentActivity -> {
-                    startActivity(Intent(requireContext(), FeatureFlagHandlerActivity::class.java))
-                }
-                it.darkModeSelectedStatus is SettingsViewState.DarkModeSelectedStatus.Selected -> {
-                    startActivity(Intent(requireContext(), SettingsActivity::class.java))
-                    requireActivity().finish()
+                    addPreferences(it.preferences)
                 }
             }
         }.launchIn(lifecycleScope)

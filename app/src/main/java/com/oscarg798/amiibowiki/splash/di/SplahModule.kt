@@ -14,9 +14,13 @@ package com.oscarg798.amiibowiki.splash.di
 
 import androidx.lifecycle.ViewModel
 import com.oscarg798.amiibowiki.core.ViewModelKey
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.splash.SplashLogger
 import com.oscarg798.amiibowiki.splash.SplashLoggerImpl
 import com.oscarg798.amiibowiki.splash.SplashViewModel
+import com.oscarg798.amiibowiki.splash.mvi.SplashReducer
+import com.oscarg798.amiibowiki.splash.mvi.SplashResult
+import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Binds
 import dagger.Module
@@ -24,7 +28,6 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-
 
 
 @Module
@@ -38,5 +41,9 @@ object SplahModule {
     @SplashScope
     @Provides
     fun provideSplashLogger(logger: Logger): SplashLogger = SplashLoggerImpl(logger)
+
+    @SplashScope
+    @Provides
+    fun provideSplashReducer(splashReducer: SplashReducer): Reducer<SplashResult, SplashViewState> = splashReducer
 
 }

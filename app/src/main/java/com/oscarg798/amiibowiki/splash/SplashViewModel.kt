@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.splash
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.extensions.onException
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
@@ -28,12 +29,12 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 
-
 class SplashViewModel @Inject constructor(
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
     private val splashLogger: SplashLogger,
     private val activateRemoteConfigUseCase: ActivateRemoteConfigUseCase,
-    private val coroutineContextProvider: CoroutineContextProvider
+    override val reducer: Reducer<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewState>,
+    override val coroutineContextProvider: CoroutineContextProvider
 ) :
     AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.init()) {
 

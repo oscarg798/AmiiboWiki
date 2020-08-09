@@ -30,6 +30,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.youtube.player.YouTubeStandalonePlayer
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.isAndroidQOrHigher
 import com.oscarg798.amiibowiki.core.models.AgeRating
 import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
@@ -37,7 +38,6 @@ import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.models.Rating
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.setImage
 import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding
 import com.oscarg798.amiibowiki.gamedetail.di.DaggerGameDetailComponent
@@ -60,6 +60,8 @@ class GameDetailActivity : AppCompatActivity() {
     lateinit var config: Config
 
     private lateinit var binding: ActivityGameDetailBinding
+
+    private lateinit var currentState: GameDetailViewState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,24 +108,22 @@ class GameDetailActivity : AppCompatActivity() {
     private fun setupViewModel() {
         val vm = ViewModelProvider(this, viewModelFactory).get(GameDetailViewModel::class.java)
         vm.state.onEach { state ->
+            currentState = state
+            onLoadingEnd()
             when {
-                state.status is GameDetailViewState.Status.ShowingGameDetails -> {
-                    onLoadingEnd()
-                    showGameDetails(state.status.gameDetails)
-                }
-                state.status is GameDetailViewState.Status.PlayingGameTrailer -> {
-                    onLoadingEnd()
+                state.isLoading -> onLoading()
+                state.error != null -> showError()
+                state.gameTrailer != null -> {
                     binding.tvTrailer.setOnClickListener {
                         val intent = YouTubeStandalonePlayer.createVideoIntent(
                             this,
                             config.googleAPIKey,
-                            state.status.gameTrailer, START_TIME, true, true
+                            state.gameTrailer, START_TIME, true, true
                         )
                         startActivity(intent)
                     }
                 }
-                state.loading is ViewState.LoadingState.Loading -> onLoading()
-                state.error != null -> showError()
+                state.gameDetails != null -> showGameDetails(state.gameDetails)
             }
         }.launchIn(lifecycleScope)
 
@@ -179,7 +179,13 @@ class GameDetailActivity : AppCompatActivity() {
 
     private fun getTrailerClickFlow() = callbackFlow<GameDetailWish> {
         binding.tvTrailer.setOnClickListener {
-            offer(GameDetailWish.PlayGameTrailer)
+            val game =
+                currentState.gameDetails ?: throw NullPointerException("Game can not be null")
+            val trailerId =
+                game.videosId?.firstOrNull() ?: throw GameDetailFailure.GameDoesNotIncludeTrailer(
+                    game.id
+                )
+            offer(GameDetailWish.PlayGameTrailer(game.id, trailerId))
         }
 
         awaitClose {

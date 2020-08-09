@@ -65,10 +65,10 @@ class NFCReaderActivity : AppCompatActivity() {
 
         viewModel.state.onEach {
             when {
-                it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
-                it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
-                it.status is NFCReaderViewState.Status.ReadSuccessful -> showAmiibo(it.status.amiiboIdentifier)
                 it.error != null -> showErrorMessage(getString(R.string.default_error))
+                it.adapterStatus != null && it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
+                it.adapterStatus != null && it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
+                it.amiiboIdentifier != null -> showAmiibo(it.amiiboIdentifier)
             }
         }.launchIn(lifecycleScope)
     }
