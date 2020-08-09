@@ -16,7 +16,11 @@ import androidx.lifecycle.ViewModel
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLoggerImpl
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailReducer
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.core.ViewModelKey
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
@@ -34,5 +38,11 @@ object AmiiboDetailModule {
 
     @AmiiboDetailScope
     @Provides
-    fun provideAmiiboDetailLogger(logger: Logger): AmiiboDetailLogger = AmiiboDetailLoggerImpl(logger)
+    fun provideAmiiboDetailLogger(logger: Logger): AmiiboDetailLogger =
+        AmiiboDetailLoggerImpl(logger)
+
+    @AmiiboDetailScope
+    @Provides
+    fun provideAmiiboDetailReducer(amiiboDetailReducer: AmiiboDetailReducer): Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState> =
+        amiiboDetailReducer
 }

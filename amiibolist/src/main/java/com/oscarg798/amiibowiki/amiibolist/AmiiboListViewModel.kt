@@ -13,16 +13,17 @@
 package com.oscarg798.amiibowiki
 
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import javax.inject.Inject
@@ -40,8 +41,11 @@ class AmiiboListViewModel @Inject constructor(
     private val getAmiiboTypeUseCase: GetAmiiboTypeUseCase,
     private val amiiboListLogger: AmiiboListLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
-    private val coroutinesContextProvider: CoroutineContextProvider
-) : AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(AmiiboListViewState.init()) {
+    override val reducer: Reducer<@JvmSuppressWildcards AmiiboListResult, @JvmSuppressWildcards AmiiboListViewState>,
+    override val coroutineContextProvider: CoroutineContextProvider
+) : AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(
+    AmiiboListViewState.init()
+) {
 
     override fun onScreenShown() {
         amiiboListLogger.trackScreenViewed()
@@ -97,7 +101,7 @@ class AmiiboListViewModel @Inject constructor(
         }.catch { cause ->
             handleFailure(cause)
         }
-        .flowOn(coroutinesContextProvider.backgroundDispatcher)
+        .flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private suspend fun filterAmiibos(filter: ViewAmiiboType) =
         getAmiiboFilteredUseCase.execute(filter.map())
@@ -107,7 +111,7 @@ class AmiiboListViewModel @Inject constructor(
                 emit(AmiiboListResult.Loading)
             }.catch { cause ->
                 handleFailure(cause)
-            }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+            }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private suspend fun fetchAmiibos(): Flow<AmiiboListResult> = getAmiibosUseCase.execute().map {
         AmiiboListResult.FetchSuccess(it) as AmiiboListResult
@@ -115,7 +119,7 @@ class AmiiboListViewModel @Inject constructor(
         emit(AmiiboListResult.Loading)
     }.catch { cause ->
         handleFailure(cause)
-    }.flowOn(coroutinesContextProvider.backgroundDispatcher)
+    }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private suspend fun FlowCollector<AmiiboListResult>.handleFailure(failure: Throwable) {
         if (failure !is Exception) {

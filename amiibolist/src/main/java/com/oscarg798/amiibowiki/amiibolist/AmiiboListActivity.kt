@@ -37,7 +37,6 @@ import com.oscarg798.amiibowiki.core.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.startDeepLinkIntent
 import com.oscarg798.amiibowiki.settings.SettingsActivity
 import javax.inject.Inject
@@ -112,24 +111,15 @@ class AmiiboListActivity : AppCompatActivity() {
         viewModel.state.onEach {
             val state = it
             when {
-                state.loading is ViewState.LoadingState.Loading -> showLoading()
-                state.status is AmiiboListViewState.Status.AmiibosFetched -> showAmiibos(
-                    state.status.amiibos
-                )
+                state.isLoading -> showLoading()
                 state.error != null -> showErrors(state.error.message!!)
-                state.showingFilters is AmiiboListViewState.ShowingFilters.FetchSuccess -> showFilters(
-                    state.showingFilters.filters
-                )
-                state.filtering is AmiiboListViewState.Filtering.FetchSuccess -> {
-                    showAmiibos(state.filtering.amiibos)
-                }
-                state.showAmiiboDetail is AmiiboListViewState.ShowAmiiboDetail.Show -> showAmiiboDetail(
-                    state.showAmiiboDetail.tail
-                )
+                state.filters != null -> showFilters(state.filters.toList())
+                state.amiiboTailToShow != null -> showAmiiboDetail(state.amiiboTailToShow)
+                state.amiibos != null -> showAmiibos(state.amiibos.toList())
             }
         }.launchIn(lifecycleScope)
 
-        merge(fetchAmiibos(), refresh(), onAmiiboClick())
+        merge(onAmiiboClick(), fetchAmiibos(), refresh())
             .onEach {
                 viewModel.onWish(it)
             }.launchIn(lifecycleScope)
@@ -151,13 +141,14 @@ class AmiiboListActivity : AppCompatActivity() {
     }
 
     private fun hideLoading() {
+        skeleton?.hide()
         filterMenuItem?.isEnabled = true
         binding.rvAmiiboList.isEnabled = true
-        skeleton?.hide()
         binding.srlMain.isRefreshing = false
     }
 
     private fun showFilters(filters: List<ViewAmiiboType>) {
+        hideLoading()
         val adapter =
             ArrayAdapter<ViewAmiiboType>(
                 this,

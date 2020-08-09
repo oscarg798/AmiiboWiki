@@ -19,9 +19,8 @@ data class ViewAmiiboType(
     val name: String
 ) {
 
+    constructor(amiiboType: AmiiboType) : this(amiiboType.key, amiiboType.name)
     override fun toString(): String = name
 
     fun map() = AmiiboType(key, name)
 }
-
-fun AmiiboType.map() = ViewAmiiboType(key, name)

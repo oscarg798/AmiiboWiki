@@ -12,35 +12,43 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.mvi.Reducer
+import javax.inject.Inject
 
-data class ShowingAmiiboDetailsParams(
-    val amiiboDetails: ViewAmiiboDetails,
-    val isRelatedGamesSectionEnabled: Boolean
-)
+class AmiiboDetailReducer @Inject constructor() :
+    Reducer<AmiiboDetailResult, AmiiboDetailViewState> {
 
-data class ShowingGameDetailsParams(val gameId: Int, val gameSeries: String)
-
-data class AmiiboDetailViewState(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val amiiboDetails: ViewAmiiboDetails? = null,
-    val isRelatedGamesSectionEnabled: Boolean,
-    val showingGameDetailsParams: ShowingGameDetailsParams?,
-    val error: AmiiboDetailFailure? = null
-) : ViewState {
-
-    companion object {
-
-        fun init() = AmiiboDetailViewState(
+    override suspend fun reduce(
+        state: AmiiboDetailViewState,
+        from: AmiiboDetailResult
+    ): AmiiboDetailViewState = when (from) {
+        is AmiiboDetailResult.None -> state.copy(
             isIdling = true,
             isLoading = false,
-            amiiboDetails = null,
-            isRelatedGamesSectionEnabled = false,
-            showingGameDetailsParams = null,
             error = null
+        )
+        is AmiiboDetailResult.Loading -> state.copy(
+            isIdling = false,
+            isLoading = true,
+            error = null
+        )
+        is AmiiboDetailResult.ShowGameDetails -> state.copy(
+            isIdling = false,
+            isLoading = false,
+            showingGameDetailsParams = ShowingGameDetailsParams(from.gameId, from.gameSeries),
+            error = null
+        )
+        is AmiiboDetailResult.DetailFetched -> state.copy(
+            isIdling = false,
+            isLoading = false,
+            amiiboDetails = from.amiibo,
+            isRelatedGamesSectionEnabled = from.isRelatedGamesSectionEnabled,
+            error = null
+        )
+        is AmiiboDetailResult.Error -> state.copy(
+            isIdling = false,
+            isLoading = false,
+            error = from.error
         )
     }
 }

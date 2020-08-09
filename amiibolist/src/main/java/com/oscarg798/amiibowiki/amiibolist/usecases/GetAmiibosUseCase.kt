@@ -13,27 +13,15 @@
 package com.oscarg798.amiibowiki.amiibolist.usecases
 
 import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListScope
-import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.merge
 
 @AmiiboListScope
 class GetAmiibosUseCase @Inject constructor(private val repository: AmiiboRepository) {
 
-    suspend fun execute(): Flow<List<Amiibo>> = merge(repository.getAmiibos(), updateAmiibos())
+    suspend fun execute(): Flow<List<Amiibo>> = repository.getAmiibos()
         .filterNot { it.isEmpty() }
-
-    private suspend fun updateAmiibos() = repository.updateAmiibos()
-        .catch { cause ->
-            if (cause is GetAmiibosFailure.ProblemInDataSource) {
-                emit(listOf())
-            } else {
-                throw cause
-            }
-        }
 }

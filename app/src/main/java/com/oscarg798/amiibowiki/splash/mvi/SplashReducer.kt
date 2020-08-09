@@ -12,20 +12,23 @@
 
 package com.oscarg798.amiibowiki.splash.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
+import javax.inject.Inject
 
-data class SplashViewState(
-    override val isIdling: Boolean,
-    val fetchWasSuccess: Boolean,
-    val error: FetchTypesFailure?
-) : ViewState {
+class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewState> {
 
-    companion object {
-        fun init() = SplashViewState(
-            isIdling = true,
-            fetchWasSuccess = false,
-            error = null
-        )
-    }
+    override suspend fun reduce(state: SplashViewState, from: SplashResult): SplashViewState =
+        when (from) {
+            is SplashResult.TypesFetched -> state.copy(
+                isIdling = false,
+                fetchWasSuccess = true,
+                error = null
+            )
+            is SplashResult.Error -> state.copy(
+                isIdling = false,
+                fetchWasSuccess = false,
+                error = FetchTypesFailure(from.exception.message, from.exception)
+            )
+        }
 }

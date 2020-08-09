@@ -10,22 +10,40 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.mvi
+package com.oscarg798.amiibowiki.gamedetail.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
+import com.oscarg798.amiibowiki.core.mvi.Reducer
+import javax.inject.Inject
 
-data class SplashViewState(
-    override val isIdling: Boolean,
-    val fetchWasSuccess: Boolean,
-    val error: FetchTypesFailure?
-) : ViewState {
+class GameDetailReducer @Inject constructor() : Reducer<GameDetailResult, GameDetailViewState> {
 
-    companion object {
-        fun init() = SplashViewState(
-            isIdling = true,
-            fetchWasSuccess = false,
+    override suspend fun reduce(
+        state: GameDetailViewState,
+        from: GameDetailResult
+    ): GameDetailViewState = when (from) {
+        is GameDetailResult.Loading -> state.copy(
+            isLoading = true,
+            isIdling = false,
+            gameTrailer = null,
             error = null
+        )
+        is GameDetailResult.GameTrailerFound -> state.copy(
+            isLoading = false,
+            isIdling = false,
+            gameTrailer = from.trailerId,
+            error = null
+        )
+        is GameDetailResult.GameFetched -> state.copy(
+            isLoading = false,
+            isIdling = false,
+            gameDetails = from.game,
+            gameTrailer = null,
+            error = null
+        )
+        is GameDetailResult.Error -> state.copy(
+            isLoading = false,
+            isIdling = false,
+            error = from.exception
         )
     }
 }

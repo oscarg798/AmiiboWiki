@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.amiibolist
 
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.models.AmiiboType

@@ -10,21 +10,48 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.mvi
+package com.oscarg798.amiibowiki.amiibolist.mvi
 
+import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
+import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 
-data class SplashViewState(
+data class AmiiboListViewState(
     override val isIdling: Boolean,
-    val fetchWasSuccess: Boolean,
-    val error: FetchTypesFailure?
+    val isLoading: Boolean,
+    val amiibos: Collection<ViewAmiibo>?,
+    val filters: Collection<ViewAmiiboType>?,
+    val amiiboTailToShow: String?,
+    val error: AmiiboListFailure?
 ) : ViewState {
 
+    sealed class Filtering {
+        object None : Filtering()
+        data class FetchSuccess(val amiibos: List<ViewAmiibo>) : Filtering()
+    }
+
+    sealed class ShowingFilters {
+        object None : ShowingFilters()
+        data class FetchSuccess(val filters: List<ViewAmiiboType>) : ShowingFilters()
+    }
+
+    sealed class Status {
+        object None : Status()
+        data class AmiibosFetched(val amiibos: List<ViewAmiibo>) : Status()
+    }
+
+    sealed class ShowAmiiboDetail {
+        object None : ShowAmiiboDetail()
+        data class Show(val tail: String) : ShowAmiiboDetail()
+    }
+
     companion object {
-        fun init() = SplashViewState(
+        fun init() = AmiiboListViewState(
             isIdling = true,
-            fetchWasSuccess = false,
+            isLoading = false,
+            amiibos = null,
+            filters = null,
+            amiiboTailToShow = null,
             error = null
         )
     }

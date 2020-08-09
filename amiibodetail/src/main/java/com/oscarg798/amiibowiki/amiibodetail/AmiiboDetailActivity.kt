@@ -26,14 +26,13 @@ import com.oscarg798.amiibowiki.amiibodetail.adapter.GameRelatedClickListener
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
 import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
 import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.setImage
 import com.oscarg798.amiibowiki.gamedetail.GameDetailActivity
 import javax.inject.Inject
@@ -105,14 +104,18 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
             ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
 
         viewModel.state.onEach {
+            hideLoading()
             when {
-                it.loading == ViewState.LoadingState.Loading -> showLoading()
-                it.status is AmiiboDetailViewState.Status.ShowingAmiiboDetails -> showDetail(it.status)
-                it.status is AmiiboDetailViewState.Status.ShowingGameDetails -> showGameDetails(
-                    it.status.gameId,
-                    it.status.gameSeries
-                )
+                it.isLoading -> showLoading()
                 it.error != null -> showError(it.error)
+                it.showingGameDetailsParams != null -> showGameDetails(
+                    it.showingGameDetailsParams.gameId,
+                    it.showingGameDetailsParams.gameSeries
+                )
+                it.amiiboDetails != null -> showDetail(
+                    it.amiiboDetails,
+                    it.isRelatedGamesSectionEnabled
+                )
             }
         }.launchIn(lifecycleScope)
 
@@ -155,9 +158,12 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    private fun showDetail(state: AmiiboDetailViewState.Status.ShowingAmiiboDetails) {
+    private fun showDetail(
+        viewAmiiboDetails: ViewAmiiboDetails,
+        isRelatedGamesSectionEnabled: Boolean
+    ) {
         hideLoading()
-        val viewAmiiboDetails = state.amiiboDetails
+
         supportActionBar?.title = viewAmiiboDetails.name
         with(binding) {
             ivImage.setImage(viewAmiiboDetails.imageUrl)
@@ -166,7 +172,7 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
             tvSerie.setText(viewAmiiboDetails.gameSeries)
             tvType.setText(viewAmiiboDetails.type)
 
-            if (state.isRelatedGamesSectionEnabled) {
+            if (isRelatedGamesSectionEnabled) {
                 showRelatedGames(viewAmiiboDetails.gameSearchResults)
                 searchResultFragment.visibility = View.VISIBLE
             } else {
