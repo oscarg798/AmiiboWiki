@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.settings.featurepoint
 import com.oscarg798.amiibowiki.core.constants.MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.core.utils.ResourceProvider
 import com.oscarg798.amiibowiki.settings.R
+import com.oscarg798.amiibowiki.settings.models.InputType
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 import com.oscarg798.amiibowiki.settings.models.PreferenceType
 import com.oscarg798.flagly.featurepoint.SuspendFeatureFactory
@@ -27,7 +28,8 @@ class MaxNumberOfResultInSearchFeatureFactory @Inject constructor(
     override suspend fun create(): PreferenceBuilder = PreferenceBuilder(
         MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY,
         preferenceType = PreferenceType.Text(
-            DEFAULT_MAX_NUMBER_OF_RESULTS
+            DEFAULT_MAX_NUMBER_OF_RESULTS,
+            InputType.Number
         ),
         title = stringResourceProvider.provide(R.string.max_number_of_search_results_preference_title)
     )

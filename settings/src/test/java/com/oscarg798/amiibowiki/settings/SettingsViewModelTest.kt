@@ -12,18 +12,20 @@
 
 package com.oscarg798.amiibowiki.settings
 
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
+import com.oscarg798.amiibowiki.settings.mvi.SettingsReducer
 import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
-import com.oscarg798.flagly.featurepoint.FeaturePoint
-import io.mockk.every
+import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,8 +35,9 @@ class SettingsViewModelTest {
     @get: Rule
     val coroutinesRule = CoroutinesTestRule()
 
-    private val featurePoint = relaxedMockk<FeaturePoint<PreferenceBuilder, Unit>>()
+    private val featurePoint = relaxedMockk<SuspendFeaturePoint<PreferenceBuilder, Unit>>()
     private val saveDarkModeSelectionUseCase = relaxedMockk<SaveDarkModeSelectionUseCase>()
+    private val reducer = spyk(SettingsReducer())
 
     private lateinit var viewModel: SettingsViewModel
     private lateinit var testCollector: TestCollector<SettingsViewState>
@@ -45,34 +48,50 @@ class SettingsViewModelTest {
         viewModel = SettingsViewModel(
             saveDarkModeSelectionUseCase,
             featurePoint,
+            reducer,
             coroutinesRule.coroutineContextProvider
         )
     }
 
     @Test
     fun `given create preference wish when wish is processed then it should emit two states`() {
-        every { featurePoint.createFeatures(Unit) } answers { PREFERENCES.toList() }
+        coEvery { featurePoint.createFeatures(Unit) } answers { PREFERENCES.toList() }
 
         viewModel.onWish(SettingsWish.CreatePreferences)
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
         testCollector wasValueEmiited SettingsViewState.init()
 
-        testCollector wasValueEmiited SettingsViewState(
-            loading = ViewState.LoadingState.Loading,
-            createPreferencesStatus = SettingsViewState.CreatePreferencesStatus.None,
-            darkModeSelectedStatus = SettingsViewState.DarkModeSelectedStatus.None
-        )
-
-        testCollector wasValueEmiited SettingsViewState(
-            loading = ViewState.LoadingState.None,
-            createPreferencesStatus = SettingsViewState.CreatePreferencesStatus.PreferencesCreated(
-                PREFERENCES.toList()
+        testCollector wereValuesEmitted listOf(
+            SettingsViewState(
+                isIdling = true,
+                isLoading = false,
+                shouldActivityBeRecreated = false,
+                showDarkModeDialog = false,
+                showDevelopmentActivity = false,
+                preferences = null
             ),
-            darkModeSelectedStatus = SettingsViewState.DarkModeSelectedStatus.None
+            SettingsViewState(
+                isIdling = false,
+                isLoading = true,
+                shouldActivityBeRecreated = false,
+                showDarkModeDialog = false,
+                showDevelopmentActivity = false,
+                preferences = null
+            ),
+            SettingsViewState(
+                isIdling = false,
+                isLoading = false,
+                shouldActivityBeRecreated = false,
+                showDarkModeDialog = false,
+                showDevelopmentActivity = false,
+                preferences = PREFERENCES.toList()
+            )
         )
 
-        testCollector hasSize 3
+        coVerify(exactly = 2) {
+            reducer.reduce(any(), any())
+        }
     }
 
     @Test
@@ -81,56 +100,93 @@ class SettingsViewModelTest {
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
         testCollector wereValuesEmitted listOf(
-            SettingsViewState.init(),
             SettingsViewState(
-                loading = ViewState.LoadingState.None,
-                createPreferencesStatus = SettingsViewState.CreatePreferencesStatus.None,
+                isIdling = true,
+                isLoading = false,
+                shouldActivityBeRecreated = false,
+                showDarkModeDialog = false,
+                showDevelopmentActivity = false,
+                preferences = null
+            ),
+            SettingsViewState(
+                isIdling = false,
+                isLoading = false,
+                shouldActivityBeRecreated = false,
                 showDarkModeDialog = true,
                 showDevelopmentActivity = false,
-                darkModeSelectedStatus = SettingsViewState.DarkModeSelectedStatus.None
+                preferences = null
             )
         )
+
+        coVerify(exactly = 1) {
+            reducer.reduce(any(), any())
+        }
     }
 
     @Test
-    fun `given  development activity preference clicked when wish is processed then it should emit an state to show the dark mode dialog`() {
+    fun `given  development activity preference clicked when wish is processed then it should emit an state to show development activity`() {
         viewModel.onWish(SettingsWish.PreferenceClicked(DEVELOPMENT_ACTIVITY_PREFERENCE_KEY))
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
         testCollector wereValuesEmitted listOf(
-            SettingsViewState.init(),
             SettingsViewState(
-                loading = ViewState.LoadingState.None,
-                createPreferencesStatus = SettingsViewState.CreatePreferencesStatus.None,
+                isIdling = true,
+                isLoading = false,
+                shouldActivityBeRecreated = false,
+                showDarkModeDialog = false,
+                showDevelopmentActivity = false,
+                preferences = null
+            ),
+            SettingsViewState(
+                isIdling = false,
+                isLoading = false,
+                shouldActivityBeRecreated = false,
                 showDarkModeDialog = false,
                 showDevelopmentActivity = true,
-                darkModeSelectedStatus = SettingsViewState.DarkModeSelectedStatus.None
+                preferences = null
             )
         )
+
+        coVerify(exactly = 1) {
+            reducer.reduce(any(), any())
+        }
     }
 
     @Test
-    fun `given dark mode options was selected when wish is processed then it should emit the state with the rigth result`() {
+    fun `given dark mode options was selected when wish is processed then it should emit the state should be idling`() {
         viewModel.onWish(SettingsWish.DarkModeOptionSelected("1"))
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
         testCollector wereValuesEmitted listOf(
-            SettingsViewState.init(),
             SettingsViewState(
-                loading = ViewState.LoadingState.Loading,
-                createPreferencesStatus = SettingsViewState.CreatePreferencesStatus.None,
-                darkModeSelectedStatus = SettingsViewState.DarkModeSelectedStatus.None,
+                isIdling = true,
+                isLoading = false,
+                shouldActivityBeRecreated = false,
                 showDarkModeDialog = false,
-                showDevelopmentActivity = false
+                showDevelopmentActivity = false,
+                preferences = null
             ),
             SettingsViewState(
-                loading = ViewState.LoadingState.None,
-                createPreferencesStatus = SettingsViewState.CreatePreferencesStatus.None,
-                darkModeSelectedStatus = SettingsViewState.DarkModeSelectedStatus.Selected("1"),
+                isIdling = false,
+                isLoading = true,
+                shouldActivityBeRecreated = false,
                 showDarkModeDialog = false,
-                showDevelopmentActivity = false
+                showDevelopmentActivity = false,
+                preferences = null
+            ),
+            SettingsViewState(
+                isIdling = true,
+                isLoading = false,
+                shouldActivityBeRecreated = false,
+                showDarkModeDialog = false,
+                showDevelopmentActivity = false,
+                preferences = null
             )
         )
+
+        coVerify(exactly = 2) {
+            reducer.reduce(any(), any())
+        }
     }
 }
 

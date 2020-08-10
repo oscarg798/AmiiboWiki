@@ -20,6 +20,8 @@ sealed class AmiiboListWish : Wish {
     object RefreshAmiibos : AmiiboListWish()
     object GetAmiibos : AmiiboListWish()
     object ShowFilters : AmiiboListWish()
+    object FilteringCancelled : AmiiboListWish()
+    object OpenSettings : AmiiboListWish()
     data class ShowAmiiboDetail(val viewAmiibo: ViewAmiibo) : AmiiboListWish()
     data class FilterAmiibos(val filter: ViewAmiiboType) : AmiiboListWish()
 }

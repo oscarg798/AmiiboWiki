@@ -12,8 +12,6 @@
 package com.oscarg798.amiibowiki.gamedetail
 
 import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -26,19 +24,22 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.youtube.player.YouTubeStandalonePlayer
 import com.oscarg798.amiibowiki.core.ViewModelFactory
+import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
+import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_SERIES
+import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
+import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
-import com.oscarg798.amiibowiki.core.isAndroidQOrHigher
 import com.oscarg798.amiibowiki.core.models.AgeRating
 import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Game
-import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.models.Rating
-import com.oscarg798.amiibowiki.core.setImage
 import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding
 import com.oscarg798.amiibowiki.gamedetail.di.DaggerGameDetailComponent
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
@@ -51,6 +52,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 
+@DeepLink(GAME_DETAIL_DEEPLINK)
 class GameDetailActivity : AppCompatActivity() {
 
     @Inject
@@ -103,7 +105,7 @@ class GameDetailActivity : AppCompatActivity() {
     }
 
     private fun isDarkModeOn() =
-        isAndroidQOrHigher() && AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_NO
+        isAndroidQOrHigher() && AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
     private fun setupViewModel() {
         val vm = ViewModelProvider(this, viewModelFactory).get(GameDetailViewModel::class.java)
@@ -332,17 +334,6 @@ class GameDetailActivity : AppCompatActivity() {
             )
         )
     }
-
-    companion object {
-        fun newInstance(context: Context, gameId: Id, gameSeries: String) {
-            context.startActivity(
-                Intent(context, GameDetailActivity::class.java).apply {
-                    putExtra(ARGUMENT_GAME_SERIES, gameSeries)
-                    putExtra(ARGUMENT_GAME_ID, gameId)
-                }
-            )
-        }
-    }
 }
 
 private const val TOOLBAR_EXPANDED_OFFSET = 0
@@ -350,5 +341,3 @@ private const val NAME_FIRST_LINE = 0
 private const val NAME_LINE_START = 0
 private const val START_TIME = 0
 private const val DEFAULT_GAME_ID = 0
-private const val ARGUMENT_GAME_SERIES = "ARGUMENT_GAME_SERIES"
-private const val ARGUMENT_GAME_ID = "ARGUMENT_GAME_ID"

@@ -12,11 +12,11 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
+import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
+import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -32,7 +32,9 @@ class GetAmiiboDetailUseCaseTest {
     @Before
     fun setup() {
         coEvery { repository.getAmiiboById("1") } answers { AMIIBO }
-        usecase = GetAmiiboDetailUseCase(repository)
+        usecase = GetAmiiboDetailUseCase(
+            repository
+        )
     }
 
     @Test

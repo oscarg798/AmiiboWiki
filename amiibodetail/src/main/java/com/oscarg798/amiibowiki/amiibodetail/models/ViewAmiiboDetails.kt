@@ -13,25 +13,22 @@
 package com.oscarg798.amiibowiki.amiibodetail.models
 
 import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.models.GameSearchResult
 
 data class ViewAmiiboDetails(
+    val id: String,
     val name: String,
     val imageUrl: String,
     val gameSeries: String,
     val character: String,
-    val type: String,
-    val gameSearchResults: Collection<ViewGameSearchResult>
+    val type: String
 ) {
 
-    constructor(amiibo: Amiibo, gameSearchResults: Collection<GameSearchResult>) : this(
+    constructor(amiibo: Amiibo) : this(
+        amiibo.tail,
         amiibo.name,
         amiibo.image,
         amiibo.gameSeries,
         amiibo.character,
-        amiibo.type,
-        gameSearchResults.map { gameSearchResult ->
-            ViewGameSearchResult(gameSearchResult)
-        }
+        amiibo.type
     )
 }
