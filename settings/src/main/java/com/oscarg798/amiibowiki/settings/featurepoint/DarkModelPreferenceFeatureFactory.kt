@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.settings.featurepoint
 
-import com.oscarg798.amiibowiki.core.isAndroidQOrHigher
+import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
 import com.oscarg798.amiibowiki.core.utils.ResourceProvider
 import com.oscarg798.amiibowiki.settings.R
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
@@ -29,7 +29,8 @@ class DarkModelPreferenceFeatureFactory @Inject constructor(
         iconResourceId = R.drawable.ic_dark_mode
     )
 
-    override suspend fun isApplicable(params: Unit): Boolean = isAndroidQOrHigher()
+    override suspend fun isApplicable(params: Unit): Boolean =
+        isAndroidQOrHigher()
 }
 
 const val DARK_MODE_PREFERENCE_KEY = "dark_mode"

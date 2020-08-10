@@ -22,26 +22,24 @@ import androidx.lifecycle.lifecycleScope
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.oscarg798.amiibowiki.amiibodetail.adapter.GameRelatedClickListener
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
 import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewGameSearchResult
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
-import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
+import com.oscarg798.amiibowiki.amiibodetail.mvi.ShowingAmiiboDetailsParams
 import com.oscarg798.amiibowiki.core.ViewModelFactory
-import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
+import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
+import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
-import com.oscarg798.amiibowiki.core.setImage
-import com.oscarg798.amiibowiki.gamedetail.GameDetailActivity
+import com.oscarg798.amiibowiki.core.extensions.setImage
+import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.searchgames.SearchResultFragment
+import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @DeepLink(AMIIBO_DETAIL_DEEPLINK)
-class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
+class AmiiboDetailActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -50,9 +48,6 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
 
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
-    private val showGameDetailsStateFlow =
-        MutableStateFlow<AmiiboDetailWish>(AmiiboDetailWish.ShowAmiiboDetail)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAmiiboDetailBinding.inflate(layoutInflater)
@@ -60,7 +55,7 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
 
         DaggerAmiiboDetailComponent.factory()
             .create(
-                intent.getStringExtra(TAIL_ARGUMENT)!!,
+                intent.getStringExtra(ARGUMENT_TAIL)!!,
                 (application as CoreComponentProvider).provideCoreComponent()
             )
             .inject(this)
@@ -85,7 +80,6 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
             .commit()
 
         supportActionBar?.let {
-            it.elevation = NO_ELEVATION
             with(it) {
                 setDisplayHomeAsUpEnabled(true)
                 setHomeAsUpIndicator(R.drawable.ic_close)
@@ -104,25 +98,14 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
             ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
 
         viewModel.state.onEach {
-            hideLoading()
             when {
                 it.isLoading -> showLoading()
                 it.error != null -> showError(it.error)
-                it.showingGameDetailsParams != null -> showGameDetails(
-                    it.showingGameDetailsParams.gameId,
-                    it.showingGameDetailsParams.gameSeries
-                )
-                it.amiiboDetails != null -> showDetail(
-                    it.amiiboDetails,
-                    it.isRelatedGamesSectionEnabled
-                )
+                it.amiiboDetails != null -> showDetail(it.amiiboDetails)
             }
         }.launchIn(lifecycleScope)
 
-        showGameDetailsStateFlow
-            .onEach {
-                viewModel.onWish(it)
-            }.launchIn(lifecycleScope)
+        viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
     }
 
     override fun onBackPressed() {
@@ -133,24 +116,13 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
         }
     }
 
-    override fun onGameRelatedClick(gameSearchResult: ViewGameSearchResult) {
-        showGameDetailsStateFlow.value = AmiiboDetailWish.ShowGameDetail(
-            gameSearchResult.gameId,
-            binding.tvSerie.text.toString()
-        )
-    }
-
     private fun showError(amiiboDetailFailure: AmiiboDetailFailure) {
         hideLoading()
         Snackbar.make(
-            binding.ivImage,
+            binding.clMain,
             amiiboDetailFailure.message ?: getString(R.string.general_error),
             Snackbar.LENGTH_LONG
         ).show()
-    }
-
-    private fun showGameDetails(gameId: Int, gameSeries: String) {
-        GameDetailActivity.newInstance(this, gameId, gameSeries)
     }
 
     private fun configureBackDrop() {
@@ -159,36 +131,42 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
     }
 
     private fun showDetail(
-        viewAmiiboDetails: ViewAmiiboDetails,
-        isRelatedGamesSectionEnabled: Boolean
+        showingAmiiboDetailsParams: ShowingAmiiboDetailsParams
     ) {
         hideLoading()
-
+        val viewAmiiboDetails = showingAmiiboDetailsParams.amiiboDetails
         supportActionBar?.title = viewAmiiboDetails.name
+
         with(binding) {
             ivImage.setImage(viewAmiiboDetails.imageUrl)
-
             tvGameCharacter.setText(viewAmiiboDetails.character)
             tvSerie.setText(viewAmiiboDetails.gameSeries)
             tvType.setText(viewAmiiboDetails.type)
-
-            if (isRelatedGamesSectionEnabled) {
-                showRelatedGames(viewAmiiboDetails.gameSearchResults)
-                searchResultFragment.visibility = View.VISIBLE
-            } else {
-                searchResultFragment.visibility = View.GONE
-            }
         }
+
+        if (showingAmiiboDetailsParams.isRelatedGamesSectionEnabled) {
+            showSearchResultFragment(viewAmiiboDetails.id)
+        } else {
+            hideSearchResultFragment()
+        }
+    }
+
+    private fun showSearchResultFragment(amiiboId: String) {
+        binding.searchResultFragment.visibility = View.VISIBLE
+        val searchResultFragment = getSearchResultsFragment() ?: return
+        searchResultFragment.search(GameSearchParam.AmiiboGameSearchParam(amiiboId))
+    }
+
+    private fun hideSearchResultFragment() {
+        binding.searchResultFragment.visibility = View.GONE
     }
 
     private fun showLoading() {
         with(binding) {
             shimmer.root.visibility = View.VISIBLE
             shimmer.shimmerViewContainer.startShimmer()
-            tvCharacterTitle.visibility = View.GONE
             tvSerieTitle.visibility = View.GONE
             tvTypeTitle.visibility = View.GONE
-            searchResultFragment.visibility = View.GONE
         }
     }
 
@@ -196,21 +174,13 @@ class AmiiboDetailActivity : AppCompatActivity(), GameRelatedClickListener {
         with(binding) {
             shimmer.root.visibility = View.GONE
             shimmer.shimmerViewContainer.stopShimmer()
-            tvCharacterTitle.visibility = View.VISIBLE
             tvSerieTitle.visibility = View.VISIBLE
             tvTypeTitle.visibility = View.VISIBLE
-            searchResultFragment.visibility = View.VISIBLE
         }
     }
 
-    private fun showRelatedGames(
-        gameSearchResults: Collection<ViewGameSearchResult>
-    ) {
-
-        val searchResultFragment =
-            supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
-                ?: return
-        searchResultFragment.showGameResults(gameSearchResults.toList())
+    private fun getSearchResultsFragment(): SearchResultFragment? {
+        return supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
     }
 }
 

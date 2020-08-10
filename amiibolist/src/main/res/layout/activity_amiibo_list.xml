@@ -22,7 +22,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_amiibo_list">
+        android:background="@drawable/bg_amiibo_list"
+        android:padding="@dimen/spacing_medium">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAmiiboList"

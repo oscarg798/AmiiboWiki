@@ -56,7 +56,7 @@ data class DBAmiibo(
 
 ) {
 
-    fun map() = Amiibo(
+    fun toAmiibo() = Amiibo(
         amiiboSeries,
         character,
         gameSeries,

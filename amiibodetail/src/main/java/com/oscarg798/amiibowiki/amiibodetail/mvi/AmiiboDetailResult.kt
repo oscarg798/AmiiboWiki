@@ -12,8 +12,8 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.mvi.Result
 
 sealed class AmiiboDetailResult : Result {
@@ -21,11 +21,6 @@ sealed class AmiiboDetailResult : Result {
     object None : AmiiboDetailResult()
     object Loading : AmiiboDetailResult()
 
-    data class DetailFetched(
-        val amiibo: ViewAmiiboDetails,
-        val isRelatedGamesSectionEnabled: Boolean
-    ) : AmiiboDetailResult()
-
-    data class ShowGameDetails(val gameId: Int, val gameSeries: String) : AmiiboDetailResult()
+    data class DetailFetched(val amiibo: Amiibo, val isRelatedGamesSectionEnabled: Boolean) : AmiiboDetailResult()
     data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
 }
