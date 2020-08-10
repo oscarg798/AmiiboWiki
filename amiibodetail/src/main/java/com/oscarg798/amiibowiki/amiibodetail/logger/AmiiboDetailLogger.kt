@@ -16,8 +16,6 @@ import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.LogSources
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
-import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
-import com.oscarg798.amiibowiki.logger.events.RECYCLER_VIEW_ITEM_TYPE_NAME
 import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
 
 @LoggerDecorator
@@ -26,11 +24,6 @@ interface AmiiboDetailLogger {
     @LogSources([FIREBASE_LOG_SOURCE_NAME])
     @ScreenShown(AMIIBO_DETAIL_SCREEN_NAME)
     fun trackScreenShown(@LogEventProperties properties: Map<String, String>)
-
-    @LogSources([FIREBASE_LOG_SOURCE_NAME])
-    @WidgetClicked(GAME_RESULT_CLICKED_NAME, RECYCLER_VIEW_ITEM_TYPE_NAME)
-    fun trackGameSearchResultClicked(@LogEventProperties properties: Map<String, String>)
 }
 
-private const val GAME_RESULT_CLICKED_NAME = "GAME_RESULT_ITEM"
 private const val AMIIBO_DETAIL_SCREEN_NAME = "AMIIBO_DETAIL"

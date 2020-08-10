@@ -12,11 +12,10 @@
 
 package com.oscarg798.amiibowiki.gamedetail
 
-import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.GameCategory
-import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailReducer
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
@@ -25,9 +24,8 @@ import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.spyk
 import io.mockk.verify
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldBeInstanceOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,6 +37,7 @@ class GameDetailViewModelTest {
 
     private val gameDetailLogger = relaxedMockk<GameDetailLogger>()
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()
+    private val reducer = spyk(GameDetailReducer())
 
     private lateinit var testCollector: TestCollector<GameDetailViewState>
     private lateinit var viewModel: GameDetailViewModel
@@ -49,6 +48,7 @@ class GameDetailViewModelTest {
         viewModel = GameDetailViewModel(
             getGamesUseCase,
             gameDetailLogger,
+            reducer,
             coroutinesRule.coroutineContextProvider
         )
         testCollector = TestCollector()
@@ -60,78 +60,71 @@ class GameDetailViewModelTest {
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
         testCollector wereValuesEmitted listOf(
-            GameDetailViewState.init(),
             GameDetailViewState(
-                ViewState.LoadingState.Loading,
-                GameDetailViewState.Status.None,
-                null
+                isIdling = true,
+                isLoading = false,
+                gameDetails = null,
+                gameTrailer = null,
+                error = null
             ),
             GameDetailViewState(
-                ViewState.LoadingState.None,
-                GameDetailViewState.Status.ShowingGameDetails(GAME),
-                null
+                isIdling = false,
+                isLoading = true,
+                gameDetails = null,
+                gameTrailer = null,
+                error = null
+            ),
+            GameDetailViewState(
+                isIdling = false,
+                isLoading = false,
+                gameDetails = GAME,
+                gameTrailer = null,
+                error = null
             )
+
         )
 
         coVerify {
             getGamesUseCase.execute(GAME_SERIE, GAME_ID)
             gameDetailLogger.trackScreenShown(mapOf("GAME_ID" to GAME_ID.toString()))
         }
+
+        coVerify(exactly = 2) { reducer.reduce(any(), any()) }
     }
 
     @Test
     fun `given a wish to show the game trailer when its processed then it should return the state with the trailer id`() {
-        viewModel.onWish(GameDetailWish.ShowGameDetail(GAME_ID, GAME_SERIE))
+        viewModel.onWish(GameDetailWish.PlayGameTrailer(GAME_ID, GAME.videosId!!.first()))
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
-
-        testCollector.clear()
-
-        viewModel.onWish(GameDetailWish.PlayGameTrailer)
 
         testCollector wereValuesEmitted listOf(
             GameDetailViewState(
-                ViewState.LoadingState.Loading,
-                GameDetailViewState.Status.None,
-                null
+                isIdling = true,
+                isLoading = false,
+                gameDetails = null,
+                gameTrailer = null,
+                error = null
             ),
             GameDetailViewState(
-                ViewState.LoadingState.None,
-                GameDetailViewState.Status.PlayingGameTrailer("9"),
-                null
+                isIdling = false,
+                isLoading = true,
+                gameDetails = null,
+                gameTrailer = null,
+                error = null
+            ),
+            GameDetailViewState(
+                isIdling = false,
+                isLoading = false,
+                gameDetails = null,
+                gameTrailer = "9",
+                error = null
             )
+
         )
 
         verify {
             gameDetailLogger.trackTrailerClicked(mapOf("GAME_ID" to GAME_ID.toString()))
         }
-    }
-
-    @Test
-    fun `given a wish to show the game trailer when its processed if game does not have video then it throw a GameDoesNotIncludeTrailer exception`() {
-        coEvery {
-            getGamesUseCase.execute(
-                GAME_SERIE,
-                GAME_ID
-            )
-        } answers { GAME.copy(videosId = null) }
-
-        viewModel.onWish(GameDetailWish.ShowGameDetail(GAME_ID, GAME_SERIE))
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
-
-        testCollector.clear()
-
-        viewModel.onWish(GameDetailWish.PlayGameTrailer)
-
-        testCollector wereValuesEmitted listOf(
-            GameDetailViewState(
-                ViewState.LoadingState.Loading,
-                GameDetailViewState.Status.None,
-                null
-            )
-        )
-
-        coroutinesRule.testCoroutineScope.uncaughtExceptions.size shouldBeEqualTo 1
-        coroutinesRule.testCoroutineScope.uncaughtExceptions[0] shouldBeInstanceOf GameDetailFailure.GameDoesNotIncludeTrailer::class
     }
 }
 
@@ -139,15 +132,16 @@ private const val GAME_ID = 45
 private const val GAME_SERIE = "44"
 private val GAME =
     Game(
-        GAME_ID, "2",
-        GameCategory.createFromCategoryId(0),
-        "3",
-        "5",
-        "6",
-        7.toDouble(),
-        setOf("8"),
-        setOf("9"),
-        setOf("10"),
-        listOf(),
-        setOf()
+        id = GAME_ID,
+        name = "2",
+        category = GameCategory.createFromCategoryId(0),
+        cover = "3",
+        gameSeries = "5",
+        summary = "6",
+        raiting = 7.toDouble(),
+        webSites = setOf("8"),
+        videosId = setOf("9"),
+        artworks = setOf("10"),
+        ageRating = listOf(),
+        screenshots = setOf()
     )

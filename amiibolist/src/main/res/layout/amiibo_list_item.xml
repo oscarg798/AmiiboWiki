@@ -10,48 +10,58 @@
   ~
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/spacing_extra_small"
+    app:cardBackgroundColor="?colorPrimary">
 
-    <ImageView
-        android:id="@+id/ivImage"
-        android:layout_width="@dimen/amiibo_item_icon_size"
-        android:layout_height="@dimen/amiibo_item_icon_size"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/black" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/spacing_small">
 
-    <TextView
-        android:id="@+id/tvAmiiboName"
-        style="@style/Styles.AmiiboWiki.Default"
-        android:layout_width="@dimen/match_constraint"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.S"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivImage"
-        tools:text="Mario" />
+        <TextView
+            android:id="@+id/tvAmiiboSeries"
+            style="@style/Styles.AmiiboWiki.Secondary"
+            android:layout_width="@dimen/match_constraint"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/rubik"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.S"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Super Smash bross" />
 
-    <TextView
-        android:id="@+id/tvAmiiboSeries"
-        style="@style/Styles.AmiiboWiki.Secondary"
-        android:layout_width="@dimen/match_constraint"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/rubik"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.S"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAmiiboName"
-        tools:text="Super Smash bross" />
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="@dimen/amiibo_item_icon_size"
+            android:layout_height="@dimen/amiibo_item_icon_size"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAmiiboSeries"
+            tools:background="@color/black"
+            tools:src="@drawable/ic_placeholder" />
+
+        <TextView
+            android:id="@+id/tvAmiiboName"
+            style="@style/Styles.AmiiboWiki.Default"
+            android:layout_width="@dimen/match_constraint"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.S"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivImage"
+            tools:text="Mario" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

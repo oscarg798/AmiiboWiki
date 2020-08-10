@@ -19,8 +19,12 @@ data class PreferenceBuilder(
     val iconResourceId: Int? = null
 )
 
+sealed class InputType {
+    object Number : InputType()
+}
+
 sealed class PreferenceType {
 
     object Preference : PreferenceType()
-    data class Text(val defaultValue: String) : PreferenceType()
+    data class Text(val defaultValue: String, val inputType: InputType) : PreferenceType()
 }

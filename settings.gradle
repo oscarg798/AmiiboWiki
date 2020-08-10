@@ -9,6 +9,7 @@
  *
  *
  */
+include ':searchgames'
 include ':settings'
 include ':gamedetail'
 include ':logger'

@@ -12,8 +12,8 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
 data class ShowingAmiiboDetailsParams(
@@ -21,25 +21,18 @@ data class ShowingAmiiboDetailsParams(
     val isRelatedGamesSectionEnabled: Boolean
 )
 
-data class ShowingGameDetailsParams(val gameId: Int, val gameSeries: String)
-
 data class AmiiboDetailViewState(
     override val isIdling: Boolean,
     val isLoading: Boolean,
-    val amiiboDetails: ViewAmiiboDetails? = null,
-    val isRelatedGamesSectionEnabled: Boolean,
-    val showingGameDetailsParams: ShowingGameDetailsParams?,
+    val amiiboDetails: ShowingAmiiboDetailsParams?,
     val error: AmiiboDetailFailure? = null
 ) : ViewState {
 
     companion object {
-
         fun init() = AmiiboDetailViewState(
             isIdling = true,
             isLoading = false,
             amiiboDetails = null,
-            isRelatedGamesSectionEnabled = false,
-            showingGameDetailsParams = null,
             error = null
         )
     }

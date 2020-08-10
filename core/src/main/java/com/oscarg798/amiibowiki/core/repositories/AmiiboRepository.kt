@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.Flow
 interface AmiiboRepository {
     suspend fun getAmiibos(): Flow<List<Amiibo>>
 
+    suspend fun getAmiibosWithoutFilters(): Flow<List<Amiibo>>
+
     suspend fun getAmiiboById(tail: String): Amiibo
 
     suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo>

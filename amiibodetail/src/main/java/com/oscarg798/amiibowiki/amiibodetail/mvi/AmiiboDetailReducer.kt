@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import javax.inject.Inject
 
@@ -32,17 +33,12 @@ class AmiiboDetailReducer @Inject constructor() :
             isLoading = true,
             error = null
         )
-        is AmiiboDetailResult.ShowGameDetails -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            showingGameDetailsParams = ShowingGameDetailsParams(from.gameId, from.gameSeries),
-            error = null
-        )
         is AmiiboDetailResult.DetailFetched -> state.copy(
             isIdling = false,
             isLoading = false,
-            amiiboDetails = from.amiibo,
-            isRelatedGamesSectionEnabled = from.isRelatedGamesSectionEnabled,
+            amiiboDetails = ShowingAmiiboDetailsParams(
+                ViewAmiiboDetails(from.amiibo), from.isRelatedGamesSectionEnabled
+            ),
             error = null
         )
         is AmiiboDetailResult.Error -> state.copy(

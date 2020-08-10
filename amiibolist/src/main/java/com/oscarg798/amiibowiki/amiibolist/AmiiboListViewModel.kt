@@ -67,6 +67,8 @@ class AmiiboListViewModel @Inject constructor(
                 trackShowDetailsAmiiboWish(wish)
                 showDetail(wish.viewAmiibo.tail)
             }
+            is AmiiboListWish.OpenSettings -> flowOf(AmiiboListResult.OpenSettings)
+            is AmiiboListWish.FilteringCancelled -> flowOf(AmiiboListResult.FilterSelectionCancelled)
         }
     }
 
@@ -118,6 +120,7 @@ class AmiiboListViewModel @Inject constructor(
     }.onStart {
         emit(AmiiboListResult.Loading)
     }.catch { cause ->
+        cause.printStackTrace()
         handleFailure(cause)
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
 

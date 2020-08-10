@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.settings
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType as EditTextInputType
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -27,6 +28,7 @@ import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.settings.di.DaggerSettingsComponent
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
+import com.oscarg798.amiibowiki.settings.models.InputType
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 import com.oscarg798.amiibowiki.settings.models.PreferenceType
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
@@ -150,6 +152,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         require(preferenceType is PreferenceType.Text)
 
         val preference = EditTextPreference(requireContext())
+        preference.setOnBindEditTextListener {
+            it.inputType = when (preferenceType.inputType) {
+                is InputType.Number -> EditTextInputType.TYPE_CLASS_NUMBER
+            }
+        }
         preference.key = key
         preference.title = title
         preference.setDefaultValue(preferenceType.defaultValue)

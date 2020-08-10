@@ -20,14 +20,7 @@ import com.oscarg798.amiibowiki.amiibolist.R
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 
 class AmiiboListAdapter(private val amiiboClickListener: AmiiboClickListener) :
-    ListAdapter<ViewAmiibo, AmiiboListViewHolder>(object :
-            DiffUtil.ItemCallback<ViewAmiibo>() {
-            override fun areItemsTheSame(oldItem: ViewAmiibo, newItem: ViewAmiibo): Boolean =
-                oldItem.tail == newItem.tail
-
-            override fun areContentsTheSame(oldItem: ViewAmiibo, newItem: ViewAmiibo): Boolean =
-                oldItem == newItem
-        }) {
+    ListAdapter<ViewAmiibo, AmiiboListViewHolder>(diffUtemCallback) {
 
     override fun onBindViewHolder(holder: AmiiboListViewHolder, position: Int) {
         holder.bind(getItem(position))
@@ -40,5 +33,16 @@ class AmiiboListAdapter(private val amiiboClickListener: AmiiboClickListener) :
         return AmiiboListViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.amiibo_list_item, parent, false)
         )
+    }
+
+    companion object {
+        val diffUtemCallback = object :
+            DiffUtil.ItemCallback<ViewAmiibo>() {
+            override fun areItemsTheSame(oldItem: ViewAmiibo, newItem: ViewAmiibo): Boolean =
+                oldItem.tail == newItem.tail
+
+            override fun areContentsTheSame(oldItem: ViewAmiibo, newItem: ViewAmiibo): Boolean =
+                oldItem == newItem
+        }
     }
 }

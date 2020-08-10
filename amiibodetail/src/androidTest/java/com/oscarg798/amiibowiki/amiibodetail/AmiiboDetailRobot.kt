@@ -12,17 +12,14 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
 import com.oscarg798.amiibowiki.testutils.isViewContainingTextDisplayed
+import com.oscarg798.amiibowiki.testutils.isViewWithIdDisplayed
 import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
 class AmiiboDetailRobot : TestRobot {
 
     override fun isViewDisplayed() {
-        Espresso.onView(ViewMatchers.withId(R.id.ivImage))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        isViewWithIdDisplayed(R.id.ivImage)
     }
 
     fun isAmiiboDataDisplayed() {
