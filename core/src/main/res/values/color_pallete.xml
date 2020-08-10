@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2020 Oscar David Gallon Rosero
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -12,10 +11,11 @@
   -->
 
 <resources>
-    <attr name="appBackgroundColor" format="color"/>
+    <attr name="appBackgroundColor" format="color" />
     <attr name="textColor" format="color" />
     <attr name="TextColorSecondary" format="color" />
-    <attr name="iconColor" format="color"/>
+    <attr name="iconColor" format="color" />
+    <attr name="skeletonColor" format="color" />
 
     <color name="silver_chalice">#AAAAAA</color>
     <color name="white">#ffffff</color>
@@ -28,7 +28,13 @@
     <color name="steel_gray">#1A1824</color>
     <color name="alto">#E0E0E0</color>
 
-    <color name="alabaster_50">#FAFAFA</color>
+    <color name="white_lilac">#F8F9FC</color>
+    <color name="royal_blue">#4363F6</color>
+
+    <color name="shark">#25272A</color>
+    <color name="shark_800">#1B1C1F</color>
+
+    <color name="alabaster_50">#4363f6</color>
     <color name="alabaster_100">#F5F5F5</color>
     <color name="alabaster_200">#EEEEEE</color>
 

@@ -17,6 +17,8 @@ import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.SplashLogger
 import com.oscarg798.amiibowiki.splash.SplashViewModel
 import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
+import com.oscarg798.amiibowiki.splash.mvi.SplashReducer
+import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
@@ -26,13 +28,13 @@ import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 
 class SplashViewModelTest {
@@ -44,6 +46,8 @@ class SplashViewModelTest {
     private val logger = relaxedMockk<SplashLogger>()
     private val updateAmiiboTypeUseCase = mockk<UpdateAmiiboTypeUseCase>()
     private val activateRemoteConfigUseCase = relaxedMockk<ActivateRemoteConfigUseCase>()
+    private val reducer = spyk(SplashReducer())
+
     private lateinit var viewModel: SplashViewModel
     private lateinit var testCollector: TestCollector<SplashViewState>
 
@@ -52,7 +56,13 @@ class SplashViewModelTest {
         coEvery { updateAmiiboTypeUseCase.execute() } answers { Result.success(Unit) }
         testCollector = TestCollector()
         viewModel =
-            SplashViewModel(updateAmiiboTypeUseCase, logger, activateRemoteConfigUseCase, coroutinesRule.coroutineContextProvider)
+            SplashViewModel(
+                updateAmiiboTypeUseCase,
+                logger,
+                activateRemoteConfigUseCase,
+                reducer,
+                coroutinesRule.coroutineContextProvider
+            )
     }
 
     @Test
@@ -60,13 +70,16 @@ class SplashViewModelTest {
         viewModel.onWish(SplashWish.GetTypes)
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
-        testCollector.assertValues(
+        val initState = SplashViewState(
+            isIdling = true,
+            fetchWasSuccess = false,
+            error = null
+        )
+        testCollector wereValuesEmitted listOf(
+            initState,
             SplashViewState(
-                status = SplashViewState.FetchStatus.None,
-                error = null
-            ),
-            SplashViewState(
-                status = SplashViewState.FetchStatus.Success,
+                isIdling = false,
+                fetchWasSuccess = true,
                 error = null
             )
         )
@@ -74,11 +87,12 @@ class SplashViewModelTest {
         coVerify {
             updateAmiiboTypeUseCase.execute()
             activateRemoteConfigUseCase.execute()
+            reducer.reduce(initState, SplashResult.TypesFetched)
         }
     }
 
     @Test
-    fun `given a wish to get the types when events are proccess but there is an error then state value should be loading and then fetch success`() {
+    fun `given a wish to get the types when events are proccess but there is an error then error should be in the state`() {
         val error = Exception("something")
         coEvery { updateAmiiboTypeUseCase.execute() } answers { Result.failure(error) }
 
@@ -86,13 +100,17 @@ class SplashViewModelTest {
 
         testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
 
-        testCollector.assertValues(
+        val initState = SplashViewState(
+            isIdling = true,
+            fetchWasSuccess = false,
+            error = null
+        )
+
+        testCollector wereValuesEmitted listOf(
+            initState,
             SplashViewState(
-                status = SplashViewState.FetchStatus.None,
-                error = null
-            ),
-            SplashViewState(
-                status = SplashViewState.FetchStatus.None,
+                isIdling = false,
+                fetchWasSuccess = false,
                 error = FetchTypesFailure("something", error)
             )
         )
@@ -103,7 +121,7 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun `when view is shown then it should track the event`(){
+    fun `when view is shown then it should track the event`() {
         viewModel.onScreenShown()
 
         verify {

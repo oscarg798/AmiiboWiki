@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AmiiboDAO {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(dbAmiibos: List<DBAmiibo>)
 
     @Query("select * from $AMIIBO_TABLE_NAME")

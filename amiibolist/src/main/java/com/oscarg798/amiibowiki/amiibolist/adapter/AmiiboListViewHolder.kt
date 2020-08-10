@@ -18,7 +18,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.oscarg798.amiibowiki.amiibolist.R
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.core.setImage
+import com.oscarg798.amiibowiki.core.extensions.setImage
 import kotlinx.android.extensions.LayoutContainer
 
 class AmiiboListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), LayoutContainer {
