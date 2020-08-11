@@ -16,5 +16,6 @@ data class GameSearchResult(
     val searchId: Id,
     val name: String,
     val alternativeName: String?,
-    val gameId: Int
+    val gameId: Int,
+    val coverUrl: String? = null
 )

@@ -14,6 +14,10 @@ package com.oscarg798.amiibowiki.amiibolist.di
 
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListLoggerImpl
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListReducer
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
@@ -24,4 +28,9 @@ object AmiiboListModule {
     @AmiiboListScope
     @Provides
     fun provideAmiiboListLogger(logger: Logger): AmiiboListLogger = AmiiboListLoggerImpl(logger)
+
+    @AmiiboListScope
+    @Provides
+    fun provideAmiiboListReducer(amiiboListReducer: AmiiboListReducer): Reducer<@JvmSuppressWildcards AmiiboListResult, @JvmSuppressWildcards AmiiboListViewState> =
+        amiiboListReducer
 }

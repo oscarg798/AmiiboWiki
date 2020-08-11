@@ -65,7 +65,7 @@ android {
             buildConfigField "Boolean", "ALPHA", "true"
 
             versionNameSuffix "-ALPHA"
-            applicationIdSuffix ".alpha"
+
             manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
 
             signingConfig signingConfigs.locker
@@ -171,5 +171,7 @@ dependencies {
     implementation project(path: ':nfcreader')
     implementation project(path: ':network')
     implementation project(path: ':gamedetail')
+    implementation project(path: ':settings')
+
     testImplementation project(path: ':testutils')
 }

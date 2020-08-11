@@ -14,13 +14,14 @@ package com.oscarg798.amiibowiki.settings
 
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 import com.oscarg798.amiibowiki.settings.mvi.SettingsResult
 import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
-import com.oscarg798.flagly.featurepoint.FeaturePoint
+import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -30,8 +31,9 @@ import kotlinx.coroutines.flow.onStart
 
 class SettingsViewModel @Inject constructor(
     private val saveDarkModeSelectionUseCase: SaveDarkModeSelectionUseCase,
-    private val featurePoint: FeaturePoint<@JvmSuppressWildcards PreferenceBuilder, @JvmSuppressWildcards Unit>,
-    private val coroutineContextProvider: CoroutineContextProvider
+    private val featurePoint: SuspendFeaturePoint<@JvmSuppressWildcards PreferenceBuilder, @JvmSuppressWildcards Unit>,
+    override val reducer: Reducer<@JvmSuppressWildcards SettingsResult, @JvmSuppressWildcards SettingsViewState>,
+    override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<SettingsWish, SettingsResult, SettingsViewState>(SettingsViewState.init()) {
 
     override suspend fun getResult(wish: SettingsWish): Flow<SettingsResult> = when (wish) {

@@ -19,9 +19,11 @@ import com.oscarg798.amiibowiki.core.mvi.Result
 sealed class AmiiboListResult : Result {
     object None : AmiiboListResult()
     object Loading : AmiiboListResult()
-    data class FetchSuccess(val amiibos: List<Amiibo>) : AmiiboListResult()
-    data class AmiibosFiltered(val amiibos: List<Amiibo>) : AmiiboListResult()
-    data class FiltersFetched(val filters: List<AmiiboType>) : AmiiboListResult()
+    object FilterSelectionCancelled : AmiiboListResult()
+    object OpenSettings : AmiiboListResult()
+    data class FetchSuccess(val amiibos: Collection<Amiibo>) : AmiiboListResult()
+    data class AmiibosFiltered(val amiibos: Collection<Amiibo>) : AmiiboListResult()
+    data class FiltersFetched(val filters: Collection<AmiiboType>) : AmiiboListResult()
     data class ShowAmiiboDetail(val amiiboTail: String) : AmiiboListResult()
     data class Error(val error: AmiiboListFailure) : AmiiboListResult()
 }

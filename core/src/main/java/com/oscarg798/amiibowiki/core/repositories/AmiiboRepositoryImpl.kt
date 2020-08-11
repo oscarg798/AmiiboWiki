@@ -26,10 +26,10 @@ import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 
 @CoreScope
 class AmiiboRepositoryImpl @Inject constructor(
@@ -37,46 +37,20 @@ class AmiiboRepositoryImpl @Inject constructor(
     private val amiiboDAO: AmiiboDAO
 ) : AmiiboRepository {
 
-    override fun getAmiibos(): Flow<List<Amiibo>> = amiiboDAO.getAmiibos()
-        .catch { cause ->
-            Log.i("PENE", cause.stackTrace.toString())
-            Log.i("PENE", "PENE")
-        }
-        .map {
-            it.map { dbAmiibo ->
-                dbAmiibo.map()
-            }
-        }
+    override suspend fun getAmiibos(): Flow<List<Amiibo>> = flow {
+        emit(getLocalAmiibos().first())
+        getCloudAmiibos()
+        emitAll(getLocalAmiibos())
+    }
+
+    override suspend fun getAmiibosWithoutFilters(): Flow<List<Amiibo>> = getLocalAmiibos()
 
     override suspend fun getAmiiboById(tail: String): Amiibo {
-        val amiibo = amiiboDAO.getById(tail)?.map()
+        val amiibo = amiiboDAO.getById(tail)?.toAmiibo()
 
         return amiibo
             ?: throw IllegalArgumentException("tail $tail does not belong to any saved amiibo")
     }
-
-    override suspend fun updateAmiibos(): Flow<List<Amiibo>> =
-        flow<List<Amiibo>> {
-            val result = runCatching {
-                amiiboService.get().amiibo.map { apiAmiibo ->
-                    apiAmiibo.toAmiibo()
-                }
-            }.getOrTransformNetworkException {
-                GetAmiibosFailure.ProblemInDataSource(REMOTE_DATA_SOURCE_TYPE, it)
-            }
-
-            emit(result)
-        }.onEach {
-            if (it.isEmpty()) {
-                return@onEach
-            }
-
-            amiiboDAO.insert(
-                it.map { amiibo ->
-                    amiibo.toDBAmiibo()
-                }
-            )
-        }
 
     override suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo> =
         runCatching {
@@ -84,6 +58,35 @@ class AmiiboRepositoryImpl @Inject constructor(
         }.getOrTransformNetworkException {
             FilterAmiiboFailure.ErrorFilteringAmiibos(it)
         }
+
+    private fun getLocalAmiibos(): Flow<List<Amiibo>> {
+        return amiiboDAO.getAmiibos()
+            .map {
+                it.map { dbAmiibo ->
+                    dbAmiibo.toAmiibo()
+                }
+            }
+    }
+
+    private suspend fun getCloudAmiibos() {
+        val result = runCatching {
+            amiiboService.get().amiibo.map { apiAmiibo ->
+                apiAmiibo.toAmiibo()
+            }
+        }.getOrTransformNetworkException {
+            throw GetAmiibosFailure.ProblemInDataSource(REMOTE_DATA_SOURCE_TYPE, it)
+        }
+
+        if (result.isEmpty()) {
+            return
+        }
+
+        amiiboDAO.insert(
+            result.map { amiibo ->
+                amiibo.toDBAmiibo()
+            }
+        )
+    }
 }
 
 fun AmiiboReleaseDate.toDBAmiiboReleaseDate() =

@@ -16,31 +16,15 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 
 data class SplashViewState(
-    val status: FetchStatus,
+    override val isIdling: Boolean,
+    val fetchWasSuccess: Boolean,
     val error: FetchTypesFailure?
-) : ViewState<SplashResult> {
-
-    sealed class FetchStatus {
-        object None : FetchStatus()
-        object Success : FetchStatus()
-    }
-
-    override fun reduce(result: SplashResult): ViewState<SplashResult> {
-        return when (result) {
-            is SplashResult.TypesFetched -> copy(
-                status = FetchStatus.Success,
-                error = null
-            )
-            is SplashResult.Error -> copy(
-                status = FetchStatus.None,
-                error = FetchTypesFailure(result.exception.message, result.exception)
-            )
-        }
-    }
+) : ViewState {
 
     companion object {
         fun init() = SplashViewState(
-            status = FetchStatus.None,
+            isIdling = true,
+            fetchWasSuccess = false,
             error = null
         )
     }

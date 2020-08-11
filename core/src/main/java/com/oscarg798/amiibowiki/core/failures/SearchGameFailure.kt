@@ -17,4 +17,6 @@ sealed class SearchGameFailure(override val message: String?, override val cause
 
     class DateSourceError(query: String, override val cause: Exception? = null) :
         SearchGameFailure("There was an error searching with query $query", cause)
+
+    class GamesRelatedNotFound(cause: Exception?) : SearchGameFailure("There was an error getting related games", cause)
 }

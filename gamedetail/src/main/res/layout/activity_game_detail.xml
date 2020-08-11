@@ -20,6 +20,7 @@
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="?appBackgroundColor"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
@@ -41,7 +42,7 @@
                     android:id="@+id/toolbarImageSkeleton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/silver_chalice"
+                    android:background="?colorPrimary"
                     android:fillViewport="false"
                     android:scaleType="centerCrop"
                     android:visibility="gone"

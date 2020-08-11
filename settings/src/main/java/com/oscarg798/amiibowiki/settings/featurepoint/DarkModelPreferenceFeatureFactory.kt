@@ -12,24 +12,25 @@
 
 package com.oscarg798.amiibowiki.settings.featurepoint
 
-import com.oscarg798.amiibowiki.core.isAndroidQOrHigher
+import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
 import com.oscarg798.amiibowiki.core.utils.ResourceProvider
 import com.oscarg798.amiibowiki.settings.R
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.flagly.featurepoint.FeatureFactory
+import com.oscarg798.flagly.featurepoint.SuspendFeatureFactory
 import javax.inject.Inject
 
 class DarkModelPreferenceFeatureFactory @Inject constructor(
     private val stringResourceProvider: ResourceProvider<String>
-) : FeatureFactory<PreferenceBuilder, Unit> {
+) : SuspendFeatureFactory<PreferenceBuilder, Unit> {
 
-    override fun create(): PreferenceBuilder = PreferenceBuilder(
+    override suspend fun create(): PreferenceBuilder = PreferenceBuilder(
         DARK_MODE_PREFERENCE_KEY,
         stringResourceProvider.provide(R.string.dark_theme_preference_title),
-        R.drawable.ic_dark_mode
+        iconResourceId = R.drawable.ic_dark_mode
     )
 
-    override fun isApplicable(params: Unit): Boolean = isAndroidQOrHigher()
+    override suspend fun isApplicable(params: Unit): Boolean =
+        isAndroidQOrHigher()
 }
 
 const val DARK_MODE_PREFERENCE_KEY = "dark_mode"

@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.flowOf
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,8 +38,8 @@ class AmiiboListTest : BaseUITest(DISPATCHER) {
 
     private val amiiboListRobot = AmiiboListRobot()
 
-    @Before
-    fun setup() {
+    override fun prepareTest() {
+        every { TestPersistenceModule.amiiboDAO.getAmiibos() } answers { flowOf(listOf(DB_AMIIBO)) }
         every { TestPersistenceModule.amiiboTypeDAO.getTypes() } answers {
             flowOf(DB_AMIIBO_TYPES)
         }
@@ -62,9 +61,6 @@ class AmiiboListTest : BaseUITest(DISPATCHER) {
 
     @Test
     fun when_filter_is_applied_and_clear_filter_is_clicked_then_it_should_show_all_the_amiibos() {
-        every { TestPersistenceModule.amiiboDAO.getAmiibos() } answers {
-            flowOf(listOf(DB_AMIIBO))
-        }
         amiiboListRobot.isViewDisplayed()
         amiiboListRobot.clickFilterMenu()
         amiiboListRobot.clickOnFigureAmiiboTypeFilter()

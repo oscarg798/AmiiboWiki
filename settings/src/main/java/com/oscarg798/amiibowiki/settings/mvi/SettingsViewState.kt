@@ -16,67 +16,19 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 
 data class SettingsViewState(
-    val loading: ViewState.LoadingState,
-    val createPreferencesStatus: CreatePreferencesStatus,
-    val darkModeSelectedStatus: DarkModeSelectedStatus,
+    override val isIdling: Boolean,
+    val isLoading: Boolean,
+    val preferences: Collection<PreferenceBuilder>?,
     val showDevelopmentActivity: Boolean = false,
     val showDarkModeDialog: Boolean = false,
-    val shouldActivityBeRecreated: Boolean = true
-) : ViewState<SettingsResult> {
-
-    sealed class CreatePreferencesStatus {
-        object None : CreatePreferencesStatus()
-        data class PreferencesCreated(val preferences: Collection<PreferenceBuilder>) :
-            CreatePreferencesStatus()
-    }
-
-    sealed class DarkModeSelectedStatus {
-        object None : DarkModeSelectedStatus()
-        data class Selected(val option: String) : DarkModeSelectedStatus()
-    }
-
-    override fun reduce(result: SettingsResult): ViewState<SettingsResult> = when (result) {
-        is SettingsResult.PreferencesCreated -> copy(
-            loading = ViewState.LoadingState.None,
-            createPreferencesStatus = CreatePreferencesStatus.PreferencesCreated(result.preferences),
-            darkModeSelectedStatus = DarkModeSelectedStatus.None,
-            showDevelopmentActivity = false,
-            showDarkModeDialog = false
-        )
-        is SettingsResult.ShowDarkModeDialog -> copy(
-            loading = ViewState.LoadingState.None,
-            createPreferencesStatus = CreatePreferencesStatus.None,
-            darkModeSelectedStatus = DarkModeSelectedStatus.None,
-            showDevelopmentActivity = false,
-            showDarkModeDialog = true
-        )
-        is SettingsResult.ShowDevelopmentActivity -> copy(
-            loading = ViewState.LoadingState.None,
-            createPreferencesStatus = CreatePreferencesStatus.None,
-            darkModeSelectedStatus = DarkModeSelectedStatus.None,
-            showDevelopmentActivity = true,
-            showDarkModeDialog = false
-        )
-        is SettingsResult.DarkModeSelectionSaved -> copy(
-            loading = ViewState.LoadingState.None,
-            createPreferencesStatus = CreatePreferencesStatus.None,
-            darkModeSelectedStatus = DarkModeSelectedStatus.Selected(result.optionSelected),
-            showDevelopmentActivity = false,
-            showDarkModeDialog = false
-        )
-        is SettingsResult.Loading -> copy(
-            loading = ViewState.LoadingState.Loading,
-            createPreferencesStatus = CreatePreferencesStatus.None,
-            darkModeSelectedStatus = DarkModeSelectedStatus.None,
-            showDevelopmentActivity = false,
-            showDarkModeDialog = false
-        )
-    }
+    val shouldActivityBeRecreated: Boolean = false
+) : ViewState {
 
     companion object {
         fun init() = SettingsViewState(
-            ViewState.LoadingState.None, CreatePreferencesStatus.None,
-            DarkModeSelectedStatus.None
+            isIdling = true,
+            isLoading = false,
+            preferences = null
         )
     }
 }

@@ -12,26 +12,20 @@
 
 package com.oscarg798.amiibowiki.splash
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.R
-import com.oscarg798.amiibowiki.core.AMIIBO_LIST_DEEPLINK
+import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
-import com.oscarg798.amiibowiki.core.startDeepLinkIntent
-import com.oscarg798.amiibowiki.core.verifyNightMode
+import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
+import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding
-import com.oscarg798.amiibowiki.gamedetail.GameDetailActivity
 import com.oscarg798.amiibowiki.splash.di.DaggerSplashComponent
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -65,13 +59,14 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel.state.onEach { state ->
             when {
-                state.status == SplashViewState.FetchStatus.Success -> {
+                state.error != null -> showFetchError()
+                state.fetchWasSuccess -> {
                     startDeepLinkIntent(
                         AMIIBO_LIST_DEEPLINK
 
                     )
                 }
-                state.error != null -> showFetchError()
+
             }
         }.launchIn(lifecycleScope)
 

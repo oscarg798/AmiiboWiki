@@ -16,5 +16,4 @@ import com.oscarg798.amiibowiki.core.mvi.Wish
 
 sealed class AmiiboDetailWish : Wish {
     object ShowAmiiboDetail : AmiiboDetailWish()
-    data class ShowGameDetail(val gameId: Int, val gameSeries: String) : AmiiboDetailWish()
 }

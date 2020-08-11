@@ -14,9 +14,13 @@ package com.oscarg798.amiibowiki.gamedetail.di
 
 import androidx.lifecycle.ViewModel
 import com.oscarg798.amiibowiki.core.ViewModelKey
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.gamedetail.GameDetailViewModel
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLoggerImpl
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailReducer
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailResult
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
@@ -35,4 +39,8 @@ object GameDetailModule {
     @GameDetailScope
     @Provides
     fun provideGameDetailLogger(logger: Logger): GameDetailLogger = GameDetailLoggerImpl(logger)
+
+    @GameDetailScope
+    @Provides
+    fun provideGameDetailReducer(gameDetailReducer: GameDetailReducer): Reducer<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewState> = gameDetailReducer
 }

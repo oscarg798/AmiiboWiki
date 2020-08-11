@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -32,20 +31,17 @@ import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.ActivityAmiiboListBinding
 import com.oscarg798.amiibowiki.amiibolist.di.DaggerAmiiboListComponent
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
-import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
-import com.oscarg798.amiibowiki.core.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
-import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
+import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
+import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
+import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
+import com.oscarg798.amiibowiki.core.constants.SETTINGS_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
-import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.core.startDeepLinkIntent
-import com.oscarg798.amiibowiki.settings.SettingsActivity
+import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import javax.inject.Inject
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 
 @DeepLink(AMIIBO_LIST_DEEPLINK)
@@ -55,11 +51,9 @@ class AmiiboListActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private var skeleton: SkeletonScreen? = null
-
-    private lateinit var binding: ActivityAmiiboListBinding
-    private lateinit var viewModel: AmiiboListViewModel
-
+    private val wishes = ConflatedBroadcastChannel<AmiiboListWish>()
     private var filterMenuItem: MenuItem? = null
+    private lateinit var binding: ActivityAmiiboListBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,89 +80,114 @@ class AmiiboListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_filter) {
-            viewModel.onWish(AmiiboListWish.ShowFilters)
+            wishes.offer(AmiiboListWish.ShowFilters)
         } else if (item.itemId == R.id.action_settings) {
-            startActivity(Intent(this, SettingsActivity::class.java))
+            wishes.offer(AmiiboListWish.OpenSettings)
         }
 
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        wishes.close()
+    }
+
     private fun setup() {
-        binding.srlMain.setColorSchemeColors(
-            getColor(R.color.cinnabar), getColor(R.color.atlantis), getColor(R.color.picton_blue),
-            getColor(R.color.viridian), getColor(R.color.tulip_tree), getColor(R.color.cerise)
-        )
+        with(binding.srlMain) {
+            setColorSchemeColors(
+                getColor(R.color.cinnabar),
+                getColor(R.color.atlantis),
+                getColor(R.color.picton_blue),
+                getColor(R.color.viridian),
+                getColor(R.color.tulip_tree),
+                getColor(R.color.cerise)
+            )
+
+            setOnRefreshListener {
+                wishes.offer(AmiiboListWish.RefreshAmiibos)
+            }
+        }
+
         with(binding.rvAmiiboList) {
             setHasFixedSize(false)
             layoutManager = GridLayoutManager(context, NUMBER_OF_COLUMNS)
+            adapter = AmiiboListAdapter(object : AmiiboClickListener {
+                override fun onClick(viewAmiibo: ViewAmiibo) {
+                    wishes.offer(AmiiboListWish.ShowAmiiboDetail(viewAmiibo))
+                }
+            })
         }
     }
 
     private fun setupViewModelInteractions() {
-        viewModel = ViewModelProvider(this, viewModelFactory).get(AmiiboListViewModel::class.java)
+        val viewModel =
+            ViewModelProvider(this, viewModelFactory).get(AmiiboListViewModel::class.java)
         viewModel.onScreenShown()
 
         viewModel.state.onEach {
             val state = it
             when {
-                state.loading is ViewState.LoadingState.Loading -> showLoading()
-                state.status is AmiiboListViewState.Status.AmiibosFetched -> showAmiibos(
-                    state.status.amiibos
-                )
+                state.isIdling -> onIdling()
+                state.isLoading -> showLoading()
+                state.isShowingSettings -> navigateToSettings()
                 state.error != null -> showErrors(state.error.message!!)
-                state.showingFilters is AmiiboListViewState.ShowingFilters.FetchSuccess -> showFilters(
-                    state.showingFilters.filters
-                )
-                state.filtering is AmiiboListViewState.Filtering.FetchSuccess -> {
-                    showAmiibos(state.filtering.amiibos)
-                }
-                state.showAmiiboDetail is AmiiboListViewState.ShowAmiiboDetail.Show -> showAmiiboDetail(
-                    state.showAmiiboDetail.tail
-                )
+                state.filters != null -> showFilters(state.filters.toList())
+                state.amiiboTailToShow != null -> showAmiiboDetail(state.amiiboTailToShow)
+                state.amiibos != null -> showAmiibos(state.amiibos.toList())
             }
         }.launchIn(lifecycleScope)
 
-        merge(fetchAmiibos(), refresh(), onAmiiboClick())
+        wishes.asFlow()
             .onEach {
                 viewModel.onWish(it)
             }.launchIn(lifecycleScope)
+
+        wishes.offer(AmiiboListWish.GetAmiibos)
+    }
+
+    private fun navigateToSettings() {
+        startDeepLinkIntent(SETTINGS_DEEPLINK)
+    }
+
+    private fun onIdling() {
+        // DO_NOTHING
     }
 
     private fun showLoading() {
         binding.srlMain.isRefreshing = true
         binding.rvAmiiboList.isEnabled = false
         filterMenuItem?.isEnabled = false
-        if (skeleton == null) {
-            skeleton = Skeleton.bind(binding.rvAmiiboList)
-                .adapter(binding.rvAmiiboList.adapter)
-                .load(R.layout.skeleton_amiibo_list_item)
-                .count(SKELETON_ANIMATION_EXAMPLES_COUNT)
-                .show()
-        } else {
-            skeleton?.show()
-        }
+
+        skeleton = Skeleton.bind(binding.rvAmiiboList)
+            .adapter(binding.rvAmiiboList.adapter)
+            .load(R.layout.skeleton_amiibo_list_item)
+            .count(SKELETON_ANIMATION_EXAMPLES_COUNT)
+            .show()
     }
 
     private fun hideLoading() {
+        skeleton?.hide()
+        skeleton = null
         filterMenuItem?.isEnabled = true
         binding.rvAmiiboList.isEnabled = true
-        skeleton?.hide()
         binding.srlMain.isRefreshing = false
     }
 
     private fun showFilters(filters: List<ViewAmiiboType>) {
-        val adapter =
-            ArrayAdapter<ViewAmiiboType>(
-                this,
-                android.R.layout.select_dialog_singlechoice,
-                filters
-            )
+        val adapter = ArrayAdapter<ViewAmiiboType>(
+            this,
+            android.R.layout.select_dialog_singlechoice,
+            filters
+        )
         val builder = AlertDialog.Builder(this)
         builder.setAdapter(adapter) { _, which ->
             val filter = adapter.getItem(which)
             require(filter != null)
-            viewModel.onWish(AmiiboListWish.FilterAmiibos(filter))
+            wishes.offer(AmiiboListWish.FilterAmiibos(filter))
+        }
+        builder.setOnCancelListener {
+            wishes.offer(AmiiboListWish.FilteringCancelled)
         }
         builder.show()
     }
@@ -183,33 +202,11 @@ class AmiiboListActivity : AppCompatActivity() {
         Snackbar.make(binding.srlMain, error, Snackbar.LENGTH_LONG).show()
     }
 
-    private fun fetchAmiibos() = flowOf(AmiiboListWish.GetAmiibos)
-
-    private fun refresh() = callbackFlow<AmiiboListWish> {
-        binding.srlMain.setOnRefreshListener {
-            offer(AmiiboListWish.RefreshAmiibos)
-        }
-
-        awaitClose { binding.srlMain.setOnRefreshListener(null) }
-    }
-
-    private fun onAmiiboClick() = callbackFlow<AmiiboListWish> {
-        binding.rvAmiiboList.adapter = AmiiboListAdapter(object : AmiiboClickListener {
-            override fun onClick(viewAmiibo: ViewAmiibo) {
-                offer(AmiiboListWish.ShowAmiiboDetail(viewAmiibo))
-            }
-        })
-
-        awaitClose {
-            binding.rvAmiiboList.adapter = null
-        }
-    }
-
     private fun showAmiiboDetail(tail: String) {
         startDeepLinkIntent(
             AMIIBO_DETAIL_DEEPLINK,
             Bundle().apply {
-                putString(TAIL_ARGUMENT, tail)
+                putString(ARGUMENT_TAIL, tail)
             }
         )
     }

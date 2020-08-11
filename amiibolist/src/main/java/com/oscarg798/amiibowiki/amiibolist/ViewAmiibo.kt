@@ -19,17 +19,7 @@ data class ViewAmiibo(
     val name: String,
     val serie: String,
     val image: String
-)
+) {
 
-private const val SCARLET = "scarlet"
-private const val GOLD = "gold"
-private const val BLUE = "blue"
-private const val GREEN = "green"
-private const val BRONZE = "bronze"
-private const val SILVER = "silver"
-
-fun Amiibo.map(): ViewAmiibo {
-    return ViewAmiibo(
-        tail, name, gameSeries, image
-    )
+    constructor(amiibo: Amiibo) : this(amiibo.tail, amiibo.name, amiibo.gameSeries, amiibo.image)
 }
