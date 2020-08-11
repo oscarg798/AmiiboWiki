@@ -23,6 +23,9 @@ abstract class BaseUITest(dispatcher: Dispatcher) {
 
     @Rule
     @JvmField
-    val testRule: TestRule = RuleChain.outerRule(NetworkIdlingResourceRule())
+    val testRule: TestRule = RuleChain.outerRule(MockDependenciesTestRule(this))
         .around(MockWebServerTestRule(dispatcher))
+        .around(NetworkIdlingResourceRule())
+
+    abstract fun prepareTest()
 }

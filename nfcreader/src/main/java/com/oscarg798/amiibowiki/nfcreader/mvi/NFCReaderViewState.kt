@@ -17,16 +17,12 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 
 data class NFCReaderViewState(
-    val loading: ViewState.LoadingState,
-    val status: Status,
-    val adapterStatus: AdapterStatus,
+    override val isIdling: Boolean,
+    val isLoading: Boolean,
+    val amiiboIdentifier: AmiiboIdentifier?,
+    val adapterStatus: AdapterStatus?,
     val error: NFCReaderFailure? = null
-) : ViewState<NFCReaderResult> {
-
-    sealed class Status {
-        object None : Status()
-        data class ReadSuccessful(val amiiboIdentifier: AmiiboIdentifier) : Status()
-    }
+) : ViewState {
 
     sealed class AdapterStatus {
         object Idle : AdapterStatus()
@@ -34,53 +30,13 @@ data class NFCReaderViewState(
         object AdapterReadyToBeStoped : AdapterStatus()
     }
 
-    override fun reduce(result: NFCReaderResult): ViewState<NFCReaderResult> {
-        return when (result) {
-            is NFCReaderResult.Reading -> copy(
-                loading = ViewState.LoadingState.Loading,
-                adapterStatus = AdapterStatus.Idle,
-                status = Status.None,
-                error = null
-            )
-            is NFCReaderResult.ReadSuccessful -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.ReadSuccessful(result.amiiboIdentifier),
-                adapterStatus = AdapterStatus.Idle,
-                error = null
-            )
-            is NFCReaderResult.AdapterDisabled -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.None,
-                adapterStatus = AdapterStatus.Idle,
-                error = NFCReaderFailure.AdapterDisabled
-            )
-            is NFCReaderResult.AdapterReady -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.None,
-                adapterStatus = AdapterStatus.AdapterAvailable,
-                error = null
-            )
-            is NFCReaderResult.Error -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.None,
-                adapterStatus = AdapterStatus.Idle,
-                error = result.error
-            )
-            is NFCReaderResult.AdapterStoped -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.None,
-                adapterStatus = AdapterStatus.AdapterReadyToBeStoped,
-                error = null
-            )
-        }
-    }
-
     companion object {
         fun init() = NFCReaderViewState(
-            ViewState.LoadingState.None,
-            Status.None,
-            AdapterStatus.Idle,
-            null
+            isIdling = true,
+            isLoading = false,
+            amiiboIdentifier = null,
+            adapterStatus = null,
+            error = null
         )
     }
 }

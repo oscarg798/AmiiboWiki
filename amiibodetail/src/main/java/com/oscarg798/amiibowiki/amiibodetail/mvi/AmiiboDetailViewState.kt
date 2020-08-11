@@ -12,65 +12,28 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
-import com.oscarg798.amiibowiki.amiibodetail.errors.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
+data class ShowingAmiiboDetailsParams(
+    val amiiboDetails: ViewAmiiboDetails,
+    val isRelatedGamesSectionEnabled: Boolean
+)
+
 data class AmiiboDetailViewState(
-    val loading: ViewState.LoadingState,
-    val status: Status,
+    override val isIdling: Boolean,
+    val isLoading: Boolean,
+    val amiiboDetails: ShowingAmiiboDetailsParams?,
     val error: AmiiboDetailFailure? = null
-) : ViewState<AmiiboDetailResult> {
-
-    sealed class Status {
-        object None : Status()
-        data class ShowingAmiiboDetails(
-            val amiiboDetails: ViewAmiiboDetails,
-            val isRelatedGamesSectionEnabled: Boolean
-        ) : Status()
-
-        data class ShowingGameDetails(val gameId: Int, val gameSeries: String) : Status()
-    }
-
-    override fun reduce(result: AmiiboDetailResult): ViewState<AmiiboDetailResult> {
-        return when (result) {
-            is AmiiboDetailResult.DetailFetched -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.ShowingAmiiboDetails(
-                    result.amiibo,
-                    result.isRelatedGamesSectionEnabled
-                ),
-                error = null
-            )
-            is AmiiboDetailResult.ShowGameDetails -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.ShowingGameDetails(result.gameId, result.gameSeries),
-                error = null
-            )
-            is AmiiboDetailResult.Loading -> copy(
-                loading = ViewState.LoadingState.Loading,
-                status = Status.None,
-                error = null
-            )
-            is AmiiboDetailResult.Error -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.None,
-                error = result.error
-            )
-            is AmiiboDetailResult.None -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.None,
-                error = null
-            )
-        }
-    }
+) : ViewState {
 
     companion object {
-
-        fun init() =
-            AmiiboDetailViewState(
-                ViewState.LoadingState.None,
-                Status.None
-            )
+        fun init() = AmiiboDetailViewState(
+            isIdling = true,
+            isLoading = false,
+            amiiboDetails = null,
+            error = null
+        )
     }
 }

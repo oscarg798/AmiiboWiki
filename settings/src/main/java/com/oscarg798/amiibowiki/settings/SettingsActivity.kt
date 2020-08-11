@@ -14,8 +14,11 @@ package com.oscarg798.amiibowiki.settings
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.oscarg798.amiibowiki.core.verifyNightMode
+import com.airbnb.deeplinkdispatch.DeepLink
+import com.oscarg798.amiibowiki.core.constants.SETTINGS_DEEPLINK
+import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 
+@DeepLink(SETTINGS_DEEPLINK)
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

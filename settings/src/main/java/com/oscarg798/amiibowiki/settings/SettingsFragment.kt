@@ -14,11 +14,13 @@ package com.oscarg798.amiibowiki.settings
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType as EditTextInputType
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.oscarg798.amiibowiki.core.ViewModelFactory
@@ -26,8 +28,9 @@ import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.settings.di.DaggerSettingsComponent
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
+import com.oscarg798.amiibowiki.settings.models.InputType
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
+import com.oscarg798.amiibowiki.settings.models.PreferenceType
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity
 import javax.inject.Inject
@@ -63,22 +66,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(SettingsViewModel::class.java)
         viewModel.state.onEach {
             when {
-                it.createPreferencesStatus is SettingsViewState.CreatePreferencesStatus.PreferencesCreated -> {
+                it.showDarkModeDialog -> showDarkModeDialog()
+                it.showDevelopmentActivity -> startActivity(
+                    Intent(
+                        requireContext(),
+                        FeatureFlagHandlerActivity::class.java
+                    )
+                )
+                it.shouldActivityBeRecreated -> {
+                    startActivity(Intent(requireContext(), SettingsActivity::class.java))
+                    requireActivity().finish()
+                }
+                it.preferences != null -> {
                     /**
                      * Preferences must exists before setting click listener
                      */
                     setupPreferencesClickListener(viewModel)
-                    addPreferences(it.createPreferencesStatus.preferences)
-                }
-                it.showDarkModeDialog -> {
-                    showDarkModeDialog()
-                }
-                it.showDevelopmentActivity -> {
-                    startActivity(Intent(requireContext(), FeatureFlagHandlerActivity::class.java))
-                }
-                it.darkModeSelectedStatus is SettingsViewState.DarkModeSelectedStatus.Selected -> {
-                    startActivity(Intent(requireContext(), SettingsActivity::class.java))
-                    requireActivity().finish()
+                    addPreferences(it.preferences)
                 }
             }
         }.launchIn(lifecycleScope)
@@ -135,16 +139,40 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun addPreferences(preferences: Collection<PreferenceBuilder>) {
         preferences.map { preferenceBuilder ->
-            val preference = Preference(requireContext())
-            preference.key = preferenceBuilder.key
-            preference.title = preferenceBuilder.title
-            preferenceBuilder.iconResourceId?.let { drawableKey ->
-                preference.icon = ContextCompat.getDrawable(requireContext(), drawableKey)
+            when (preferenceBuilder.preferenceType) {
+                is PreferenceType.Text -> preferenceBuilder.mapToEditTextPreference()
+                is PreferenceType.Preference -> preferenceBuilder.mapSimplePreference()
             }
-            preference
         }.forEach { preference ->
             preferenceScreen.addPreference(preference)
         }
+    }
+
+    private fun PreferenceBuilder.mapToEditTextPreference(): Preference {
+        require(preferenceType is PreferenceType.Text)
+
+        val preference = EditTextPreference(requireContext())
+        preference.setOnBindEditTextListener {
+            it.inputType = when (preferenceType.inputType) {
+                is InputType.Number -> EditTextInputType.TYPE_CLASS_NUMBER
+            }
+        }
+        preference.key = key
+        preference.title = title
+        preference.setDefaultValue(preferenceType.defaultValue)
+
+        return preference
+    }
+
+    private fun PreferenceBuilder.mapSimplePreference(): Preference {
+        val preference = Preference(requireContext())
+        preference.key = key
+        preference.title = title
+        iconResourceId?.let { drawableKey ->
+            preference.icon = ContextCompat.getDrawable(requireContext(), drawableKey)
+        }
+
+        return preference
     }
 
     companion object {

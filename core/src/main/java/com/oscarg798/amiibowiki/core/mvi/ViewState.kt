@@ -11,18 +11,8 @@
  */
 
 package com.oscarg798.amiibowiki.core.mvi
-import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 
-interface ViewState<in Result : MVIResult> {
+interface ViewState {
 
-    /**
-     * TODO: This should be perform by a recuder class,
-     * then viewmodel will use it to reduce the states.
-     */
-    fun reduce(result: Result): ViewState<Result>
-
-    sealed class LoadingState {
-        object None : LoadingState()
-        object Loading : LoadingState()
-    }
+    val isIdling: Boolean
 }

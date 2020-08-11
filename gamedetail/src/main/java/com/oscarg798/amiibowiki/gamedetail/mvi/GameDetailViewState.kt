@@ -17,46 +17,20 @@ import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
 data class GameDetailViewState(
-    val loading: ViewState.LoadingState,
-    val status: Status,
+    override val isIdling: Boolean,
+    val isLoading: Boolean,
+    val gameDetails: Game?,
+    val gameTrailer: String?,
     val error: GameDetailFailure? = null
-) : ViewState<GameDetailResult> {
-
-    sealed class Status {
-        object None : Status()
-        data class ShowingGameDetails(val gameDetails: Game) : Status()
-        data class PlayingGameTrailer(val gameTrailer: String) : Status()
-    }
-
-    override fun reduce(result: GameDetailResult): ViewState<GameDetailResult> {
-        return when (result) {
-            is GameDetailResult.GameFetched -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.ShowingGameDetails(result.game),
-                error = null
-            )
-            is GameDetailResult.Error -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.None,
-                error = result.exception
-            )
-            is GameDetailResult.Loading -> copy(
-                loading = ViewState.LoadingState.Loading,
-                status = Status.None,
-                error = null
-            )
-            is GameDetailResult.GameTrailerFound -> copy(
-                loading = ViewState.LoadingState.None,
-                status = Status.PlayingGameTrailer(result.trailerId),
-                error = null
-            )
-        }
-    }
+) : ViewState {
 
     companion object {
         fun init() = GameDetailViewState(
-            ViewState.LoadingState.None,
-            status = Status.None
+            isIdling = true,
+            isLoading = false,
+            gameDetails = null,
+            gameTrailer = null,
+            error = null
         )
     }
 }

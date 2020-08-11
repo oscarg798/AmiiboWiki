@@ -11,20 +11,16 @@
   -->
 
 <resources>
-    <attr name="appBackgroundColor" format="color"/>
-    <attr name="textColor" format="color" />
-    <attr name="TextColorSecondary" format="color" />
-    <attr name="iconColor" format="color"/>
 
     <color name="textColor">@color/mine_shaft_900</color>
     <color name="secondaryTextColor">@color/mine_shaft_800</color>
     <color name="invertedTextColor"></color>
     <color name="themeIconColor">@color/mine_shaft_900</color>
 
-    <color name="colorPrimary">@color/alabaster_50</color>
-    <color name="colorPrimaryDark">@color/alabaster_100</color>
-    <color name="colorAccent">@color/alabaster_200</color>
+    <color name="colorPrimary">@color/white</color>
+    <color name="colorPrimaryDark">@color/white_lilac</color>
+    <color name="colorAccent">@color/royal_blue</color>
 
-    <color name="background_color">@color/alabaster_200</color>
+    <color name="background_color">@color/colorPrimaryDark</color>
     <color name="status_bar_color">@color/mine_shaft_900</color>
 </resources>

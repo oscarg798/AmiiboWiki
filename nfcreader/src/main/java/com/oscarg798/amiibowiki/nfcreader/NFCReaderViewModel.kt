@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.nfcreader
 
 import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
@@ -31,7 +32,8 @@ import kotlinx.coroutines.flow.map
 class NFCReaderViewModel @Inject constructor(
     private val validateAdapterAvailabilityUseCase: ValidateAdapterAvailabilityUseCase,
     private val readTagUseCase: ReadTagUseCase,
-    private val coroutineContextProvider: CoroutineContextProvider
+    override val reducer: Reducer<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewState>,
+    override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<NFCReaderWish, NFCReaderResult,
     NFCReaderViewState>(NFCReaderViewState.init()) {
 

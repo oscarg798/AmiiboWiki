@@ -20,12 +20,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.oscarg798.amiibowiki.core.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.AmiiboIdentifier
 import com.oscarg798.amiibowiki.core.ViewModelFactory
-import com.oscarg798.amiibowiki.core.constants.TAIL_ARGUMENT
+import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
+import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
-import com.oscarg798.amiibowiki.core.startDeepLinkIntent
+import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.nfcreader.databinding.ActivityNFCReaderBinding
 import com.oscarg798.amiibowiki.nfcreader.di.DaggerNFCReaderComponent
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
@@ -65,10 +65,10 @@ class NFCReaderActivity : AppCompatActivity() {
 
         viewModel.state.onEach {
             when {
-                it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
-                it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
-                it.status is NFCReaderViewState.Status.ReadSuccessful -> showAmiibo(it.status.amiiboIdentifier)
                 it.error != null -> showErrorMessage(getString(R.string.default_error))
+                it.adapterStatus != null && it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
+                it.adapterStatus != null && it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
+                it.amiiboIdentifier != null -> showAmiibo(it.amiiboIdentifier)
             }
         }.launchIn(lifecycleScope)
     }
@@ -86,7 +86,7 @@ class NFCReaderActivity : AppCompatActivity() {
         startDeepLinkIntent(
             AMIIBO_DETAIL_DEEPLINK,
             Bundle().apply {
-                putString(TAIL_ARGUMENT, amiiboIdentifier.tail)
+                putString(ARGUMENT_TAIL, amiiboIdentifier.tail)
             }
         )
     }

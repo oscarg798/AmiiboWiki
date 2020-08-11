@@ -41,6 +41,7 @@ class GetAmiiboFilteredUseCaseTest {
         coEvery { repository.getAmiibosFilteredByTypeName(any()) } answers {
             FILTERED_AMIIBOS
         }
+        coEvery { repository.getAmiibosWithoutFilters() } answers { flowOf(NO_FILTERED_AMIIBOS) }
 
         usecase = GetAmiiboFilteredUseCase(
             getDefaultAmiiboTypeUseCase,

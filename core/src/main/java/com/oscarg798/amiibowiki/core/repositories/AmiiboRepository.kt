@@ -16,11 +16,11 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import kotlinx.coroutines.flow.Flow
 
 interface AmiiboRepository {
-    fun getAmiibos(): Flow<List<Amiibo>>
+    suspend fun getAmiibos(): Flow<List<Amiibo>>
+
+    suspend fun getAmiibosWithoutFilters(): Flow<List<Amiibo>>
 
     suspend fun getAmiiboById(tail: String): Amiibo
-
-    suspend fun updateAmiibos(): Flow<List<Amiibo>>
 
     suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo>
 }

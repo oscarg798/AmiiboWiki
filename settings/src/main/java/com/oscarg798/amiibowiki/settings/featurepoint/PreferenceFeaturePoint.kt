@@ -13,9 +13,9 @@
 package com.oscarg798.amiibowiki.settings.featurepoint
 
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.flagly.featurepoint.AbstractFeaturePoint
-import com.oscarg798.flagly.featurepoint.FeatureFactory
+import com.oscarg798.flagly.featurepoint.SuspendFeatureFactory
+import com.oscarg798.flagy.featurepoint.AbstractSuspendFeaturePoint
 import javax.inject.Inject
 
-class PreferenceFeaturePoint @Inject constructor(factories: Collection<FeatureFactory<PreferenceBuilder, Unit>>) :
-    AbstractFeaturePoint<PreferenceBuilder, Unit>(factories.toList())
+class PreferenceFeaturePoint @Inject constructor(factories: Collection<SuspendFeatureFactory<PreferenceBuilder, Unit>>) :
+    AbstractSuspendFeaturePoint<PreferenceBuilder, Unit>(factories.toList())

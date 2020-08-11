@@ -14,5 +14,6 @@
 
     <string name="user_interface_section_title">User Interface</string>
     <string name="development_activity_preference_title">Development Activity</string>
-    <string name="dark_theme_preference_title">Dark Mode</string>s
+    <string name="max_number_of_search_results_preference_title">Search Result Limit</string>
+    <string name="dark_theme_preference_title">Dark Mode</string>
 </resources>

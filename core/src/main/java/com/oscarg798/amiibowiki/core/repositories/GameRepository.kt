@@ -20,5 +20,7 @@ interface GameRepository {
 
     suspend fun getGame(gameSeries: String, gameId: Id): Game
 
+    suspend fun getGameCover(gameId: Int): String?
+
     suspend fun searchGame(query: String): Collection<GameSearchResult>
 }
