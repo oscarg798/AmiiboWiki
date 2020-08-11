@@ -39,11 +39,11 @@
 
             <TextView
                 android:id="@+id/tvGameCharacter"
-                style="@style/Styles.AmiiboWiki.Secondary"
+                style="@style/Styles.AmiiboWiki.Default"
                 android:layout_width="@dimen/match_constraint"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginStart="@dimen/spacing_small"
+                android:gravity="center"
                 android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.M"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -71,6 +71,7 @@
                 android:layout_marginTop="40dp"
                 android:text="@string/serie_title"
                 android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.L"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivImage" />
 
@@ -95,6 +96,7 @@
                 android:layout_marginTop="@dimen/spacing_small"
                 android:gravity="left"
                 android:text="@string/type_title"
+                android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.L"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvSerieTitle" />
