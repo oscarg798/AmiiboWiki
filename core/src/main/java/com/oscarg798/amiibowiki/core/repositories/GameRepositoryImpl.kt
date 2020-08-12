@@ -17,6 +17,7 @@ import com.oscarg798.amiibowiki.core.extensions.getOrTransformNetworkException
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.models.Game
+import com.oscarg798.amiibowiki.core.models.GameCover
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.network.gameapiquery.APIGameQuery
@@ -63,7 +64,7 @@ class GameRepositoryImpl @Inject constructor(
                 null
             }
 
-            val ageRaiting = if (apiGame.ageRatings != null) {
+            val ageRating = if (apiGame.ageRatings != null) {
                 getAgeRatings(apiGame.ageRatings)
             } else {
                 null
@@ -75,22 +76,26 @@ class GameRepositoryImpl @Inject constructor(
                 null
             }
 
-            apiGame.toGame(gameSeries, cover, webSite, video, artworks, ageRaiting, screenshots)
+            apiGame.toGame(gameSeries, cover, webSite, video, artworks, ageRating, screenshots)
         }.getOrTransformNetworkException { networkException ->
             GameDetailFailure.DateSourceError(gameId, networkException)
         }
     }
 
-    override suspend fun getGameCover(gameId: Int): String? {
-        val coverId = gameService.getGames(
+    override suspend fun getGameCover(gameIds: Collection<Int>): Collection<GameCover> {
+        val coverIds = gameService.getGames(
             APIGameQuery(
                 fields = setOf(COVER_FIELD),
-                whereClause = WhereClause.Id(gameId),
-                limit = GAME_COVER_LIMIT
+                whereClause = WhereClause.In(gameIds),
+                limit = gameIds.size
             ).toString()
-        ).firstOrNull()?.coverId ?: return null
+        ).filterNot {
+            it.coverId == null
+        }.mapNotNull {
+            it.coverId
+        }
 
-        return getCovers(coverId).url
+        return getCovers(coverIds)
     }
 
     override suspend fun searchGame(query: String): Collection<GameSearchResult> = runCatching {
@@ -112,6 +117,17 @@ class GameRepositoryImpl @Inject constructor(
 
     private suspend fun getWebSites(webSitesId: Set<Int>) =
         gameService.getWebSites(APIGameQuery(whereClause = WhereClause.In(webSitesId)).toString())
+
+    private suspend fun getCovers(coversId: Collection<Int>): Collection<GameCover> =
+        gameService.getCover(
+            APIGameQuery(
+                fields = setOf(GAME_FIELD, URL_FIELD),
+                whereClause = WhereClause.In(coversId),
+                limit = coversId.size
+            ).toString()
+        ).map { apiGameCover ->
+            apiGameCover.toGameCover()
+        }
 
     private suspend fun getCovers(coverId: Int) =
         gameService.getCover(APIGameQuery(whereClause = WhereClause.Id(coverId)).toString()).first()
@@ -142,3 +158,5 @@ class GameRepositoryImpl @Inject constructor(
 private const val MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT = 10
 private const val GAME_COVER_LIMIT = 1
 private const val COVER_FIELD = "cover"
+private const val GAME_FIELD = "game"
+private const val URL_FIELD = "url"

@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.core.repositories
 
 import com.oscarg798.amiibowiki.core.models.Game
+import com.oscarg798.amiibowiki.core.models.GameCover
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.models.Id
 
@@ -20,7 +21,7 @@ interface GameRepository {
 
     suspend fun getGame(gameSeries: String, gameId: Id): Game
 
-    suspend fun getGameCover(gameId: Int): String?
+    suspend fun getGameCover(gameIds: Collection<Int>): Collection<GameCover>
 
     suspend fun searchGame(query: String): Collection<GameSearchResult>
 }
