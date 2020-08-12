@@ -9,7 +9,7 @@
  *
  *
  */
-apply from: "../gradlescripts/shared.gradle"
+apply from: "$rootProject.projectDir/gradlescripts/shared.gradle"
 
 dependencies {
     implementation project(path: ':core')
