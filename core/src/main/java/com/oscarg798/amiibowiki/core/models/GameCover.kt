@@ -10,19 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.network.models
+package com.oscarg798.amiibowiki.core.models
 
-import com.google.gson.annotations.SerializedName
-import com.oscarg798.amiibowiki.core.models.GameCover
-
-data class APIGameCover(
-    @SerializedName("id")
-    val id: Int,
-    @SerializedName("url")
-    val url: String,
-    @SerializedName("game")
-    val game: Int
-) {
-
-    fun toGameCover() = GameCover(game, url)
-}
+data class GameCover(
+    val gameId: Int,
+    val coverUrl: String
+)

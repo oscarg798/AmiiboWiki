@@ -22,24 +22,40 @@ import kotlinx.coroutines.coroutineScope
 
 class FillGameResultCoverUseCase @Inject constructor(private val gameRepository: GameRepository) {
 
-    suspend fun execute(gameSearchResults: Collection<GameSearchResult>): Collection<GameSearchResult> =
-        coroutineScope {
-            gameSearchResults.map { gameSearchResult ->
-                async(start = CoroutineStart.LAZY) {
-                    val cover = gameRepository.getGameCover(gameSearchResult.gameId)
-
-                    if (cover != null) {
-                        gameSearchResult.copy(coverUrl = transformImageUrl(cover))
-                    } else {
-                        gameSearchResult
-                    }
-                }
-            }.awaitAll()
+    suspend fun execute(gameSearchResults: Collection<GameSearchResult>): Collection<GameSearchResult> {
+        val gameIds = gameSearchResults.map { gameSearchResult ->
+            gameSearchResult.gameId
         }
+
+        val gameCoversMap = HashMap<Int, String>()
+        gameRepository.getGameCover(gameIds).map {
+            Pair(it.gameId, it.coverUrl)
+        }.forEach {
+            gameCoversMap[it.gameId] = it.coverUrl
+        }
+
+        return gameSearchResults.map {
+            val cover = gameCoversMap.get(it.gameId)
+            it.copy(
+                coverUrl = if (cover == null) {
+                    cover
+                } else {
+                    transformImageUrl(cover)
+                }
+            )
+        }
+    }
 
     private fun transformImageUrl(url: String) =
         url.replace(ORIGINAL_SCHEMA, DESIRED_SCHEMA).replace(ORIGINAL_IMAGE_SIZE, COVER_SIZE)
+
+    private val Pair<Int, String>.gameId
+        get() = this.first
+    private val Pair<Int, String>.coverUrl
+        get() = this.second
+
 }
+
 
 private const val COVER_SIZE = "t_cover_small"
 private const val DESIRED_SCHEMA = "https://"
