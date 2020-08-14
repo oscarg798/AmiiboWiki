@@ -21,7 +21,7 @@ sealed class AmiiboListResult : Result {
     object Loading : AmiiboListResult()
     object FilterSelectionCancelled : AmiiboListResult()
     object OpenSettings : AmiiboListResult()
-    data class FetchSuccess(val amiibos: Collection<Amiibo>) : AmiiboListResult()
+    data class AmiibosFetched(val amiibos: Collection<Amiibo>) : AmiiboListResult()
     data class AmiibosFiltered(val amiibos: Collection<Amiibo>) : AmiiboListResult()
     data class FiltersFetched(val filters: Collection<AmiiboType>) : AmiiboListResult()
     data class ShowAmiiboDetail(val amiiboTail: String) : AmiiboListResult()

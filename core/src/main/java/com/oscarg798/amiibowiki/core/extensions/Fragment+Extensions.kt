@@ -13,9 +13,22 @@
 package com.oscarg798.amiibowiki.core.extensions
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
 fun Fragment.startDeepLinkIntent(deepLink: DeepLink, arguments: Bundle? = null) {
     (requireActivity() as AppCompatActivity).startDeepLinkIntent(deepLink, arguments)
+}
+
+fun Fragment.startDeepLinkIntent(
+    deepLink: DeepLink,
+    imageView: ImageView,
+    arguments: Bundle? = null
+) {
+    (requireActivity() as AppCompatActivity).startDeepLinkIntentWithShareElementTransition(
+        deepLink,
+        imageView,
+        arguments
+    )
 }

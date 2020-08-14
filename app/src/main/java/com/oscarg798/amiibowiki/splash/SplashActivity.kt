@@ -60,7 +60,7 @@ class SplashActivity : AppCompatActivity() {
         viewModel.state.onEach { state ->
             when {
                 state.error != null -> showFetchError()
-                state.fetchWasSuccess -> {
+                state.navigatingToFirstScreen -> {
                     startDeepLinkIntent(
                         AMIIBO_LIST_DEEPLINK
 

@@ -95,6 +95,7 @@
                 android:layout_gravity="top"
                 android:clipToPadding="false"
                 android:scaleType="fitStart"
+                android:transitionName="game_cover"
                 app:layout_anchorGravity="bottom"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

@@ -25,20 +25,20 @@ sealed class AgeRatingCategory {
     }
 }
 
-sealed class Rating {
+sealed class Rating(val id: Int) {
 
-    object PEGI3 : Rating()
-    object PEGI7 : Rating()
-    object PEGI12 : Rating()
-    object PEGI16 : Rating()
-    object PEGI18 : Rating()
-    object ESRBEveryone : Rating()
-    object ESRBEC : Rating()
-    object ESRB10 : Rating()
-    object ESRBTeen : Rating()
-    object ESRBMature : Rating()
-    object ESRBAdultsOnly : Rating()
-    object ESRBRatingPending : Rating()
+    object PEGI3 : Rating(1)
+    object PEGI7 : Rating(2)
+    object PEGI12 : Rating(3)
+    object PEGI16 : Rating(4)
+    object PEGI18 : Rating(5)
+    object ESRBRatingPending : Rating(6)
+    object ESRBEC : Rating(7)
+    object ESRBEveryone : Rating(8)
+    object ESRB10 : Rating(9)
+    object ESRBTeen : Rating(10)
+    object ESRBMature : Rating(11)
+    object ESRBAdultsOnly : Rating(12)
 
     companion object {
 

@@ -10,25 +10,23 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.models
+package com.oscarg798.amiibowiki.core.persistence.dao
 
-typealias Id = Int
-typealias WebSiteId = Int
-typealias WebSiteUrl = String
-typealias VideoId = String
-typealias CoverUrl = String
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.oscarg798.amiibowiki.core.persistence.models.DBAgeRating
+import com.oscarg798.amiibowiki.core.persistence.models.DB_AGE_RATING_TABLE_NAME
+import com.oscarg798.amiibowiki.core.persistence.models.GAME_ID_COLUMN_NAME
+import kotlinx.coroutines.flow.Flow
 
-data class Game(
-    val id: Id,
-    val name: String,
-    val category: GameCategory,
-    val cover: String?,
-    val gameSeries: String,
-    val summary: String?,
-    val rating: Double?,
-    val webSites: Collection<String>?,
-    val videosId: Collection<String>?,
-    val artworks: Collection<String>?,
-    val ageRating: List<AgeRating>?,
-    val screenshots: Collection<String>?
-)
+@Dao
+interface AgeRatingDAO {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(ageRatings: List<DBAgeRating>)
+
+    @Query("select * from $DB_AGE_RATING_TABLE_NAME where $GAME_ID_COLUMN_NAME=:id")
+    fun getByGameId(id: Int): Flow<List<DBAgeRating>>
+}

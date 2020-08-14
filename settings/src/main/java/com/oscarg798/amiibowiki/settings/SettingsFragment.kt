@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.settings
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType as EditTextInputType
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
@@ -25,12 +26,11 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.utils.TextChangeListenerAdapter
 import com.oscarg798.amiibowiki.settings.di.DaggerSettingsComponent
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
-import com.oscarg798.amiibowiki.settings.models.InputType
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.amiibowiki.settings.models.PreferenceType
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity
 import javax.inject.Inject
@@ -139,32 +139,41 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun addPreferences(preferences: Collection<PreferenceBuilder>) {
         preferences.map { preferenceBuilder ->
-            when (preferenceBuilder.preferenceType) {
-                is PreferenceType.Text -> preferenceBuilder.mapToEditTextPreference()
-                is PreferenceType.Preference -> preferenceBuilder.mapSimplePreference()
+            when (preferenceBuilder) {
+                is PreferenceBuilder.Text -> preferenceBuilder.mapToEditTextPreference()
+                is PreferenceBuilder.Clickable -> preferenceBuilder.mapSimplePreference()
             }
         }.forEach { preference ->
             preferenceScreen.addPreference(preference)
         }
     }
 
-    private fun PreferenceBuilder.mapToEditTextPreference(): Preference {
-        require(preferenceType is PreferenceType.Text)
-
+    private fun PreferenceBuilder.Text.mapToEditTextPreference(): Preference {
         val preference = EditTextPreference(requireContext())
-        preference.setOnBindEditTextListener {
-            it.inputType = when (preferenceType.inputType) {
-                is InputType.Number -> EditTextInputType.TYPE_CLASS_NUMBER
+        preference.setOnBindEditTextListener { editText ->
+            editText.inputType = when (inputType) {
+                is PreferenceBuilder.Text.InputType.Number -> EditTextInputType.TYPE_CLASS_NUMBER
             }
+
+            editText.addTextChangedListener(object : TextChangeListenerAdapter {
+                override fun afterTextChanged(newText: Editable?) {
+                    this@mapToEditTextPreference.textPreferenceChangeListener?.onPreferenceChange(
+                        newText?.toString(),
+                        editText,
+                        this
+                    )
+                }
+            })
         }
+
         preference.key = key
         preference.title = title
-        preference.setDefaultValue(preferenceType.defaultValue)
+        preference.setDefaultValue(defaultValue)
 
         return preference
     }
 
-    private fun PreferenceBuilder.mapSimplePreference(): Preference {
+    private fun PreferenceBuilder.Clickable.mapSimplePreference(): Preference {
         val preference = Preference(requireContext())
         preference.key = key
         preference.title = title

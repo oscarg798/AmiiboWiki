@@ -10,25 +10,35 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.models
+package com.oscarg798.amiibowiki.core.persistence.converterts
 
-typealias Id = Int
-typealias WebSiteId = Int
-typealias WebSiteUrl = String
-typealias VideoId = String
-typealias CoverUrl = String
+import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
-data class Game(
-    val id: Id,
-    val name: String,
-    val category: GameCategory,
-    val cover: String?,
-    val gameSeries: String,
-    val summary: String?,
-    val rating: Double?,
-    val webSites: Collection<String>?,
-    val videosId: Collection<String>?,
-    val artworks: Collection<String>?,
-    val ageRating: List<AgeRating>?,
-    val screenshots: Collection<String>?
-)
+class Converters {
+
+    companion object {
+        private val gson = Gson()
+
+        @TypeConverter
+        @JvmStatic
+        fun fromString(value: String?): Collection<String>? {
+            return if (value == null) {
+                null
+            } else {
+                gson.fromJson(value, object : TypeToken<List<String>>() {}.getType())
+            }
+        }
+
+        @TypeConverter
+        @JvmStatic
+        fun toString(value: Collection<String>?): String? {
+            return if (value == null) {
+                null
+            } else {
+                gson.toJson(value.toList())
+            }
+        }
+    }
+}

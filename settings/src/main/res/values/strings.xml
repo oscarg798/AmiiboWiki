@@ -16,4 +16,7 @@
     <string name="development_activity_preference_title">Development Activity</string>
     <string name="max_number_of_search_results_preference_title">Search Result Limit</string>
     <string name="dark_theme_preference_title">Dark Mode</string>
+    <string name="search_limit_default_value">20</string>
+    <string name="search_filter_lower_limit_error">Search limit should be greater than %d</string>
+    <string name="search_filter_upper_limit_error">Search limit should be lower than %d</string>
 </resources>

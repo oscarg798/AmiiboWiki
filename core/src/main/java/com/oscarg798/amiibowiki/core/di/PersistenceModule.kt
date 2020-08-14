@@ -14,8 +14,10 @@ package com.oscarg798.amiibowiki.core.di
 
 import android.content.Context
 import androidx.room.Room
+import com.oscarg798.amiibowiki.core.persistence.dao.AgeRatingDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
 import com.oscarg798.amiibowiki.core.persistence.database.CoreAmiiboDatabase
 import dagger.Module
 import dagger.Provides
@@ -23,13 +25,18 @@ import dagger.Provides
 @Module
 object PersistenceModule {
 
+    /**
+     * We are not saving  states, just downloaded data
+     * so  for now we will not provider any migration
+     */
     @CoreScope
     @Provides
     fun provideDatabase(context: Context): CoreAmiiboDatabase {
         return Room.databaseBuilder(
             context,
             CoreAmiiboDatabase::class.java, "core_amiibo_database"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @CoreScope
@@ -39,4 +46,12 @@ object PersistenceModule {
     @CoreScope
     @Provides
     fun provideAmiiboDAO(database: CoreAmiiboDatabase): AmiiboDAO = database.amiiboDAO()
+
+    @CoreScope
+    @Provides
+    fun provideGameDAO(database: CoreAmiiboDatabase): GameDAO = database.gameDAO()
+
+    @CoreScope
+    @Provides
+    fun provideAgeRatingDAO(database: CoreAmiiboDatabase): AgeRatingDAO = database.ageRatingDAO()
 }

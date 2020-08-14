@@ -17,14 +17,14 @@ import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 
 data class SplashViewState(
     override val isIdling: Boolean,
-    val fetchWasSuccess: Boolean,
+    val navigatingToFirstScreen: Boolean,
     val error: FetchTypesFailure?
 ) : ViewState {
 
     companion object {
         fun init() = SplashViewState(
             isIdling = true,
-            fetchWasSuccess = false,
+            navigatingToFirstScreen = false,
             error = null
         )
     }

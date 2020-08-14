@@ -246,7 +246,7 @@ class GameDetailActivity : AppCompatActivity() {
     }
 
     private fun Game.showRating() {
-        val visibility = if (raiting == null) {
+        val visibility = if (rating == null) {
             View.GONE
         } else {
             View.VISIBLE

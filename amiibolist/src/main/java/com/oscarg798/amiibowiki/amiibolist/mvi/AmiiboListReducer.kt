@@ -31,7 +31,7 @@ class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, Amiibo
                 amiiboTailToShow = null,
                 error = null
             )
-            is AmiiboListResult.FetchSuccess -> state.copy(
+            is AmiiboListResult.AmiibosFetched -> state.copy(
                 isIdling = false,
                 isLoading = false,
                 isShowingSettings = false,

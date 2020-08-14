@@ -10,25 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.models
+package com.oscarg798.amiibowiki.core.utils
 
-typealias Id = Int
-typealias WebSiteId = Int
-typealias WebSiteUrl = String
-typealias VideoId = String
-typealias CoverUrl = String
+import android.text.Editable
+import android.text.TextWatcher
 
-data class Game(
-    val id: Id,
-    val name: String,
-    val category: GameCategory,
-    val cover: String?,
-    val gameSeries: String,
-    val summary: String?,
-    val rating: Double?,
-    val webSites: Collection<String>?,
-    val videosId: Collection<String>?,
-    val artworks: Collection<String>?,
-    val ageRating: List<AgeRating>?,
-    val screenshots: Collection<String>?
-)
+interface TextChangeListenerAdapter : TextWatcher {
+
+    override fun afterTextChanged(newText: Editable?) {
+    }
+
+    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+    }
+
+    override fun onTextChanged(newText: CharSequence?, p1: Int, p2: Int, p3: Int) {
+    }
+}

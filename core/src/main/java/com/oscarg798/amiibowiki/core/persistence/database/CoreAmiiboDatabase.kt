@@ -14,15 +14,29 @@ package com.oscarg798.amiibowiki.core.persistence.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.oscarg798.amiibowiki.core.persistence.converterts.Converters
+import com.oscarg798.amiibowiki.core.persistence.dao.AgeRatingDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
+import com.oscarg798.amiibowiki.core.persistence.models.DBAgeRating
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
+import com.oscarg798.amiibowiki.core.persistence.models.DBGame
 
-@Database(entities = [DBAmiibo::class, DBAmiiboType::class], version = 1)
+@Database(
+    entities = [DBAmiibo::class, DBAmiiboType::class, DBGame::class, DBAgeRating::class],
+    version = 2
+)
+@TypeConverters(Converters::class)
 abstract class CoreAmiiboDatabase : RoomDatabase() {
 
     abstract fun amiiboTypeDAO(): AmiiboTypeDAO
 
     abstract fun amiiboDAO(): AmiiboDAO
+
+    abstract fun gameDAO(): GameDAO
+
+    abstract fun ageRatingDAO(): AgeRatingDAO
 }

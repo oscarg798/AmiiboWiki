@@ -10,25 +10,25 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.models
+package com.oscarg798.amiibowiki.core.persistence.dao
 
-typealias Id = Int
-typealias WebSiteId = Int
-typealias WebSiteUrl = String
-typealias VideoId = String
-typealias CoverUrl = String
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.oscarg798.amiibowiki.core.persistence.models.DBGame
+import com.oscarg798.amiibowiki.core.persistence.models.DB_GAME_COLUMN_NAME_NAME
+import com.oscarg798.amiibowiki.core.persistence.models.DB_GAME_TABLE_NAME
 
-data class Game(
-    val id: Id,
-    val name: String,
-    val category: GameCategory,
-    val cover: String?,
-    val gameSeries: String,
-    val summary: String?,
-    val rating: Double?,
-    val webSites: Collection<String>?,
-    val videosId: Collection<String>?,
-    val artworks: Collection<String>?,
-    val ageRating: List<AgeRating>?,
-    val screenshots: Collection<String>?
-)
+@Dao
+interface GameDAO {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertGames(games: List<DBGame>)
+
+    @Query("select * from $DB_GAME_TABLE_NAME where id=:id")
+    suspend fun getGameById(id: Int): DBGame
+
+    @Query("select count($DB_GAME_COLUMN_NAME_NAME) from $DB_GAME_TABLE_NAME where id=:id")
+    suspend fun countById(id: Int): Int
+}

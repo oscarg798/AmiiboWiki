@@ -37,7 +37,7 @@ class SearchResultViewHolder(private val gameRelatedItemBinding: GameRelatedItem
             updateGameImage(viewGameSearchResult)
 
             root.setOnClickListener {
-                gameRelatedClickListener.onResultClicked(viewGameSearchResult)
+                gameRelatedClickListener.onResultClicked(viewGameSearchResult, gameRelatedItemBinding.ivGameSearchCover)
             }
         }
     }

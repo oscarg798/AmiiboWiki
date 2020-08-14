@@ -10,25 +10,17 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.models
+package com.oscarg798.amiibowiki.core.di
 
-typealias Id = Int
-typealias WebSiteId = Int
-typealias WebSiteUrl = String
-typealias VideoId = String
-typealias CoverUrl = String
+import com.oscarg798.amiibowiki.core.persistence.dao.AgeRatingDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
 
-data class Game(
-    val id: Id,
-    val name: String,
-    val category: GameCategory,
-    val cover: String?,
-    val gameSeries: String,
-    val summary: String?,
-    val rating: Double?,
-    val webSites: Collection<String>?,
-    val videosId: Collection<String>?,
-    val artworks: Collection<String>?,
-    val ageRating: List<AgeRating>?,
-    val screenshots: Collection<String>?
-)
+interface PersistenceProvider {
+
+    fun provideGameDAO(): GameDAO
+    fun provideAgeRatingDAO(): AgeRatingDAO
+    fun provideAmiiboTypeDao(): AmiiboTypeDAO
+    fun provideAmiiboDAO(): AmiiboDAO
+}

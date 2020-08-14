@@ -17,8 +17,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityOptionsCompat
 import com.oscarg798.amiibowiki.core.DARK_MODE_SELECTION_KEY
 import com.oscarg798.amiibowiki.core.PREFERENCE_NAME
 import com.oscarg798.amiibowiki.core.R
@@ -28,7 +30,18 @@ typealias DeepLink = String
 fun AppCompatActivity.startDeepLinkIntent(deepLink: DeepLink, arguments: Bundle? = null) {
     val intent =
         createDeepLinkIntent(deepLink)
-    startIntent(arguments, intent)
+    startIntent(intent, arguments)
+}
+
+fun AppCompatActivity.startDeepLinkIntentWithShareElementTransition(
+    deepLink: DeepLink,
+    imageView: ImageView,
+    arguments: Bundle? = null
+) {
+    val intent = createDeepLinkIntent(deepLink)
+    val options = getSceneTransitionAnimationOptions(imageView)
+
+    startIntent(intent, options, arguments)
 }
 
 fun AppCompatActivity.startDeepLinkIntent(
@@ -39,18 +52,34 @@ fun AppCompatActivity.startDeepLinkIntent(
     val intent =
         createDeepLinkIntent(deepLink)
     intent.flags = flags
-    startIntent(arguments, intent)
+    startIntent(intent, arguments)
 }
 
 private fun AppCompatActivity.startIntent(
-    arguments: Bundle?,
-    intent: Intent
+    intent: Intent,
+    options: ActivityOptionsCompat,
+    arguments: Bundle?
 ) {
     arguments?.let {
         intent.putExtras(it)
     }
+
+    startActivity(intent, options.toBundle())
+}
+
+private fun AppCompatActivity.startIntent(
+    intent: Intent,
+    arguments: Bundle?
+) {
+    arguments?.let {
+        intent.putExtras(it)
+    }
+
     startActivity(intent)
 }
+
+private fun AppCompatActivity.getSceneTransitionAnimationOptions(imageView: ImageView) =
+    ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, imageView.transitionName)
 
 private fun createDeepLinkIntent(deepLink: DeepLink): Intent {
     val intent = Intent(Intent.ACTION_VIEW)
