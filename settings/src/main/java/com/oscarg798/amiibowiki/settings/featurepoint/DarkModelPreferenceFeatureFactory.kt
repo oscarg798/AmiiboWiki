@@ -23,9 +23,9 @@ class DarkModelPreferenceFeatureFactory @Inject constructor(
     private val stringResourceProvider: ResourceProvider<String>
 ) : SuspendFeatureFactory<PreferenceBuilder, Unit> {
 
-    override suspend fun create(): PreferenceBuilder = PreferenceBuilder(
-        DARK_MODE_PREFERENCE_KEY,
-        stringResourceProvider.provide(R.string.dark_theme_preference_title),
+    override suspend fun create(): PreferenceBuilder = PreferenceBuilder.Clickable(
+        key = DARK_MODE_PREFERENCE_KEY,
+        title = stringResourceProvider.provide(R.string.dark_theme_preference_title),
         iconResourceId = R.drawable.ic_dark_mode
     )
 

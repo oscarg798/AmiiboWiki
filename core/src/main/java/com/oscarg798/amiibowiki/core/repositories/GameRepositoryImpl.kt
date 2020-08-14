@@ -12,7 +12,9 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
+import com.oscarg798.amiibowiki.core.constants.MAXIMUM_ALLOWED_SEARCH_LIMIT
 import com.oscarg798.amiibowiki.core.constants.MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
+import com.oscarg798.amiibowiki.core.constants.MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT
 import com.oscarg798.amiibowiki.core.extensions.getOrTransformNetworkException
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
@@ -24,62 +26,94 @@ import com.oscarg798.amiibowiki.core.network.gameapiquery.APIGameQuery
 import com.oscarg798.amiibowiki.core.network.gameapiquery.WhereClause
 import com.oscarg798.amiibowiki.core.network.models.APISearchResult
 import com.oscarg798.amiibowiki.core.network.services.GameService
+import com.oscarg798.amiibowiki.core.persistence.dao.AgeRatingDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
+import com.oscarg798.amiibowiki.core.persistence.models.DBAgeRating
+import com.oscarg798.amiibowiki.core.persistence.models.DBGame
 import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
 
 class GameRepositoryImpl @Inject constructor(
+    private val gameDAO: GameDAO,
+    private val ageRatingDAO: AgeRatingDAO,
     private val gameService: GameService,
     private val sharedPreferencesWrapper: SharedPreferencesWrapper
-) :
-    GameRepository {
+) : GameRepository {
 
     override suspend fun getGame(gameSeries: String, gameId: Id): Game {
-        return runCatching {
-            val apiGame =
-                gameService.getGames(APIGameQuery(whereClause = WhereClause.Id(gameId)).toString())
-                    .firstOrNull()
-                    ?: throw GameDetailFailure.GameNotFound(gameId)
-
-            val cover = if (apiGame.coverId != null) {
-                getCovers(apiGame.coverId)
-            } else {
-                null
-            }
-
-            val video = if (apiGame.videosId != null) {
-                getVideos(apiGame.videosId)
-            } else {
-                null
-            }
-
-            val webSite = if (apiGame.webSiteIds != null) {
-                getWebSites(apiGame.webSiteIds)
-            } else {
-                null
-            }
-
-            val artworks = if (apiGame.artworks != null) {
-                getArtWorks(apiGame.artworks)
-            } else {
-                null
-            }
-
-            val ageRating = if (apiGame.ageRatings != null) {
-                getAgeRatings(apiGame.ageRatings)
-            } else {
-                null
-            }
-
-            val screenshots = if (apiGame.screenshots != null) {
-                getScreenshots(apiGame.screenshots)
-            } else {
-                null
-            }
-
-            apiGame.toGame(gameSeries, cover, webSite, video, artworks, ageRating, screenshots)
-        }.getOrTransformNetworkException { networkException ->
-            GameDetailFailure.DateSourceError(gameId, networkException)
+        return if (doesALocalGameExists(gameId)) {
+            val dbGame = gameDAO.getGameById(gameId)
+            val ageRatings = ageRatingDAO.getByGameId(gameId).first()
+            return dbGame.toGame(ageRatings)
+        } else {
+            getGameFromAPI(gameSeries, gameId)
         }
+    }
+
+    private suspend fun doesALocalGameExists(gameId: Id) =
+        gameDAO.countById(gameId) > NO_GAMES_COUNT
+
+    private suspend fun getGameFromAPI(gameSeries: String, gameId: Id) = runCatching {
+        val apiGame =
+            gameService.getGames(APIGameQuery(whereClause = WhereClause.Id(gameId)).toString())
+                .firstOrNull()
+                ?: throw GameDetailFailure.GameNotFound(gameId)
+
+        val cover = if (apiGame.coverId != null) {
+            getCovers(apiGame.coverId)
+        } else {
+            null
+        }
+
+        val video = if (apiGame.videosId != null) {
+            getVideos(apiGame.videosId)
+        } else {
+            null
+        }
+
+        val webSite = if (apiGame.webSiteIds != null) {
+            getWebSites(apiGame.webSiteIds)
+        } else {
+            null
+        }
+
+        val artworks = if (apiGame.artworks != null) {
+            getArtWorks(apiGame.artworks)
+        } else {
+            null
+        }
+
+        val ageRating = if (apiGame.ageRatings != null) {
+            getAgeRatings(apiGame.ageRatings)
+        } else {
+            null
+        }
+
+        val screenshots = if (apiGame.screenshots != null) {
+            getScreenshots(apiGame.screenshots)
+        } else {
+            null
+        }
+
+        apiGame.toGame(gameSeries, cover, webSite, video, artworks, ageRating, screenshots)
+    }.map { game ->
+        saveGameToDatabase(game)
+    }.getOrTransformNetworkException { networkException ->
+        GameDetailFailure.DateSourceError(gameId, networkException)
+    }
+
+    private suspend fun saveGameToDatabase(game: Game): Game {
+        gameDAO.insertGames(listOf(DBGame(game)))
+        game.ageRating?.let { ratings ->
+            ageRatingDAO.insert(
+                ratings.map { ageRaiting ->
+                    DBAgeRating(ageRaiting, game.id)
+                }
+            )
+        }
+        return game
     }
 
     override suspend fun getGameCover(gameIds: Collection<Int>): Collection<GameCover> {
@@ -101,7 +135,11 @@ class GameRepositoryImpl @Inject constructor(
     override suspend fun searchGame(query: String): Collection<GameSearchResult> = runCatching {
         getGamesFromAPI(query)
     }.getOrTransformNetworkException { networkException ->
-        SearchGameFailure.DateSourceError(query, networkException)
+        if (networkException is NetworkException.Forbidden) {
+            SearchGameFailure.DataSourceNotAvailable(networkException)
+        } else {
+            SearchGameFailure.DateSourceError(query, networkException)
+        }
     }.filter {
         it.game != null
     }.map { it.toGameSearchResult() }
@@ -147,15 +185,15 @@ class GameRepositoryImpl @Inject constructor(
         val maxNumber = sharedPreferencesWrapper.getIntValueFromUserPreferences(
             MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
         )
-        return if (maxNumber < MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT) {
-            MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT
-        } else {
-            maxNumber
+        return when {
+            maxNumber < MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT -> MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT
+            maxNumber > MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT -> MAXIMUM_ALLOWED_SEARCH_LIMIT
+            else -> maxNumber
         }
     }
 }
 
-private const val MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT = 10
+private const val NO_GAMES_COUNT = 0
 private const val GAME_COVER_LIMIT = 1
 private const val COVER_FIELD = "cover"
 private const val GAME_FIELD = "game"

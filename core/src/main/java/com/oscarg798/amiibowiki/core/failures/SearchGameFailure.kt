@@ -15,8 +15,12 @@ package com.oscarg798.amiibowiki.core.failures
 sealed class SearchGameFailure(override val message: String?, override val cause: Exception?) :
     Failure.Recoverable(message, cause) {
 
+    class DataSourceNotAvailable(override val cause: Exception?) :
+        SearchGameFailure("Data source not available or forbidden access", cause)
+
     class DateSourceError(query: String, override val cause: Exception? = null) :
         SearchGameFailure("There was an error searching with query $query", cause)
 
-    class GamesRelatedNotFound(cause: Exception?) : SearchGameFailure("There was an error getting related games", cause)
+    class GamesRelatedNotFound(cause: Exception?) :
+        SearchGameFailure("There was an error getting related games", cause)
 }

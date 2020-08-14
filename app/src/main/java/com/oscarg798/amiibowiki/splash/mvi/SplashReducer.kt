@@ -22,12 +22,12 @@ class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewStat
         when (from) {
             is SplashResult.TypesFetched -> state.copy(
                 isIdling = false,
-                fetchWasSuccess = true,
+                navigatingToFirstScreen = true,
                 error = null
             )
             is SplashResult.Error -> state.copy(
                 isIdling = false,
-                fetchWasSuccess = false,
+                navigatingToFirstScreen = false,
                 error = FetchTypesFailure(from.exception.message, from.exception)
             )
         }

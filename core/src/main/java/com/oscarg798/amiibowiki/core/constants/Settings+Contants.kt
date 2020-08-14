@@ -10,25 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.models
+package com.oscarg798.amiibowiki.core.constants
 
-typealias Id = Int
-typealias WebSiteId = Int
-typealias WebSiteUrl = String
-typealias VideoId = String
-typealias CoverUrl = String
-
-data class Game(
-    val id: Id,
-    val name: String,
-    val category: GameCategory,
-    val cover: String?,
-    val gameSeries: String,
-    val summary: String?,
-    val rating: Double?,
-    val webSites: Collection<String>?,
-    val videosId: Collection<String>?,
-    val artworks: Collection<String>?,
-    val ageRating: List<AgeRating>?,
-    val screenshots: Collection<String>?
-)
+const val MAXIMUM_ALLOWED_SEARCH_LIMIT = 200
+const val MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT = 10

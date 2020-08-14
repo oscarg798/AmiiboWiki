@@ -122,7 +122,7 @@ class AmiiboRepositoryTest {
         }
     }
 
-    @Test(expected = NetworkException.BadRequest::class)
+    @Test(expected = GetAmiibosFailure.ProblemInDataSource::class)
     fun `when there is an exception updating amiibos then it should throw that exception`() {
         coEvery { amiiboService.get() } throws NetworkException.BadRequest("")
 
@@ -177,7 +177,7 @@ class AmiiboRepositoryTest {
         }
     }
 
-    @Test(expected = NetworkException.BadRequest::class)
+    @Test(expected = FilterAmiiboFailure.ErrorFilteringAmiibos::class)
     fun `when there is an exception filtering amiibos then it should throw that exception`() {
         coEvery { amiiboService.getAmiiboFilteredByType("a") } throws NetworkException.BadRequest("")
         runBlocking { repository.getAmiibosFilteredByTypeName("a") }

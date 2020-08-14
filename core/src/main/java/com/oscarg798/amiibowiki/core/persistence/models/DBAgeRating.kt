@@ -10,25 +10,38 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.models
+package com.oscarg798.amiibowiki.core.persistence.models
 
-typealias Id = Int
-typealias WebSiteId = Int
-typealias WebSiteUrl = String
-typealias VideoId = String
-typealias CoverUrl = String
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.oscarg798.amiibowiki.core.models.AgeRating
+import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
+import com.oscarg798.amiibowiki.core.models.Rating
 
-data class Game(
-    val id: Id,
-    val name: String,
-    val category: GameCategory,
-    val cover: String?,
-    val gameSeries: String,
-    val summary: String?,
-    val rating: Double?,
-    val webSites: Collection<String>?,
-    val videosId: Collection<String>?,
-    val artworks: Collection<String>?,
-    val ageRating: List<AgeRating>?,
-    val screenshots: Collection<String>?
-)
+@Entity(tableName = DB_AGE_RATING_TABLE_NAME)
+data class DBAgeRating(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int?,
+    @ColumnInfo(name = "category")
+    val category: Int,
+    @ColumnInfo(name = "rating")
+    val rating: Int,
+    @ColumnInfo(name = GAME_ID_COLUMN_NAME)
+    val gameId: Int
+) {
+
+    constructor(ageRating: AgeRating, gameId: Int) : this(
+        id = null,
+        category = when (ageRating.category) {
+            is AgeRatingCategory.ESRB -> 1
+            else -> 2
+        },
+        rating = ageRating.rating.id, gameId = gameId
+    )
+
+    fun toAgeRating() = AgeRating(AgeRatingCategory.getCategory(category), Rating.getRating(rating))
+}
+
+const val GAME_ID_COLUMN_NAME = "gameId"
+const val DB_AGE_RATING_TABLE_NAME = "age_rating"

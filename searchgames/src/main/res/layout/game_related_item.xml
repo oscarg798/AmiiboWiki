@@ -40,6 +40,7 @@
             android:id="@+id/ivGameSearchCover"
             android:layout_width="@dimen/iv_game_search_cover_width"
             android:layout_height="@dimen/iv_game_search_cover_height"
+            android:transitionName="game_cover"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_placeholder_gray" />

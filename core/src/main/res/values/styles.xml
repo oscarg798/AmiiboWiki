@@ -23,6 +23,7 @@
         <item name="appBackgroundColor">@color/background_color</item>
         <item name="skeletonColor">@color/silver_chalice</item>
         <item name="android:statusBarColor">@color/status_bar_color</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">

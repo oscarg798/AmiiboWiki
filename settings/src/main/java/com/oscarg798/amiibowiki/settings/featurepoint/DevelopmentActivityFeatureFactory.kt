@@ -25,9 +25,9 @@ class DevelopmentActivityFeatureFactory @Inject constructor(
     private val stringResourceProvider: ResourceProvider<String>
 ) : SuspendFeatureFactory<PreferenceBuilder, Unit> {
 
-    override suspend fun create(): PreferenceBuilder = PreferenceBuilder(
-        DEVELOPMENT_ACTIVITY_PREFERENCE_KEY,
-        stringResourceProvider.provide(R.string.development_activity_preference_title)
+    override suspend fun create(): PreferenceBuilder = PreferenceBuilder.Clickable(
+        key = DEVELOPMENT_ACTIVITY_PREFERENCE_KEY,
+        title = stringResourceProvider.provide(R.string.development_activity_preference_title)
     )
 
     override suspend fun isApplicable(params: Unit): Boolean = config.flavor is Flavor.Debug

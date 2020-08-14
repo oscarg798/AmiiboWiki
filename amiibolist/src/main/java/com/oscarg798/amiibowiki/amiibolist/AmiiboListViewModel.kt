@@ -30,6 +30,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -94,7 +95,7 @@ class AmiiboListViewModel @Inject constructor(
         if (isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowAmiiboDetail)) {
             flowOf(AmiiboListResult.ShowAmiiboDetail(tail))
         } else {
-            flowOf(AmiiboListResult.None)
+            emptyFlow()
         }
 
     private fun getFilters(): Flow<AmiiboListResult> = getAmiiboTypeUseCase.execute()
@@ -116,7 +117,7 @@ class AmiiboListViewModel @Inject constructor(
             }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private suspend fun fetchAmiibos(): Flow<AmiiboListResult> = getAmiibosUseCase.execute().map {
-        AmiiboListResult.FetchSuccess(it) as AmiiboListResult
+        AmiiboListResult.AmiibosFetched(it) as AmiiboListResult
     }.onStart {
         emit(AmiiboListResult.Loading)
     }.catch { cause ->

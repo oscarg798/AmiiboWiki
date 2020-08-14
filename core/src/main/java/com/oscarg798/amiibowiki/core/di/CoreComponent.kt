@@ -19,8 +19,6 @@ import com.oscarg798.amiibowiki.core.di.qualifier.FeatureHandlerProvider
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
-import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
-import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
@@ -53,7 +51,8 @@ interface CoreComponent :
     ResourcesDependenciesProvider,
     ConfigProvider,
     SharedPreferenceProvider,
-    FeatureHandlerProvider {
+    FeatureHandlerProvider,
+    PersistenceProvider {
 
     @Component.Factory
     interface Builder {
@@ -90,7 +89,4 @@ interface CoreComponent :
 
     fun provideContext(): Context
     fun provideLogger(): Logger
-
-    fun provideAmiiboTypeDao(): AmiiboTypeDAO
-    fun provideAmiiboDAO(): AmiiboDAO
 }

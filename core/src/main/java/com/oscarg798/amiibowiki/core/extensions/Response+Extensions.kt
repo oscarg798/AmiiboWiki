@@ -19,9 +19,7 @@ fun <R> Result<R>.getOrTransformNetworkException(
     exceptionMapper: ((NetworkException) -> Failure) = { throw it }
 ): R = getOrElse {
     throw when (it) {
-        is NetworkException.TimeOut,
-        NetworkException.UnknowHost(it.message),
-        NetworkException.Connection -> exceptionMapper(it as NetworkException)
+        is NetworkException -> exceptionMapper(it)
         else -> it
     }
 }

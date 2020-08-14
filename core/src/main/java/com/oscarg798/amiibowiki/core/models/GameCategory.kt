@@ -12,14 +12,14 @@
 
 package com.oscarg798.amiibowiki.core.models
 
-sealed class GameCategory {
-    object MainGame : GameCategory()
-    object DLCAddOn : GameCategory()
-    object Expansion : GameCategory()
-    object Bundle : GameCategory()
-    object StandAloneExpainsion : GameCategory()
-    object Mod : GameCategory()
-    object Episode : GameCategory()
+sealed class GameCategory(val categoryId: Int) {
+    object MainGame : GameCategory(MAIN_GAME)
+    object DLCAddOn : GameCategory(DLC_ADD_ON)
+    object Expansion : GameCategory(EXPAINSION)
+    object Bundle : GameCategory(BUNDLE)
+    object StandAloneExpainsion : GameCategory(STANDALONG_EXPANSION)
+    object Mod : GameCategory(MOD)
+    object Episode : GameCategory(EPISODE)
 
     companion object {
 
@@ -36,10 +36,10 @@ sealed class GameCategory {
     }
 }
 
-private const val MAIN_GAME = 0
-private const val DLC_ADD_ON = 1
-private const val EXPAINSION = 2
-private const val BUNDLE = 3
-private const val STANDALONG_EXPANSION = 4
-private const val MOD = 5
-private const val EPISODE = 6
+const val MAIN_GAME = 0
+const val DLC_ADD_ON = 1
+const val EXPAINSION = 2
+const val BUNDLE = 3
+const val STANDALONG_EXPANSION = 4
+const val MOD = 5
+const val EPISODE = 6

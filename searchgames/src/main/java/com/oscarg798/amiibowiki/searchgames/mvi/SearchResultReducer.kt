@@ -49,7 +49,7 @@ class SearchResultReducer @Inject constructor() :
             showingGameDetails = ShowingGameDetailsParams(from.gameId, from.gameSeries)
         )
         is SearchResultResult.Error -> state.copy(
-            isIdling = true,
+            isIdling = false,
             isLoading = false,
             error = from.failure
         )

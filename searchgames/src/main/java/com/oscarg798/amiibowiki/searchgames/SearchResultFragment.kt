@@ -18,6 +18,7 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -50,10 +51,9 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
 
     private lateinit var binding: FragmentSearchResultBinding
 
-    private val wishes = MutableStateFlow<SearchResultWish>(SearchResultWish.Idle)
-
-    private lateinit var viewModel: SearchGamesViewModel
     private var skeletonScreen: SkeletonScreen? = null
+    private var gameSearchResultCoverImageView: ImageView? = null
+    private val wishes = MutableStateFlow<SearchResultWish>(SearchResultWish.Idle)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -85,8 +85,12 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         setupViewModelInteractions()
     }
 
-    override fun onResultClicked(gameSearchResult: ViewGameSearchResult) {
+    override fun onResultClicked(
+        gameSearchResult: ViewGameSearchResult,
+        coverImageView: ImageView
+    ) {
         wishes.value = SearchResultWish.ShowGameDetail(gameSearchResult.gameId)
+        this.gameSearchResultCoverImageView = coverImageView
     }
 
     private fun setupViewModelInteractions() {
@@ -111,6 +115,10 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         }.launchIn(lifecycleScope)
     }
 
+    private fun hideError() {
+        binding.tvError.visibility = View.GONE
+    }
+
     fun search(gameSearchGameQueryParam: GameSearchParam) {
         wishes.value = SearchResultWish.SearchGames(gameSearchGameQueryParam)
     }
@@ -120,6 +128,7 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     private fun showGameDetails(gameId: Int, gameSeries: String) {
         startDeepLinkIntent(
             GAME_DETAIL_DEEPLINK,
+            gameSearchResultCoverImageView!!,
             Bundle().apply {
                 putString(ARGUMENT_GAME_SERIES, gameSeries)
                 putInt(ARGUMENT_GAME_ID, gameId)
@@ -143,6 +152,14 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
 
     private fun showError(searchGameFailure: SearchGameFailure) {
         hideLoading()
+        with(binding.tvError) {
+            text = when (searchGameFailure) {
+                is SearchGameFailure.DataSourceNotAvailable,
+                is SearchGameFailure.DateSourceError -> context.getString(R.string.data_not_available_error)
+                else -> context.getString(R.string.generic_error)
+            }
+        }
+        binding.tvError.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {

@@ -26,26 +26,6 @@ data class AmiiboListViewState(
     val error: AmiiboListFailure?
 ) : ViewState {
 
-    sealed class Filtering {
-        object None : Filtering()
-        data class FetchSuccess(val amiibos: List<ViewAmiibo>) : Filtering()
-    }
-
-    sealed class ShowingFilters {
-        object None : ShowingFilters()
-        data class FetchSuccess(val filters: List<ViewAmiiboType>) : ShowingFilters()
-    }
-
-    sealed class Status {
-        object None : Status()
-        data class AmiibosFetched(val amiibos: List<ViewAmiibo>) : Status()
-    }
-
-    sealed class ShowAmiiboDetail {
-        object None : ShowAmiiboDetail()
-        data class Show(val tail: String) : ShowAmiiboDetail()
-    }
-
     companion object {
         fun init() = AmiiboListViewState(
             isIdling = true,

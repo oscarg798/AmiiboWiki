@@ -30,8 +30,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -72,14 +70,14 @@ class SplashViewModelTest {
 
         val initState = SplashViewState(
             isIdling = true,
-            fetchWasSuccess = false,
+            navigatingToFirstScreen = false,
             error = null
         )
         testCollector wereValuesEmitted listOf(
             initState,
             SplashViewState(
                 isIdling = false,
-                fetchWasSuccess = true,
+                navigatingToFirstScreen = true,
                 error = null
             )
         )
@@ -102,7 +100,7 @@ class SplashViewModelTest {
 
         val initState = SplashViewState(
             isIdling = true,
-            fetchWasSuccess = false,
+            navigatingToFirstScreen = false,
             error = null
         )
 
@@ -110,7 +108,7 @@ class SplashViewModelTest {
             initState,
             SplashViewState(
                 isIdling = false,
-                fetchWasSuccess = false,
+                navigatingToFirstScreen = false,
                 error = FetchTypesFailure("something", error)
             )
         )
