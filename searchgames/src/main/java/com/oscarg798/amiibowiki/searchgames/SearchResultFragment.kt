@@ -53,8 +53,6 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
 
     private var skeletonScreen: SkeletonScreen? = null
     private var gameSearchResultCoverImageView: ImageView? = null
-    private var skeletonScreen: SkeletonScreen? = null
-    private var gameSearchResultCoverImageView: ImageView? = null
     private val wishes = ConflatedBroadcastChannel<SearchResultWish>()
 
     override fun onAttach(context: Context) {

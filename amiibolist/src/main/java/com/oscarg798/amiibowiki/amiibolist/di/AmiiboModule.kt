@@ -14,16 +14,12 @@ package com.oscarg798.amiibowiki.amiibolist.di
 
 import androidx.lifecycle.ViewModel
 import com.oscarg798.amiibowiki.AmiiboListViewModel
-import com.oscarg798.amiibowiki.core.ViewModelKey
 import dagger.Binds
 import dagger.Module
-import dagger.multibindings.IntoMap
 
 @Module
 abstract class AmiiboModule {
 
     @Binds
-    @IntoMap
-    @ViewModelKey(AmiiboListViewModel::class)
     abstract fun bindHouseViewModel(amiiboListViewModel: AmiiboListViewModel): ViewModel
 }

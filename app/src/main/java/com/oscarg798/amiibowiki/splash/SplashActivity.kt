@@ -20,7 +20,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.ViewModelFactory
-import com.oscarg798.amiibowiki.core.di.providers.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding

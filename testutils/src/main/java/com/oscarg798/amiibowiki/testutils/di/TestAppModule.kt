@@ -10,9 +10,30 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.testutils.di
 
-import javax.inject.Scope
+import com.oscarg798.amiibowiki.core.models.Config
+import com.oscarg798.amiibowiki.core.models.Flavor
+import com.oscarg798.amiibowiki.testutils.testrules.MOCK_WEB_SERVER_URL
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import javax.inject.Singleton
 
-@Scope
-annotation class CoreScope
+@Module
+@InstallIn(ApplicationComponent::class)
+object TestAppModule {
+
+    @Provides
+    @Singleton
+    fun provideConfig() = Config(
+        MOCK_WEB_SERVER_URL,
+        MOCK_WEB_SERVER_URL,
+        Flavor.Debug,
+        MOCK_API_KEY,
+        MOCK_API_KEY
+    )
+}
+
+private const val MOCK_API_KEY = "MOCK_API_KEY"

@@ -55,6 +55,8 @@ dependencies {
 
     kapt project(':loggerprocessor')
 
+    implementation firebaseAnalytics
+
     //Test
     testImplementation mockk
     testImplementation junit
@@ -71,6 +73,9 @@ dependencies {
     androidTestImplementation espressoIntents
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
+
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.28-alpha'
+    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.28-alpha'
 
     implementation project(path: ':logger')
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'

@@ -10,11 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.testutils
 
-import com.oscarg798.amiibowiki.core.models.Config
+import dagger.hilt.android.testing.CustomTestApplication
 
-interface ConfigProvider {
-
-    fun providecConfig(): Config
-}
+@CustomTestApplication(TestApplication::class)
+interface HiltTestApplication

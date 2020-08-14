@@ -13,38 +13,15 @@
 package com.oscarg798.amiibowiki.testutils
 
 import android.app.Application
-import com.oscarg798.amiibowiki.core.di.CoreComponent
-import com.oscarg798.amiibowiki.core.di.providers.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
-import com.oscarg798.amiibowiki.core.models.Config
-import com.oscarg798.amiibowiki.core.models.Flavor
-import com.oscarg798.amiibowiki.testutils.di.DaggerTestCoreComponent
 import com.oscarg798.amiibowiki.testutils.di.TestFeatureFlagHandlerModule
-import com.oscarg798.amiibowiki.testutils.testrules.MOCK_WEB_SERVER_URL
 import com.oscarg798.flagly.developeroptions.FeatureHandleResourceProvider
 import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlag
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagProvider
 
-class TestApplication :
-    Application(),
-    CoreComponentProvider,
-    FeatureHandleResourceProvider {
-
-    override fun provideCoreComponent(): CoreComponent {
-        return DaggerTestCoreComponent.factory()
-            .create(
-                this,
-                Config(
-                    MOCK_WEB_SERVER_URL,
-                    MOCK_WEB_SERVER_URL,
-                    Flavor.Debug,
-                    MOCK_API_KEY,
-                    MOCK_API_KEY
-                )
-            )
-    }
+open class TestApplication : Application(), FeatureHandleResourceProvider {
 
     override fun getFeatureFlagProvider(): FeatureFlagProvider = object : FeatureFlagProvider {
 
@@ -59,5 +36,3 @@ class TestApplication :
     override fun getRemoteFeatureFlagHandler(): FeatureFlagHandler =
         TestFeatureFlagHandlerModule.firebaseFeatureFlagHandler
 }
-
-private const val MOCK_API_KEY = "MOCK_API_KEY"

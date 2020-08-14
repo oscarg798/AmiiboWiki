@@ -15,7 +15,6 @@ package com.oscarg798.amiibowiki.core.di.entrypoints
 import com.oscarg798.amiibowiki.core.di.providers.ConfigProvider
 import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
 import com.oscarg798.amiibowiki.core.di.providers.FeatureFlagProvider
-import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
 import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
 import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
 import dagger.hilt.EntryPoint
@@ -27,7 +26,6 @@ import dagger.hilt.android.components.ApplicationComponent
 interface SettingsEntryPoint :
     FeatureFlagProvider,
     CoroutinesProvider,
-    LoggerProvider,
     ResourceProviderProvider,
     ConfigProvider {
 

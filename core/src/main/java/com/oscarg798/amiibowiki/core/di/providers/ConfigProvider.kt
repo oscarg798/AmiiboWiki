@@ -16,5 +16,5 @@ import com.oscarg798.amiibowiki.core.models.Config
 
 interface ConfigProvider {
 
-    fun provideConfig(): Config
+    fun providecConfig(): Config
 }

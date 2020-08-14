@@ -51,7 +51,7 @@ object PersistenceModule {
     @Singleton
     @Provides
     fun provideAmiiboDAO(database: CoreAmiiboDatabase): AmiiboDAO = database.amiiboDAO()
-    
+
     @Singleton
     @Provides
     fun provideGameDAO(database: CoreAmiiboDatabase): GameDAO = database.gameDAO()
