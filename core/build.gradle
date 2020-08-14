@@ -13,6 +13,9 @@ apply from: "../gradlescripts/shared.gradle"
 
 dependencies {
 
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02"
+    kapt hiltKAPT
+
     implementation picasso
     implementation project(path: ':network')
 

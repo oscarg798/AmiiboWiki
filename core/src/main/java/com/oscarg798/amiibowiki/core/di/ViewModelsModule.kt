@@ -14,12 +14,8 @@ package com.oscarg798.amiibowiki.core.di
 
 import androidx.lifecycle.ViewModelProvider
 import com.oscarg798.amiibowiki.core.ViewModelFactory
-import dagger.Binds
-import dagger.Module
 
-@Module
-abstract class ViewModelsModule {
+object ViewModelsModule {
 
-    @Binds
-    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+    fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory = factory
 }

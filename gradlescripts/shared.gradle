@@ -30,9 +30,8 @@ dependencies {
 
     //Dagger
     implementation dagger
-    implementation daggerAndroidSupport
     kapt daggerCompiler
-    kapt daggerAndroidProcessor
+    implementation hiltLib
 
     //Coroutines
     implementation kotlinCoroutines

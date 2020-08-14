@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
-import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.extensions.getOrTransformNetworkException
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
@@ -24,13 +23,14 @@ import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-@CoreScope
+@Singleton
 class AmiiboRepositoryImpl @Inject constructor(
     private val amiiboService: AmiiboService,
     private val amiiboDAO: AmiiboDAO

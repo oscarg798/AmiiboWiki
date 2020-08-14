@@ -12,13 +12,21 @@
 
 package com.oscarg798.amiibowiki.gamedetail.di
 
-import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.core.di.entrypoints.GameDetailEntryPoint
 import com.oscarg798.amiibowiki.gamedetail.GameDetailActivity
 import dagger.Component
 
 @GameDetailScope
-@Component(dependencies = [CoreComponent::class], modules = [GameDetailModule::class])
+@Component(dependencies = [GameDetailEntryPoint::class], modules = [GameDetailModule::class])
 interface GameDetailComponent {
+
+    @Component.Factory
+    interface Factory {
+
+        fun create(
+            gameDetailEntryPoint: GameDetailEntryPoint
+        ): GameDetailComponent
+    }
 
     fun inject(gameDetailActivity: GameDetailActivity)
 }

@@ -12,11 +12,9 @@
 
 package com.oscarg798.amiibowiki.core.usecases
 
-import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import javax.inject.Inject
 
-@CoreScope
 class GetDefaultAmiiboTypeUseCase @Inject constructor() {
 
     fun execute() = AmiiboType(

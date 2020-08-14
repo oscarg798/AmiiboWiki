@@ -13,12 +13,23 @@
 package com.oscarg798.amiibowiki.amiibolist.di
 
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
-import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboListEntryPoint
 import dagger.Component
 
 @AmiiboListScope
-@Component(dependencies = [CoreComponent::class], modules = [AmiiboModule::class, AmiiboListModule::class])
+@Component(
+    dependencies = [AmiiboListEntryPoint::class],
+    modules = [AmiiboModule::class, AmiiboListModule::class]
+)
 interface AmiiboListComponent {
+
+    @Component.Factory
+    interface Factory {
+
+        fun create(
+            amiiboListEntryPoint: AmiiboListEntryPoint
+        ): AmiiboListComponent
+    }
 
     fun inject(amiiboListActivity: AmiiboListActivity)
 }

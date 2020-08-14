@@ -10,23 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.di
+package com.oscarg798.amiibowiki.core.di.entrypoints
 
-import com.oscarg798.amiibowiki.core.di.CoreComponent
-import com.oscarg798.amiibowiki.splash.SplashActivity
-import dagger.Component
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import javax.inject.Scope
+import com.oscarg798.amiibowiki.core.di.providers.ConfigProvider
+import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
+import com.oscarg798.amiibowiki.core.di.providers.GameRepositoryProvider
+import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
+import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 
-
-
-@SplashScope
-@Component(dependencies = [CoreComponent::class], modules = [SplahModule::class])
-interface SplashComponent {
-
-    fun inject(splashActivity: SplashActivity)
-}
-
-@Scope
-annotation class SplashScope
+@EntryPoint
+@InstallIn(ApplicationComponent::class)
+interface GameDetailEntryPoint :
+    GameRepositoryProvider,
+    CoroutinesProvider,
+    ConfigProvider,
+    LoggerProvider,
+    ResourceProviderProvider

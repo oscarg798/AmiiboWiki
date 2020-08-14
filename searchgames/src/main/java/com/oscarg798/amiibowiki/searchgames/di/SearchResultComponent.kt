@@ -12,18 +12,18 @@
 
 package com.oscarg798.amiibowiki.searchgames.di
 
-import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.core.di.entrypoints.SearchGamesEntryPoint
 import com.oscarg798.amiibowiki.searchgames.SearchResultFragment
 import dagger.Component
 
 @SearchResultScope
-@Component(dependencies = [CoreComponent::class], modules = [SearchResultModule::class])
+@Component(dependencies = [SearchGamesEntryPoint::class], modules = [SearchResultModule::class])
 interface SearchResultComponent {
 
     @Component.Factory
     interface Factory {
 
-        fun create(coreComponent: CoreComponent): SearchResultComponent
+        fun create(searchGamesEntryPoint: SearchGamesEntryPoint): SearchResultComponent
     }
 
     fun inject(searchResultFragment: SearchResultFragment)

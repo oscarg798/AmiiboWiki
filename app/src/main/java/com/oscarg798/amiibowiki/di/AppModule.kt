@@ -10,21 +10,32 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.di
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import javax.inject.Inject
+import com.oscarg798.amiibowiki.BuildConfig
+import com.oscarg798.amiibowiki.core.models.Config
+import com.oscarg798.amiibowiki.core.models.Flavor
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import javax.inject.Singleton
 
-class UpdateAmiiboTypeUseCase @Inject constructor(
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
+@Module
+@InstallIn(ApplicationComponent::class)
+object AppModule {
 
-    suspend fun execute() = amiiboTypeRepository.updateTypes().recoverCatching {
-        if (!amiiboTypeRepository.hasTypes()) {
-            throw it
-        }
-
-        Result.success(listOf<AmiiboType>())
-    }.map { Unit }
+    @Provides
+    @Singleton
+    fun provideConfig(): Config = Config(
+        BuildConfig.BASE_AMIIBO_API_URL,
+        BuildConfig.BASE_GAME_API_URL,
+        when {
+            BuildConfig.DEBUG -> Flavor.Debug
+            BuildConfig.ALPHA -> Flavor.Alpha
+            else -> Flavor.Release
+        },
+        BuildConfig.GOOGLE_API_KEY,
+        BuildConfig.GAME_API_KEY
+    )
 }

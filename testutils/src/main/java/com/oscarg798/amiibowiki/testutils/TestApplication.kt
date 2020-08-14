@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.testutils
 
 import android.app.Application
 import com.oscarg798.amiibowiki.core.di.CoreComponent
-import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.di.providers.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Flavor
@@ -27,7 +27,10 @@ import com.oscarg798.flagly.featureflag.FeatureFlag
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagProvider
 
-class TestApplication : Application(), CoreComponentProvider, FeatureHandleResourceProvider {
+class TestApplication :
+    Application(),
+    CoreComponentProvider,
+    FeatureHandleResourceProvider {
 
     override fun provideCoreComponent(): CoreComponent {
         return DaggerTestCoreComponent.factory()

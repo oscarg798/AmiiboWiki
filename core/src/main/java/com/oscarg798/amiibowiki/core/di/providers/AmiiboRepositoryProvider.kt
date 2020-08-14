@@ -10,11 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.core.di.providers
 
-import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 
-interface SharedPreferenceProvider {
-
-    fun providePreferenceWrapper(): SharedPreferencesWrapper
+interface AmiiboRepositoryProvider {
+    fun provideAmiiboRepository(): AmiiboRepository
 }

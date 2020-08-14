@@ -13,13 +13,13 @@
 package com.oscarg798.amiibowiki.amiibodetail.di
 
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailActivity
-import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboDetailEntryPoint
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Scope
 
 @AmiiboDetailScope
-@Component(dependencies = [CoreComponent::class], modules = [AmiiboDetailModule::class])
+@Component(dependencies = [AmiiboDetailEntryPoint::class], modules = [AmiiboDetailModule::class])
 interface AmiiboDetailComponent {
 
     fun inject(amiiboDetailActivity: AmiiboDetailActivity)
@@ -29,7 +29,7 @@ interface AmiiboDetailComponent {
 
         fun create(
             @BindsInstance tail: String,
-            coreComponent: CoreComponent
+            amiiboDetailEntryPoint: AmiiboDetailEntryPoint
         ): AmiiboDetailComponent
     }
 }

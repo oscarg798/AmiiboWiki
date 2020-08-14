@@ -12,19 +12,27 @@
 
 package com.oscarg798.amiibowiki.nfcreader.di
 
-import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.core.di.entrypoints.NFCReaderEntryPoint
 import com.oscarg798.amiibowiki.nfcreader.NFCReaderActivity
 import dagger.Component
 
 @NFCReaderScope
 @Component(
-    dependencies = [CoreComponent::class],
+    dependencies = [NFCReaderEntryPoint::class],
     modules = [
         NFCReaderModule::class,
         NFCReaderViewModelModule::class
     ]
 )
 interface NFCReaderComponent {
+
+    @Component.Factory
+    interface Factory {
+
+        fun create(
+            nfcReaderEntryPoint: NFCReaderEntryPoint
+        ): NFCReaderComponent
+    }
 
     fun inject(nfcReaderActivity: NFCReaderActivity)
 }

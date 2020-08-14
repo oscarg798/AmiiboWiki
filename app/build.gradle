@@ -14,9 +14,10 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-    id  'kotlin-kapt'
+    id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'dagger.hilt.android.plugin'
 }
 
 apply from: '../gradlescripts/signing.gradle'
@@ -122,7 +123,10 @@ dependencies {
     implementation daggerAndroidSupport
     kapt daggerCompiler
     kapt daggerAndroidProcessor
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02"
+    implementation hiltLib
+    kapt hiltKAPT
 
     //Coroutines
     implementation kotlinCoroutines
@@ -142,6 +146,10 @@ dependencies {
     implementation flagly
 
     kapt project(':loggerprocessor')
+
+    implementation roomRuntime
+    implementation roomCompiler
+    implementation roomKTX
 
     //Test
     testImplementation mockk

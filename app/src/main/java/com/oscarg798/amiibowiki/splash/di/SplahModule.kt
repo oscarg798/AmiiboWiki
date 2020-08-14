@@ -25,12 +25,16 @@ import com.oscarg798.lomeno.logger.Logger
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.scopes.ActivityScoped
 import dagger.multibindings.IntoMap
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
 
 @Module
+@InstallIn(ActivityComponent::class)
 object SplahModule {
 
     @IntoMap
@@ -38,11 +42,11 @@ object SplahModule {
     @Provides
     fun provideHouseViewModel(amiiboListViewModel: SplashViewModel): ViewModel = amiiboListViewModel
 
-    @SplashScope
+    @ActivityScoped
     @Provides
     fun provideSplashLogger(logger: Logger): SplashLogger = SplashLoggerImpl(logger)
 
-    @SplashScope
+    @ActivityScoped
     @Provides
     fun provideSplashReducer(splashReducer: SplashReducer): Reducer<SplashResult, SplashViewState> = splashReducer
 

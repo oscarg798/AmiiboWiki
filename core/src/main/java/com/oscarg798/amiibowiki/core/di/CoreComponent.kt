@@ -14,8 +14,15 @@ package com.oscarg798.amiibowiki.core.di
 
 import android.app.Application
 import android.content.Context
-import com.oscarg798.amiibowiki.core.CoroutineContextProvider
+import com.oscarg798.amiibowiki.core.di.providers.AmiiboRepositoryProvider
+import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
+import com.oscarg798.amiibowiki.core.di.providers.GameRepositoryProvider
+import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
+import com.oscarg798.amiibowiki.core.di.providers.PersistenceProvider
+import com.oscarg798.amiibowiki.core.di.providers.SharedPreferenceProvider
+import com.oscarg798.amiibowiki.core.di.providers.ViewModelFactoryProvider
 import com.oscarg798.amiibowiki.core.di.qualifier.FeatureHandlerProvider
+<<<<<<< HEAD
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
@@ -25,33 +32,16 @@ import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
+=======
+>>>>>>> improving settings builder, adding dao
 import com.oscarg798.amiibowiki.core.utils.ResourcesDependenciesProvider
-import com.oscarg798.amiibowiki.network.di.NetworkModule
-import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
-import com.oscarg798.flagly.remoteconfig.RemoteConfig
-import com.oscarg798.lomeno.logger.Logger
-import dagger.BindsInstance
-import dagger.Component
-import java.util.Locale
-import retrofit2.Retrofit
 
-@CoreScope
-@Component(
-    modules = [
-        CoreModule::class,
-        ViewModelsModule::class,
-        NetworkModule::class,
-        PersistenceModule::class,
-        LoggerModule::class,
-        FeatureFlagHandlerModule::class
-    ]
-)
 interface CoreComponent :
     ResourcesDependenciesProvider,
     ConfigProvider,
     SharedPreferenceProvider,
     FeatureHandlerProvider,
+<<<<<<< HEAD
     PersistenceProvider {
 
     @Component.Factory
@@ -62,31 +52,20 @@ interface CoreComponent :
             @BindsInstance config: Config
         ): CoreComponent
     }
+=======
+    PersistenceProvider,
+    CoroutinesProvider,
+    LoggerProvider,
+    ViewModelFactoryProvider,
+    AmiiboRepositoryProvider,
+    GameRepositoryProvider {
+>>>>>>> improving settings builder, adding dao
 
     fun inject(application: Application)
 
-    fun provideRemoteConfig(): RemoteConfig
-
-    @AmiiboApiQualifier
-    fun provideAmiiboAPIRetrofit(): Retrofit
-
-    @GameApiQualifier
-    fun provideGameAPIRetrofit(): Retrofit
-
-    fun provideCoroutineContextProvider(): CoroutineContextProvider
-    fun provideLocale(): Locale
-
-    fun provideAmiiboService(): AmiiboService
-    fun provideAmiiboTypeService(): AmiiboTypeService
-
-    fun provideAmiiboRepository(): AmiiboRepository
-    fun provideAmiiboTypeRepository(): AmiiboTypeRepository
-    fun provideGameRepository(): GameRepository
-
-    fun provideGetAmiiboTypeUseCase(): GetAmiiboTypeUseCase
-    fun provideGetDefaulAmiiboTypeUseCase(): GetDefaultAmiiboTypeUseCase
-    fun provideUpdateAmiiboTypeUseCase(): UpdateAmiiboTypeUseCase
-
     fun provideContext(): Context
+<<<<<<< HEAD
     fun provideLogger(): Logger
+=======
+>>>>>>> improving settings builder, adding dao
 }

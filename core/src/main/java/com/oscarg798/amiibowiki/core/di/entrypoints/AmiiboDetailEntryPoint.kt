@@ -10,21 +10,24 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.core.di.entrypoints
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import javax.inject.Inject
+import com.oscarg798.amiibowiki.core.di.providers.AmiiboRepositoryProvider
+import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
+import com.oscarg798.amiibowiki.core.di.providers.FeatureFlagProvider
+import com.oscarg798.amiibowiki.core.di.providers.GameRepositoryProvider
+import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
+import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 
-class UpdateAmiiboTypeUseCase @Inject constructor(
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
-
-    suspend fun execute() = amiiboTypeRepository.updateTypes().recoverCatching {
-        if (!amiiboTypeRepository.hasTypes()) {
-            throw it
-        }
-
-        Result.success(listOf<AmiiboType>())
-    }.map { Unit }
-}
+@EntryPoint
+@InstallIn(ApplicationComponent::class)
+interface AmiiboDetailEntryPoint :
+    GameRepositoryProvider,
+    FeatureFlagProvider,
+    AmiiboRepositoryProvider,
+    CoroutinesProvider,
+    LoggerProvider,
+    ResourceProviderProvider

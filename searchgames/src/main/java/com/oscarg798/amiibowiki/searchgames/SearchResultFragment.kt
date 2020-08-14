@@ -20,16 +20,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
-import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_SERIES
 import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
-import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.di.entrypoints.SearchGamesEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.searchgames.adapter.SearchResultAdapter
@@ -39,27 +37,36 @@ import com.oscarg798.amiibowiki.searchgames.di.DaggerSearchResultComponent
 import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgames.models.ViewGameSearchResult
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultWish
+import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class SearchResultFragment : Fragment(), SearchResultClickListener {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModel: SearchGamesViewModel
 
     private lateinit var binding: FragmentSearchResultBinding
 
     private var skeletonScreen: SkeletonScreen? = null
     private var gameSearchResultCoverImageView: ImageView? = null
-    private val wishes = MutableStateFlow<SearchResultWish>(SearchResultWish.Idle)
+    private var skeletonScreen: SkeletonScreen? = null
+    private var gameSearchResultCoverImageView: ImageView? = null
+    private val wishes = ConflatedBroadcastChannel<SearchResultWish>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         DaggerSearchResultComponent.factory()
-            .create((context.applicationContext as CoreComponentProvider).provideCoreComponent())
+            .create(
+                EntryPointAccessors.fromApplication(
+                    requireActivity().application,
+                    SearchGamesEntryPoint::class.java
+                )
+            )
             .inject(this)
     }
 
@@ -89,14 +96,11 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         gameSearchResult: ViewGameSearchResult,
         coverImageView: ImageView
     ) {
-        wishes.value = SearchResultWish.ShowGameDetail(gameSearchResult.gameId)
+        wishes.offer(SearchResultWish.ShowGameDetail(gameSearchResult.gameId))
         this.gameSearchResultCoverImageView = coverImageView
     }
 
     private fun setupViewModelInteractions() {
-        val viewModel =
-            ViewModelProvider(this, viewModelFactory).get(SearchGamesViewModel::class.java)
-
         viewModel.state.onEach {
             when {
                 it.isIdling -> onIdle()
@@ -110,7 +114,7 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
             }
         }.launchIn(lifecycleScope)
 
-        wishes.onEach {
+        wishes.asFlow().onEach {
             viewModel.onWish(it)
         }.launchIn(lifecycleScope)
     }
@@ -120,7 +124,7 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     }
 
     fun search(gameSearchGameQueryParam: GameSearchParam) {
-        wishes.value = SearchResultWish.SearchGames(gameSearchGameQueryParam)
+        wishes.offer(SearchResultWish.SearchGames(gameSearchGameQueryParam))
     }
 
     private fun onIdle() {}

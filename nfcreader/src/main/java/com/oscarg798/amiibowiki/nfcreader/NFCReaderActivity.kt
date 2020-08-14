@@ -17,19 +17,18 @@ import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.core.AmiiboIdentifier
-import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
-import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.di.entrypoints.NFCReaderEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.nfcreader.databinding.ActivityNFCReaderBinding
 import com.oscarg798.amiibowiki.nfcreader.di.DaggerNFCReaderComponent
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
+import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -37,7 +36,7 @@ import kotlinx.coroutines.flow.onEach
 class NFCReaderActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viiewModel: NFCReaderViewModel
 
     @Inject
     lateinit var nfcAdapter: NfcAdapter
@@ -51,9 +50,13 @@ class NFCReaderActivity : AppCompatActivity() {
         binding = ActivityNFCReaderBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        DaggerNFCReaderComponent.builder()
-            .coreComponent((application as CoreComponentProvider).provideCoreComponent())
-            .build()
+        DaggerNFCReaderComponent.factory()
+            .create(
+                EntryPointAccessors.fromApplication(
+                    application,
+                    NFCReaderEntryPoint::class.java
+                )
+            )
             .inject(this)
 
         setup()
@@ -61,8 +64,6 @@ class NFCReaderActivity : AppCompatActivity() {
     }
 
     private fun setup() {
-        viewModel = ViewModelProvider(this, viewModelFactory).get(NFCReaderViewModel::class.java)
-
         viewModel.state.onEach {
             when {
                 it.error != null -> showErrorMessage(getString(R.string.default_error))

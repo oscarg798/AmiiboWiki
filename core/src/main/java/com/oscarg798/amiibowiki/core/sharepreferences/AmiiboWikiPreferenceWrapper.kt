@@ -16,9 +16,10 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class AmiiboWikiPreferenceWrapper @Inject constructor(private val context: Context) :
+class AmiiboWikiPreferenceWrapper @Inject constructor(@ApplicationContext private val context: Context) :
     SharedPreferencesWrapper {
 
     private lateinit var preferences: SharedPreferences

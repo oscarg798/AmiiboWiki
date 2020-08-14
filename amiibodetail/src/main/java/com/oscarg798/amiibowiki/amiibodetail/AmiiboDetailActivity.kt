@@ -17,7 +17,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -26,14 +25,14 @@ import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBin
 import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ShowingAmiiboDetailsParams
-import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
-import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboDetailEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.searchgames.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
+import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -42,7 +41,7 @@ import kotlinx.coroutines.flow.onEach
 class AmiiboDetailActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModel: AmiiboDetailViewModel
 
     private lateinit var binding: ActivityAmiiboDetailBinding
 
@@ -56,7 +55,10 @@ class AmiiboDetailActivity : AppCompatActivity() {
         DaggerAmiiboDetailComponent.factory()
             .create(
                 intent.getStringExtra(ARGUMENT_TAIL)!!,
-                (application as CoreComponentProvider).provideCoreComponent()
+                EntryPointAccessors.fromApplication(
+                    application,
+                    AmiiboDetailEntryPoint::class.java
+                )
             )
             .inject(this)
 
@@ -93,9 +95,6 @@ class AmiiboDetailActivity : AppCompatActivity() {
         }
 
         configureBackDrop()
-
-        val viewModel =
-            ViewModelProvider(this, viewModelFactory).get(AmiiboDetailViewModel::class.java)
 
         viewModel.state.onEach {
             when {

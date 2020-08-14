@@ -10,21 +10,26 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.core.di.entrypoints
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import javax.inject.Inject
+import com.oscarg798.amiibowiki.core.di.providers.ConfigProvider
+import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
+import com.oscarg798.amiibowiki.core.di.providers.FeatureFlagProvider
+import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
+import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
+import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 
-class UpdateAmiiboTypeUseCase @Inject constructor(
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
+@EntryPoint
+@InstallIn(ApplicationComponent::class)
+interface SettingsEntryPoint :
+    FeatureFlagProvider,
+    CoroutinesProvider,
+    LoggerProvider,
+    ResourceProviderProvider,
+    ConfigProvider {
 
-    suspend fun execute() = amiiboTypeRepository.updateTypes().recoverCatching {
-        if (!amiiboTypeRepository.hasTypes()) {
-            throw it
-        }
-
-        Result.success(listOf<AmiiboType>())
-    }.map { Unit }
+    fun provideSharePreferenceWrapper(): SharedPreferencesWrapper
 }

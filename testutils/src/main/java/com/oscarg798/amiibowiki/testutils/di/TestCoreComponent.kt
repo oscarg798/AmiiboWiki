@@ -14,8 +14,8 @@ package com.oscarg798.amiibowiki.testutils.di
 
 import android.content.Context
 import com.oscarg798.amiibowiki.core.di.CoreComponent
-import com.oscarg798.amiibowiki.core.di.CoreModule
 import com.oscarg798.amiibowiki.core.di.CoreScope
+import com.oscarg798.amiibowiki.core.di.modules.CoreModule
 import com.oscarg798.amiibowiki.core.models.Config
 import dagger.BindsInstance
 import dagger.Component

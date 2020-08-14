@@ -14,9 +14,10 @@ package com.oscarg798.amiibowiki.core.utils
 
 import android.content.Context
 import androidx.annotation.StringRes
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class StringResourceProvider @Inject constructor(private val context: Context) : ResourceProvider<String> {
+class StringResourceProvider @Inject constructor(@ApplicationContext private val context: Context) : ResourceProvider<String> {
 
     override fun provide(@StringRes key: Int): String = context.getString(key)
 }

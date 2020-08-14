@@ -10,21 +10,13 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.core.di.providers
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import javax.inject.Inject
+import com.oscarg798.amiibowiki.core.di.qualifier.MainFeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 
-class UpdateAmiiboTypeUseCase @Inject constructor(
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
+interface FeatureFlagProvider {
 
-    suspend fun execute() = amiiboTypeRepository.updateTypes().recoverCatching {
-        if (!amiiboTypeRepository.hasTypes()) {
-            throw it
-        }
-
-        Result.success(listOf<AmiiboType>())
-    }.map { Unit }
+    @MainFeatureFlagHandler
+    fun provideMainFeatureFlagHandler(): FeatureFlagHandler
 }

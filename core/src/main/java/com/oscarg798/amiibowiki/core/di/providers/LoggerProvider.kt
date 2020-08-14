@@ -10,21 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.usecases
+package com.oscarg798.amiibowiki.core.di.providers
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
-import javax.inject.Inject
+import com.oscarg798.lomeno.logger.Logger
 
-class UpdateAmiiboTypeUseCase @Inject constructor(
-    private val amiiboTypeRepository: AmiiboTypeRepository
-) {
+interface LoggerProvider {
 
-    suspend fun execute() = amiiboTypeRepository.updateTypes().recoverCatching {
-        if (!amiiboTypeRepository.hasTypes()) {
-            throw it
-        }
-
-        Result.success(listOf<AmiiboType>())
-    }.map { Unit }
+    fun provideLogger(): Logger
 }
