@@ -12,29 +12,18 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.di
 
-import androidx.lifecycle.ViewModel
-import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLoggerImpl
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailReducer
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
-import com.oscarg798.amiibowiki.core.ViewModelKey
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
 
 @Module
 object AmiiboDetailModule {
-
-    @AmiiboDetailScope
-    @IntoMap
-    @ViewModelKey(AmiiboDetailViewModel::class)
-    @Provides
-    fun provideAmiiboDetailViewModel(amiiboDetailViewModel: AmiiboDetailViewModel): ViewModel =
-        amiiboDetailViewModel
 
     @AmiiboDetailScope
     @Provides

@@ -10,20 +10,24 @@
  *
  */
 
-package com.oscarg798.amiibowiki.nfcreader.di
+package com.oscarg798.amiibowiki.core.di.entrypoints
 
-import androidx.lifecycle.ViewModel
-import com.oscarg798.amiibowiki.core.ViewModelKey
-import com.oscarg798.amiibowiki.nfcreader.NFCReaderViewModel
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
+import com.oscarg798.amiibowiki.core.di.providers.AmiiboRepositoryProvider
+import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
+import com.oscarg798.amiibowiki.core.di.providers.FeatureFlagProvider
+import com.oscarg798.amiibowiki.core.di.providers.GameRepositoryProvider
+import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
+import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 
-@Module
-abstract class NFCReaderViewModelModule {
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(NFCReaderViewModel::class)
-    abstract fun bindHouseViewModel(amiiboListViewModel: NFCReaderViewModel): ViewModel
-}
+@EntryPoint
+@InstallIn(ApplicationComponent::class)
+interface AmiiboDetailEntryPoint :
+    GameRepositoryProvider,
+    FeatureFlagProvider,
+    AmiiboRepositoryProvider,
+    CoroutinesProvider,
+    LoggerProvider,
+    ResourceProviderProvider

@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.core.di.modules
 
 import android.content.Context
 import androidx.room.Room
@@ -21,17 +21,22 @@ import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
 import com.oscarg798.amiibowiki.core.persistence.database.CoreAmiiboDatabase
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object PersistenceModule {
 
     /**
      * We are not saving  states, just downloaded data
      * so  for now we will not provider any migration
      */
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideDatabase(context: Context): CoreAmiiboDatabase {
+    fun provideDatabase(@ApplicationContext context: Context): CoreAmiiboDatabase {
         return Room.databaseBuilder(
             context,
             CoreAmiiboDatabase::class.java, "core_amiibo_database"
@@ -39,19 +44,19 @@ object PersistenceModule {
             .build()
     }
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideAmiiboTypeDao(database: CoreAmiiboDatabase): AmiiboTypeDAO = database.amiiboTypeDAO()
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideAmiiboDAO(database: CoreAmiiboDatabase): AmiiboDAO = database.amiiboDAO()
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideGameDAO(database: CoreAmiiboDatabase): GameDAO = database.gameDAO()
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideAgeRatingDAO(database: CoreAmiiboDatabase): AgeRatingDAO = database.ageRatingDAO()
 }

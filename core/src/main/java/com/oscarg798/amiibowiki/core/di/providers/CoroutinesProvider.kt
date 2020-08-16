@@ -10,23 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.di
+package com.oscarg798.amiibowiki.core.di.providers
 
-import com.oscarg798.amiibowiki.core.di.CoreComponent
-import com.oscarg798.amiibowiki.splash.SplashActivity
-import dagger.Component
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import javax.inject.Scope
+import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 
+interface CoroutinesProvider {
 
-
-@SplashScope
-@Component(dependencies = [CoreComponent::class], modules = [SplahModule::class])
-interface SplashComponent {
-
-    fun inject(splashActivity: SplashActivity)
+    fun provideCoroutineContextProvider(): CoroutineContextProvider
 }
-
-@Scope
-annotation class SplashScope

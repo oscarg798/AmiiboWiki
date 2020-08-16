@@ -13,8 +13,8 @@
 package com.oscarg798.amiibowiki.nfcreader.usecase
 
 import android.nfc.Tag
-import com.oscarg798.amiibowiki.core.AmiiboIdentifier
 import com.oscarg798.amiibowiki.core.extensions.getOrTransform
+import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.errors.UnknownReadError

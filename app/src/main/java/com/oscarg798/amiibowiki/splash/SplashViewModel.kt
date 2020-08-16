@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.splash
 
-import com.oscarg798.amiibowiki.core.CoroutineContextProvider
+import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.extensions.onException
 import com.oscarg798.amiibowiki.core.mvi.Reducer
@@ -21,8 +21,6 @@ import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn

@@ -12,10 +12,7 @@
 
 package com.oscarg798.amiibowiki.gamedetail.di
 
-import androidx.lifecycle.ViewModel
-import com.oscarg798.amiibowiki.core.ViewModelKey
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.gamedetail.GameDetailViewModel
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLoggerImpl
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailReducer
@@ -24,17 +21,9 @@ import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
 
 @Module
 object GameDetailModule {
-
-    @GameDetailScope
-    @IntoMap
-    @ViewModelKey(GameDetailViewModel::class)
-    @Provides
-    fun provideGameDetailModule(gameDetailViewModel: GameDetailViewModel): ViewModel =
-        gameDetailViewModel
 
     @GameDetailScope
     @Provides

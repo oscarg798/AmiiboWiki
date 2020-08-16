@@ -12,10 +12,10 @@
 
 package com.oscarg798.amiibowiki.gamedetail
 
-import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailResult
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState

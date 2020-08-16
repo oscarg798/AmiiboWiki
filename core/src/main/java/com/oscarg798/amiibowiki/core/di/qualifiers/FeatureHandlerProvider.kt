@@ -10,20 +10,18 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.di
+package com.oscarg798.amiibowiki.core.di.qualifiers
 
-import androidx.lifecycle.ViewModel
-import com.oscarg798.amiibowiki.AmiiboListViewModel
-import com.oscarg798.amiibowiki.core.ViewModelKey
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
+import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 
-@Module
-abstract class AmiiboModule {
+interface FeatureHandlerProvider {
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(AmiiboListViewModel::class)
-    abstract fun bindHouseViewModel(amiiboListViewModel: AmiiboListViewModel): ViewModel
+    @RemoteFeatureFlagHandler
+    fun provideRemoteFeatureFlagHandler(): FeatureFlagHandler
+
+    fun provideDynamicFeatureFlag(): DynamicFeatureFlagHandler
+
+    @MainFeatureFlagHandler
+    fun provideAmiiboWikiFeatureFlagHandler(): FeatureFlagHandler
 }

@@ -18,6 +18,8 @@ dependencies {
     implementation dagger
     kapt daggerCompiler
 
+    kapt hiltKAPT
+
     //Coroutines
     implementation kotlinCoroutines
     implementation kotlinCoroutinesAndroid

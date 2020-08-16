@@ -10,17 +10,20 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.core.di.entrypoints
 
-import com.oscarg798.amiibowiki.core.persistence.dao.AgeRatingDAO
-import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
-import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
-import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
+import com.oscarg798.amiibowiki.core.di.providers.ContextProvider
+import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
+import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
+import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 
-interface PersistenceProvider {
-
-    fun provideGameDAO(): GameDAO
-    fun provideAgeRatingDAO(): AgeRatingDAO
-    fun provideAmiiboTypeDao(): AmiiboTypeDAO
-    fun provideAmiiboDAO(): AmiiboDAO
-}
+@EntryPoint
+@InstallIn(ApplicationComponent::class)
+interface NFCReaderEntryPoint :
+    ContextProvider,
+    CoroutinesProvider,
+    LoggerProvider,
+    ResourceProviderProvider

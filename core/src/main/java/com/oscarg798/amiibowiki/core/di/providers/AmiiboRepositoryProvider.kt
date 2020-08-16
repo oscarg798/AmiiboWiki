@@ -10,9 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.core.di.providers
 
-interface CoreComponentProvider {
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 
-    fun provideCoreComponent(): CoreComponent
+interface AmiiboRepositoryProvider {
+    fun provideAmiiboRepository(): AmiiboRepository
 }

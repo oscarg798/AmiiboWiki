@@ -19,13 +19,11 @@ import android.text.InputType as EditTextInputType
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.oscarg798.amiibowiki.core.ViewModelFactory
-import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.di.entrypoints.SettingsEntryPoint
 import com.oscarg798.amiibowiki.core.utils.TextChangeListenerAdapter
 import com.oscarg798.amiibowiki.settings.di.DaggerSettingsComponent
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
@@ -33,6 +31,7 @@ import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFE
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity
+import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -44,9 +43,7 @@ import kotlinx.coroutines.flow.onEach
 class SettingsFragment : PreferenceFragmentCompat() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private lateinit var viewModel: SettingsViewModel
+    lateinit var viewModel: SettingsViewModel
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -55,15 +52,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerSettingsComponent.builder()
-            .coreComponent((requireActivity().application as CoreComponentProvider).provideCoreComponent())
-            .build().inject(this)
+        DaggerSettingsComponent.factory()
+            .create(
+                EntryPointAccessors.fromApplication(
+                    requireActivity().application,
+                    SettingsEntryPoint::class.java
+                )
+            ).inject(this)
 
         setupViewModel()
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this, viewModelFactory).get(SettingsViewModel::class.java)
         viewModel.state.onEach {
             when {
                 it.showDarkModeDialog -> showDarkModeDialog()

@@ -12,16 +12,20 @@
 
 package com.oscarg798.amiibowiki.testutils.di
 
-import com.oscarg798.amiibowiki.core.di.qualifier.MainFeatureFlagHandler
-import com.oscarg798.amiibowiki.core.di.qualifier.RemoteFeatureFlagHandler
+import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
+import com.oscarg798.amiibowiki.core.di.qualifiers.RemoteFeatureFlagHandler
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import com.oscarg798.flagly.remoteconfig.RemoteConfig
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object TestFeatureFlagHandlerModule {
 
     val firebaseFeatureFlagHandler = relaxedMockk<FeatureFlagHandler>()
@@ -29,16 +33,20 @@ object TestFeatureFlagHandlerModule {
     val mainFeatureFlagHandler = relaxedMockk<FeatureFlagHandler>()
     val remoteConfig = relaxedMockk<RemoteConfig>()
 
+    @Singleton
     @Provides
     fun provideRemoteConfig() = remoteConfig
 
+    @Singleton
     @RemoteFeatureFlagHandler
     @Provides
     fun provideRemoteFeatureFlagHandler(): FeatureFlagHandler = firebaseFeatureFlagHandler
 
+    @Singleton
     @Provides
     fun provideDynamicFeatureFlag(): DynamicFeatureFlagHandler = localFeatureFlagHandler
 
+    @Singleton
     @MainFeatureFlagHandler
     @Provides
     fun provideAmiiboWikiFeatureFlagHandler(): FeatureFlagHandler = mainFeatureFlagHandler

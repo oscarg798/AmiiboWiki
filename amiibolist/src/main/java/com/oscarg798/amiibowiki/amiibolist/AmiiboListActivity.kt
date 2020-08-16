@@ -18,7 +18,6 @@ import android.view.MenuItem
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -31,16 +30,14 @@ import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.ActivityAmiiboListBinding
 import com.oscarg798.amiibowiki.amiibolist.di.DaggerAmiiboListComponent
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
-import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.constants.SETTINGS_DEEPLINK
-import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboListEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
+import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -48,10 +45,9 @@ import kotlinx.coroutines.flow.onEach
 class AmiiboListActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModel: AmiiboListViewModel
 
     private var skeleton: SkeletonScreen? = null
-    private val wishes = ConflatedBroadcastChannel<AmiiboListWish>()
     private var filterMenuItem: MenuItem? = null
     private lateinit var binding: ActivityAmiiboListBinding
 
@@ -60,9 +56,13 @@ class AmiiboListActivity : AppCompatActivity() {
         binding = ActivityAmiiboListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        DaggerAmiiboListComponent.builder()
-            .coreComponent((application as CoreComponentProvider).provideCoreComponent())
-            .build()
+        DaggerAmiiboListComponent.factory()
+            .create(
+                EntryPointAccessors.fromApplication(
+                    application,
+                    AmiiboListEntryPoint::class.java
+                )
+            )
             .inject(this)
 
         setup()
@@ -80,17 +80,12 @@ class AmiiboListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_filter) {
-            wishes.offer(AmiiboListWish.ShowFilters)
+            viewModel.onWish(AmiiboListWish.ShowFilters)
         } else if (item.itemId == R.id.action_settings) {
-            wishes.offer(AmiiboListWish.OpenSettings)
+            viewModel.onWish(AmiiboListWish.OpenSettings)
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        wishes.close()
     }
 
     private fun setup() {
@@ -105,7 +100,7 @@ class AmiiboListActivity : AppCompatActivity() {
             )
 
             setOnRefreshListener {
-                wishes.offer(AmiiboListWish.RefreshAmiibos)
+                viewModel.onWish(AmiiboListWish.RefreshAmiibos)
             }
         }
 
@@ -114,15 +109,13 @@ class AmiiboListActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(context, NUMBER_OF_COLUMNS)
             adapter = AmiiboListAdapter(object : AmiiboClickListener {
                 override fun onClick(viewAmiibo: ViewAmiibo) {
-                    wishes.offer(AmiiboListWish.ShowAmiiboDetail(viewAmiibo))
+                    viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(viewAmiibo))
                 }
             })
         }
     }
 
     private fun setupViewModelInteractions() {
-        val viewModel =
-            ViewModelProvider(this, viewModelFactory).get(AmiiboListViewModel::class.java)
         viewModel.onScreenShown()
 
         viewModel.state.onEach {
@@ -138,12 +131,7 @@ class AmiiboListActivity : AppCompatActivity() {
             }
         }.launchIn(lifecycleScope)
 
-        wishes.asFlow()
-            .onEach {
-                viewModel.onWish(it)
-            }.launchIn(lifecycleScope)
-
-        wishes.offer(AmiiboListWish.GetAmiibos)
+        viewModel.onWish(AmiiboListWish.GetAmiibos)
     }
 
     private fun navigateToSettings() {
@@ -184,10 +172,10 @@ class AmiiboListActivity : AppCompatActivity() {
         builder.setAdapter(adapter) { _, which ->
             val filter = adapter.getItem(which)
             require(filter != null)
-            wishes.offer(AmiiboListWish.FilterAmiibos(filter))
+            viewModel.onWish(AmiiboListWish.FilterAmiibos(filter))
         }
         builder.setOnCancelListener {
-            wishes.offer(AmiiboListWish.FilteringCancelled)
+            viewModel.onWish(AmiiboListWish.FilteringCancelled)
         }
         builder.show()
     }

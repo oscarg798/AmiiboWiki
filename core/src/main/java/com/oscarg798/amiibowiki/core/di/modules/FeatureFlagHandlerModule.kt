@@ -10,11 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.core.di.modules
 
 import com.oscarg798.amiibowiki.core.BuildConfig
-import com.oscarg798.amiibowiki.core.di.qualifier.MainFeatureFlagHandler
-import com.oscarg798.amiibowiki.core.di.qualifier.RemoteFeatureFlagHandler
+import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
+import com.oscarg798.amiibowiki.core.di.qualifiers.RemoteFeatureFlagHandler
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlagHandler
 import com.oscarg798.amiibowiki.core.featureflaghandler.FirebaseFeatureFlagHandler
 import com.oscarg798.amiibowiki.core.featureflaghandler.FirebaseRemoteConfig
@@ -24,29 +24,36 @@ import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import com.oscarg798.flagly.remoteconfig.RemoteConfig
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object FeatureFlagHandlerModule {
 
     private val remoteConfig = FirebaseRemoteConfig()
     private val firebaseFeatureFlagHandler = FirebaseFeatureFlagHandler(remoteConfig)
     private val localFeatureFlagHandler = LocalFeatureFlagHandler()
 
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideRemoteConfig(): RemoteConfig = remoteConfig
+    fun provideRemoteConfig(): RemoteConfig =
+        remoteConfig
 
     @RemoteFeatureFlagHandler
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideRemoteFeatureFlagHandler(): FeatureFlagHandler = firebaseFeatureFlagHandler
+    fun provideRemoteFeatureFlagHandler(): FeatureFlagHandler =
+        firebaseFeatureFlagHandler
 
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideDynamicFeatureFlag(): DynamicFeatureFlagHandler = localFeatureFlagHandler
+    fun provideDynamicFeatureFlag(): DynamicFeatureFlagHandler =
+        localFeatureFlagHandler
 
     @MainFeatureFlagHandler
-    @CoreScope
+    @Singleton
     @Provides
     fun provideAmiiboWikiFeatureFlagHandler(): FeatureFlagHandler = AmiiboWikiFeatureFlagHandler(
         if (BuildConfig.DEBUG) {

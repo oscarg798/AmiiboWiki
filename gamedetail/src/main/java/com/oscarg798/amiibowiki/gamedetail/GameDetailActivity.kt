@@ -22,16 +22,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.youtube.player.YouTubeStandalonePlayer
-import com.oscarg798.amiibowiki.core.ViewModelFactory
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_SERIES
 import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
-import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
+import com.oscarg798.amiibowiki.core.di.entrypoints.GameDetailEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
 import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
@@ -44,6 +42,7 @@ import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding
 import com.oscarg798.amiibowiki.gamedetail.di.DaggerGameDetailComponent
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
+import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -56,7 +55,7 @@ import kotlinx.coroutines.flow.onEach
 class GameDetailActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModel: GameDetailViewModel
 
     @Inject
     lateinit var config: Config
@@ -70,9 +69,13 @@ class GameDetailActivity : AppCompatActivity() {
         binding = ActivityGameDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        DaggerGameDetailComponent.builder()
-            .coreComponent((application as CoreComponentProvider).provideCoreComponent())
-            .build()
+        DaggerGameDetailComponent.factory()
+            .create(
+                EntryPointAccessors.fromApplication(
+                    application,
+                    GameDetailEntryPoint::class.java
+                )
+            )
             .inject(this)
 
         setup()
@@ -108,8 +111,7 @@ class GameDetailActivity : AppCompatActivity() {
         isAndroidQOrHigher() && AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
     private fun setupViewModel() {
-        val vm = ViewModelProvider(this, viewModelFactory).get(GameDetailViewModel::class.java)
-        vm.state.onEach { state ->
+        viewModel.state.onEach { state ->
             currentState = state
             onLoadingEnd()
             when {
@@ -138,7 +140,7 @@ class GameDetailActivity : AppCompatActivity() {
             ),
             getTrailerClickFlow()
         ).onEach {
-            vm.onWish(it)
+            viewModel.onWish(it)
         }.launchIn(lifecycleScope)
     }
 

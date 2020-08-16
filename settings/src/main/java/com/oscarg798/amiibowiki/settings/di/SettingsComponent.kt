@@ -12,13 +12,19 @@
 
 package com.oscarg798.amiibowiki.settings.di
 
-import com.oscarg798.amiibowiki.core.di.CoreComponent
+import com.oscarg798.amiibowiki.core.di.entrypoints.SettingsEntryPoint
 import com.oscarg798.amiibowiki.settings.SettingsFragment
 import dagger.Component
 
 @SettingsScope
-@Component(dependencies = [CoreComponent::class], modules = [SettingsModule::class])
+@Component(dependencies = [SettingsEntryPoint::class], modules = [SettingsModule::class])
 interface SettingsComponent {
+
+    @Component.Factory
+    interface Factory {
+
+        fun create(settingsEntryPoint: SettingsEntryPoint): SettingsComponent
+    }
 
     fun inject(settingsFragment: SettingsFragment)
 }

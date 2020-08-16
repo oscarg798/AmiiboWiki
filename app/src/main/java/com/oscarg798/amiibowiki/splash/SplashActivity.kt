@@ -14,26 +14,24 @@ package com.oscarg798.amiibowiki.splash
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
-import com.oscarg798.amiibowiki.core.ViewModelFactory
-import com.oscarg798.amiibowiki.core.di.CoreComponentProvider
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding
-import com.oscarg798.amiibowiki.splash.di.DaggerSplashComponent
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModel: SplashViewModel
 
     private lateinit var binding: ActivitySplashBinding
 
@@ -44,17 +42,10 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
-        DaggerSplashComponent.builder()
-            .coreComponent((application as CoreComponentProvider).provideCoreComponent())
-            .build()
-            .inject(this)
         setup()
     }
 
     private fun setup() {
-        val viewModel = ViewModelProvider(this, viewModelFactory).get(SplashViewModel::class.java)
         viewModel.onScreenShown()
 
         viewModel.state.onEach { state ->

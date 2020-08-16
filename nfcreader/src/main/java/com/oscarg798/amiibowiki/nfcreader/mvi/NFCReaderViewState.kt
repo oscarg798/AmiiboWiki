@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.nfcreader.mvi
 
-import com.oscarg798.amiibowiki.core.AmiiboIdentifier
+import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 

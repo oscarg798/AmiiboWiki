@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.nfcreader
 
 import android.nfc.NfcAdapter
 import android.nfc.Tag
-import com.oscarg798.amiibowiki.core.AmiiboIdentifier
+import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
 import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepositoryImpl
@@ -125,4 +125,5 @@ private val BYTE_ARRAY = byteArrayOf(
     4, 27, -103, 14, -46,
     106, 95, -127, 102, 72, 15, 32, -15, 16, -1, -18
 )
-private val AMIIBO_IDENTIFIER = AmiiboIdentifier("00000000", "00000001")
+private val AMIIBO_IDENTIFIER =
+    AmiiboIdentifier("00000000", "00000001")

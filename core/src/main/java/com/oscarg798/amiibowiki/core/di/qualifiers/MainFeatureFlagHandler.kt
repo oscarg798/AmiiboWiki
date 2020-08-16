@@ -10,11 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.core.di.qualifiers
 
-import com.oscarg798.amiibowiki.core.models.Config
+import javax.inject.Qualifier
 
-interface ConfigProvider {
-
-    fun providecConfig(): Config
-}
+@Qualifier
+annotation class MainFeatureFlagHandler

@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.testutils.di
 
-import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.persistence.dao.AgeRatingDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
@@ -21,36 +20,31 @@ import com.oscarg798.amiibowiki.core.persistence.database.CoreAmiiboDatabase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object TestPersistenceModule {
 
-    val amiiboTypeDAO = relaxedMockk<AmiiboTypeDAO>()
-    val amiiboDAO = relaxedMockk<AmiiboDAO>()
-    val gameDAO = relaxedMockk<GameDAO>()
-    val ageRatingDAO = relaxedMockk<AgeRatingDAO>()
-
-    private val database = relaxedMockk<CoreAmiiboDatabase>()
-
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideDatabase(): CoreAmiiboDatabase {
-        return database
-    }
+    fun provideDatabase(): CoreAmiiboDatabase = relaxedMockk<CoreAmiiboDatabase>()
 
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideAmiiboTypeDao(): AmiiboTypeDAO = amiiboTypeDAO
+    fun provideAmiiboTypeDao(): AmiiboTypeDAO = relaxedMockk<AmiiboTypeDAO>()
 
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideAmiiboDAO(): AmiiboDAO = amiiboDAO
+    fun provideAmiiboDAO(): AmiiboDAO = relaxedMockk<AmiiboDAO>()
 
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideGameDAO(): GameDAO = gameDAO
+    fun provideGameDAO(): GameDAO = relaxedMockk<GameDAO>()
 
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideAgeRatingDAO(): AgeRatingDAO = ageRatingDAO
+    fun provideAgeRatingDAO(): AgeRatingDAO = relaxedMockk<AgeRatingDAO>()
 }
