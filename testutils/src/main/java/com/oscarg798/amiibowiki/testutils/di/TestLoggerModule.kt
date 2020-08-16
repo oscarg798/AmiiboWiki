@@ -13,26 +13,29 @@
 package com.oscarg798.amiibowiki.testutils.di
 
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import javax.inject.Singleton
 import okhttp3.Interceptor
 import okhttp3.Response
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object TestLoggerModule {
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideFirebaseAnlytics(): FirebaseAnalytics = relaxedMockk<FirebaseAnalytics>()
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideLogger(): Logger = relaxedMockk<Logger>()
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideNetworkLoggerInterceptor(): Interceptor = object : Interceptor {
 

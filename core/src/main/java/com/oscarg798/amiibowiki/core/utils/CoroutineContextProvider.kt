@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core
+package com.oscarg798.amiibowiki.core.utils
 
 import kotlinx.coroutines.CoroutineDispatcher
 

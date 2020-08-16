@@ -14,8 +14,8 @@ package com.oscarg798.amiibowiki.nfcreader.repository
 
 import android.nfc.NfcAdapter
 import android.nfc.Tag
-import com.oscarg798.amiibowiki.core.AmiiboIdentifier
 import com.oscarg798.amiibowiki.core.extensions.getOrTransform
+import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
 import com.oscarg798.amiibowiki.nfcreader.errors.UnknownReadError
 import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException
@@ -39,7 +39,10 @@ class NFCReaderRepositoryImpl @Inject constructor(
             val amiiboData = readFromTech(tagTech)
             val id = getIdFromData(amiiboData)
             closeTagTech()
-            AmiiboIdentifier(getHead(id), getTail(id))
+            AmiiboIdentifier(
+                getHead(id),
+                getTail(id)
+            )
         }.getOrTransform {
             closeTagTech()
 

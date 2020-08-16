@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.core.di.modules
 
 import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -24,22 +24,27 @@ import com.oscarg798.lomeno.mapper.NetworkLogEventMapperImpl
 import com.oscarg798.lomeno.sources.NetworkLogSource
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Singleton
 import okhttp3.Interceptor
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object LoggerModule {
 
-    @CoreScope
+    @Singleton
     @Provides
-    fun provideFirebaseAnlytics(context: Context): FirebaseAnalytics =
+    fun provideFirebaseAnlytics(@ApplicationContext context: Context): FirebaseAnalytics =
         FirebaseAnalytics.getInstance(context)
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideLogger(firebaseLogger: FirebaseLogger): Logger =
         Lomeno(mapOf(FirebaseSource to firebaseLogger, NetworkLogSource to firebaseLogger))
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideNetworkLoggerInterceptor(logger: Logger): Interceptor =
         NetworkLoggerInterceptor(

@@ -12,10 +12,7 @@
 
 package com.oscarg798.amiibowiki.settings.di
 
-import androidx.lifecycle.ViewModel
-import com.oscarg798.amiibowiki.core.ViewModelKey
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.settings.SettingsViewModel
 import com.oscarg798.amiibowiki.settings.featurepoint.DarkModelPreferenceFeatureFactory
 import com.oscarg798.amiibowiki.settings.featurepoint.DevelopmentActivityFeatureFactory
 import com.oscarg798.amiibowiki.settings.featurepoint.MaxNumberOfResultInSearchFeatureFactory
@@ -29,7 +26,6 @@ import com.oscarg798.amiibowiki.settings.repositories.SettingsRepositoryImpl
 import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
 
 @Module
 object SettingsModule {
@@ -48,13 +44,6 @@ object SettingsModule {
                 developmentActivityFeatureFactory
             )
         )
-
-    @SettingsScope
-    @IntoMap
-    @ViewModelKey(SettingsViewModel::class)
-    @Provides
-    fun provideSettingsViewModel(settingsViewModel: SettingsViewModel): ViewModel =
-        settingsViewModel
 
     @SettingsScope
     @Provides

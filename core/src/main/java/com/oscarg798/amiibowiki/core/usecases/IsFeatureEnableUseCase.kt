@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.usecases
 
-import com.oscarg798.amiibowiki.core.di.qualifier.MainFeatureFlagHandler
+import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlag
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import javax.inject.Inject

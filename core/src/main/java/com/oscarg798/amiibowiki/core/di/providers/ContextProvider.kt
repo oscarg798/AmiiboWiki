@@ -10,17 +10,13 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core
+package com.oscarg798.amiibowiki.core.di.providers
 
-import androidx.lifecycle.ViewModel
-import dagger.MapKey
-import kotlin.reflect.KClass
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 
-@Target(
-    AnnotationTarget.FUNCTION,
-    AnnotationTarget.PROPERTY_GETTER,
-    AnnotationTarget.PROPERTY_SETTER
-)
-@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
-@MapKey
-annotation class ViewModelKey(val value: KClass<out ViewModel>)
+interface ContextProvider {
+
+    @ApplicationContext
+    fun provideContext(): Context
+}

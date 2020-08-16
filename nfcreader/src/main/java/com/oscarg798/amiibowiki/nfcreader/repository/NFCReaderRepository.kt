@@ -13,7 +13,7 @@
 package com.oscarg798.amiibowiki.nfcreader.repository
 
 import android.nfc.Tag
-import com.oscarg798.amiibowiki.core.AmiiboIdentifier
+import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 
 interface NFCReaderRepository {
 

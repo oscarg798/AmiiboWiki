@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.testutils
 
 import com.oscarg798.amiibowiki.testutils.idleresources.NetworkIdlingResourceRule
 import com.oscarg798.amiibowiki.testutils.testrules.MockWebServerTestRule
+import dagger.hilt.android.testing.HiltAndroidRule
 import okhttp3.mockwebserver.Dispatcher
 import org.junit.Rule
 import org.junit.rules.RuleChain
@@ -21,9 +22,12 @@ import org.junit.rules.TestRule
 
 abstract class BaseUITest(dispatcher: Dispatcher) {
 
+    protected val hiltRule = HiltAndroidRule(this)
+
     @Rule
     @JvmField
-    val testRule: TestRule = RuleChain.outerRule(MockDependenciesTestRule(this))
+    val testRule: TestRule = RuleChain.outerRule(hiltRule)
+        .around(MockDependenciesTestRule(this))
         .around(MockWebServerTestRule(dispatcher))
         .around(NetworkIdlingResourceRule())
 

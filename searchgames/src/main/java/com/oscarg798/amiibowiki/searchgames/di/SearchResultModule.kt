@@ -12,10 +12,7 @@
 
 package com.oscarg798.amiibowiki.searchgames.di
 
-import androidx.lifecycle.ViewModel
-import com.oscarg798.amiibowiki.core.ViewModelKey
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.searchgames.SearchGamesViewModel
 import com.oscarg798.amiibowiki.searchgames.logger.SearchGamesLogger
 import com.oscarg798.amiibowiki.searchgames.logger.SearchGamesLoggerImpl
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultReducer
@@ -24,17 +21,9 @@ import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultViewState
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
 
 @Module
 object SearchResultModule {
-
-    @SearchResultScope
-    @IntoMap
-    @ViewModelKey(SearchGamesViewModel::class)
-    @Provides
-    fun provideAmiiboDetailViewModel(searchGamesViewModel: SearchGamesViewModel): ViewModel =
-        searchGamesViewModel
 
     @SearchResultScope
     @Provides

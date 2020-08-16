@@ -17,16 +17,20 @@ import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.usecases.FillGameResultCoverUseCase
+import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class SearchGamesByAmiiboUseCase @Inject constructor(
     private val gameRepository: GameRepository,
     private val amiiboRepository: AmiiboRepository,
-    private val fillGameResultCoverUseCase: FillGameResultCoverUseCase
+    private val fillGameResultCoverUseCase: FillGameResultCoverUseCase,
+    private val locale: Locale
 ) {
 
     suspend fun execute(
@@ -44,6 +48,10 @@ class SearchGamesByAmiiboUseCase @Inject constructor(
             result.addAll(gameSeriesResults)
             result.addAll(characterResults)
             result
+        }.map {
+            it.filterNot { gameSearchResult ->
+                gameSearchResult.name.toLowerCase(locale).contains(DUPLICATE)
+            }
         }
     }.flatMapMerge { results ->
         flow<Collection<GameSearchResult>> {
@@ -63,4 +71,5 @@ class SearchGamesByAmiiboUseCase @Inject constructor(
     }
 }
 
+private const val DUPLICATE = "duplicate"
 private const val AMIIBO_NAME_DELIMITER = "-"

@@ -10,22 +10,13 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core
+package com.oscarg798.amiibowiki.core.di.providers
 
-import android.text.Editable
-import android.text.TextWatcher
+import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 
-interface TextWatcherAdapter : TextWatcher {
+interface FeatureFlagProvider {
 
-    override fun afterTextChanged(p0: Editable?) {
-        // DO_NOTHING
-    }
-
-    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        // DO_NOTHING
-    }
-
-    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        // DO_NOTHING
-    }
+    @MainFeatureFlagHandler
+    fun provideMainFeatureFlagHandler(): FeatureFlagHandler
 }

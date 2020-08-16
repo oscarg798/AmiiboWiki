@@ -15,12 +15,20 @@ package com.oscarg798.amiibowiki.houses
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
+import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
+import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
+import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
+import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.BaseUITest
-import com.oscarg798.amiibowiki.testutils.di.TestPersistenceModule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import io.mockk.every
+import javax.inject.Inject
 import kotlinx.coroutines.flow.flowOf
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -29,6 +37,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@UninstallModules(
+    PersistenceModule::class,
+    FeatureFlagHandlerModule::class,
+    NetworkModule::class,
+    LoggerModule::class
+)
+@HiltAndroidTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class AmiiboListTest : BaseUITest(DISPATCHER) {
 
@@ -36,13 +51,18 @@ class AmiiboListTest : BaseUITest(DISPATCHER) {
     val intentTestRule: IntentsTestRule<AmiiboListActivity> =
         IntentsTestRule(AmiiboListActivity::class.java, true, true)
 
+    @Inject
+    lateinit var amiiboDAO: AmiiboDAO
+
+    @Inject
+    lateinit var amiiboTypeDAO: AmiiboTypeDAO
+
     private val amiiboListRobot = AmiiboListRobot()
 
     override fun prepareTest() {
-        every { TestPersistenceModule.amiiboDAO.getAmiibos() } answers { flowOf(listOf(DB_AMIIBO)) }
-        every { TestPersistenceModule.amiiboTypeDAO.getTypes() } answers {
-            flowOf(DB_AMIIBO_TYPES)
-        }
+        hiltRule.inject()
+        every { amiiboDAO.getAmiibos() } answers { flowOf(listOf(DB_AMIIBO)) }
+        every { amiiboTypeDAO.getTypes() } answers { flowOf(DB_AMIIBO_TYPES) }
     }
 
     @Test

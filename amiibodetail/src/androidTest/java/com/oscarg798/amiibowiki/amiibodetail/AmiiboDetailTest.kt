@@ -16,14 +16,22 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
+import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
+import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
+import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
+import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
+import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
+import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.BaseUITest
-import com.oscarg798.amiibowiki.testutils.di.TestFeatureFlagHandlerModule
-import com.oscarg798.amiibowiki.testutils.di.TestPersistenceModule
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import io.mockk.coEvery
 import io.mockk.every
+import javax.inject.Inject
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
@@ -31,6 +39,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@UninstallModules(
+    PersistenceModule::class,
+    FeatureFlagHandlerModule::class,
+    NetworkModule::class,
+    LoggerModule::class
+)
+@HiltAndroidTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class AmiiboDetailTest : BaseUITest(DISPATCHER) {
 
@@ -38,14 +53,20 @@ class AmiiboDetailTest : BaseUITest(DISPATCHER) {
     val intentTestRule: IntentsTestRule<AmiiboDetailActivity> =
         IntentsTestRule(AmiiboDetailActivity::class.java, true, false)
 
+    @Inject
+    lateinit var amiiboDAO: AmiiboDAO
+
+    @Inject
+    @MainFeatureFlagHandler
+    lateinit var mainFeatureFlagHandler: FeatureFlagHandler
+
     private val amiiboListRobot = AmiiboDetailRobot()
 
     override fun prepareTest() {
-        coEvery { TestPersistenceModule.amiiboDAO.getById(AMIIBO_TAIL) } answers { DB_AMIIBO }
+        hiltRule.inject()
+        coEvery { amiiboDAO.getById(AMIIBO_TAIL) } answers { DB_AMIIBO }
         every {
-            TestFeatureFlagHandlerModule.mainFeatureFlagHandler.isFeatureEnabled(
-                AmiiboWikiFeatureFlag.ShowRelatedGames
-            )
+            mainFeatureFlagHandler.isFeatureEnabled(AmiiboWikiFeatureFlag.ShowRelatedGames)
         } answers { true }
 
         intentTestRule.launchActivity(

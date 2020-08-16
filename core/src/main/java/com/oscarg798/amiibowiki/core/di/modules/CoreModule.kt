@@ -10,13 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.core.di.modules
 
-import com.oscarg798.amiibowiki.core.CoroutineContextProvider
-import com.oscarg798.amiibowiki.core.models.Config
-import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
-import com.oscarg798.amiibowiki.core.network.services.GameService
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
@@ -25,83 +21,62 @@ import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.repositories.GameRepositoryImpl
 import com.oscarg798.amiibowiki.core.sharepreferences.AmiiboWikiPreferenceWrapper
 import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.utils.ResourceProvider
 import com.oscarg798.amiibowiki.core.utils.StringResourceProvider
-import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIKey
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import java.util.Locale
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object CoreModule {
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideLocale(): Locale = Locale.getDefault()
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideCoroutineContextProvider(): CoroutineContextProvider =
-        CoroutineContextProvider(Dispatchers.Main, Dispatchers.IO)
+        CoroutineContextProvider(
+            Dispatchers.Main,
+            Dispatchers.IO
+        )
 
-    @CoreScope
-    @Provides
-    fun provideAmiibo(@AmiiboApiQualifier retrofit: Retrofit): AmiiboService =
-        retrofit.create(AmiiboService::class.java)
-
-    @AmiiboAPIBaseUrl
-    @CoreScope
-    @Provides
-    fun provideAmiiboAPIBaseUrl(config: Config) = config.amiiboBaseUrl
-
-    @GameAPIBaseUrl
-    @CoreScope
-    @Provides
-    fun provideGameAPIBaseUrl(config: Config) = config.gameBaseUrl
-
-    @CoreScope
+    @Singleton
     @Provides
     fun provideAmiiboTypeService(@AmiiboApiQualifier retrofit: Retrofit): AmiiboTypeService =
         retrofit.create(AmiiboTypeService::class.java)
 
-    @CoreScope
-    @Provides
-    fun provideGameService(@GameApiQualifier retrofit: Retrofit): GameService =
-        retrofit.create(GameService::class.java)
-
-    @CoreScope
+    @Singleton
     @Provides
     fun provideAmiiboRepository(amiiboRepositoryImpl: AmiiboRepositoryImpl): AmiiboRepository =
         amiiboRepositoryImpl
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideAmiiboTypeRepository(amiiboTypeRepositoryImpl: AmiiboTypeRepositoryImpl): AmiiboTypeRepository =
         amiiboTypeRepositoryImpl
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideGameRepository(gameRepositoryImpl: GameRepositoryImpl): GameRepository =
         gameRepositoryImpl
 
-    @CoreScope
+    @Singleton
     @Provides
     fun provideStringResourceProvider(stringResourceProvider: StringResourceProvider): ResourceProvider<String> =
         stringResourceProvider
 
-    @CoreScope
+    @Singleton
     @Provides
     fun providePreferenceWrapper(amiiboWikiPreferenceWrapper: AmiiboWikiPreferenceWrapper): SharedPreferencesWrapper =
         amiiboWikiPreferenceWrapper
-
-    @GameAPIKey
-    @CoreScope
-    @Provides
-    fun provideGameAPIKey(config: Config) = config.gameAPIKey
 }

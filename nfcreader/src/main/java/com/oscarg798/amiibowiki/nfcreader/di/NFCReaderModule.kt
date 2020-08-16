@@ -28,13 +28,14 @@ import com.oscarg798.amiibowiki.nfcreader.utils.MifareTagTech
 import com.oscarg798.amiibowiki.nfcreader.utils.TagTech
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Module
 object NFCReaderModule {
 
     @NFCReaderScope
     @Provides
-    fun provideNFCReader(context: Context): NfcAdapter = NfcAdapter.getDefaultAdapter(context)
+    fun provideNFCReader(@ApplicationContext context: Context): NfcAdapter = NfcAdapter.getDefaultAdapter(context)
 
     @NFCReaderScope
     @Provides

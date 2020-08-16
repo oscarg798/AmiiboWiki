@@ -10,9 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core
+package com.oscarg798.amiibowiki.core.di.entrypoints
 
-data class AmiiboIdentifier(
-    val head: String,
-    val tail: String
-)
+import com.oscarg798.amiibowiki.core.di.providers.ConfigProvider
+import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
+import com.oscarg798.amiibowiki.core.di.providers.GameRepositoryProvider
+import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
+import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+
+@EntryPoint
+@InstallIn(ApplicationComponent::class)
+interface GameDetailEntryPoint :
+    GameRepositoryProvider,
+    CoroutinesProvider,
+    ConfigProvider,
+    LoggerProvider,
+    ResourceProviderProvider

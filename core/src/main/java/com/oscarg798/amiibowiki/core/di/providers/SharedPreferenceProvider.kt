@@ -10,7 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core
+package com.oscarg798.amiibowiki.core.di.providers
 
-const val PREFERENCE_NAME = "AmiiboWikiPreferences"
-const val DARK_MODE_SELECTION_KEY = "dark_mode_selection"
+import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+
+interface SharedPreferenceProvider {
+
+    fun providePreferenceWrapper(): SharedPreferencesWrapper
+}

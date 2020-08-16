@@ -12,10 +12,9 @@
 
 package com.oscarg798.amiibowiki.testutils.testrules
 
-import com.oscarg798.amiibowiki.core.CoroutineContextProvider
+import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.resetMain
@@ -29,7 +28,11 @@ class CoroutinesTestRule : TestRule {
     private val job = SupervisorJob()
     val testDispatcher = TestCoroutineDispatcher()
     val testCoroutineScope = TestCoroutineScope(testDispatcher + job)
-    val coroutineContextProvider = CoroutineContextProvider(testDispatcher, testDispatcher)
+    val coroutineContextProvider =
+        CoroutineContextProvider(
+            testDispatcher,
+            testDispatcher
+        )
 
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {

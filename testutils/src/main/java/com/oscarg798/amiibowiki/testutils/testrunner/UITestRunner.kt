@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.testutils.testrunner
 import android.app.Application
 import android.content.Context
 import androidx.test.runner.AndroidJUnitRunner
-import com.oscarg798.amiibowiki.testutils.TestApplication
+import com.oscarg798.amiibowiki.testutils.HiltTestApplication_Application
 
 class UITestRunner : AndroidJUnitRunner() {
 
@@ -25,6 +25,6 @@ class UITestRunner : AndroidJUnitRunner() {
         className: String?,
         context: Context?
     ): Application {
-        return super.newApplication(cl, TestApplication::class.java.getName(), context)
+        return super.newApplication(cl, HiltTestApplication_Application::class.java.getName(), context)
     }
 }

@@ -58,4 +58,9 @@ dependencies {
 
     implementation lomeno
     testImplementation roomTesting
+
+    // For instrumented tests.
+    implementation 'com.google.dagger:hilt-android-testing:2.28-alpha'
+    // ...with Kotlin.
+    kapt 'com.google.dagger:hilt-android-compiler:2.28-alpha'
 }

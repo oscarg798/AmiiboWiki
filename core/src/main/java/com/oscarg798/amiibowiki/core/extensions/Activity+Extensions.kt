@@ -21,9 +21,9 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityOptionsCompat
-import com.oscarg798.amiibowiki.core.DARK_MODE_SELECTION_KEY
-import com.oscarg798.amiibowiki.core.PREFERENCE_NAME
 import com.oscarg798.amiibowiki.core.R
+import com.oscarg798.amiibowiki.core.constants.DARK_MODE_SELECTION_KEY
+import com.oscarg798.amiibowiki.core.constants.PREFERENCE_NAME
 
 typealias DeepLink = String
 

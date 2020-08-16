@@ -13,7 +13,7 @@
 package com.oscarg798.amiibowiki.nfcreader
 
 import android.nfc.Tag
-import com.oscarg798.amiibowiki.core.AmiiboIdentifier
+import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
@@ -238,4 +238,5 @@ class NFCReaderViewModelTest {
     }
 }
 
-private val AMIIBO_IDENTIFIER = AmiiboIdentifier("1", "2")
+private val AMIIBO_IDENTIFIER =
+    AmiiboIdentifier("1", "2")

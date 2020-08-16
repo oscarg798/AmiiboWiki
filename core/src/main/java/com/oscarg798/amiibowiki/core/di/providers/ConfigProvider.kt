@@ -10,34 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.testutils.di
+package com.oscarg798.amiibowiki.core.di.providers
 
-import android.content.Context
-import com.oscarg798.amiibowiki.core.di.CoreComponent
-import com.oscarg798.amiibowiki.core.di.CoreModule
-import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.models.Config
-import dagger.BindsInstance
-import dagger.Component
 
-@CoreScope
-@Component(
-    modules = [
-        CoreModule::class,
-        TestNetworkModule::class,
-        TestPersistenceModule::class,
-        TestLoggerModule::class,
-        TestFeatureFlagHandlerModule::class
-    ]
-)
-interface TestCoreComponent : CoreComponent {
+interface ConfigProvider {
 
-    @Component.Factory
-    interface Builder {
-
-        fun create(
-            @BindsInstance context: Context,
-            @BindsInstance config: Config
-        ): TestCoreComponent
-    }
+    fun providecConfig(): Config
 }

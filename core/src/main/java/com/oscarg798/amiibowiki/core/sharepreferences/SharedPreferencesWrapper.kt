@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.sharepreferences
 
-import com.oscarg798.amiibowiki.core.PREFERENCE_NAME
+import com.oscarg798.amiibowiki.core.constants.PREFERENCE_NAME
 
 interface SharedPreferencesWrapper {
 

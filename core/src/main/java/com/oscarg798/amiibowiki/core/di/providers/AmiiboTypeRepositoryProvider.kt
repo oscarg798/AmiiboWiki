@@ -10,18 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di.qualifier
+package com.oscarg798.amiibowiki.core.di.providers
 
-import com.oscarg798.flagly.featureflag.DynamicFeatureFlagHandler
-import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 
-interface FeatureHandlerProvider {
+interface AmiiboTypeRepositoryProvider {
 
-    @RemoteFeatureFlagHandler
-    fun provideRemoteFeatureFlagHandler(): FeatureFlagHandler
-
-    fun provideDynamicFeatureFlag(): DynamicFeatureFlagHandler
-
-    @MainFeatureFlagHandler
-    fun provideAmiiboWikiFeatureFlagHandler(): FeatureFlagHandler
+    fun provideAmiiboTypeRepository(): AmiiboTypeRepository
 }

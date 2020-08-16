@@ -10,11 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di
+package com.oscarg798.amiibowiki.core.di.providers
 
-import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.lomeno.logger.Logger
 
-interface SharedPreferenceProvider {
+interface LoggerProvider {
 
-    fun providePreferenceWrapper(): SharedPreferencesWrapper
+    fun provideLogger(): Logger
 }

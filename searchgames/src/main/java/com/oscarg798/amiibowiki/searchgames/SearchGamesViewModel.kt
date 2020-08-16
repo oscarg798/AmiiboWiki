@@ -12,13 +12,13 @@
 
 package com.oscarg798.amiibowiki.searchgames
 
-import com.oscarg798.amiibowiki.core.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
+import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.searchgames.logger.SearchGamesLogger
 import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultResult

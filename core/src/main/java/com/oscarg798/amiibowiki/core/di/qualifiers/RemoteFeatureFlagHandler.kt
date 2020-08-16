@@ -10,9 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di.qualifier
+package com.oscarg798.amiibowiki.core.di.qualifiers
 
 import javax.inject.Qualifier
 
 @Qualifier
-annotation class MainFeatureFlagHandler
+annotation class RemoteFeatureFlagHandler

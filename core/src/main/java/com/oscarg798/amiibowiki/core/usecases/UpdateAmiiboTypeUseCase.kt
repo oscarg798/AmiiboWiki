@@ -12,12 +12,10 @@
 
 package com.oscarg798.amiibowiki.core.usecases
 
-import com.oscarg798.amiibowiki.core.di.CoreScope
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import javax.inject.Inject
 
-@CoreScope
 class UpdateAmiiboTypeUseCase @Inject constructor(
     private val amiiboTypeRepository: AmiiboTypeRepository
 ) {
