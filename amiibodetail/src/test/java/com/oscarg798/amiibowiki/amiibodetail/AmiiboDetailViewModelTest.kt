@@ -79,18 +79,21 @@ class AmiiboDetailViewModelTest {
             AmiiboDetailViewState(
                 isIdling = true,
                 isLoading = false,
+                imageExpanded = null,
                 amiiboDetails = null,
                 error = null
             ),
             AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = true,
+                imageExpanded = null,
                 amiiboDetails = null,
                 error = null
             ),
             AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = false,
+                imageExpanded = null,
                 amiiboDetails = ShowingAmiiboDetailsParams(VIEW_AMIIBO_DETAIL, false),
                 error = null
             )
@@ -115,18 +118,21 @@ class AmiiboDetailViewModelTest {
             AmiiboDetailViewState(
                 isIdling = true,
                 isLoading = false,
+                imageExpanded = null,
                 amiiboDetails = null,
                 error = null
             ),
             AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = true,
+                imageExpanded = null,
                 amiiboDetails = null,
                 error = null
             ),
             AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = false,
+                imageExpanded = null,
                 amiiboDetails = ShowingAmiiboDetailsParams(VIEW_AMIIBO_DETAIL, true),
                 error = null
             )
@@ -155,17 +161,20 @@ class AmiiboDetailViewModelTest {
                 isIdling = true,
                 isLoading = false,
                 amiiboDetails = null,
+                imageExpanded = null,
                 error = null
             ),
             AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = true,
                 amiiboDetails = null,
+                imageExpanded = null,
                 error = null
             ),
             AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = false,
+                imageExpanded = null,
                 amiiboDetails = null,
                 error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)
             )
@@ -178,6 +187,29 @@ class AmiiboDetailViewModelTest {
         coVerify(exactly = 2) {
             reducer.reduce(any(), any())
         }
+    }
+
+    @Test
+    fun `given expand image wish when its processed then it should return the expanded image`() {
+        viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(AMIIBO_IMAGE_URL))
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+
+        testCollector wereValuesEmitted listOf(
+            AmiiboDetailViewState(
+                isIdling = true,
+                isLoading = false,
+                amiiboDetails = null,
+                imageExpanded = null,
+                error = null
+            ),
+            AmiiboDetailViewState(
+                isIdling = false,
+                isLoading = false,
+                amiiboDetails = null,
+                imageExpanded = AMIIBO_IMAGE_URL,
+                error = null
+            )
+        )
     }
 
     @Test(expected = NullPointerException::class)
@@ -209,6 +241,7 @@ class AmiiboDetailViewModelTest {
     }
 }
 
+private const val AMIIBO_IMAGE_URL = "5"
 private const val GAME_ID = 4
 private const val GAME_SERIES = "22"
 private const val TAIL_TRACKING_PROPERTY = "TAIL"
@@ -218,14 +251,14 @@ private const val NAME_TRACKING_PROPERTY = "NAME"
 private const val GAME_SERIES_TRACKING_PROPERTY = "GAME_SERIES"
 private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", GAME_ID))
 private val AMIIBO = Amiibo(
-    "1",
-    "2",
-    GAME_SERIES,
-    "4",
-    "5",
-    "6",
-    AmiiboReleaseDate("7", "8", "9", "10"),
-    "11", "12"
+    amiiboSeries = "1",
+    character = "2",
+    gameSeries = GAME_SERIES,
+    head = "4",
+    image = AMIIBO_IMAGE_URL,
+    type = "6",
+    releaseDate = AmiiboReleaseDate("7", "8", "9", "10"),
+    tail = "11", name = "12"
 )
 private val VIEW_AMIIBO_DETAIL = ViewAmiiboDetails(AMIIBO)
 private const val TAIL = "1"

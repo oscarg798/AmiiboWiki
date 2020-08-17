@@ -12,10 +12,11 @@
 
 package com.oscarg798.amiibowiki.splash.mvi
 
+import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.mvi.Result
 
 sealed class SplashResult : Result {
 
     object TypesFetched : SplashResult()
-    data class Error(val exception: Exception) : SplashResult()
+    data class Error(val amiiboTypeFailure: AmiiboTypeFailure) : SplashResult()
 }

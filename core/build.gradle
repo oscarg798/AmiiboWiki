@@ -38,12 +38,14 @@ dependencies {
 
     implementation firebaseAnalytics
     implementation firebaseRemoteConfig
+    implementation zoomImageViewer
 
     implementation roomRuntime
     implementation roomCompiler
     implementation roomKTX
-    testImplementation roomTesting
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
+    implementation kotlinReflect
     implementation flagly
     implementation preference
+
+    testImplementation roomTesting
 }

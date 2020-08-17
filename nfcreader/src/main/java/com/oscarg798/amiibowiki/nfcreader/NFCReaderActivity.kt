@@ -27,6 +27,7 @@ import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.databinding.ActivityNFCReaderBinding
 import com.oscarg798.amiibowiki.nfcreader.di.DaggerNFCReaderComponent
+import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import dagger.hilt.android.EntryPointAccessors
@@ -66,7 +67,7 @@ class NFCReaderActivity : AppCompatActivity() {
     private fun setup() {
         viewModel.state.onEach {
             when {
-                it.error != null -> showErrorMessage(getString(R.string.default_error))
+                it.error != null -> showErrorMessage(it.error)
                 it.adapterStatus != null && it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
                 it.adapterStatus != null && it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
                 it.amiiboIdentifier != null -> showAmiibo(it.amiiboIdentifier)
@@ -121,8 +122,16 @@ class NFCReaderActivity : AppCompatActivity() {
         nfcAdapter.disableForegroundDispatch(this)
     }
 
-    private fun showErrorMessage(error: String) {
-        Snackbar.make(binding.tvInstruccions, error, Snackbar.LENGTH_LONG).show()
+    private fun showErrorMessage(nfcReaderFailure: NFCReaderFailure) {
+
+        Snackbar.make(
+            binding.tvInstruccions,
+            when (nfcReaderFailure) {
+                is NFCReaderFailure.TagNotSupported -> getString(R.string.tag_not_supported_error_message)
+                else -> getString(R.string.default_error)
+            },
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 }
 

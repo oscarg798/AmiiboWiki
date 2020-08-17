@@ -24,6 +24,8 @@ import androidx.core.app.ActivityOptionsCompat
 import com.oscarg798.amiibowiki.core.R
 import com.oscarg798.amiibowiki.core.constants.DARK_MODE_SELECTION_KEY
 import com.oscarg798.amiibowiki.core.constants.PREFERENCE_NAME
+import com.stfalcon.imageviewer.StfalconImageViewer
+import java.util.stream.Collectors.toList
 
 typealias DeepLink = String
 
@@ -53,6 +55,15 @@ fun AppCompatActivity.startDeepLinkIntent(
         createDeepLinkIntent(deepLink)
     intent.flags = flags
     startIntent(intent, arguments)
+}
+
+fun AppCompatActivity.showExpandedImages(imagesUrl: Collection<String>) {
+    StfalconImageViewer.Builder<String>(
+        this,
+        imagesUrl.toList()
+    ) { view, image ->
+        view.setImage(image)
+    }.build().show()
 }
 
 private fun AppCompatActivity.startIntent(

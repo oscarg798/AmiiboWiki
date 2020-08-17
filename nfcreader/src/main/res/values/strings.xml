@@ -13,4 +13,5 @@
 <resources>
     <string name="intruccions">Please hold the Amiibo close to the phone NFC Adapter</string>
     <string name="default_error">Something went wrong,please try again</string>
+    <string name="tag_not_supported_error_message">This tag is not supported</string>
 </resources>

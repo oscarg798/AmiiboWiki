@@ -15,9 +15,12 @@ package com.oscarg798.amiibowiki.gamedetail
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.GameCategory
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
+import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
+import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailReducer
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
+import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
@@ -37,6 +40,7 @@ class GameDetailViewModelTest {
 
     private val gameDetailLogger = relaxedMockk<GameDetailLogger>()
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()
+    private val expandGameImagesUseCase = relaxedMockk<ExpandGameImagesUseCase>()
     private val reducer = spyk(GameDetailReducer())
 
     private lateinit var testCollector: TestCollector<GameDetailViewState>
@@ -45,8 +49,10 @@ class GameDetailViewModelTest {
     @Before
     fun setup() {
         coEvery { getGamesUseCase.execute(GAME_SERIE, GAME_ID) } answers { GAME }
+        coEvery { expandGameImagesUseCase.execute(EXPAND_IMAGE_PARAMS) } answers { EXPANDED_IMAGES }
         viewModel = GameDetailViewModel(
             getGamesUseCase,
+            expandGameImagesUseCase,
             gameDetailLogger,
             reducer,
             coroutinesRule.coroutineContextProvider
@@ -63,6 +69,7 @@ class GameDetailViewModelTest {
             GameDetailViewState(
                 isIdling = true,
                 isLoading = false,
+                expandedImages = null,
                 gameDetails = null,
                 gameTrailer = null,
                 error = null
@@ -70,6 +77,7 @@ class GameDetailViewModelTest {
             GameDetailViewState(
                 isIdling = false,
                 isLoading = true,
+                expandedImages = null,
                 gameDetails = null,
                 gameTrailer = null,
                 error = null
@@ -77,11 +85,11 @@ class GameDetailViewModelTest {
             GameDetailViewState(
                 isIdling = false,
                 isLoading = false,
+                expandedImages = null,
                 gameDetails = GAME,
                 gameTrailer = null,
                 error = null
             )
-
         )
 
         coVerify {
@@ -102,6 +110,7 @@ class GameDetailViewModelTest {
                 isIdling = true,
                 isLoading = false,
                 gameDetails = null,
+                expandedImages = null,
                 gameTrailer = null,
                 error = null
             ),
@@ -109,6 +118,36 @@ class GameDetailViewModelTest {
                 isIdling = false,
                 isLoading = true,
                 gameDetails = null,
+                expandedImages = null,
+                gameTrailer = null,
+                error = null
+            ),
+            GameDetailViewState(
+                isIdling = false,
+                isLoading = false,
+                expandedImages = null,
+                gameDetails = null,
+                gameTrailer = "9",
+                error = null
+            )
+        )
+
+        verify {
+            gameDetailLogger.trackTrailerClicked(mapOf("GAME_ID" to GAME_ID.toString()))
+        }
+    }
+
+    @Test
+    fun `given a wish to expand cover image when wish is processed then it shoudl return the expanded image`() {
+        viewModel.onWish(GameDetailWish.ExpandImages(EXPAND_IMAGE_PARAMS))
+        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+
+        testCollector wereValuesEmitted listOf(
+            GameDetailViewState(
+                isIdling = true,
+                isLoading = false,
+                gameDetails = null,
+                expandedImages = null,
                 gameTrailer = null,
                 error = null
             ),
@@ -116,18 +155,17 @@ class GameDetailViewModelTest {
                 isIdling = false,
                 isLoading = false,
                 gameDetails = null,
-                gameTrailer = "9",
+                expandedImages = EXPANDED_IMAGES,
+                gameTrailer = null,
                 error = null
             )
-
         )
-
-        verify {
-            gameDetailLogger.trackTrailerClicked(mapOf("GAME_ID" to GAME_ID.toString()))
-        }
     }
 }
 
+private val EXPANDED_IMAGES = listOf("expand_url")
+private val EXPAND_IMAGE_PARAMS =
+    listOf(ExpandableImageParam("url", ExpandableImageType.Cover))
 private const val GAME_ID = 45
 private const val GAME_SERIE = "44"
 private val GAME =

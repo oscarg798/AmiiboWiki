@@ -20,5 +20,6 @@ sealed class GameDetailResult : Result {
     object Loading : GameDetailResult()
     data class GameTrailerFound(val trailerId: String) : GameDetailResult()
     data class GameFetched(val game: Game) : GameDetailResult()
+    data class ImagesExpanded(val images: Collection<String>) : GameDetailResult()
     data class Error(val exception: GameDetailFailure) : GameDetailResult()
 }

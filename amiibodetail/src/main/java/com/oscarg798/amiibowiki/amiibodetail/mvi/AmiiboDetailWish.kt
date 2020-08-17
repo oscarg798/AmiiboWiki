@@ -15,5 +15,7 @@ package com.oscarg798.amiibowiki.amiibodetail.mvi
 import com.oscarg798.amiibowiki.core.mvi.Wish
 
 sealed class AmiiboDetailWish : Wish {
+
+    data class ExpandAmiiboImage(val image: String) : AmiiboDetailWish()
     object ShowAmiiboDetail : AmiiboDetailWish()
 }

@@ -10,19 +10,13 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.failures
+tasks.register<tasks.PublishToPlayStore>("publishToPlayStore") {
+    group = "CI Tasks"
+    description = "Build the app and upload it to the playstore"
 
-sealed class FilterAmiiboFailure(
-    override val message: String?,
-    override val cause: Exception?
-) : Failure.Recoverable(message, cause) {
+    val cleanTaks = getTasksByName("clean", false).first()
+    val unitTestTask = getTasksByName("unitTests", false).first()
 
-    class FilterDoesNotExists(
-        cause: Exception?
-    ) : FilterAmiiboFailure("Filter does not exists", cause)
-
-    class ErrorFilteringAmiibos(cause: Exception) : FilterAmiiboFailure(cause.message, cause)
-
-    class Unknown(cause: Exception? = null) :
-        FilterAmiiboFailure("There was an unknow error", cause)
+    unitTestTask.dependsOn(cleanTaks)
+    this.dependsOn(unitTestTask)
 }

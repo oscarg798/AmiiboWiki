@@ -12,12 +12,16 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
+import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
@@ -53,6 +57,29 @@ class GetAmiibosUseCaseTest {
                 "11", "12"
             )
         ) shouldBeEqualTo response[0]
+    }
+
+    @Test(expected = AmiiboListFailure::class)
+    fun `when there is failure in the data source then it should throw an Amiibo List Failure`() {
+        every { repository.getAmiibos() } answers {
+            flow {
+                throw GetAmiibosFailure.ProblemInDataSource(
+                    "",
+                    null
+                )
+            }
+        }
+
+        runBlocking { usecase.execute().toList() }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `when there is an exception getting amiibos then it should throw the exception`() {
+        every { repository.getAmiibos() } answers {
+            throw IllegalArgumentException()
+        }
+
+        runBlocking { usecase.execute().toList() }
     }
 }
 

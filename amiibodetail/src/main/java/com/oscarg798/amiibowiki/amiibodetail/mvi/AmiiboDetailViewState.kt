@@ -25,6 +25,7 @@ data class AmiiboDetailViewState(
     override val isIdling: Boolean,
     val isLoading: Boolean,
     val amiiboDetails: ShowingAmiiboDetailsParams?,
+    val imageExpanded: String?,
     val error: AmiiboDetailFailure? = null
 ) : ViewState {
 
@@ -33,6 +34,7 @@ data class AmiiboDetailViewState(
             isIdling = true,
             isLoading = false,
             amiiboDetails = null,
+            imageExpanded = null,
             error = null
         )
     }

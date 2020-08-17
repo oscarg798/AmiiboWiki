@@ -24,12 +24,14 @@ class GameDetailReducer @Inject constructor() : Reducer<GameDetailResult, GameDe
         is GameDetailResult.Loading -> state.copy(
             isLoading = true,
             isIdling = false,
+            expandedImages = null,
             gameTrailer = null,
             error = null
         )
         is GameDetailResult.GameTrailerFound -> state.copy(
             isLoading = false,
             isIdling = false,
+            expandedImages = null,
             gameTrailer = from.trailerId,
             error = null
         )
@@ -37,13 +39,21 @@ class GameDetailReducer @Inject constructor() : Reducer<GameDetailResult, GameDe
             isLoading = false,
             isIdling = false,
             gameDetails = from.game,
+            expandedImages = null,
             gameTrailer = null,
             error = null
         )
         is GameDetailResult.Error -> state.copy(
             isLoading = false,
             isIdling = false,
+            expandedImages = null,
             error = from.exception
+        )
+        is GameDetailResult.ImagesExpanded -> state.copy(
+            isIdling = false,
+            isLoading = false,
+            expandedImages = from.images,
+            error = null
         )
     }
 }

@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.usecases
 
-import com.oscarg798.amiibowiki.core.models.AmiiboType
+import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import javax.inject.Inject
 
@@ -20,11 +20,13 @@ class UpdateAmiiboTypeUseCase @Inject constructor(
     private val amiiboTypeRepository: AmiiboTypeRepository
 ) {
 
-    suspend fun execute() = amiiboTypeRepository.updateTypes().recoverCatching {
-        if (!amiiboTypeRepository.hasTypes()) {
-            throw it
+    suspend fun execute() {
+        runCatching {
+            amiiboTypeRepository.updateTypes()
+        }.getOrElse {
+            if (it !is AmiiboTypeFailure || !amiiboTypeRepository.hasTypes()) {
+                throw it
+            }
         }
-
-        Result.success(listOf<AmiiboType>())
-    }.map { Unit }
+    }
 }

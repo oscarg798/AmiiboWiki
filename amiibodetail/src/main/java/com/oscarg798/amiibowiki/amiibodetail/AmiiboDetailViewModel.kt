@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
@@ -43,8 +44,10 @@ class AmiiboDetailViewModel @Inject constructor(
     AmiiboDetailViewState.init()
 ) {
 
-    override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> =
-        getAmiiboDetail()
+    override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = when (wish) {
+        is AmiiboDetailWish.ExpandAmiiboImage -> flowOf(AmiiboDetailResult.ImageExpanded(wish.image))
+        AmiiboDetailWish.ShowAmiiboDetail -> getAmiiboDetail()
+    }
 
     private suspend fun getAmiiboDetail(): Flow<AmiiboDetailResult> = flow {
         emit(getAmiiboDetailUseCase.execute(amiiboDetailTail))

@@ -10,19 +10,30 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.failures
+package com.oscarg798.amiibowiki
 
-sealed class FilterAmiiboFailure(
-    override val message: String?,
-    override val cause: Exception?
-) : Failure.Recoverable(message, cause) {
+import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
+import com.oscarg798.flagly.remoteconfig.RemoteConfig
+import io.mockk.coVerify
+import io.mockk.verify
+import kotlinx.coroutines.runBlocking
+import org.junit.Test
 
-    class FilterDoesNotExists(
-        cause: Exception?
-    ) : FilterAmiiboFailure("Filter does not exists", cause)
+class ActivityRemoteConfigUseCaseTest  {
 
-    class ErrorFilteringAmiibos(cause: Exception) : FilterAmiiboFailure(cause.message, cause)
+    private val remoteConfig = relaxedMockk<RemoteConfig>()
 
-    class Unknown(cause: Exception? = null) :
-        FilterAmiiboFailure("There was an unknow error", cause)
+    @Test
+    fun `given usecase is executed then it should activate remote config`(){
+        val usecase = ActivateRemoteConfigUseCase(remoteConfig)
+
+        runBlocking {
+            usecase.execute()
+        }
+
+        coVerify {
+            remoteConfig.activateAsync().await()
+        }
+    }
 }

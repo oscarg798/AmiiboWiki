@@ -10,19 +10,18 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.failures
+package tasks
 
-sealed class FilterAmiiboFailure(
-    override val message: String?,
-    override val cause: Exception?
-) : Failure.Recoverable(message, cause) {
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+import runCommand
+import showMessage
 
-    class FilterDoesNotExists(
-        cause: Exception?
-    ) : FilterAmiiboFailure("Filter does not exists", cause)
+open class PublishToPlayStore : DefaultTask() {
 
-    class ErrorFilteringAmiibos(cause: Exception) : FilterAmiiboFailure(cause.message, cause)
-
-    class Unknown(cause: Exception? = null) :
-        FilterAmiiboFailure("There was an unknow error", cause)
+    @TaskAction
+    fun run() {
+        val result = runCommand("./gradlew", listOf("publishRelease"))
+        showMessage("version released $result")
+    }
 }

@@ -10,10 +10,8 @@
  *
  */
 
-package com.oscarg798.amiibowiki
+package com.oscarg798.amiibowiki.amiibolist
 
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
@@ -117,7 +115,7 @@ class AmiiboListViewModel @Inject constructor(
         }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private suspend fun filterAmiibos(filter: ViewAmiiboType) =
-        getAmiiboFilteredUseCase.execute(filter.map())
+        getAmiiboFilteredUseCase.execute(filter.toAmiiboType())
             .map {
                 AmiiboListResult.AmiibosFiltered(it) as AmiiboListResult
             }.onStart {
@@ -131,16 +129,15 @@ class AmiiboListViewModel @Inject constructor(
     }.onStart {
         emit(AmiiboListResult.Loading)
     }.catch { cause ->
-        cause.printStackTrace()
         handleFailure(cause)
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private suspend fun FlowCollector<AmiiboListResult>.handleFailure(failure: Throwable) {
-        if (failure !is Exception) {
+        if (failure !is AmiiboListFailure) {
             throw failure
         }
 
-        emit(AmiiboListResult.Error(AmiiboListFailure.FetchError(failure.message!!)))
+        emit(AmiiboListResult.Error(failure))
     }
 }
 

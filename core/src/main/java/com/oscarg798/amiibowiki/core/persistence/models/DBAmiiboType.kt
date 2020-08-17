@@ -25,8 +25,9 @@ data class DBAmiiboType(
     @ColumnInfo(name = NAME_COLUMN_NAME)
     val name: String
 ) {
+    constructor(amiiboType: AmiiboType) : this(amiiboType.key, amiiboType.name)
 
-    fun map() = AmiiboType(key, name)
+    fun toAmiiboType() = AmiiboType(key, name)
 }
 
 const val NAME_COLUMN_NAME = "name"

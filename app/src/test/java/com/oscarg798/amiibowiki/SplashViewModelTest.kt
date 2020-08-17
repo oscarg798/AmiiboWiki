@@ -12,11 +12,11 @@
 
 package com.oscarg798.amiibowiki
 
+import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.SplashLogger
 import com.oscarg798.amiibowiki.splash.SplashViewModel
-import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 import com.oscarg798.amiibowiki.splash.mvi.SplashReducer
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
@@ -38,8 +38,7 @@ import org.junit.Test
 class SplashViewModelTest {
 
     @get: Rule
-    val coroutinesRule =
-        CoroutinesTestRule()
+    val coroutinesRule = CoroutinesTestRule()
 
     private val logger = relaxedMockk<SplashLogger>()
     private val updateAmiiboTypeUseCase = mockk<UpdateAmiiboTypeUseCase>()
@@ -91,8 +90,8 @@ class SplashViewModelTest {
 
     @Test
     fun `given a wish to get the types when events are proccess but there is an error then error should be in the state`() {
-        val error = Exception("something")
-        coEvery { updateAmiiboTypeUseCase.execute() } answers { Result.failure(error) }
+        val error = AmiiboTypeFailure.FetchTypesFailure()
+        coEvery { updateAmiiboTypeUseCase.execute() } answers { throw error }
 
         viewModel.onWish(SplashWish.GetTypes)
 
@@ -109,7 +108,7 @@ class SplashViewModelTest {
             SplashViewState(
                 isIdling = false,
                 navigatingToFirstScreen = false,
-                error = FetchTypesFailure("something", error)
+                error = error
             )
         )
 

@@ -12,9 +12,9 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
-import com.oscarg798.amiibowiki.core.extensions.runCatchingNetworkException
+import com.oscarg798.amiibowiki.core.extensions.getOrTransformNetworkException
+import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.network.models.APIAmiiboType
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
@@ -29,28 +29,27 @@ class AmiiboTypeRepositoryImpl @Inject constructor(
     private val amiiboTypeDAO: AmiiboTypeDAO
 ) : AmiiboTypeRepository {
 
-    override fun getTypes(): Flow<List<AmiiboType>> {
+    override fun getTypes(): Flow<Collection<AmiiboType>> {
         return amiiboTypeDAO.getTypes().map {
-            it.map { type -> type.map() }
+            it.map { type -> type.toAmiiboType() }
         }
     }
 
-    override suspend fun updateTypes(): Result<List<AmiiboType>> {
-        return runCatchingNetworkException {
+    override suspend fun updateTypes(): Collection<AmiiboType> {
+        return runCatching {
             amiiboTypeService.getTypes().amiibo.map {
                 val type = it.toAmiibo()
-                amiiboTypeDAO.insertType(type.toDBAmiibo())
+                amiiboTypeDAO.insertType(DBAmiiboType(type))
                 type
             }
+        }.getOrTransformNetworkException {
+            throw AmiiboTypeFailure.FetchTypesFailure(cause = it)
         }
     }
 
     override suspend fun hasTypes(): Boolean {
-        return amiiboTypeDAO.count() > 0
+        return amiiboTypeDAO.count() > NO_ELEMENTS_SIZE
     }
 }
 
-private fun AmiiboType.toDBAmiibo() =
-    DBAmiiboType(key, name)
-
-private fun APIAmiiboType.toAmiibo() = AmiiboType(key, name)
+private const val NO_ELEMENTS_SIZE = 0

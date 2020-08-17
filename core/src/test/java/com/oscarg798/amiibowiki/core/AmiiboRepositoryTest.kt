@@ -16,6 +16,7 @@ import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.models.AmiiboSearchQuery
 import com.oscarg798.amiibowiki.core.network.models.APIAmiibo
 import com.oscarg798.amiibowiki.core.network.models.APIAmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.network.models.GetAmiiboResponse
@@ -29,6 +30,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
@@ -191,10 +194,7 @@ class AmiiboRepositoryTest {
     @Test
     fun `given an amiibo tail when get by id is called then it should return amiibo found`() {
         val result = runBlocking { repository.getAmiiboById("1") }
-        Amiibo(
-            "11", "12", "13", "14",
-            "15", "16", AmiiboReleaseDate("19", "20", "21", "22"), "17", "18"
-        ) shouldBeEqualTo result
+        result shouldBeEqualTo AMIIBO_MAPPED_FROM_DB
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -202,8 +202,89 @@ class AmiiboRepositoryTest {
         coEvery { amiiboDAO.getById("1") } answers { null }
         runBlocking { repository.getAmiiboById("1") }
     }
+
+    @Test
+    fun `given a name search query when search amiibos is executed then it should call the right method`() {
+        every { amiiboDAO.searchByAmiiboName("%$MOCK_QUERY%") } answers { flowOf(listOf(DB_AMIIBO)) }
+
+        runBlocking {
+            repository.searchAmiibos(AmiiboSearchQuery.AmiiboName(MOCK_QUERY)).first()
+        } shouldBeEqualTo listOf(AMIIBO_MAPPED_FROM_DB)
+
+        verify {
+            amiiboDAO.searchByAmiiboName("%$MOCK_QUERY%")
+        }
+    }
+
+    @Test
+    fun `given a character search query when search amiibos is executed then it should call the right method`() {
+        every { amiiboDAO.searchByCharacter("%$MOCK_QUERY%") } answers {
+            flowOf(
+                listOf(
+                    DB_AMIIBO.copy(
+                        name = "other_name"
+                    )
+                )
+            )
+        }
+
+        runBlocking {
+            repository.searchAmiibos(AmiiboSearchQuery.Character(MOCK_QUERY)).first()
+        } shouldBeEqualTo listOf(AMIIBO_MAPPED_FROM_DB.copy(name = "other_name"))
+
+        verify {
+            amiiboDAO.searchByCharacter("%$MOCK_QUERY%")
+        }
+    }
+
+    @Test
+    fun `given a game series search query when search amiibos is executed then it should call the right method`() {
+        every { amiiboDAO.searchByGameSeries("%$MOCK_QUERY%") } answers {
+            flowOf(
+                listOf(
+                    DB_AMIIBO.copy(
+                        image = "other_image"
+                    )
+                )
+            )
+        }
+
+        runBlocking {
+            repository.searchAmiibos(AmiiboSearchQuery.GameSeries(MOCK_QUERY)).first()
+        } shouldBeEqualTo listOf(AMIIBO_MAPPED_FROM_DB.copy(image = "other_image"))
+
+        verify {
+            amiiboDAO.searchByGameSeries("%$MOCK_QUERY%")
+        }
+    }
+
+    @Test
+    fun `given a amiibo series search query when search amiibos is executed then it should call the right method`() {
+        every { amiiboDAO.searchByAmiiboSeries("%$MOCK_QUERY%") } answers {
+            flowOf(
+                listOf(
+                    DB_AMIIBO.copy(
+                        amiiboSeries = "seriees"
+                    )
+                )
+            )
+        }
+
+        runBlocking {
+            repository.searchAmiibos(AmiiboSearchQuery.AmiiboSeries(MOCK_QUERY)).first()
+        } shouldBeEqualTo listOf(AMIIBO_MAPPED_FROM_DB.copy(amiiboSeries = "seriees"))
+
+        verify {
+            amiiboDAO.searchByAmiiboSeries("%$MOCK_QUERY%")
+        }
+    }
 }
 
+private const val MOCK_QUERY = "query"
+private val AMIIBO_MAPPED_FROM_DB = Amiibo(
+    "11", "12", "13", "14",
+    "15", "16", AmiiboReleaseDate("19", "20", "21", "22"), "17", "18"
+)
 private val AMIIBO = Amiibo(
     "1",
     "2",

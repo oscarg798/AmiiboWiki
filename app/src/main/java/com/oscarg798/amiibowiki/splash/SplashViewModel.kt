@@ -15,6 +15,8 @@ package com.oscarg798.amiibowiki.splash
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.extensions.onException
+import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
+import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
@@ -22,8 +24,10 @@ import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.lang.NullPointerException
 import javax.inject.Inject
 
 
@@ -44,11 +48,14 @@ class SplashViewModel @Inject constructor(
 
     private fun fetchTypes() = flow<SplashResult> {
         activateRemoteConfigUseCase.execute()
-        updateAmiiboTypeUseCase.execute().map {
-            emit(SplashResult.TypesFetched)
-        }.onException {
-            emit(SplashResult.Error(it))
+        updateAmiiboTypeUseCase.execute()
+        emit(SplashResult.TypesFetched)
+    }.catch { cause->
+        if(cause !is AmiiboTypeFailure){
+            throw cause
         }
-    }
-        .flowOn(coroutineContextProvider.backgroundDispatcher)
+
+        emit(SplashResult.Error(cause))
+
+    }.flowOn(coroutineContextProvider.backgroundDispatcher)
 }

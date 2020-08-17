@@ -17,13 +17,13 @@ import com.oscarg798.amiibowiki.core.models.AmiiboSearchQuery
 import kotlinx.coroutines.flow.Flow
 
 interface AmiiboRepository {
-    suspend fun getAmiibos(): Flow<List<Amiibo>>
+    fun getAmiibos(): Flow<List<Amiibo>>
 
     fun searchAmiibos(query: AmiiboSearchQuery): Flow<Collection<Amiibo>>
 
-    suspend fun getAmiibosWithoutFilters(): Flow<List<Amiibo>>
+    fun getAmiibosWithoutFilters(): Flow<Collection<Amiibo>>
 
     suspend fun getAmiiboById(tail: String): Amiibo
 
-    suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo>
+    suspend fun getAmiibosFilteredByTypeName(type: String): Collection<Amiibo>
 }
