@@ -21,6 +21,7 @@ sealed class AmiiboDetailResult : Result {
     object None : AmiiboDetailResult()
     object Loading : AmiiboDetailResult()
 
+    data class ImageExpanded(val url: String) : AmiiboDetailResult()
     data class DetailFetched(val amiibo: Amiibo, val isRelatedGamesSectionEnabled: Boolean) : AmiiboDetailResult()
     data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
 }

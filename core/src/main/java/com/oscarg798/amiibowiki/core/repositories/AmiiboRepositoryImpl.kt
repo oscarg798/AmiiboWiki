@@ -17,11 +17,9 @@ import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.failures.REMOTE_DATA_SOURCE_TYPE
 import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.models.AmiiboSearchQuery
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
-import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -37,7 +35,7 @@ class AmiiboRepositoryImpl @Inject constructor(
     private val amiiboDAO: AmiiboDAO
 ) : AmiiboRepository {
 
-    override suspend fun getAmiibos(): Flow<List<Amiibo>> = flow {
+    override fun getAmiibos(): Flow<List<Amiibo>> = flow {
         emit(getLocalAmiibos().first())
         getCloudAmiibos()
         emitAll(getLocalAmiibos())
@@ -57,7 +55,7 @@ class AmiiboRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAmiibosWithoutFilters(): Flow<List<Amiibo>> = getLocalAmiibos()
+    override fun getAmiibosWithoutFilters(): Flow<Collection<Amiibo>> = getLocalAmiibos()
 
     override suspend fun getAmiiboById(tail: String): Amiibo {
         val amiibo = amiiboDAO.getById(tail)?.toAmiibo()
@@ -66,7 +64,7 @@ class AmiiboRepositoryImpl @Inject constructor(
             ?: throw IllegalArgumentException("tail $tail does not belong to any saved amiibo")
     }
 
-    override suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo> =
+    override suspend fun getAmiibosFilteredByTypeName(type: String): Collection<Amiibo> =
         runCatching {
             amiiboService.getAmiiboFilteredByType(type).amiibo.map { it.toAmiibo() }
         }.getOrTransformNetworkException {
@@ -97,24 +95,8 @@ class AmiiboRepositoryImpl @Inject constructor(
 
         amiiboDAO.insert(
             result.map { amiibo ->
-                amiibo.toDBAmiibo()
+                DBAmiibo(amiibo)
             }
         )
     }
 }
-
-fun AmiiboReleaseDate.toDBAmiiboReleaseDate() =
-    DBAMiiboReleaseDate(australia, europe, northAmerica, japan)
-
-fun Amiibo.toDBAmiibo() =
-    DBAmiibo(
-        amiiboSeries,
-        character,
-        gameSeries,
-        head,
-        image,
-        type,
-        tail,
-        name,
-        releaseDate?.toDBAmiiboReleaseDate()
-    )

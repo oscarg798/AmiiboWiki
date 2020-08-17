@@ -30,6 +30,13 @@ data class DBAMiiboReleaseDate(
     val japan: String?
 ) {
 
+    constructor(releaseDate: AmiiboReleaseDate) : this(
+        releaseDate.australia,
+        releaseDate.europe,
+        releaseDate.northAmerica,
+        releaseDate.japan
+    )
+
     fun map() = AmiiboReleaseDate(australia, europe, northAmerica, japan)
 }
 
@@ -55,6 +62,22 @@ data class DBAmiibo(
     val releaseDate: DBAMiiboReleaseDate?
 
 ) {
+
+    constructor(amiibo: Amiibo) : this(
+        amiibo.amiiboSeries,
+        amiibo.character,
+        amiibo.gameSeries,
+        amiibo.head,
+        amiibo.image,
+        amiibo.type,
+        amiibo.tail,
+        amiibo.name,
+        if (amiibo.releaseDate != null) {
+            DBAMiiboReleaseDate(amiibo.releaseDate)
+        } else {
+            null
+        }
+    )
 
     fun toAmiibo() = Amiibo(
         amiiboSeries,

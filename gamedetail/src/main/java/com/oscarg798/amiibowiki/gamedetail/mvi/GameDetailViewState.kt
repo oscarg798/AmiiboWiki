@@ -19,6 +19,7 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 data class GameDetailViewState(
     override val isIdling: Boolean,
     val isLoading: Boolean,
+    val expandedImages: Collection<String>?,
     val gameDetails: Game?,
     val gameTrailer: String?,
     val error: GameDetailFailure? = null
@@ -28,6 +29,7 @@ data class GameDetailViewState(
         fun init() = GameDetailViewState(
             isIdling = true,
             isLoading = false,
+            expandedImages = null,
             gameDetails = null,
             gameTrailer = null,
             error = null

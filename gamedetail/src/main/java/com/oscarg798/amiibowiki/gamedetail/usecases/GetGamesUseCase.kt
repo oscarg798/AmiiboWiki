@@ -15,6 +15,9 @@ package com.oscarg798.amiibowiki.gamedetail.usecases
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
+import com.oscarg798.amiibowiki.gamedetail.models.COVER_SIZE
+import com.oscarg798.amiibowiki.gamedetail.models.ORIGINAL_IMAGE_SIZE
+import com.oscarg798.amiibowiki.gamedetail.models.SCREENSHOT_IMAGE_SIZE
 import javax.inject.Inject
 
 class GetGamesUseCase @Inject constructor(private val gameRepository: GameRepository) {
@@ -45,12 +48,9 @@ class GetGamesUseCase @Inject constructor(private val gameRepository: GameReposi
         return game
     }
 
-    private fun transformImageUrl(url: String, desiredSize: String = DESIRED_IMAGE_SIZE) =
+    private fun transformImageUrl(url: String, desiredSize: String = SCREENSHOT_IMAGE_SIZE) =
         url.replace(ORIGINAL_SCHEMA, DESIRED_SCHEMA).replace(ORIGINAL_IMAGE_SIZE, desiredSize)
 }
 
-private const val COVER_SIZE = "t_cover_big"
 private const val DESIRED_SCHEMA = "https://"
-private const val DESIRED_IMAGE_SIZE = "t_screenshot_med"
-private const val ORIGINAL_IMAGE_SIZE = "t_thumb"
 private const val ORIGINAL_SCHEMA = "//"

@@ -10,11 +10,71 @@
  *
  *
  */
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
-apply from: "$rootProject.projectDir/gradlescripts/sharedbase.gradle"
+apply from: "$rootProject.projectDir/gradlescripts/ktlint.gradle"
+apply from: "$rootProject.projectDir/gradlescripts/signing.gradle"
+apply from: "$rootProject.projectDir/gradlescripts/tests.gradle.kts"
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        minSdkVersion appMinSdkVersion
+        targetSdkVersion appTargetSdkVersion
+        versionCode appVersionCode
+        versionName appVersionName
+        testInstrumentationRunner "com.oscarg798.amiibowiki.testutils.testrunner.UITestRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        staging {
+            manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
+        }
+
+    }
+
+    viewBinding {
+        enabled = true
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources true
+        }
+    }
+
+    packagingOptions {
+        exclude "**/attach_hotspot_windows.dll"
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/licenses/ASM'
+        exclude 'META-INF/metadata.kotlin_module'
+        exclude 'kotlin/coroutines/coroutines.kotlin_builtins'
+        exclude 'META-INF/descriptors.kotlin_module'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        freeCompilerArgs = ["-Xallow-result-return-type", "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi", "-Xopt-in=kotlinx.coroutines.FlowPreview", "-Xopt-in=kotlin.contracts.ExperimentalContracts"]
+        jvmTarget = "1.8"
+    }
+}
+
 
 dependencies {
-
     implementation(kotlinJDK)
 
     implementation appCompat
@@ -53,8 +113,6 @@ dependencies {
 
     implementation flagly
 
-    kapt project(':loggerprocessor')
-
     implementation firebaseAnalytics
 
     //Test
@@ -73,6 +131,8 @@ dependencies {
     androidTestImplementation espressoIntents
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
+
+    kapt project(':loggerprocessor')
 
     androidTestImplementation 'com.google.dagger:hilt-android-testing:2.28-alpha'
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.28-alpha'

@@ -13,12 +13,14 @@
 package com.oscarg798.amiibowiki.testutils.testrules
 
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import kotlin.reflect.KClass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -43,5 +45,10 @@ class CoroutinesTestRule : TestRule {
                 Dispatchers.resetMain()
             }
         }
+    }
+
+    inline infix fun <reified T : Exception> wasAnExceptionRaisedInScopeOfType(culito: KClass<T>) {
+        Assert.assertEquals(1, testCoroutineScope.uncaughtExceptions.size)
+        Assert.assertTrue(testCoroutineScope.uncaughtExceptions.first()::class == culito)
     }
 }

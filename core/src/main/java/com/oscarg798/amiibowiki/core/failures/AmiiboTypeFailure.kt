@@ -10,19 +10,15 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.utils
+package com.oscarg798.amiibowiki.core.failures
 
-import kotlin.contracts.contract
+sealed class AmiiboTypeFailure(
+    override val message: String?,
+    override val cause: Exception? = null
+) : Exception() {
 
-fun <T> Collection<T>?.shouldNotBeEmpty(
-    value: Boolean = !isNullOrEmpty(),
-    exception: Exception = IllegalArgumentException()
-) {
-    contract {
-        returns() implies value
-    }
-
-    if (!value) {
-        throw exception
-    }
+    data class FetchTypesFailure(
+        override val message: String? = null,
+        override val cause: Exception? = null
+    ) : AmiiboTypeFailure(message, cause)
 }

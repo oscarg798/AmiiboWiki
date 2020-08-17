@@ -32,6 +32,7 @@ import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.entrypoints.GameDetailEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
 import com.oscarg798.amiibowiki.core.extensions.setImage
+import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.models.AgeRating
 import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
@@ -40,6 +41,8 @@ import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.Rating
 import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding
 import com.oscarg798.amiibowiki.gamedetail.di.DaggerGameDetailComponent
+import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
+import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import dagger.hilt.android.EntryPointAccessors
@@ -127,6 +130,7 @@ class GameDetailActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
+                state.expandedImages != null -> showExpandedImages(state.expandedImages)
                 state.gameDetails != null -> showGameDetails(state.gameDetails)
             }
         }.launchIn(lifecycleScope)
@@ -289,7 +293,22 @@ class GameDetailActivity : AppCompatActivity() {
                 )
             )
         } else {
-            binding.ivGameCover.setImage(cover!!)
+            with(binding.ivGameCover) {
+                val cover = cover ?: return
+                setImage(cover)
+                setOnClickListener {
+                    viewModel.onWish(
+                        GameDetailWish.ExpandImages(
+                            listOf(
+                                ExpandableImageParam(
+                                    cover,
+                                    ExpandableImageType.Cover
+                                )
+                            )
+                        )
+                    )
+                }
+            }
         }
     }
 

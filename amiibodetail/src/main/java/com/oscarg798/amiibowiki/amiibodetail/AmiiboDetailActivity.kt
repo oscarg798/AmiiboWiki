@@ -29,6 +29,7 @@ import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboDetailEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.setImage
+import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.searchgames.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
@@ -100,6 +101,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
             when {
                 it.isLoading -> showLoading()
                 it.error != null -> showError(it.error)
+                it.imageExpanded != null -> showExpandedImages(listOf(it.imageExpanded))
                 it.amiiboDetails != null -> showDetail(it.amiiboDetails)
             }
         }.launchIn(lifecycleScope)
@@ -141,6 +143,10 @@ class AmiiboDetailActivity : AppCompatActivity() {
             tvGameCharacter.setText(viewAmiiboDetails.character)
             tvSerie.setText(viewAmiiboDetails.gameSeries)
             tvType.setText(viewAmiiboDetails.type)
+
+            ivImage.setOnClickListener {
+                viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(viewAmiiboDetails.imageUrl))
+            }
         }
 
         if (showingAmiiboDetailsParams.isRelatedGamesSectionEnabled) {

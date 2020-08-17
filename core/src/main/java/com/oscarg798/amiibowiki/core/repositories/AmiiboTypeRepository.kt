@@ -16,9 +16,9 @@ import com.oscarg798.amiibowiki.core.models.AmiiboType
 import kotlinx.coroutines.flow.Flow
 
 interface AmiiboTypeRepository {
-    fun getTypes(): Flow<List<AmiiboType>>
+    fun getTypes(): Flow<Collection<AmiiboType>>
 
-    suspend fun updateTypes(): Result<List<AmiiboType>>
+    suspend fun updateTypes(): Collection<AmiiboType>
 
     suspend fun hasTypes(): Boolean
 }

@@ -24,7 +24,7 @@ fun <R> Result<R>.getOrTransformNetworkException(
     }
 }
 
-fun <R> Result<R>.getOrTransform(
+inline fun <R> Result<R>.getOrTransform(
     exceptionMapper: ((Exception) -> Failure) = { throw it }
 ): R = getOrElse {
     throw when (it) {

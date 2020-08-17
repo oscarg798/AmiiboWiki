@@ -17,9 +17,11 @@ import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
+import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailResult
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
+import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +32,7 @@ import kotlinx.coroutines.flow.onStart
 
 class GameDetailViewModel @Inject constructor(
     private val getGameUseCase: GetGamesUseCase,
+    private val expandGameImagesUseCase: ExpandGameImagesUseCase,
     private val gameDetailLogger: GameDetailLogger,
     override val reducer: Reducer<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
@@ -38,7 +41,14 @@ class GameDetailViewModel @Inject constructor(
     override suspend fun getResult(wish: GameDetailWish): Flow<GameDetailResult> = when (wish) {
         is GameDetailWish.ShowGameDetail -> getGame(wish)
         is GameDetailWish.PlayGameTrailer -> getGameTrailer(wish)
+        is GameDetailWish.ExpandImages -> expandImages(wish.expandableImageParams)
     }
+
+    private fun expandImages(expandableImageParam: Collection<ExpandableImageParam>): Flow<GameDetailResult> =
+        flow {
+            val expandedImages = expandGameImagesUseCase.execute(expandableImageParam)
+            emit(GameDetailResult.ImagesExpanded(expandedImages))
+        }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private fun getGameTrailer(wish: GameDetailWish.PlayGameTrailer): Flow<GameDetailResult> =
         flow {

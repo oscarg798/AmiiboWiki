@@ -10,7 +10,17 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.failures
+package com.oscarg798.amiibowiki.gamedetail.models
 
-data class FetchTypesFailure(override val message: String?, override val cause: Throwable?) :
-    Exception(message, cause)
+class ExpandableImageParam(val imageUrl: String, val type: ExpandableImageType)
+
+sealed class ExpandableImageType(val originalSize: String) {
+
+    object Cover : ExpandableImageType(COVER_SIZE)
+    object Screenshot : ExpandableImageType(SCREENSHOT_IMAGE_SIZE)
+    object Artwork : ExpandableImageType(ORIGINAL_IMAGE_SIZE)
+}
+
+const val SCREENSHOT_IMAGE_SIZE = "t_screenshot_med"
+const val COVER_SIZE = "t_cover_big"
+const val ORIGINAL_IMAGE_SIZE = "t_thumb"

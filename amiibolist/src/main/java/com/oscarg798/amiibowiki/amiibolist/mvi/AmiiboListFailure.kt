@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.amiibolist.mvi
 
 sealed class AmiiboListFailure(override val message: String?) : Exception(message) {
 
+    class FilterError(message: String) : AmiiboListFailure(message)
     class FetchError(message: String) : AmiiboListFailure(message)
     object UnknowError : AmiiboListFailure("There was an error please try again later")
 }

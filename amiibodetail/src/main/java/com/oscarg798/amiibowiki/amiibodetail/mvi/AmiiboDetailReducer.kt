@@ -26,24 +26,34 @@ class AmiiboDetailReducer @Inject constructor() :
         is AmiiboDetailResult.None -> state.copy(
             isIdling = true,
             isLoading = false,
+            imageExpanded = null,
             error = null
         )
         is AmiiboDetailResult.Loading -> state.copy(
             isIdling = false,
             isLoading = true,
+            imageExpanded = null,
             error = null
         )
         is AmiiboDetailResult.DetailFetched -> state.copy(
             isIdling = false,
             isLoading = false,
+            imageExpanded = null,
             amiiboDetails = ShowingAmiiboDetailsParams(
                 ViewAmiiboDetails(from.amiibo), from.isRelatedGamesSectionEnabled
             ),
             error = null
         )
+        is AmiiboDetailResult.ImageExpanded -> state.copy(
+            isIdling = false,
+            isLoading = false,
+            imageExpanded = from.url,
+            error = null
+        )
         is AmiiboDetailResult.Error -> state.copy(
             isIdling = false,
             isLoading = false,
+            imageExpanded = null,
             error = from.error
         )
     }

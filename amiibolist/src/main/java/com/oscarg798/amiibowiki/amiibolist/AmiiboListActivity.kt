@@ -25,7 +25,6 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.google.android.material.snackbar.Snackbar
-import com.oscarg798.amiibowiki.AmiiboListViewModel
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.ActivityAmiiboListBinding

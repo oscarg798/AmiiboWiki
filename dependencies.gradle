@@ -92,7 +92,7 @@ ext {
     mockito_core_version = '3.2.4'
     espresso_version = "3.0.2"
     robolectric_version = "4.3.1"
-    junit_version = '4.13'
+    junit_version = '4.12'
     mockito_version = "1.4.0"
     kluent_version = "1.61"
     mock_web_server_version = '4.8.0'
@@ -121,7 +121,7 @@ ext {
     archComponentsCompiler = "android.arch.lifecycle:compiler:$arch_components_version"
 
     // Kotlin
-    kotlinJDK = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    kotlinJDK = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     kotlin = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     kotlinCoroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
@@ -231,6 +231,8 @@ ext {
 
     kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:1.2.9"
     ktlintLib = "com.pinterest:ktlint:0.37.2"
+
+    zoomImageViewer = "com.github.stfalcon:stfalcon-imageviewer:1.0.10"
 
     hiltVersion = "2.28-alpha"
     hiltLib =  "com.google.dagger:hilt-android:$hiltVersion"

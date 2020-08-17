@@ -31,6 +31,7 @@ class ReadTagUseCase @Inject constructor(
             repository.getamiiboIdentifierFromTag(tag)
         }.getOrTransform {
             throw when (it) {
+                is IllegalStateException,
                 is InvalidTagDataException,
                 is WrongPageFormatException -> NFCReaderFailure.TagNotSupported(it)
                 is UnknownReadError -> NFCReaderFailure.Unknow(it)

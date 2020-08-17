@@ -12,8 +12,8 @@
 
 package com.oscarg798.amiibowiki.splash.mvi
 
+import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.splash.failures.FetchTypesFailure
 import javax.inject.Inject
 
 class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewState> {
@@ -28,7 +28,7 @@ class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewStat
             is SplashResult.Error -> state.copy(
                 isIdling = false,
                 navigatingToFirstScreen = false,
-                error = FetchTypesFailure(from.exception.message, from.exception)
+                error = AmiiboTypeFailure.FetchTypesFailure(from.amiiboTypeFailure.message, from.amiiboTypeFailure.cause)
             )
         }
 }

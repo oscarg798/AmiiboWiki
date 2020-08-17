@@ -28,6 +28,8 @@ class MifareTagTech @Inject constructor() : TagTech {
     override fun readPages(offset: Int): ByteArray? = mifareUltralight.readPages(offset)
 
     override fun close() {
-        mifareUltralight.close()
+        if (::mifareUltralight.isInitialized) {
+            mifareUltralight.close()
+        }
     }
 }

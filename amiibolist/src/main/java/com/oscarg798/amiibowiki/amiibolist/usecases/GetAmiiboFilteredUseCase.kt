@@ -13,12 +13,15 @@
 package com.oscarg798.amiibowiki.amiibolist.usecases
 
 import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListScope
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
+import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 @AmiiboListScope
@@ -27,13 +30,21 @@ class GetAmiiboFilteredUseCase @Inject constructor(
     private val amiiboRepository: AmiiboRepository
 ) {
 
-    suspend fun execute(filter: AmiiboType): Flow<List<Amiibo>> {
+    fun execute(filter: AmiiboType): Flow<Collection<Amiibo>> {
         return if (filter == getDefaultAmiiboTypeUseCase.execute()) {
             amiiboRepository.getAmiibosWithoutFilters()
         } else {
-            flow<List<Amiibo>> {
+            flow<Collection<Amiibo>> {
                 val result = amiiboRepository.getAmiibosFilteredByTypeName(filter.name)
                 emit(result)
+            }.catch { cause ->
+                if (cause !is FilterAmiiboFailure) {
+                    throw cause
+                }
+
+                throw AmiiboListFailure.FilterError(
+                    cause.message ?: "Error filtering the amiibos is the data source"
+                )
             }
         }
     }

@@ -22,5 +22,5 @@ data class ViewAmiiboType(
     constructor(amiiboType: AmiiboType) : this(amiiboType.key, amiiboType.name)
     override fun toString(): String = name
 
-    fun map() = AmiiboType(key, name)
+    fun toAmiiboType() = AmiiboType(key, name)
 }

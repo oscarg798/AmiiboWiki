@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.core
 
+import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.network.models.APIAmiiboType
 import com.oscarg798.amiibowiki.core.network.models.GetAmiiboTypeResponse
@@ -20,6 +21,7 @@ import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepositoryImpl
+import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
@@ -72,11 +74,28 @@ class AmiiboTypeRepositoryTest {
             repository.updateTypes()
         }
 
-        true shouldBeEqualTo result.isSuccess
-        listOf(AmiiboType("1", "2")) shouldBeEqualTo result.getOrNull()
+        result shouldBeEqualTo listOf(AmiiboType("1", "2"))
 
         verify {
             amiiboTypeDAO.insertType(DB_AMIIBO_TYPE[0])
+        }
+    }
+
+    @Test(expected = AmiiboTypeFailure::class)
+    fun `when there is a network exception getting types then it should thrown a AmiiboTypeFailire`() {
+        coEvery { amiiboTypeService.getTypes() } answers { throw NetworkException.Connection }
+
+        runBlocking {
+            repository.updateTypes()
+        }
+    }
+
+    @Test(expected = NullPointerException::class)
+    fun `when there is an exception getting types then it should throw`() {
+        coEvery { amiiboTypeService.getTypes() } answers { throw NullPointerException() }
+
+        runBlocking {
+            repository.updateTypes()
         }
     }
 }

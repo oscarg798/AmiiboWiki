@@ -12,11 +12,12 @@
 
 package com.oscarg798.amiibowiki.core
 
+import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
@@ -25,19 +26,47 @@ import org.junit.Test
 class UpdateAmiibosTypeUseCaseTest {
 
     private lateinit var usecase: UpdateAmiiboTypeUseCase
-    private val amiiboTypeRepository = mockk<AmiiboTypeRepository>()
+    private val amiiboTypeRepository = relaxedMockk<AmiiboTypeRepository>()
 
     @Before
     fun setup() {
-        coEvery { amiiboTypeRepository.updateTypes() } answers { Result.success(AMIIBO_TYPES) }
+        coEvery { amiiboTypeRepository.hasTypes() } answers { false }
+        coEvery { amiiboTypeRepository.updateTypes() } answers { AMIIBO_TYPES }
         usecase = UpdateAmiiboTypeUseCase(amiiboTypeRepository)
     }
 
     @Test
     fun `when is invoken then it should return the types as result`() {
-        val result = runBlocking { usecase.execute() }
-        result.isSuccess shouldBeEqualTo true
-        result.getOrNull() shouldBeEqualTo Unit
+        runBlocking { usecase.execute() } shouldBeEqualTo Unit
+    }
+
+    @Test
+    fun `when there is a failure and there are types then it should be success`() {
+        coEvery { amiiboTypeRepository.updateTypes() } answers { throw AmiiboTypeFailure.FetchTypesFailure() }
+        coEvery { amiiboTypeRepository.hasTypes() } answers { true }
+        runBlocking { usecase.execute() } shouldBeEqualTo Unit
+    }
+
+    @Test(expected = AmiiboTypeFailure::class)
+    fun `when there is a failure and there are not types then it should be crash`() {
+        coEvery { amiiboTypeRepository.updateTypes() } answers { throw AmiiboTypeFailure.FetchTypesFailure() }
+
+        runBlocking { usecase.execute() }
+    }
+
+    @Test(expected = NullPointerException::class)
+    fun `when there is a NPE and there are  types then it should be crash`() {
+        coEvery { amiiboTypeRepository.hasTypes() } answers { true }
+        coEvery { amiiboTypeRepository.updateTypes() } answers { throw NullPointerException() }
+
+        runBlocking { usecase.execute() }
+    }
+
+    @Test(expected = NullPointerException::class)
+    fun `when there is a NPE and there are not types then it should be crash`() {
+        coEvery { amiiboTypeRepository.updateTypes() } answers { throw NullPointerException() }
+
+        runBlocking { usecase.execute() }
     }
 }
 

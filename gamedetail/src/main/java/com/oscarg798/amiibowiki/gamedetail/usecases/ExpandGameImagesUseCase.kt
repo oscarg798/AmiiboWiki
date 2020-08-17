@@ -10,19 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.failures
+package com.oscarg798.amiibowiki.gamedetail.usecases
 
-sealed class FilterAmiiboFailure(
-    override val message: String?,
-    override val cause: Exception?
-) : Failure.Recoverable(message, cause) {
+import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
+import javax.inject.Inject
 
-    class FilterDoesNotExists(
-        cause: Exception?
-    ) : FilterAmiiboFailure("Filter does not exists", cause)
+class ExpandGameImagesUseCase @Inject constructor() {
 
-    class ErrorFilteringAmiibos(cause: Exception) : FilterAmiiboFailure(cause.message, cause)
+    fun execute(params: Collection<ExpandableImageParam>): Collection<String> {
+        return params.map {
+            it.imageUrl.getExpandableCoverUrl(it.type.originalSize)
+        }
+    }
 
-    class Unknown(cause: Exception? = null) :
-        FilterAmiiboFailure("There was an unknow error", cause)
+    private fun String.getExpandableCoverUrl(originalSize: String): String {
+        return replace(originalSize, EXPANDED_IMAGE_SIZE)
+    }
 }
+
+private const val EXPANDED_IMAGE_SIZE = "t_1080p"
