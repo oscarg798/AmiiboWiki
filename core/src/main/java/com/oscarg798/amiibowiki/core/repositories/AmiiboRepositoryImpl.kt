@@ -18,6 +18,7 @@ import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.failures.REMOTE_DATA_SOURCE_TYPE
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
+import com.oscarg798.amiibowiki.core.models.AmiiboSearchQuery
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
@@ -40,6 +41,20 @@ class AmiiboRepositoryImpl @Inject constructor(
         emit(getLocalAmiibos().first())
         getCloudAmiibos()
         emitAll(getLocalAmiibos())
+    }
+
+    override fun searchAmiibos(query: AmiiboSearchQuery): Flow<Collection<Amiibo>> {
+        val searchQuery = "%${query.query}%"
+        return when (query) {
+            is AmiiboSearchQuery.AmiiboName -> amiiboDAO.searchByAmiiboName(searchQuery)
+            is AmiiboSearchQuery.Character -> amiiboDAO.searchByCharacter(searchQuery)
+            is AmiiboSearchQuery.GameSeries -> amiiboDAO.searchByGameSeries(searchQuery)
+            is AmiiboSearchQuery.AmiiboSeries -> amiiboDAO.searchByAmiiboSeries(searchQuery)
+        }.map {
+            it.map { dbAmiibo ->
+                dbAmiibo.toAmiibo()
+            }
+        }
     }
 
     override suspend fun getAmiibosWithoutFilters(): Flow<List<Amiibo>> = getLocalAmiibos()

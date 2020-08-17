@@ -77,13 +77,6 @@ class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, Amiibo
                 amiiboTailToShow = from.amiiboTail,
                 error = null
             )
-            is AmiiboListResult.None -> state.copy(
-                isIdling = true,
-                isLoading = false,
-                isShowingSettings = false,
-                amiiboTailToShow = null,
-                error = null
-            )
             is AmiiboListResult.FilterSelectionCancelled -> state.copy(
                 filters = null,
                 isIdling = true,

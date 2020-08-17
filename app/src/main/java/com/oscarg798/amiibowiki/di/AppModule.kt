@@ -28,6 +28,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideConfig(): Config = Config(
+        BuildConfig.DATABASE_NAME,
         BuildConfig.BASE_AMIIBO_API_URL,
         BuildConfig.BASE_GAME_API_URL,
         when {

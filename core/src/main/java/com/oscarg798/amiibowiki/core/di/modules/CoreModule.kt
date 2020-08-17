@@ -12,6 +12,8 @@
 
 package com.oscarg798.amiibowiki.core.di.modules
 
+import com.oscarg798.amiibowiki.core.di.qualifiers.DatabaseName
+import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
@@ -37,6 +39,11 @@ import retrofit2.Retrofit
 @Module
 @InstallIn(ApplicationComponent::class)
 object CoreModule {
+
+    @DatabaseName
+    @Provides
+    @Singleton
+    fun provideDatabaseName(config: Config): String = config.databaseName
 
     @Singleton
     @Provides

@@ -14,6 +14,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:iconTint="?iconColor"
+        android:title="@string/search_menu_item_title"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_filter"
         android:title="Filter"
@@ -24,4 +32,5 @@
         android:icon="@drawable/ic_settings"
         android:title="Settings"
         app:showAsAction="always" />
+
 </menu>

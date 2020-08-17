@@ -35,11 +35,11 @@ data class DBAMiiboReleaseDate(
 
 @Entity(tableName = AMIIBO_TABLE_NAME)
 data class DBAmiibo(
-    @ColumnInfo(name = "amiiboSeries")
+    @ColumnInfo(name = AMIIBO_SERIES_COLUMN_NAME)
     val amiiboSeries: String,
-    @ColumnInfo(name = "character")
+    @ColumnInfo(name = CHARACTER_COLUMN_NAME)
     val character: String,
-    @ColumnInfo(name = "gameSeries")
+    @ColumnInfo(name = AMIIBO_GAME_SERIES_COLUMN_NAME)
     val gameSeries: String,
     @ColumnInfo(name = "head")
     val head: String,
@@ -49,7 +49,7 @@ data class DBAmiibo(
     val type: String,
     @PrimaryKey
     val tail: String,
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = AMIIBO_NAME_COLUMN_NAME)
     val name: String,
     @Embedded
     val releaseDate: DBAMiiboReleaseDate?
@@ -69,4 +69,8 @@ data class DBAmiibo(
     )
 }
 
+const val AMIIBO_GAME_SERIES_COLUMN_NAME = "gameSeries"
+const val AMIIBO_NAME_COLUMN_NAME = "name"
+const val CHARACTER_COLUMN_NAME = "character"
+const val AMIIBO_SERIES_COLUMN_NAME = "amiiboSeries"
 const val AMIIBO_TABLE_NAME = "amiibo"

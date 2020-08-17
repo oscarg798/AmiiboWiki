@@ -20,6 +20,7 @@ import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
+import com.oscarg798.amiibowiki.amiibolist.usecases.SearchAmiibosUseCase
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.mvi.Reducer
@@ -40,6 +41,7 @@ class AmiiboListViewModel @Inject constructor(
     private val getAmiibosUseCase: GetAmiibosUseCase,
     private val getAmiiboFilteredUseCase: GetAmiiboFilteredUseCase,
     private val getAmiiboTypeUseCase: GetAmiiboTypeUseCase,
+    private val searchAmiibosUseCase: SearchAmiibosUseCase,
     private val amiiboListLogger: AmiiboListLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards AmiiboListResult, @JvmSuppressWildcards AmiiboListViewState>,
@@ -60,6 +62,7 @@ class AmiiboListViewModel @Inject constructor(
                 trackFilterApplied(wish)
                 filterAmiibos(wish.filter)
             }
+            is AmiiboListWish.Search -> searchAmiibos(wish.query)
             is AmiiboListWish.ShowFilters -> {
                 trackShowFiltersWish()
                 getFilters()
@@ -98,13 +101,20 @@ class AmiiboListViewModel @Inject constructor(
             emptyFlow()
         }
 
+    private fun searchAmiibos(query: String): Flow<AmiiboListResult> =
+        searchAmiibosUseCase.execute(query)
+            .map {
+                AmiiboListResult.AmiibosFetched(it) as AmiiboListResult
+            }.onStart {
+                emit(AmiiboListResult.Loading)
+            }.flowOn(coroutineContextProvider.backgroundDispatcher)
+
     private fun getFilters(): Flow<AmiiboListResult> = getAmiiboTypeUseCase.execute()
         .map {
             AmiiboListResult.FiltersFetched(it) as AmiiboListResult
         }.catch { cause ->
             handleFailure(cause)
-        }
-        .flowOn(coroutineContextProvider.backgroundDispatcher)
+        }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private suspend fun filterAmiibos(filter: ViewAmiiboType) =
         getAmiiboFilteredUseCase.execute(filter.map())
