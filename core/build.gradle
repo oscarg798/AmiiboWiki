@@ -11,6 +11,23 @@
  */
 apply from: "../gradlescripts/shared.gradle"
 
+android {
+
+    buildTypes {
+        release {
+            buildConfigField "String", "DEEP_LINK_PREFIX", "\"amiibowiki\""
+        }
+
+        debug {
+            buildConfigField "String", "DEEP_LINK_PREFIX", "\"amiibowikidebug\""
+        }
+
+        staging {
+            buildConfigField "String", "DEEP_LINK_PREFIX", "\"amiibowikialpha\""
+        }
+    }
+}
+
 dependencies {
 
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02"

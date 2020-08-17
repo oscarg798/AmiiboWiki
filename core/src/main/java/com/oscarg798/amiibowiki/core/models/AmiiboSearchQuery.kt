@@ -10,20 +10,12 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.mvi
+package com.oscarg798.amiibowiki.core.models
 
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
-import com.oscarg798.amiibowiki.core.mvi.Wish
+sealed class AmiiboSearchQuery(val query: String) {
 
-sealed class AmiiboListWish : Wish {
-    object RefreshAmiibos : AmiiboListWish()
-    object GetAmiibos : AmiiboListWish()
-    object ShowFilters : AmiiboListWish()
-    object FilteringCancelled : AmiiboListWish()
-    object OpenSettings : AmiiboListWish()
-
-    data class Search(val query: String) : AmiiboListWish()
-    data class ShowAmiiboDetail(val viewAmiibo: ViewAmiibo) : AmiiboListWish()
-    data class FilterAmiibos(val filter: ViewAmiiboType) : AmiiboListWish()
+    class AmiiboName(query: String) : AmiiboSearchQuery(query)
+    class Character(query: String) : AmiiboSearchQuery(query)
+    class GameSeries(query: String) : AmiiboSearchQuery(query)
+    class AmiiboSeries(query: String) : AmiiboSearchQuery(query)
 }

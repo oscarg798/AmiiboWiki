@@ -36,6 +36,7 @@ android {
         versionCode appVersionCode
         versionName appVersionName
 
+        buildConfigField "Boolean", "ALPHA", "false"
         buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
         buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
         buildConfigField "String", "GAME_API_KEY", "\"$gameAPIKey\""
@@ -44,7 +45,7 @@ android {
 
     buildTypes {
         release {
-            buildConfigField "Boolean", "ALPHA", "false"
+            buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database\""
 
             signingConfig signingConfigs.locker
 
@@ -53,7 +54,7 @@ android {
         }
 
         debug {
-            buildConfigField "Boolean", "ALPHA", "false"
+            buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database_debug\""
 
             versionNameSuffix "-DEBUG"
             applicationIdSuffix ".debug"
@@ -62,10 +63,12 @@ android {
             minifyEnabled false
         }
 
-        alpha {
+        staging {
+            buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database_alpha\""
             buildConfigField "Boolean", "ALPHA", "true"
 
             versionNameSuffix "-ALPHA"
+            applicationIdSuffix ".alpha"
 
             manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
 

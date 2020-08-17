@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.core.di.modules
 
 import android.content.Context
 import androidx.room.Room
+import com.oscarg798.amiibowiki.core.di.qualifiers.DatabaseName
 import com.oscarg798.amiibowiki.core.persistence.dao.AgeRatingDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
@@ -36,10 +37,16 @@ object PersistenceModule {
      */
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context): CoreAmiiboDatabase {
+    fun provideDatabase(
+        @ApplicationContext
+        context: Context,
+        @DatabaseName
+        databaseName: String
+    ): CoreAmiiboDatabase {
         return Room.databaseBuilder(
             context,
-            CoreAmiiboDatabase::class.java, "core_amiibo_database"
+            CoreAmiiboDatabase::class.java,
+            databaseName
         ).fallbackToDestructiveMigration()
             .build()
     }

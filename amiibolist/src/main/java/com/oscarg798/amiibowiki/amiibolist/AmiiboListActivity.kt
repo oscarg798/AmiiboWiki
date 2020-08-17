@@ -18,6 +18,7 @@ import android.view.MenuItem
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -38,18 +39,28 @@ import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboListEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @DeepLink(AMIIBO_LIST_DEEPLINK)
-class AmiiboListActivity : AppCompatActivity() {
+class AmiiboListActivity :
+    AppCompatActivity(),
+    SearchView.OnQueryTextListener,
+    SearchView.OnCloseListener {
 
     @Inject
     lateinit var viewModel: AmiiboListViewModel
 
     private var skeleton: SkeletonScreen? = null
     private var filterMenuItem: MenuItem? = null
+    private var searchView: SearchView? = null
+
     private lateinit var binding: ActivityAmiiboListBinding
+    private val searchFlow = MutableStateFlow(EMPTY_SEARCH_QUERY)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,8 +85,44 @@ class AmiiboListActivity : AppCompatActivity() {
             R.menu.amiibo_list_menu,
             menu
         )
+
         filterMenuItem = menu.findItem(R.id.action_filter)
+        setupSearchView(menu.findItem(R.id.action_search))
+
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onBackPressed() {
+        if (searchView?.isIconified == false) {
+            searchView?.isIconified = true
+            return
+        }
+        super.onBackPressed()
+    }
+
+    private fun setupSearchView(searchMenuItem: MenuItem) {
+        searchView = searchMenuItem.actionView as? SearchView ?: return
+
+        searchView?.setOnCloseListener(this)
+        searchView?.setOnQueryTextListener(this)
+    }
+
+    override fun onClose(): Boolean {
+        viewModel.onWish(AmiiboListWish.RefreshAmiibos)
+
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        newText ?: return false
+        searchFlow.value = newText
+        return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        query ?: return false
+        searchFlow.value = query
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -100,7 +147,11 @@ class AmiiboListActivity : AppCompatActivity() {
             )
 
             setOnRefreshListener {
-                viewModel.onWish(AmiiboListWish.RefreshAmiibos)
+                if (searchView?.isIconified == true) {
+                    viewModel.onWish(AmiiboListWish.RefreshAmiibos)
+                } else {
+                    isRefreshing = false
+                }
             }
         }
 
@@ -130,6 +181,13 @@ class AmiiboListActivity : AppCompatActivity() {
                 state.amiibos != null -> showAmiibos(state.amiibos.toList())
             }
         }.launchIn(lifecycleScope)
+
+        searchFlow.debounce(SEARCH_DEBOUNCE)
+            .filterNot { it.isEmpty() && it.length < MINUMUN_SEARCH_QUERY_LENGTH }
+            .onEach {
+                viewModel.onWish(AmiiboListWish.Search(it))
+            }
+            .launchIn(lifecycleScope)
 
         viewModel.onWish(AmiiboListWish.GetAmiibos)
     }
@@ -200,5 +258,8 @@ class AmiiboListActivity : AppCompatActivity() {
     }
 }
 
+private const val MINUMUN_SEARCH_QUERY_LENGTH = 3
+private const val SEARCH_DEBOUNCE = 500L
+private const val EMPTY_SEARCH_QUERY = ""
 private const val SKELETON_ANIMATION_EXAMPLES_COUNT = 10
 private const val NUMBER_OF_COLUMNS = 2

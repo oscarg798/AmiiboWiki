@@ -28,6 +28,7 @@ object TestAppModule {
     @Provides
     @Singleton
     fun provideConfig() = Config(
+        MOCK_DATABASE_NAME,
         MOCK_WEB_SERVER_URL,
         MOCK_WEB_SERVER_URL,
         Flavor.Debug,
@@ -36,4 +37,5 @@ object TestAppModule {
     )
 }
 
+private const val MOCK_DATABASE_NAME = "MOCK_DATABASE_NAME"
 private const val MOCK_API_KEY = "MOCK_API_KEY"

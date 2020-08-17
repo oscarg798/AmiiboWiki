@@ -10,20 +10,17 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.mvi
+package com.oscarg798.amiibowiki.core.utils
 
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
-import com.oscarg798.amiibowiki.core.mvi.Wish
+import android.view.MenuItem
 
-sealed class AmiiboListWish : Wish {
-    object RefreshAmiibos : AmiiboListWish()
-    object GetAmiibos : AmiiboListWish()
-    object ShowFilters : AmiiboListWish()
-    object FilteringCancelled : AmiiboListWish()
-    object OpenSettings : AmiiboListWish()
+interface ActionExpandListenerAdapter : MenuItem.OnActionExpandListener {
 
-    data class Search(val query: String) : AmiiboListWish()
-    data class ShowAmiiboDetail(val viewAmiibo: ViewAmiibo) : AmiiboListWish()
-    data class FilterAmiibos(val filter: ViewAmiiboType) : AmiiboListWish()
+    override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
+        return false
+    }
+
+    override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+        return false
+    }
 }

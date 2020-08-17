@@ -10,20 +10,29 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.repositories
+package com.oscarg798.amiibowiki.amiibolist.usecases
 
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboSearchQuery
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 
-interface AmiiboRepository {
-    suspend fun getAmiibos(): Flow<List<Amiibo>>
+class SearchAmiibosUseCase @Inject constructor(private val amiiboRepository: AmiiboRepository) {
 
-    fun searchAmiibos(query: AmiiboSearchQuery): Flow<Collection<Amiibo>>
-
-    suspend fun getAmiibosWithoutFilters(): Flow<List<Amiibo>>
-
-    suspend fun getAmiiboById(tail: String): Amiibo
-
-    suspend fun getAmiibosFilteredByTypeName(type: String): List<Amiibo>
+    fun execute(query: String): Flow<Collection<Amiibo>> = combine(
+        amiiboRepository.searchAmiibos(AmiiboSearchQuery.Character(query)),
+        amiiboRepository.searchAmiibos(AmiiboSearchQuery.AmiiboName(query)),
+        amiiboRepository.searchAmiibos(AmiiboSearchQuery.GameSeries(query)),
+        amiiboRepository.searchAmiibos(AmiiboSearchQuery.AmiiboSeries(query)),
+        transform = { nameResult: Collection<Amiibo>, characterResult: Collection<Amiibo>, gameSeriesResult: Collection<Amiibo>, amiiboSeriesResult: Collection<Amiibo> ->
+            val results = LinkedHashSet<Amiibo>()
+            results.addAll(nameResult)
+            results.addAll(characterResult)
+            results.addAll(gameSeriesResult)
+            results.addAll(amiiboSeriesResult)
+            results
+        }
+    )
 }

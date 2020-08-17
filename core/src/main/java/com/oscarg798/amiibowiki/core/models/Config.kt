@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.core.models
 
 data class Config(
+    val databaseName: String,
     val amiiboBaseUrl: String,
     val gameBaseUrl: String,
     val flavor: Flavor,

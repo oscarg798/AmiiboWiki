@@ -17,10 +17,10 @@ import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.mvi.Result
 
 sealed class AmiiboListResult : Result {
-    object None : AmiiboListResult()
     object Loading : AmiiboListResult()
     object FilterSelectionCancelled : AmiiboListResult()
     object OpenSettings : AmiiboListResult()
+
     data class AmiibosFetched(val amiibos: Collection<Amiibo>) : AmiiboListResult()
     data class AmiibosFiltered(val amiibos: Collection<Amiibo>) : AmiiboListResult()
     data class FiltersFetched(val filters: Collection<AmiiboType>) : AmiiboListResult()

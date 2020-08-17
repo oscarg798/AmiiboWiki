@@ -16,7 +16,11 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_GAME_SERIES_COLUMN_NAME
+import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_NAME_COLUMN_NAME
+import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_SERIES_COLUMN_NAME
 import com.oscarg798.amiibowiki.core.persistence.models.AMIIBO_TABLE_NAME
+import com.oscarg798.amiibowiki.core.persistence.models.CHARACTER_COLUMN_NAME
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import kotlinx.coroutines.flow.Flow
 
@@ -28,6 +32,18 @@ interface AmiiboDAO {
 
     @Query("select * from $AMIIBO_TABLE_NAME")
     fun getAmiibos(): Flow<List<DBAmiibo>>
+
+    @Query("select * from $AMIIBO_TABLE_NAME where $AMIIBO_NAME_COLUMN_NAME like :query")
+    fun searchByAmiiboName(query: String): Flow<List<DBAmiibo>>
+
+    @Query("select * from $AMIIBO_TABLE_NAME where $CHARACTER_COLUMN_NAME like :query")
+    fun searchByCharacter(query: String): Flow<List<DBAmiibo>>
+
+    @Query("select * from $AMIIBO_TABLE_NAME where $AMIIBO_GAME_SERIES_COLUMN_NAME like :query")
+    fun searchByGameSeries(query: String): Flow<List<DBAmiibo>>
+
+    @Query("select * from $AMIIBO_TABLE_NAME where $AMIIBO_SERIES_COLUMN_NAME like :query")
+    fun searchByAmiiboSeries(query: String): Flow<List<DBAmiibo>>
 
     @Query("select count(*) from $AMIIBO_TABLE_NAME")
     suspend fun getCount(): Int
