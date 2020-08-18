@@ -40,6 +40,8 @@ The project use a `local.properties` file to setup a Google API Key for **YouTub
 Also the build type `Alpha` creates a minified signed build, and in order to make it work the file `signing.gradle` needs a specification
 of a **KeyStore Path**, **KeyStore Alias**, and the **Password** to access to it
 
+We use mixpanel to track some user events, create a project and paste the token as `mixpanelToken`
+
 Create/Edit this file in the **root** of the project, it should look like 
 
 ```
@@ -49,6 +51,7 @@ keystoreAlias=<Your Keystore Alias>
 keystorepath=<Keystore path>
 googleApiKey=<Google API Key>
 gameAPIKey=<Game API Key>
+mixpanelToken=<Mixpanel API Key>
 ```
 ### Help 
 

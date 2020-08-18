@@ -15,8 +15,8 @@ package com.oscarg798.amiibowiki.testutils.utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.junit.Assert
 
 /**
@@ -26,9 +26,9 @@ class TestCollector<T> {
     private val values = mutableListOf<T>()
 
     fun test(scope: CoroutineScope, flow: Flow<T>): Job {
-        return scope.launch {
-            flow.collect { values.add(it) }
-        }
+        return flow.onEach {
+            values.add(it)
+        }.launchIn(scope)
     }
 
     fun clear() {

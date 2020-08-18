@@ -216,7 +216,7 @@ ext {
     espressoIntents = "androidx.test.espresso:espresso-intents:$espressoIntentsVersion"
     lifeCycleVersion = "2.3.0-alpha05"
     lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion"
-    viewModelScope= "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha05"
+    viewModelScope= "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha06"
 
     idlingResource = 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
     activityx = "androidx.activity:activity-ktx:1.2.0-alpha06"
@@ -237,4 +237,7 @@ ext {
     hiltVersion = "2.28-alpha"
     hiltLib =  "com.google.dagger:hilt-android:$hiltVersion"
     hiltKAPT=  "com.google.dagger:hilt-android-compiler:$hiltVersion"
+
+    viewPagerVersion = "1.0.0"
+    viewPager =  "androidx.viewpager2:viewpager2:$viewPagerVersion"
 }

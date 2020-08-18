@@ -36,6 +36,8 @@ dependencies {
     implementation picasso
     implementation project(path: ':network')
 
+    implementation mixpanel
+
     implementation firebaseAnalytics
     implementation firebaseRemoteConfig
     implementation zoomImageViewer

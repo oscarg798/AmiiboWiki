@@ -15,8 +15,11 @@ package com.oscarg798.amiibowiki.core.di.modules
 import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.oscarg798.amiibowiki.core.logger.FirebaseLogger
+import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
+import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.logger.requestprocessor.DefaultRequestProcessor
 import com.oscarg798.amiibowiki.logger.sources.FirebaseSource
+import com.oscarg798.amiibowiki.logger.sources.MixPanelSource
 import com.oscarg798.lomeno.interceptor.NetworkLoggerInterceptor
 import com.oscarg798.lomeno.logger.Logger
 import com.oscarg798.lomeno.logger.Lomeno
@@ -41,8 +44,21 @@ object LoggerModule {
 
     @Singleton
     @Provides
-    fun provideLogger(firebaseLogger: FirebaseLogger): Logger =
-        Lomeno(mapOf(FirebaseSource to firebaseLogger, NetworkLogSource to firebaseLogger))
+    fun provideMixpanelLogger(
+        @ApplicationContext context: Context,
+        config: Config
+    ): MixpanelLogger = MixpanelLogger(context, config.mixpanelAPIKey)
+
+    @Singleton
+    @Provides
+    fun provideLogger(firebaseLogger: FirebaseLogger, mixpanelLogger: MixpanelLogger): Logger =
+        Lomeno(
+            mapOf(
+                FirebaseSource to firebaseLogger,
+                NetworkLogSource to firebaseLogger,
+                MixPanelSource to mixpanelLogger
+            )
+        )
 
     @Singleton
     @Provides

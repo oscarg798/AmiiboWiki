@@ -33,6 +33,7 @@ object TestAppModule {
         MOCK_WEB_SERVER_URL,
         Flavor.Debug,
         MOCK_API_KEY,
+        MOCK_API_KEY,
         MOCK_API_KEY
     )
 }

@@ -36,6 +36,7 @@ import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.constants.SETTINGS_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboListEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
+import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,6 +54,9 @@ class AmiiboListActivity :
 
     @Inject
     lateinit var viewModel: AmiiboListViewModel
+
+    @Inject
+    lateinit var mixpanelLogger: MixpanelLogger
 
     private var skeleton: SkeletonScreen? = null
     private var filterMenuItem: MenuItem? = null
@@ -97,6 +101,11 @@ class AmiiboListActivity :
             return
         }
         super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        mixpanelLogger.flush()
+        super.onDestroy()
     }
 
     private fun setupSearchView(searchMenuItem: MenuItem) {

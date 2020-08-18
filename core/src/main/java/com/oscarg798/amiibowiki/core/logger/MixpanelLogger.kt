@@ -10,20 +10,31 @@
  *
  */
 
-package com.oscarg798.amiibowiki
+package com.oscarg798.amiibowiki.core.logger
 
-import androidx.test.runner.AndroidJUnit4
-import org.junit.Test
-import org.junit.runner.RunWith
+import android.content.Context
+import com.mixpanel.android.mpmetrics.MixpanelAPI
+import com.oscarg798.lomeno.event.LogEvent
+import com.oscarg798.lomeno.logger.Logger
+import org.json.JSONObject
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
+class MixpanelLogger(context: Context, apiKey: String) : Logger {
+
+    private val mixpanel: MixpanelAPI = MixpanelAPI.getInstance(context, apiKey)
+
+    override fun identify(id: String) {
+        mixpanel.identify(id)
+    }
+
+    override fun log(logEvent: LogEvent) {
+        val properties = JSONObject()
+        logEvent.properties.map { entry ->
+            properties.put(entry.key, entry.value)
+        }
+
+        mixpanel.track(logEvent.name, properties)
+    }
+
+    fun flush() {
     }
 }

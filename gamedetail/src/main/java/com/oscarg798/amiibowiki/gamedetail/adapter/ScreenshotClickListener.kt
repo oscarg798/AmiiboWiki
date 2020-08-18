@@ -10,17 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames
+package com.oscarg798.amiibowiki.gamedetail.adapter
 
-import androidx.test.platform.app.InstrumentationRegistry
-import junit.framework.Assert.assertEquals
-import org.junit.Test
+interface ScreenshotClickListener {
 
-class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.oscarg798.amiibowiki.searchgames.test", appContext.packageName)
-    }
+    fun onScreenshotClick()
 }

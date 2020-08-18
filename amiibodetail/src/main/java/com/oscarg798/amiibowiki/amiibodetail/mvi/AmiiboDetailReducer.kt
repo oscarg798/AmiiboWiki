@@ -23,12 +23,7 @@ class AmiiboDetailReducer @Inject constructor() :
         state: AmiiboDetailViewState,
         from: AmiiboDetailResult
     ): AmiiboDetailViewState = when (from) {
-        is AmiiboDetailResult.None -> state.copy(
-            isIdling = true,
-            isLoading = false,
-            imageExpanded = null,
-            error = null
-        )
+
         is AmiiboDetailResult.Loading -> state.copy(
             isIdling = false,
             isLoading = true,

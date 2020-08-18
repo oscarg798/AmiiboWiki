@@ -52,6 +52,7 @@ class GameDetailReducer @Inject constructor() : Reducer<GameDetailResult, GameDe
         is GameDetailResult.ImagesExpanded -> state.copy(
             isIdling = false,
             isLoading = false,
+            gameTrailer = null,
             expandedImages = from.images,
             error = null
         )

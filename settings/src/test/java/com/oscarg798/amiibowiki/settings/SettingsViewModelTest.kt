@@ -20,49 +20,39 @@ import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
-import com.oscarg798.amiibowiki.testutils.utils.TestCollector
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.spyk
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class SettingsViewModelTest {
+class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewState, SettingsViewModel> {
 
     @get: Rule
-    val coroutinesRule = CoroutinesTestRule()
+    val viewModelTestTule = ViewModelTestRule<SettingsViewState, SettingsViewModel>(this)
 
     private val featurePoint = relaxedMockk<SuspendFeaturePoint<PreferenceBuilder, Unit>>()
     private val saveDarkModeSelectionUseCase = relaxedMockk<SaveDarkModeSelectionUseCase>()
     private val reducer = spyk(SettingsReducer())
 
-    private lateinit var viewModel: SettingsViewModel
-    private lateinit var testCollector: TestCollector<SettingsViewState>
-
-    @Before
-    fun setup() {
-        testCollector = TestCollector()
-        viewModel = SettingsViewModel(
-            saveDarkModeSelectionUseCase,
-            featurePoint,
-            reducer,
-            coroutinesRule.coroutineContextProvider
-        )
-    }
+    override fun create(): SettingsViewModel = SettingsViewModel(
+        saveDarkModeSelectionUseCase,
+        featurePoint,
+        reducer,
+        viewModelTestTule.coroutineContextProvider
+    )
 
     @Test
     fun `given create preference wish when wish is processed then it should emit two states`() {
         coEvery { featurePoint.createFeatures(Unit) } answers { PREFERENCES.toList() }
 
-        viewModel.onWish(SettingsWish.CreatePreferences)
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+        viewModelTestTule.viewModel.onWish(SettingsWish.CreatePreferences)
 
-        testCollector wasValueEmiited SettingsViewState.init()
+        viewModelTestTule.testCollector wasValueEmiited SettingsViewState.init()
 
-        testCollector wereValuesEmitted listOf(
+        viewModelTestTule.testCollector wereValuesEmitted listOf(
             SettingsViewState(
                 isIdling = true,
                 isLoading = false,
@@ -96,10 +86,9 @@ class SettingsViewModelTest {
 
     @Test
     fun `given dark mode preference clicked when wish is processed then it should emit an state to show the dark mode dialog`() {
-        viewModel.onWish(SettingsWish.PreferenceClicked(DARK_MODE_PREFERENCE_KEY))
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+        viewModelTestTule.viewModel.onWish(SettingsWish.PreferenceClicked(DARK_MODE_PREFERENCE_KEY))
 
-        testCollector wereValuesEmitted listOf(
+        viewModelTestTule.testCollector wereValuesEmitted listOf(
             SettingsViewState(
                 isIdling = true,
                 isLoading = false,
@@ -125,10 +114,9 @@ class SettingsViewModelTest {
 
     @Test
     fun `given  development activity preference clicked when wish is processed then it should emit an state to show development activity`() {
-        viewModel.onWish(SettingsWish.PreferenceClicked(DEVELOPMENT_ACTIVITY_PREFERENCE_KEY))
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+        viewModelTestTule.viewModel.onWish(SettingsWish.PreferenceClicked(DEVELOPMENT_ACTIVITY_PREFERENCE_KEY))
 
-        testCollector wereValuesEmitted listOf(
+        viewModelTestTule.testCollector wereValuesEmitted listOf(
             SettingsViewState(
                 isIdling = true,
                 isLoading = false,
@@ -154,10 +142,9 @@ class SettingsViewModelTest {
 
     @Test
     fun `given dark mode options was selected when wish is processed then it should emit the state should be idling`() {
-        viewModel.onWish(SettingsWish.DarkModeOptionSelected("1"))
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+        viewModelTestTule.viewModel.onWish(SettingsWish.DarkModeOptionSelected("1"))
 
-        testCollector wereValuesEmitted listOf(
+        viewModelTestTule.testCollector wereValuesEmitted listOf(
             SettingsViewState(
                 isIdling = true,
                 isLoading = false,
