@@ -12,9 +12,15 @@
 
 package com.oscarg798.amiibowiki.core.di.providers
 
+import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
 import com.oscarg798.lomeno.logger.Logger
 
 interface LoggerProvider {
 
     fun provideLogger(): Logger
+
+    /**
+     * TODO: this should be removed once lomeno integrates flush
+     */
+    fun provideMixpanelLogger(): MixpanelLogger
 }

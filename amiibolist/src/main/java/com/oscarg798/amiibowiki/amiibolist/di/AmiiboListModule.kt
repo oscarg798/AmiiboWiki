@@ -12,8 +12,8 @@
 
 package com.oscarg798.amiibowiki.amiibolist.di
 
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListLogger
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListLoggerImpl
+import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLogger
+import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLoggerImpl
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListReducer
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState

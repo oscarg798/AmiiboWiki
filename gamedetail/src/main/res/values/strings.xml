@@ -14,4 +14,5 @@
     <string name="game_detail_title"></string>
     <string name="error_getting_game">There was an error getting game details</string>
     <string name="error_dialog_positive_button">Ok</string>
+    <string name="screenshots_label">Screenshots</string>
 </resources>

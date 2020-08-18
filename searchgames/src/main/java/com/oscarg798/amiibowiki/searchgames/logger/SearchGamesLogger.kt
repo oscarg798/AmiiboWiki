@@ -13,16 +13,13 @@
 package com.oscarg798.amiibowiki.searchgames.logger
 
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
-import com.oscarg798.amiibowiki.logger.annotations.LogSources
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
 import com.oscarg798.amiibowiki.logger.events.RECYCLER_VIEW_ITEM_TYPE_NAME
-import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
 
 @LoggerDecorator
 interface SearchGamesLogger {
 
-    @LogSources([FIREBASE_LOG_SOURCE_NAME])
     @WidgetClicked(GAME_RESULT_CLICKED_NAME, RECYCLER_VIEW_ITEM_TYPE_NAME)
     fun trackGameSearchResultClicked(@LogEventProperties properties: Map<String, String>)
 }

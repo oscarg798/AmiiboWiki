@@ -13,13 +13,14 @@
 package com.oscarg798.amiibowiki.logger.events
 
 import com.oscarg798.amiibowiki.logger.sources.FirebaseSource
+import com.oscarg798.amiibowiki.logger.sources.MixPanelSource
 import com.oscarg798.lomeno.event.LogEvent
 import com.oscarg798.lomeno.event.LogSource
 
 class WidgetClickedEvent(
     widgetName: String,
     private val widgetType: String,
-    private val sources: Set<LogSource> = setOf<LogSource>(FirebaseSource),
+    private val sources: Set<LogSource> = setOf<LogSource>(FirebaseSource, MixPanelSource),
     private val extraProperties: Map<String, String>? = null
 ) : LogEvent {
 

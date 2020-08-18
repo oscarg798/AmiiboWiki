@@ -12,6 +12,8 @@
 
 package com.oscarg798.amiibowiki.logger.events
 
+import com.oscarg798.amiibowiki.logger.sources.FirebaseSource
+import com.oscarg798.amiibowiki.logger.sources.MixPanelSource
 import com.oscarg798.lomeno.event.LogEvent
 import com.oscarg798.lomeno.event.LogSource
 import kotlin.math.log
@@ -19,7 +21,7 @@ import kotlin.math.log
 class RegularLogEvent(
     override val name: String,
     private val eventValue: String,
-    private val sources: Set<LogSource>,
+    private val sources: Set<LogSource> = setOf(MixPanelSource, FirebaseSource),
     private val extraProperties: Map<String, String>? = null
 ) : LogEvent {
 

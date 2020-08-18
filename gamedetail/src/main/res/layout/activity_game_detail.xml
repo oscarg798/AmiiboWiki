@@ -192,6 +192,29 @@
                 tools:text="Lorem Ipsum Dolor"
                 tools:textAppearance="@style/TextAppearance.AmiiboWiki.Body.L" />
 
+            <TextView
+                android:id="@+id/tvScreenshotsLabel"
+                style="@style/Styles.AmiiboWiki.Default"
+                android:layout_width="@dimen/match_constraint"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:text="@string/screenshots_label"
+                android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.S"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvGameSummary" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/vpGameScreenshots"
+                android:layout_width="@dimen/match_constraint"
+                android:layout_height="200dp"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:nestedScrollingEnabled="true"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvScreenshotsLabel"
+                tools:listitem="@layout/item_screenshot" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -200,7 +223,6 @@
         android:id="@+id/shimmer"
         layout="@layout/game_detail_content_skeleton"
         android:visibility="gone" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -18,6 +18,7 @@ dependencies {
     implementation cardView
     implementation shimmer
     implementation picasso
+    implementation viewPager
 
     implementation project(path: ':core')
     implementation project(path: ':network')

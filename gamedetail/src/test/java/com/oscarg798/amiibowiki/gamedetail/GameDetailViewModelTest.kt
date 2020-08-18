@@ -23,8 +23,7 @@ import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
-import com.oscarg798.amiibowiki.testutils.utils.TestCollector
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.spyk
@@ -33,39 +32,36 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class GameDetailViewModelTest {
+class GameDetailViewModelTest :
+    ViewModelTestRule.ViewModelCreator<GameDetailViewState, GameDetailViewModel> {
 
     @get: Rule
-    val coroutinesRule = CoroutinesTestRule()
+    val viewModelTestRule = ViewModelTestRule<GameDetailViewState, GameDetailViewModel>(this)
 
     private val gameDetailLogger = relaxedMockk<GameDetailLogger>()
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()
     private val expandGameImagesUseCase = relaxedMockk<ExpandGameImagesUseCase>()
     private val reducer = spyk(GameDetailReducer())
 
-    private lateinit var testCollector: TestCollector<GameDetailViewState>
-    private lateinit var viewModel: GameDetailViewModel
-
     @Before
     fun setup() {
         coEvery { getGamesUseCase.execute(GAME_SERIE, GAME_ID) } answers { GAME }
         coEvery { expandGameImagesUseCase.execute(EXPAND_IMAGE_PARAMS) } answers { EXPANDED_IMAGES }
-        viewModel = GameDetailViewModel(
-            getGamesUseCase,
-            expandGameImagesUseCase,
-            gameDetailLogger,
-            reducer,
-            coroutinesRule.coroutineContextProvider
-        )
-        testCollector = TestCollector()
     }
+
+    override fun create(): GameDetailViewModel = GameDetailViewModel(
+        getGamesUseCase,
+        expandGameImagesUseCase,
+        gameDetailLogger,
+        reducer,
+        viewModelTestRule.coroutineContextProvider
+    )
 
     @Test
     fun `given a wish to show the game details when its processed then it should return the state with the details`() {
-        viewModel.onWish(GameDetailWish.ShowGameDetail(GAME_ID, GAME_SERIE))
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+        viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail(GAME_ID, GAME_SERIE))
 
-        testCollector wereValuesEmitted listOf(
+        viewModelTestRule.testCollector wereValuesEmitted listOf(
             GameDetailViewState(
                 isIdling = true,
                 isLoading = false,
@@ -102,10 +98,9 @@ class GameDetailViewModelTest {
 
     @Test
     fun `given a wish to show the game trailer when its processed then it should return the state with the trailer id`() {
-        viewModel.onWish(GameDetailWish.PlayGameTrailer(GAME_ID, GAME.videosId!!.first()))
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+        viewModelTestRule.viewModel.onWish(GameDetailWish.PlayGameTrailer(GAME_ID, GAME.videosId!!.first()))
 
-        testCollector wereValuesEmitted listOf(
+        viewModelTestRule.testCollector wereValuesEmitted listOf(
             GameDetailViewState(
                 isIdling = true,
                 isLoading = false,
@@ -139,10 +134,9 @@ class GameDetailViewModelTest {
 
     @Test
     fun `given a wish to expand cover image when wish is processed then it shoudl return the expanded image`() {
-        viewModel.onWish(GameDetailWish.ExpandImages(EXPAND_IMAGE_PARAMS))
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+        viewModelTestRule.viewModel.onWish(GameDetailWish.ExpandImages(EXPAND_IMAGE_PARAMS))
 
-        testCollector wereValuesEmitted listOf(
+        viewModelTestRule.testCollector wereValuesEmitted listOf(
             GameDetailViewState(
                 isIdling = true,
                 isLoading = false,

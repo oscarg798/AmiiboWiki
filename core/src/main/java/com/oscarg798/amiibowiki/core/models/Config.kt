@@ -18,7 +18,8 @@ data class Config(
     val gameBaseUrl: String,
     val flavor: Flavor,
     val googleAPIKey: String,
-    val gameAPIKey: String
+    val gameAPIKey: String,
+    val mixpanelAPIKey: String
 )
 
 sealed class Flavor {

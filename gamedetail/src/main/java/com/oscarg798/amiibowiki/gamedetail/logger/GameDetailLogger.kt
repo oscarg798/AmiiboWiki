@@ -13,21 +13,17 @@
 package com.oscarg798.amiibowiki.gamedetail.logger
 
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
-import com.oscarg798.amiibowiki.logger.annotations.LogSources
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
 import com.oscarg798.amiibowiki.logger.events.BUTTON_TYPE_NAME
-import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
 
 @LoggerDecorator
 interface GameDetailLogger {
 
-    @LogSources([FIREBASE_LOG_SOURCE_NAME])
     @ScreenShown(GAME_DETAIL_SCREEN_NAME)
     fun trackScreenShown(@LogEventProperties properties: Map<String, String>)
 
-    @LogSources([FIREBASE_LOG_SOURCE_NAME])
     @WidgetClicked(GAME_TRAILER_CLICKED_EVENT_NAME, BUTTON_TYPE_NAME)
     fun trackTrailerClicked(@LogEventProperties properties: Map<String, String>)
 }

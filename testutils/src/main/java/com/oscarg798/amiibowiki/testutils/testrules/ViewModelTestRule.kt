@@ -12,46 +12,53 @@
 
 package com.oscarg798.amiibowiki.testutils.testrules
 
+import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import kotlin.reflect.KClass
+import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-class CoroutinesTestRule : TestRule {
+class ViewModelTestRule<ViewState : MVIViewState, VM : AbstractViewModel<*, *, ViewState>>(
+    private val viewModelCreator: ViewModelCreator<ViewState, VM>
+) : TestRule {
 
-    private val job = SupervisorJob()
+    private lateinit var job: Job
     val testDispatcher = TestCoroutineDispatcher()
-    val testCoroutineScope =
-        TestCoroutineScope(testDispatcher + job)
+    val testCoroutineScope = TestCoroutineScope(testDispatcher)
     val coroutineContextProvider =
         CoroutineContextProvider(
             testDispatcher,
             testDispatcher
         )
 
+    lateinit var viewModel: VM
+    lateinit var testCollector: TestCollector<ViewState>
+
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
             override fun evaluate() {
                 Dispatchers.setMain(testDispatcher)
+                viewModel = viewModelCreator.create()
+                testCollector = TestCollector()
+                job = testCollector.test(testCoroutineScope, viewModel.state)
                 base.evaluate()
-                job.cancel()
-                testDispatcher.cleanupTestCoroutines()
-                testCoroutineScope.cleanupTestCoroutines()
                 Dispatchers.resetMain()
+                job.cancel()
+                testCollector.clear()
             }
         }
     }
 
-    inline infix fun <reified T : Exception> wasAnExceptionRaisedInScopeOfType(culito: KClass<T>) {
-        Assert.assertEquals(1, testCoroutineScope.uncaughtExceptions.size)
-        Assert.assertTrue(testCoroutineScope.uncaughtExceptions.first()::class == culito)
+    interface ViewModelCreator<ViewState : MVIViewState, VM : AbstractViewModel<*, *, ViewState>> {
+
+        fun create(): VM
     }
 }

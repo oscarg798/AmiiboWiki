@@ -16,6 +16,10 @@ import com.oscarg798.lomeno.event.LogSource
 import com.oscarg798.lomeno.sources.NETWORK_LOG_SOURCE_NAME
 import com.oscarg798.lomeno.sources.NetworkLogSource
 
+object MixPanelSource: LogSource {
+
+    override val name: String =  MIXPANEL_LOG_SOURCE_NAME
+}
 object FirebaseSource : LogSource {
     override val name: String = FIREBASE_LOG_SOURCE_NAME
 }
@@ -31,5 +35,6 @@ fun String.toLogSource() = when(this){
     else -> throw IllegalArgumentException("There not LogSource with name: $this")
 }
 
+const val MIXPANEL_LOG_SOURCE_NAME = "MIXPANEL"
 const val FIREBASE_LOG_SOURCE_NAME = "FIREBASE"
 const val CRASHLYTICS_LOG_SOURCE_NAME = "CRASHLYTICS"

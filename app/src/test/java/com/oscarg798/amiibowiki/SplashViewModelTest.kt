@@ -23,8 +23,7 @@ import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.CoroutinesTestRule
-import com.oscarg798.amiibowiki.testutils.utils.TestCollector
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -35,44 +34,39 @@ import org.junit.Rule
 import org.junit.Test
 
 
-class SplashViewModelTest {
+class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewState, SplashViewModel> {
 
     @get: Rule
-    val coroutinesRule = CoroutinesTestRule()
+    val viewModelTestRule = ViewModelTestRule<SplashViewState, SplashViewModel>(this)
 
     private val logger = relaxedMockk<SplashLogger>()
     private val updateAmiiboTypeUseCase = mockk<UpdateAmiiboTypeUseCase>()
     private val activateRemoteConfigUseCase = relaxedMockk<ActivateRemoteConfigUseCase>()
     private val reducer = spyk(SplashReducer())
 
-    private lateinit var viewModel: SplashViewModel
-    private lateinit var testCollector: TestCollector<SplashViewState>
-
     @Before
     fun setup() {
         coEvery { updateAmiiboTypeUseCase.execute() } answers { Result.success(Unit) }
-        testCollector = TestCollector()
-        viewModel =
-            SplashViewModel(
-                updateAmiiboTypeUseCase,
-                logger,
-                activateRemoteConfigUseCase,
-                reducer,
-                coroutinesRule.coroutineContextProvider
-            )
     }
+
+    override fun create(): SplashViewModel = SplashViewModel(
+        updateAmiiboTypeUseCase,
+        logger,
+        activateRemoteConfigUseCase,
+        reducer,
+        viewModelTestRule.coroutineContextProvider
+    )
 
     @Test
     fun `given a wish to get the types when events are proccess then state value should be loading and then fetch success`() {
-        viewModel.onWish(SplashWish.GetTypes)
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+        viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
         val initState = SplashViewState(
             isIdling = true,
             navigatingToFirstScreen = false,
             error = null
         )
-        testCollector wereValuesEmitted listOf(
+        viewModelTestRule.testCollector wereValuesEmitted listOf(
             initState,
             SplashViewState(
                 isIdling = false,
@@ -93,9 +87,7 @@ class SplashViewModelTest {
         val error = AmiiboTypeFailure.FetchTypesFailure()
         coEvery { updateAmiiboTypeUseCase.execute() } answers { throw error }
 
-        viewModel.onWish(SplashWish.GetTypes)
-
-        testCollector.test(coroutinesRule.testCoroutineScope, viewModel.state)
+        viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
         val initState = SplashViewState(
             isIdling = true,
@@ -103,7 +95,7 @@ class SplashViewModelTest {
             error = null
         )
 
-        testCollector wereValuesEmitted listOf(
+        viewModelTestRule.testCollector wereValuesEmitted listOf(
             initState,
             SplashViewState(
                 isIdling = false,
@@ -119,7 +111,7 @@ class SplashViewModelTest {
 
     @Test
     fun `when view is shown then it should track the event`() {
-        viewModel.onScreenShown()
+        viewModelTestRule.viewModel.onScreenShown()
 
         verify {
             logger.trackScreenShown()

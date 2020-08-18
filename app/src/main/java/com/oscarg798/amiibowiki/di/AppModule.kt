@@ -37,6 +37,7 @@ object AppModule {
             else -> Flavor.Release
         },
         BuildConfig.GOOGLE_API_KEY,
-        BuildConfig.GAME_API_KEY
+        BuildConfig.GAME_API_KEY,
+        BuildConfig.MIX_PANEL_API_KEY
     )
 }

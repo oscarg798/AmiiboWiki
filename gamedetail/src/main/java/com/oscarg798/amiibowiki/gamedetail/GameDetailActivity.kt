@@ -23,6 +23,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.youtube.player.YouTubeStandalonePlayer
@@ -39,6 +42,8 @@ import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.Rating
+import com.oscarg798.amiibowiki.gamedetail.adapter.ScreenshotClickListener
+import com.oscarg798.amiibowiki.gamedetail.adapter.ScreenshotsAdapter
 import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding
 import com.oscarg798.amiibowiki.gamedetail.di.DaggerGameDetailComponent
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
@@ -47,6 +52,7 @@ import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
+import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOf
@@ -120,16 +126,7 @@ class GameDetailActivity : AppCompatActivity() {
             when {
                 state.isLoading -> onLoading()
                 state.error != null -> showError()
-                state.gameTrailer != null -> {
-                    binding.tvTrailer.setOnClickListener {
-                        val intent = YouTubeStandalonePlayer.createVideoIntent(
-                            this,
-                            config.googleAPIKey,
-                            state.gameTrailer, START_TIME, true, true
-                        )
-                        startActivity(intent)
-                    }
-                }
+                state.gameTrailer != null -> showGameTrailer(state)
                 state.expandedImages != null -> showExpandedImages(state.expandedImages)
                 state.gameDetails != null -> showGameDetails(state.gameDetails)
             }
@@ -146,6 +143,15 @@ class GameDetailActivity : AppCompatActivity() {
         ).onEach {
             viewModel.onWish(it)
         }.launchIn(lifecycleScope)
+    }
+
+    private fun showGameTrailer(state: GameDetailViewState) {
+        val intent = YouTubeStandalonePlayer.createVideoIntent(
+            this,
+            config.googleAPIKey,
+            state.gameTrailer, START_TIME, true, true
+        )
+        startActivity(intent)
     }
 
     private fun showError() {
@@ -165,6 +171,9 @@ class GameDetailActivity : AppCompatActivity() {
             shimmer.shimmerContainerGameDetail.startShimmer()
             toolbarImageSkeleton.startShimmer()
 
+            vpGameScreenshots.visibility = View.GONE
+            tvScreenshotsLabel.visibility = View.GONE
+
             toolbarImage.visibility = View.GONE
             tvTrailer.visibility = View.GONE
             gameDetailContent.visibility = View.GONE
@@ -179,6 +188,9 @@ class GameDetailActivity : AppCompatActivity() {
             shimmer.shimmerContainerGameDetail.stopShimmer()
             toolbarImageSkeleton.stopShimmer()
 
+            binding.vpGameScreenshots.visibility = View.VISIBLE
+            binding.tvScreenshotsLabel.visibility = View.VISIBLE
+
             tvTrailer.visibility = View.VISIBLE
             toolbarImage.visibility = View.VISIBLE
             gameDetailContent.visibility = View.VISIBLE
@@ -186,19 +198,21 @@ class GameDetailActivity : AppCompatActivity() {
     }
 
     private fun getTrailerClickFlow() = callbackFlow<GameDetailWish> {
-        binding.tvTrailer.setOnClickListener {
-            val game =
-                currentState.gameDetails ?: throw NullPointerException("Game can not be null")
-            val trailerId =
-                game.videosId?.firstOrNull() ?: throw GameDetailFailure.GameDoesNotIncludeTrailer(
-                    game.id
-                )
-            offer(GameDetailWish.PlayGameTrailer(game.id, trailerId))
-        }
+        binding.tvTrailer.setOnClickListener { offerTrailerClickWish() }
 
         awaitClose {
-            binding.tvTrailer.setOnClickListener { }
+            binding.tvTrailer.setOnClickListener {}
         }
+    }
+
+    private fun ProducerScope<GameDetailWish>.offerTrailerClickWish() {
+        val game = currentState.gameDetails ?: throw NullPointerException("Game can not be null")
+
+        val trailerId =
+            game.videosId?.firstOrNull() ?: throw GameDetailFailure.GameDoesNotIncludeTrailer(
+                game.id
+            )
+        offer(GameDetailWish.PlayGameTrailer(game.id, trailerId))
     }
 
     private fun showGameDetails(game: Game) {
@@ -211,6 +225,7 @@ class GameDetailActivity : AppCompatActivity() {
         game.showCover()
         game.showToolbarImage()
         game.showGameTrailer()
+        game.showScreenshots()
     }
 
     private fun changeGameTitleColorOnLightMode(isToolbarCollapsed: Boolean) {
@@ -322,6 +337,38 @@ class GameDetailActivity : AppCompatActivity() {
                 binding.toolbarImage.setImage(screenshots!!.first())
             }
         }
+    }
+
+    private fun Game.showScreenshots() {
+        if (screenshots.isNullOrEmpty()) {
+            binding.vpGameScreenshots.visibility = View.GONE
+            binding.tvScreenshotsLabel.visibility = View.GONE
+            return
+        }
+
+        binding.vpGameScreenshots.visibility = View.VISIBLE
+        binding.tvScreenshotsLabel.visibility = View.VISIBLE
+
+        val screenshotsAdapter = ScreenshotsAdapter(object : ScreenshotClickListener {
+            override fun onScreenshotClick() {
+                viewModel.onWish(
+                    GameDetailWish.ExpandImages(
+                        screenshots!!.map {
+                            ExpandableImageParam(it, ExpandableImageType.Screenshot)
+                        }
+                    )
+                )
+            }
+        })
+
+        val smoothScroller = LinearSmoothScroller(this@GameDetailActivity)
+
+        with(binding.vpGameScreenshots) {
+            adapter = screenshotsAdapter
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        }
+
+        screenshotsAdapter.submitList(screenshots!!.toList())
     }
 
     private fun setPEGI(rating: AgeRating) {

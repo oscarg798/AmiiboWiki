@@ -13,35 +13,52 @@
 package com.oscarg798.amiibowiki.core.base
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 
-abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
-    ViewState : MVIViewState>(initialState: ViewState) : ViewModel() {
+abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState : MVIViewState>(
+    initialState: ViewState
+) : ViewModel() {
 
     protected abstract val reducer: Reducer<Result, ViewState>
+
     protected abstract val coroutineContextProvider: CoroutineContextProvider
 
+    /**
+     * We use channels as state flow will omit duplicated states or wishes
+     */
+    private val _state = ConflatedBroadcastChannel<ViewState>(initialState)
     private val wishProcessor = ConflatedBroadcastChannel<Wish>()
 
-    val state: Flow<ViewState> = wishProcessor.asFlow()
-        .flatMapMerge {
-            getResult(it)
-        }.scan(initialState) { state, result ->
-            reducer.reduce(state, result)
-        }
+    private val wishProcessorFlow: Flow<Wish>
+        get() = wishProcessor.asFlow()
 
-    protected val defaultExceptionHandler: CoroutineExceptionHandler =
-        CoroutineExceptionHandler { _, exception -> throw exception }
+    val state: Flow<ViewState>
+        get() = _state.asFlow()
+
+    init {
+        wishProcessorFlow
+            .flatMapLatest {
+                getResult(it)
+            }.distinctUntilChanged()
+            .scan(initialState) { state, result ->
+                reducer.reduce(state, result)
+            }.onEach {
+                _state.offer(it)
+            }.launchIn(viewModelScope)
+    }
 
     protected abstract suspend fun getResult(wish: Wish): Flow<Result>
 
@@ -55,6 +72,7 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult,
 
     override fun onCleared() {
         wishProcessor.close()
+        _state.close()
         super.onCleared()
     }
 }

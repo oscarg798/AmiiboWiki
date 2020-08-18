@@ -13,15 +13,12 @@
 package com.oscarg798.amiibowiki.amiibodetail.logger
 
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
-import com.oscarg798.amiibowiki.logger.annotations.LogSources
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
-import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
 
 @LoggerDecorator
 interface AmiiboDetailLogger {
 
-    @LogSources([FIREBASE_LOG_SOURCE_NAME])
     @ScreenShown(AMIIBO_DETAIL_SCREEN_NAME)
     fun trackScreenShown(@LogEventProperties properties: Map<String, String>)
 }

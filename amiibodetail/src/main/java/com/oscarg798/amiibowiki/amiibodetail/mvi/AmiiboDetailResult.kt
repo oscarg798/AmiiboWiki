@@ -17,8 +17,6 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.mvi.Result
 
 sealed class AmiiboDetailResult : Result {
-
-    object None : AmiiboDetailResult()
     object Loading : AmiiboDetailResult()
 
     data class ImageExpanded(val url: String) : AmiiboDetailResult()
