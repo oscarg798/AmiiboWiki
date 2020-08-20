@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.testutils.di
 
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
@@ -34,6 +35,10 @@ object TestLoggerModule {
     @Singleton
     @Provides
     fun provideLogger(): Logger = relaxedMockk<Logger>()
+
+    @Singleton
+    @Provides
+    fun provideMixpanelLogger(): MixpanelLogger = relaxedMockk()
 
     @Singleton
     @Provides

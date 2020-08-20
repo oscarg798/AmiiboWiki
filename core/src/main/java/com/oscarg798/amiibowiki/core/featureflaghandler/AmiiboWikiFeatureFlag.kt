@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.core.featureflaghandler
 
 import com.oscarg798.flagly.featureflag.FeatureFlag
+import kotlin.reflect.full.isSubclassOf
 
 sealed class AmiiboWikiFeatureFlag(override val name: String) : FeatureFlag {
 
@@ -21,11 +22,9 @@ sealed class AmiiboWikiFeatureFlag(override val name: String) : FeatureFlag {
     object ShowGameDetail : AmiiboWikiFeatureFlag("show_game_detail")
 
     companion object {
-        fun getValues(): Set<FeatureFlag> =
-            setOf(
-                ShowRelatedGames,
-                ShowAmiiboDetail,
-                ShowGameDetail
-            )
+        fun getValues() = AmiiboWikiFeatureFlag::class.nestedClasses.filter { klass ->
+            klass.isSubclassOf(AmiiboWikiFeatureFlag::class)
+        }.map { klass -> klass.objectInstance }
+            .filterIsInstance<AmiiboWikiFeatureFlag>()
     }
 }

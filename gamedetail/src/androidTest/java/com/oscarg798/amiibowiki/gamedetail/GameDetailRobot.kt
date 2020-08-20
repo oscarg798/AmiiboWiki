@@ -12,23 +12,24 @@
 
 package com.oscarg798.amiibowiki.gamedetail
 
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
-import junit.framework.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
+import com.oscarg798.amiibowiki.testutils.clickElementWithId
+import com.oscarg798.amiibowiki.testutils.isViewWithTextDisplayed
+import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.oscarg798.amiibowiki.gamedetail.test", appContext.packageName)
+class GameDetailRobot : TestRobot {
+
+    override fun isViewDisplayed() {
+        isViewWithTextDisplayed("Mario")
+    }
+
+    fun isGameDetailDisplayed() {
+        isViewWithTextDisplayed("Super Mario")
+        isViewWithTextDisplayed("summary")
+        isViewWithTextDisplayed("Screenshots")
+        isViewWithTextDisplayed("Artworks")
+    }
+
+    fun showGameTrailer() {
+        clickElementWithId(R.id.tvTrailer)
     }
 }

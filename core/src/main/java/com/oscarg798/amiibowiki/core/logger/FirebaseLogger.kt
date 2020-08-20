@@ -32,4 +32,8 @@ class FirebaseLogger @Inject constructor(private val firebaseAnalytics: Firebase
     override fun identify(id: String) {
         firebaseAnalytics.setUserId(id)
     }
+
+    override fun flush() {
+        // DO_NOTHING
+    }
 }

@@ -22,7 +22,7 @@ import org.junit.rules.TestRule
 
 abstract class BaseUITest(dispatcher: Dispatcher) {
 
-    protected val hiltRule = HiltAndroidRule(this)
+    val hiltRule = HiltAndroidRule(this)
 
     @Rule
     @JvmField

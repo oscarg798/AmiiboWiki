@@ -12,8 +12,8 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import com.oscarg798.amiibowiki.testutils.isViewContainingTextDisplayed
 import com.oscarg798.amiibowiki.testutils.isViewWithIdDisplayed
+import com.oscarg798.amiibowiki.testutils.isViewWithTextDisplayed
 import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
 class AmiiboDetailRobot : TestRobot {
@@ -23,11 +23,11 @@ class AmiiboDetailRobot : TestRobot {
     }
 
     fun isAmiiboDataDisplayed() {
-        isViewContainingTextDisplayed("Mario")
-        isViewContainingTextDisplayed("Super Mario Bros")
-        isViewContainingTextDisplayed("Figure")
-        isViewContainingTextDisplayed("Mario", CHARACTER_VIEW_INDEX)
-        isViewContainingTextDisplayed("Related Games")
+        isViewWithTextDisplayed("Mario")
+        isViewWithTextDisplayed("Super Mario Bros")
+        isViewWithTextDisplayed("Figure")
+        isViewWithTextDisplayed("Mario", CHARACTER_VIEW_INDEX)
+        isViewWithTextDisplayed("Related Games")
     }
 }
 

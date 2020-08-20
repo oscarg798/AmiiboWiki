@@ -22,7 +22,6 @@ import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -52,8 +51,7 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
         wishProcessorFlow
             .flatMapLatest {
                 getResult(it)
-            }.distinctUntilChanged()
-            .scan(initialState) { state, result ->
+            }.scan(initialState) { state, result ->
                 reducer.reduce(state, result)
             }.onEach {
                 _state.offer(it)

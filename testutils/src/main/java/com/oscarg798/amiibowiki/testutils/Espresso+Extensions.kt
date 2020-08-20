@@ -15,13 +15,14 @@ package com.oscarg798.amiibowiki.testutils
 import android.annotation.SuppressLint
 import android.view.View
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
-fun isViewContainingTextDisplayed(text: String, index: Int = FIRST_MATCH_INDEX) {
+fun isViewWithTextDisplayed(text: String, index: Int = FIRST_MATCH_INDEX) {
     Espresso.onView(withIndex(ViewMatchers.withText(text), index))
         .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 }
@@ -29,6 +30,11 @@ fun isViewContainingTextDisplayed(text: String, index: Int = FIRST_MATCH_INDEX) 
 fun isViewWithIdDisplayed(id: Int, index: Int = FIRST_MATCH_INDEX) {
     Espresso.onView(withIndex(ViewMatchers.withId(id), index))
         .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+}
+
+fun clickElementWithId(id: Int, index: Int = FIRST_MATCH_INDEX) {
+    Espresso.onView(withIndex(ViewMatchers.withId(id), index))
+        .perform(ViewActions.click())
 }
 
 fun withIndex(matcher: Matcher<View?>, index: Int): Matcher<View?>? {

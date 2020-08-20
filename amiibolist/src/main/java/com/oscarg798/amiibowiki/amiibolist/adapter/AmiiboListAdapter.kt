@@ -16,8 +16,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.oscarg798.amiibowiki.amiibolist.R
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
+import com.oscarg798.amiibowiki.amiibolist.databinding.AmiiboListItemBinding
 
 class AmiiboListAdapter(private val amiiboClickListener: AmiiboClickListener) :
     ListAdapter<ViewAmiibo, AmiiboListViewHolder>(diffUtemCallback) {
@@ -31,7 +31,7 @@ class AmiiboListAdapter(private val amiiboClickListener: AmiiboClickListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AmiiboListViewHolder {
         return AmiiboListViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.amiibo_list_item, parent, false)
+            AmiiboListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
