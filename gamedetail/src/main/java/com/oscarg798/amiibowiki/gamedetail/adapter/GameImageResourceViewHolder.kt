@@ -16,26 +16,31 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.oscarg798.amiibowiki.core.extensions.ImageLoaderCallback
 import com.oscarg798.amiibowiki.core.extensions.setImage
-import com.oscarg798.amiibowiki.gamedetail.databinding.ItemScreenshotBinding
+import com.oscarg798.amiibowiki.gamedetail.databinding.ItemGameImageResourceBinding
 
-class ScreenshotViewHolder(private val binding: ItemScreenshotBinding) :
+class GameImageResourceViewHolder(private val binding: ItemGameImageResourceBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(screenshotUrl: String, screenshotClickListener: ScreenshotClickListener?) {
-        binding.ivGameScreenshot.setOnClickListener { screenshotClickListener?.onScreenshotClick() }
-        binding.shimmerGameScreenshot.visibility = View.VISIBLE
-        binding.ivGameScreenshot.setImage(
-            screenshotUrl,
-            object : ImageLoaderCallback {
-                override fun onSuccess() {
-                    binding.ivGameScreenshot.visibility = View.VISIBLE
-                    binding.shimmerGameScreenshot.visibility = View.GONE
-                }
+    fun bind(
+        screenshotUrl: String,
+        gameImageResourceClickListener: GameImageResourceClickListener?
+    ) {
+        with(binding) {
+            ivGameImageResource.setOnClickListener { gameImageResourceClickListener?.onImageResourceClicked() }
+            shimmerGameImageResource.visibility = View.VISIBLE
+            ivGameImageResource.setImage(
+                screenshotUrl,
+                object : ImageLoaderCallback {
+                    override fun onSuccess() {
+                        ivGameImageResource.visibility = View.VISIBLE
+                        shimmerGameImageResource.visibility = View.GONE
+                    }
 
-                override fun onFailure() {
-                    binding.shimmerGameScreenshot.visibility = View.VISIBLE
+                    override fun onFailure() {
+                        shimmerGameImageResource.visibility = View.VISIBLE
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }

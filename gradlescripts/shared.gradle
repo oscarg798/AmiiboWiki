@@ -57,7 +57,7 @@ android {
         exclude 'META-INF/AL2.0'
         exclude 'META-INF/LGPL2.1'
         exclude 'META-INF/licenses/ASM'
-        exclude 'META-INF/metadata.kotlin_module'
+        exclude 'META-INF/metadata.jvm.kotlin_module'
         exclude 'kotlin/coroutines/coroutines.kotlin_builtins'
         exclude 'META-INF/descriptors.kotlin_module'
     }

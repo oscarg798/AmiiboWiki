@@ -186,13 +186,14 @@ class GameRepositoryImpl @Inject constructor(
             MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
         )
         return when {
-            maxNumber < MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT -> MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT
+            maxNumber < MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT -> DEFAULT_ALLOWED_SEARCH_LIMIT
             maxNumber > MINIMUN_ALLOWED_ALLOWED_SEARCH_LIMIT -> MAXIMUM_ALLOWED_SEARCH_LIMIT
             else -> maxNumber
         }
     }
 }
 
+private const val DEFAULT_ALLOWED_SEARCH_LIMIT = 50
 private const val NO_GAMES_COUNT = 0
 private const val GAME_COVER_LIMIT = 1
 private const val COVER_FIELD = "cover"

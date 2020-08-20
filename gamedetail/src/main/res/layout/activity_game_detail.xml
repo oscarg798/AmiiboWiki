@@ -164,6 +164,7 @@
                 app:layout_constraintStart_toEndOf="@+id/ivEsrbRating"
                 app:layout_constraintStart_toStartOf="@+id/tvGameRating"
                 app:layout_constraintTop_toBottomOf="@+id/tvGameRating"
+                app:layout_goneMarginTop="@dimen/spacing_small"
                 tools:src="@drawable/ic_pegi_3"
                 tools:visibility="visible" />
 
@@ -176,10 +177,11 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/ivPegiRating"
                 app:layout_constraintTop_toTopOf="@+id/ivPegiRating"
+                app:layout_goneMarginTop="@dimen/spacing_small"
                 tools:src="@drawable/ic_esrb_everyone_10"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.oscarg798.amiibowiki.gamedetail.utils.ExpandableTextView
                 android:id="@+id/tvGameSummary"
                 style="@style/Styles.AmiiboWiki.Default"
                 android:layout_width="0dp"
@@ -206,14 +208,39 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/vpGameScreenshots"
                 android:layout_width="@dimen/match_constraint"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:nestedScrollingEnabled="true"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvScreenshotsLabel"
-                tools:listitem="@layout/item_screenshot" />
+                tools:itemCount="1"
+                tools:listitem="@layout/item_game_image_resource" />
+
+            <TextView
+                android:id="@+id/tvArtworksLabel"
+                style="@style/Styles.AmiiboWiki.Default"
+                android:layout_width="@dimen/match_constraint"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:text="@string/artworks_label"
+                android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.S"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vpGameScreenshots" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/vpGameArtworks"
+                android:layout_width="@dimen/match_constraint"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:nestedScrollingEnabled="true"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvArtworksLabel"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_game_image_resource" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

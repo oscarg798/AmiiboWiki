@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2020 Oscar David Gallon Rosero
   ~
@@ -11,10 +12,6 @@
   -->
 
 <resources>
-    <string name="game_detail_title"></string>
-    <string name="error_getting_game">There was an error getting game details</string>
-    <string name="error_dialog_positive_button">Ok</string>
-    <string name="screenshots_label">Screenshots</string>
-    <string name="rating_decimal_format">%.0f</string>
-    <string name="artworks_label">Artworks</string>
+    <dimen name="image_resource_width">200dp</dimen>
+    <dimen name="image_resource_height">100dp</dimen>
 </resources>

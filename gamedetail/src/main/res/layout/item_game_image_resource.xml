@@ -16,9 +16,9 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/ivGameScreenshot"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:id="@+id/ivGameImageResource"
+        android:layout_width="@dimen/image_resource_width"
+        android:layout_height="@dimen/image_resource_height"
         android:layout_marginStart="@dimen/spacing_extra_small"
         android:scaleType="centerInside"
         android:src="@drawable/ic_placeholder"
@@ -27,9 +27,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.facebook.shimmer.ShimmerFrameLayout
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:id="@+id/shimmerGameScreenshot"
+        android:id="@+id/shimmerGameImageResource"
+        android:layout_width="@dimen/image_resource_width"
+        android:layout_height="@dimen/image_resource_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

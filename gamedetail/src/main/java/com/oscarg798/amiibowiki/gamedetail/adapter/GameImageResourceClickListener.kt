@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.gamedetail.adapter
 
-interface ScreenshotClickListener {
+interface GameImageResourceClickListener {
 
-    fun onScreenshotClick()
+    fun onImageResourceClicked()
 }

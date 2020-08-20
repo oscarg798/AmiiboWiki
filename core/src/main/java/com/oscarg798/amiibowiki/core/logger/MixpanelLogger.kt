@@ -35,6 +35,7 @@ class MixpanelLogger(context: Context, apiKey: String) : Logger {
         mixpanel.track(logEvent.name, properties)
     }
 
-    fun flush() {
+    override fun flush() {
+        mixpanel.flush()
     }
 }

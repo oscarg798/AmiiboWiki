@@ -16,22 +16,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.oscarg798.amiibowiki.gamedetail.databinding.ItemScreenshotBinding
+import com.oscarg798.amiibowiki.gamedetail.databinding.ItemGameImageResourceBinding
 
-class ScreenshotsAdapter(private val screenshotClickListener: ScreenshotClickListener) :
-    ListAdapter<String, ScreenshotViewHolder>(diffUtil) {
+class GameImageResourceAdapter(private val gameImageResourceClickListener: GameImageResourceClickListener) :
+    ListAdapter<String, GameImageResourceViewHolder>(diffUtil) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScreenshotViewHolder =
-        ScreenshotViewHolder(
-            ItemScreenshotBinding.inflate(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameImageResourceViewHolder =
+        GameImageResourceViewHolder(
+            ItemGameImageResourceBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             )
         )
 
-    override fun onBindViewHolder(holder: ScreenshotViewHolder, position: Int) {
-        holder.bind(getItem(position), screenshotClickListener)
+    override fun onBindViewHolder(holder: GameImageResourceViewHolder, position: Int) {
+        holder.bind(getItem(position), gameImageResourceClickListener)
     }
 
     companion object {

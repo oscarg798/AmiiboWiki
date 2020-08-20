@@ -98,7 +98,6 @@ android {
     packagingOptions {
         exclude "**/attach_hotspot_windows.dll"
         exclude 'kotlin/coroutines/coroutines.kotlin_builtins'
-        exclude 'kotlin/kotlin.kotlin_builtins'
         exclude 'kotlin/internal/internal.kotlin_builtins'
         exclude 'kotlin/ranges/ranges.kotlin_builtins'
         exclude 'kotlin/reflect/reflect.kotlin_builtins'
@@ -171,7 +170,7 @@ dependencies {
     androidTestImplementation espressoContrib
     androidTestImplementation espressoIntents
     androidTestImplementation uiAutomator
-    androidTestImplementation mockk
+    androidTestImplementation mockkAndroid
 
     implementation firebaseAnalytics
     implementation crashly

@@ -222,8 +222,8 @@ ext {
     activityx = "androidx.activity:activity-ktx:1.2.0-alpha06"
     picasso = "com.squareup.picasso:picasso:2.0.0"
 
-    lomeno = "com.oscarg798.lomeno:Lomeno:1.0.9"
-    flagly =  "com.oscarg798.flagly:Flagly:1.0.4"
+    lomeno = "com.oscarg798.lomeno:Lomeno:1.1.0"
+    flagly =  "com.oscarg798.flagly:Flagly:1.0.5"
 
     kotlinpoet = 'com.squareup:kotlinpoet:1.6.0'
 

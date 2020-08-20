@@ -21,6 +21,7 @@ class MockDependenciesTestRule(private val baseTest: BaseUITest) : TestRule {
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
             override fun evaluate() {
+                baseTest.hiltRule.inject()
                 baseTest.prepareTest()
                 base.evaluate()
             }

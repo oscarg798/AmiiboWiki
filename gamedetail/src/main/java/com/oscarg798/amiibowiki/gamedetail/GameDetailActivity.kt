@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.appbar.AppBarLayout
@@ -42,8 +41,8 @@ import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.Rating
-import com.oscarg798.amiibowiki.gamedetail.adapter.ScreenshotClickListener
-import com.oscarg798.amiibowiki.gamedetail.adapter.ScreenshotsAdapter
+import com.oscarg798.amiibowiki.gamedetail.adapter.GameImageResourceAdapter
+import com.oscarg798.amiibowiki.gamedetail.adapter.GameImageResourceClickListener
 import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding
 import com.oscarg798.amiibowiki.gamedetail.di.DaggerGameDetailComponent
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
@@ -122,9 +121,9 @@ class GameDetailActivity : AppCompatActivity() {
     private fun setupViewModel() {
         viewModel.state.onEach { state ->
             currentState = state
-            onLoadingEnd()
+            hideLoading()
             when {
-                state.isLoading -> onLoading()
+                state.isLoading -> showLoading()
                 state.error != null -> showError()
                 state.gameTrailer != null -> showGameTrailer(state)
                 state.expandedImages != null -> showExpandedImages(state.expandedImages)
@@ -163,7 +162,7 @@ class GameDetailActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun onLoading() {
+    private fun showLoading() {
         with(binding) {
             shimmer.root.visibility = View.VISIBLE
             toolbarImageSkeleton.visibility = View.VISIBLE
@@ -173,6 +172,8 @@ class GameDetailActivity : AppCompatActivity() {
 
             vpGameScreenshots.visibility = View.GONE
             tvScreenshotsLabel.visibility = View.GONE
+            vpGameArtworks.visibility = View.GONE
+            tvArtworksLabel.visibility = View.GONE
 
             toolbarImage.visibility = View.GONE
             tvTrailer.visibility = View.GONE
@@ -180,7 +181,7 @@ class GameDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun onLoadingEnd() {
+    private fun hideLoading() {
         with(binding) {
             shimmer.root.visibility = View.GONE
             toolbarImageSkeleton.visibility = View.GONE
@@ -188,8 +189,10 @@ class GameDetailActivity : AppCompatActivity() {
             shimmer.shimmerContainerGameDetail.stopShimmer()
             toolbarImageSkeleton.stopShimmer()
 
-            binding.vpGameScreenshots.visibility = View.VISIBLE
-            binding.tvScreenshotsLabel.visibility = View.VISIBLE
+            vpGameScreenshots.visibility = View.VISIBLE
+            tvScreenshotsLabel.visibility = View.VISIBLE
+            vpGameArtworks.visibility = View.VISIBLE
+            tvArtworksLabel.visibility = View.VISIBLE
 
             tvTrailer.visibility = View.VISIBLE
             toolbarImage.visibility = View.VISIBLE
@@ -226,6 +229,7 @@ class GameDetailActivity : AppCompatActivity() {
         game.showToolbarImage()
         game.showGameTrailer()
         game.showScreenshots()
+        game.showGameArtworks()
     }
 
     private fun changeGameTitleColorOnLightMode(isToolbarCollapsed: Boolean) {
@@ -273,6 +277,8 @@ class GameDetailActivity : AppCompatActivity() {
             View.VISIBLE
         }
 
+        val rating = rating ?: NO_RATING
+        binding.tvGameRating.text = String.format(getString(R.string.rating_decimal_format), rating)
         binding.tvGameRating.visibility = visibility
         binding.ivGameRating.visibility = visibility
     }
@@ -349,8 +355,8 @@ class GameDetailActivity : AppCompatActivity() {
         binding.vpGameScreenshots.visibility = View.VISIBLE
         binding.tvScreenshotsLabel.visibility = View.VISIBLE
 
-        val screenshotsAdapter = ScreenshotsAdapter(object : ScreenshotClickListener {
-            override fun onScreenshotClick() {
+        val screenshotsAdapter = GameImageResourceAdapter(object : GameImageResourceClickListener {
+            override fun onImageResourceClicked() {
                 viewModel.onWish(
                     GameDetailWish.ExpandImages(
                         screenshots!!.map {
@@ -361,14 +367,42 @@ class GameDetailActivity : AppCompatActivity() {
             }
         })
 
-        val smoothScroller = LinearSmoothScroller(this@GameDetailActivity)
-
         with(binding.vpGameScreenshots) {
             adapter = screenshotsAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
 
         screenshotsAdapter.submitList(screenshots!!.toList())
+    }
+
+    private fun Game.showGameArtworks() {
+        if (artworks.isNullOrEmpty()) {
+            binding.vpGameArtworks.visibility = View.GONE
+            binding.tvArtworksLabel.visibility = View.GONE
+            return
+        }
+
+        binding.vpGameArtworks.visibility = View.VISIBLE
+        binding.tvArtworksLabel.visibility = View.VISIBLE
+
+        val screenshotsAdapter = GameImageResourceAdapter(object : GameImageResourceClickListener {
+            override fun onImageResourceClicked() {
+                viewModel.onWish(
+                    GameDetailWish.ExpandImages(
+                        artworks!!.map {
+                            ExpandableImageParam(it, ExpandableImageType.Artwork)
+                        }
+                    )
+                )
+            }
+        })
+
+        with(binding.vpGameArtworks) {
+            adapter = screenshotsAdapter
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        }
+
+        screenshotsAdapter.submitList(artworks!!.toList())
     }
 
     private fun setPEGI(rating: AgeRating) {
@@ -404,6 +438,7 @@ class GameDetailActivity : AppCompatActivity() {
     }
 }
 
+private const val NO_RATING = 0.0
 private const val TOOLBAR_EXPANDED_OFFSET = 0
 private const val NAME_FIRST_LINE = 0
 private const val NAME_LINE_START = 0

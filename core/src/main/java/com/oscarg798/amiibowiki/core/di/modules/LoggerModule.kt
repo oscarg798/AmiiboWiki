@@ -54,9 +54,9 @@ object LoggerModule {
     fun provideLogger(firebaseLogger: FirebaseLogger, mixpanelLogger: MixpanelLogger): Logger =
         Lomeno(
             mapOf(
-                FirebaseSource to firebaseLogger,
-                NetworkLogSource to firebaseLogger,
-                MixPanelSource to mixpanelLogger
+                FirebaseSource to setOf(firebaseLogger),
+                NetworkLogSource to setOf(firebaseLogger, mixpanelLogger),
+                MixPanelSource to setOf(mixpanelLogger)
             )
         )
 

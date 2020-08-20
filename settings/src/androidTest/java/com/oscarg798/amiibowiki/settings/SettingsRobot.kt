@@ -15,27 +15,27 @@ package com.oscarg798.amiibowiki.settings
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import com.oscarg798.amiibowiki.testutils.isViewContainingTextDisplayed
+import com.oscarg798.amiibowiki.testutils.isViewWithTextDisplayed
 import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
 class SettingsRobot : TestRobot {
 
     override fun isViewDisplayed() {
-        isViewContainingTextDisplayed("User Interface")
+        isViewWithTextDisplayed("User Interface")
     }
 
     fun isDarkModePreferenceDisplayed() {
-        isViewContainingTextDisplayed("Dark Mode")
+        isViewWithTextDisplayed("Dark Mode")
     }
 
     fun isDevelopmentActivityDisplayed() {
-        isViewContainingTextDisplayed("Development Activity")
+        isViewWithTextDisplayed("Development Activity")
     }
 
     fun isDarkModeDialogDisplayed() {
-        isViewContainingTextDisplayed("System default")
-        isViewContainingTextDisplayed("Ligth")
-        isViewContainingTextDisplayed("Dark")
+        isViewWithTextDisplayed("System default")
+        isViewWithTextDisplayed("Ligth")
+        isViewWithTextDisplayed("Dark")
     }
 
     fun clickDarkModeOption() {

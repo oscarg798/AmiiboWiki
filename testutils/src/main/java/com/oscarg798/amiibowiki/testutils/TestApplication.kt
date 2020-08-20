@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.testutils
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.testutils.di.TestFeatureFlagHandlerModule
 import com.oscarg798.flagly.developeroptions.FeatureHandleResourceProvider
@@ -21,7 +21,7 @@ import com.oscarg798.flagly.featureflag.FeatureFlag
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlagProvider
 
-open class TestApplication : Application(), FeatureHandleResourceProvider {
+open class TestApplication : MultiDexApplication(), FeatureHandleResourceProvider {
 
     override fun getFeatureFlagProvider(): FeatureFlagProvider = object : FeatureFlagProvider {
 
