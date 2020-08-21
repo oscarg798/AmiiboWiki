@@ -10,19 +10,16 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.mvi
+package com.oscarg798.amiibowiki.ui.home
 
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
-import com.oscarg798.amiibowiki.core.mvi.Wish
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
-sealed class AmiiboListWish : Wish {
-    object RefreshAmiibos : AmiiboListWish()
-    object GetAmiibos : AmiiboListWish()
-    object ShowFilters : AmiiboListWish()
-    object FilteringCancelled : AmiiboListWish()
+class HomeViewModel : ViewModel() {
 
-    data class Search(val query: String) : AmiiboListWish()
-    data class ShowAmiiboDetail(val viewAmiibo: ViewAmiibo) : AmiiboListWish()
-    data class FilterAmiibos(val filter: ViewAmiiboType) : AmiiboListWish()
+    private val _text = MutableLiveData<String>().apply {
+        value = "This is home Fragment"
+    }
+    val text: LiveData<String> = _text
 }

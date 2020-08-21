@@ -12,16 +12,20 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailBinding
+import com.oscarg798.amiibowiki.amiibodetail.databinding.FragmentAmiiboDetailBinding
 import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ShowingAmiiboDetailsParams
@@ -38,56 +42,63 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-@DeepLink(AMIIBO_DETAIL_DEEPLINK)
-class AmiiboDetailActivity : AppCompatActivity() {
+class AmiiboDetailFragment : Fragment() {
 
     @Inject
     lateinit var viewModel: AmiiboDetailViewModel
 
-    private lateinit var binding: ActivityAmiiboDetailBinding
+    private lateinit var binding: FragmentAmiiboDetailBinding
 
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAmiiboDetailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentAmiiboDetailBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            container,
+            false
+        )
+        return binding.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        val tail = arguments?.getString(ARGUMENT_TAIL, null)
+            ?: throw IllegalArgumentException("Tail is required")
 
         DaggerAmiiboDetailComponent.factory()
             .create(
-                intent.getStringExtra(ARGUMENT_TAIL)!!,
+                tail,
                 EntryPointAccessors.fromApplication(
-                    application,
+                    requireActivity().application,
                     AmiiboDetailEntryPoint::class.java
                 )
             )
             .inject(this)
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setup()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun setup() {
-        supportFragmentManager.beginTransaction()
+        childFragmentManager.beginTransaction()
             .replace(
                 R.id.searchResultFragment,
                 SearchResultFragment.newInstance(),
                 getString(R.string.search_result_fragment_tag)
             )
             .commit()
-
-        supportActionBar?.let {
-            with(it) {
-                setDisplayHomeAsUpEnabled(true)
-                setHomeAsUpIndicator(R.drawable.ic_close)
-            }
-        }
 
         ViewCompat.isNestedScrollingEnabled(binding.searchResultFragment)
 
@@ -109,13 +120,13 @@ class AmiiboDetailActivity : AppCompatActivity() {
         viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
     }
 
-    override fun onBackPressed() {
-        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-        } else {
-            super.onBackPressed()
-        }
-    }
+//    override fun onBackPressed() {
+//        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
+//            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+//        } else {
+//            super.onBackPressed()
+//        }
+//    }
 
     private fun showError(amiiboDetailFailure: AmiiboDetailFailure) {
         hideLoading()
@@ -136,7 +147,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
     ) {
         hideLoading()
         val viewAmiiboDetails = showingAmiiboDetailsParams.amiiboDetails
-        supportActionBar?.title = viewAmiiboDetails.name
+//        supportActionBar?.title = viewAmiiboDetails.name
 
         with(binding) {
             ivImage.setImage(viewAmiiboDetails.imageUrl)
@@ -185,7 +196,7 @@ class AmiiboDetailActivity : AppCompatActivity() {
     }
 
     private fun getSearchResultsFragment(): SearchResultFragment? {
-        return supportFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
+        return childFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
     }
 }
 

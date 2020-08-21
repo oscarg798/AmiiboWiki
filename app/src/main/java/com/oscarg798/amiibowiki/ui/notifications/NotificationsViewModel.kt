@@ -10,9 +10,16 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail.deeplink
+package com.oscarg798.amiibowiki.ui.notifications
 
-import com.airbnb.deeplinkdispatch.DeepLinkModule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
-@DeepLinkModule
-interface AmiiboDetailDeepLinkModule
+class NotificationsViewModel : ViewModel() {
+
+    private val _text = MutableLiveData<String>().apply {
+        value = "This is notifications Fragment"
+    }
+    val text: LiveData<String> = _text
+}

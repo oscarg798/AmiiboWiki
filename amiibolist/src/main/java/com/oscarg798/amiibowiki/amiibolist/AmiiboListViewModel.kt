@@ -26,6 +26,7 @@ import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -70,7 +71,6 @@ class AmiiboListViewModel @Inject constructor(
                 trackShowDetailsAmiiboWish(wish)
                 showDetail(wish.viewAmiibo.tail)
             }
-            is AmiiboListWish.OpenSettings -> flowOf(AmiiboListResult.OpenSettings)
             is AmiiboListWish.FilteringCancelled -> flowOf(AmiiboListResult.FilterSelectionCancelled)
         }
     }

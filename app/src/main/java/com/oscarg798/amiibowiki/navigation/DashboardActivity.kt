@@ -10,24 +10,33 @@
  *
  */
 
-package com.oscarg798.amiibowiki.settings
+package com.oscarg798.amiibowiki.navigation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.airbnb.deeplinkdispatch.DeepLink
-import com.oscarg798.amiibowiki.core.constants.SETTINGS_DEEPLINK
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 
-@DeepLink(SETTINGS_DEEPLINK)
-class SettingsActivity : AppCompatActivity() {
+class DashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         verifyNightMode()
-        setContentView(R.layout.activity_settings)
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_dashboard)
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.flMain, SettingsFragment.newInstance())
-            .commit()
+        val navController = findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.amiibo_list_navigation, R.id.navigation_dashboard, R.id.navigation_settings
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
 }

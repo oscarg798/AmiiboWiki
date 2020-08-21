@@ -16,6 +16,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.stfalcon.imageviewer.StfalconImageViewer
 
 fun Fragment.startDeepLinkIntent(deepLink: DeepLink, arguments: Bundle? = null) {
     (requireActivity() as AppCompatActivity).startDeepLinkIntent(deepLink, arguments)
@@ -31,4 +32,8 @@ fun Fragment.startDeepLinkIntent(
         imageView,
         arguments
     )
+}
+
+fun Fragment.showExpandedImages(imagesUrl: Collection<String>) {
+    (requireActivity() as AppCompatActivity).showExpandedImages(imagesUrl)
 }

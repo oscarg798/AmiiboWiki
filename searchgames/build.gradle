@@ -13,12 +13,13 @@
 apply from: '../gradlescripts/shared.gradle'
 
 dependencies {
-    implementation cardView
 
+    implementation cardView
+    implementation shimmer
+    
     implementation project(path: ':core')
     implementation project(path: ':network')
+
     testImplementation project(path: ':testutils')
-    implementation project(path: ':gamedetail')
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 }
 

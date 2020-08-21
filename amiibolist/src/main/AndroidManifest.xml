@@ -4,7 +4,7 @@
 
     <application
         android:networkSecurityConfig="@xml/network_security_config">
-        <activity android:name=".AmiiboListActivity"
+        <activity android:name=".AmiiboListFragment"
             android:theme="@style/AppTheme"></activity>
     </application>
 

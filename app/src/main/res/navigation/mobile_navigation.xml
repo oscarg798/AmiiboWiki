@@ -10,21 +10,23 @@
   ~
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/amiibo_list_navigation">
 
-    <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_search"
-        android:iconTint="?iconColor"
-        android:title="@string/search_menu_item_title"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
+    <include app:graph="@navigation/amiibo_list_navigation" />
 
-    <item
-        android:id="@+id/action_filter"
-        android:icon="@drawable/ic_filter"
-        android:title="Filter"
-        app:showAsAction="always" />
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.oscarg798.amiibowiki.ui.dashboard.DashboardFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
 
-</menu>
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.oscarg798.amiibowiki.settings.SettingsFragment"
+        android:label="@string/settings_navigation_menu_title"
+        tools:layout="@layout/fragment_notifications" />
+</navigation>

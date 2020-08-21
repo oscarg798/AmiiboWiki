@@ -10,21 +10,30 @@
   ~
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/amiibo_list_navigation"
+    app:startDestination="@+id/navigation_list">
 
-    <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_search"
-        android:iconTint="?iconColor"
-        android:title="@string/search_menu_item_title"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
+    <fragment
+        android:id="@+id/navigation_list"
+        android:name="com.oscarg798.amiibowiki.amiibolist.AmiiboListFragment"
+        android:label="@string/amiibos_fragment_title"
+        tools:layout="@layout/fragment_amiibo_list">
+        <action
+            android:id="@+id/action_navigation_list_to_amiibo_detail"
+            app:destination="@id/amiibo_detail" />
+    </fragment>
 
-    <item
-        android:id="@+id/action_filter"
-        android:icon="@drawable/ic_filter"
-        android:title="Filter"
-        app:showAsAction="always" />
+    <fragment
+        android:id="@+id/amiibo_detail"
+        android:name="com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailFragment"
+        android:label="@string/amiibo_detail_fragment_title"
+        tools:layout="@layout/fragment_amiibo_list">
+        <argument
+            android:name="ARGUMENT_TAIL"
+            app:argType="string" />
+    </fragment>
 
-</menu>
+</navigation>

@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.di
 
-import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailActivity
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailFragment
 import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboDetailEntryPoint
 import dagger.BindsInstance
 import dagger.Component
@@ -22,7 +22,7 @@ import javax.inject.Scope
 @Component(dependencies = [AmiiboDetailEntryPoint::class], modules = [AmiiboDetailModule::class])
 interface AmiiboDetailComponent {
 
-    fun inject(amiiboDetailActivity: AmiiboDetailActivity)
+    fun inject(amiiboDetailFragment: AmiiboDetailFragment)
 
     @Component.Factory
     interface Factory {

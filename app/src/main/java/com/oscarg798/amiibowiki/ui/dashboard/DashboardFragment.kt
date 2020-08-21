@@ -10,19 +10,34 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.mvi
+package com.oscarg798.amiibowiki.ui.dashboard
 
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
-import com.oscarg798.amiibowiki.core.mvi.Wish
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.oscarg798.amiibowiki.R
 
-sealed class AmiiboListWish : Wish {
-    object RefreshAmiibos : AmiiboListWish()
-    object GetAmiibos : AmiiboListWish()
-    object ShowFilters : AmiiboListWish()
-    object FilteringCancelled : AmiiboListWish()
+class DashboardFragment : Fragment() {
 
-    data class Search(val query: String) : AmiiboListWish()
-    data class ShowAmiiboDetail(val viewAmiibo: ViewAmiibo) : AmiiboListWish()
-    data class FilterAmiibos(val filter: ViewAmiiboType) : AmiiboListWish()
+    private lateinit var dashboardViewModel: DashboardViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        dashboardViewModel =
+            ViewModelProviders.of(this).get(DashboardViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
+        val textView: TextView = root.findViewById(R.id.text_dashboard)
+        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
+            textView.text = it
+        })
+        return root
+    }
 }
