@@ -12,14 +12,22 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuItemCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.ethanhua.skeleton.Skeleton
@@ -27,30 +35,26 @@ import com.ethanhua.skeleton.SkeletonScreen
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
-import com.oscarg798.amiibowiki.amiibolist.databinding.ActivityAmiiboListBinding
+import com.oscarg798.amiibowiki.amiibolist.databinding.FragmentAmiiboListBinding
 import com.oscarg798.amiibowiki.amiibolist.di.DaggerAmiiboListComponent
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
-import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
-import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
-import com.oscarg798.amiibowiki.core.constants.SETTINGS_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboListEntryPoint
-import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @DeepLink(AMIIBO_LIST_DEEPLINK)
-class AmiiboListActivity :
-    AppCompatActivity(),
+class AmiiboListFragment :
+    Fragment(),
     SearchView.OnQueryTextListener,
-    SearchView.OnCloseListener {
+    MenuItem.OnActionExpandListener {
 
     @Inject
     lateinit var viewModel: AmiiboListViewModel
@@ -62,29 +66,76 @@ class AmiiboListActivity :
     private var filterMenuItem: MenuItem? = null
     private var searchView: SearchView? = null
 
-    private lateinit var binding: ActivityAmiiboListBinding
+    private lateinit var binding: FragmentAmiiboListBinding
+
+    private lateinit var currentState: AmiiboListViewState
+
     private val searchFlow = MutableStateFlow(EMPTY_SEARCH_QUERY)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAmiiboListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (searchView?.isIconified == false) {
+                searchView?.isIconified = true
+                return
+            }
+            this.remove()
+            requireActivity().onBackPressed()
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
         DaggerAmiiboListComponent.factory()
             .create(
                 EntryPointAccessors.fromApplication(
-                    application,
+                    requireActivity().application,
                     AmiiboListEntryPoint::class.java
                 )
             )
             .inject(this)
 
-        setup()
         setupViewModelInteractions()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentAmiiboListBinding.inflate(
+            LayoutInflater.from(requireContext()),
+            container,
+            false
+        )
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setup()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (::currentState.isInitialized && !currentState.isLoading && currentState.amiibos != null) {
+            showAmiibos(currentState.amiibos!!.toList())
+        } else {
+            viewModel.onWish(AmiiboListWish.GetAmiibos)
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(
             R.menu.amiibo_list_menu,
             menu
         )
@@ -92,15 +143,7 @@ class AmiiboListActivity :
         filterMenuItem = menu.findItem(R.id.action_filter)
         setupSearchView(menu.findItem(R.id.action_search))
 
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onBackPressed() {
-        if (searchView?.isIconified == false) {
-            searchView?.isIconified = true
-            return
-        }
-        super.onBackPressed()
+        return super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onDestroy() {
@@ -111,14 +154,19 @@ class AmiiboListActivity :
     private fun setupSearchView(searchMenuItem: MenuItem) {
         searchView = searchMenuItem.actionView as? SearchView ?: return
 
-        searchView?.setOnCloseListener(this)
+        searchMenuItem.setOnActionExpandListener(this)
         searchView?.setOnQueryTextListener(this)
     }
 
-    override fun onClose(): Boolean {
+    override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
         viewModel.onWish(AmiiboListWish.RefreshAmiibos)
+        backPressedCallback.remove()
+        return true
+    }
 
-        return false
+    override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+        requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)
+        return true
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
@@ -136,22 +184,21 @@ class AmiiboListActivity :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_filter) {
             viewModel.onWish(AmiiboListWish.ShowFilters)
-        } else if (item.itemId == R.id.action_settings) {
-            viewModel.onWish(AmiiboListWish.OpenSettings)
         }
 
         return super.onOptionsItemSelected(item)
     }
 
     private fun setup() {
+        val context = requireContext()
         with(binding.srlMain) {
             setColorSchemeColors(
-                getColor(R.color.cinnabar),
-                getColor(R.color.atlantis),
-                getColor(R.color.picton_blue),
-                getColor(R.color.viridian),
-                getColor(R.color.tulip_tree),
-                getColor(R.color.cerise)
+                context.getColor(R.color.cinnabar),
+                context.getColor(R.color.atlantis),
+                context.getColor(R.color.picton_blue),
+                context.getColor(R.color.viridian),
+                context.getColor(R.color.tulip_tree),
+                context.getColor(R.color.cerise)
             )
 
             setOnRefreshListener {
@@ -177,12 +224,11 @@ class AmiiboListActivity :
     private fun setupViewModelInteractions() {
         viewModel.onScreenShown()
 
-        viewModel.state.onEach {
-            val state = it
+        viewModel.state.onEach { state ->
+            currentState = state
             when {
                 state.isIdling -> onIdling()
                 state.isLoading -> showLoading()
-                state.isShowingSettings -> navigateToSettings()
                 state.error != null -> showErrors(state.error.message!!)
                 state.filters != null -> showFilters(state.filters.toList())
                 state.amiiboTailToShow != null -> showAmiiboDetail(state.amiiboTailToShow)
@@ -196,12 +242,6 @@ class AmiiboListActivity :
                 viewModel.onWish(AmiiboListWish.Search(it))
             }
             .launchIn(lifecycleScope)
-
-        viewModel.onWish(AmiiboListWish.GetAmiibos)
-    }
-
-    private fun navigateToSettings() {
-        startDeepLinkIntent(SETTINGS_DEEPLINK)
     }
 
     private fun onIdling() {
@@ -230,11 +270,11 @@ class AmiiboListActivity :
 
     private fun showFilters(filters: List<ViewAmiiboType>) {
         val adapter = ArrayAdapter<ViewAmiiboType>(
-            this,
+            requireContext(),
             android.R.layout.select_dialog_singlechoice,
             filters
         )
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(requireContext())
         builder.setAdapter(adapter) { _, which ->
             val filter = adapter.getItem(which)
             require(filter != null)
@@ -257,12 +297,8 @@ class AmiiboListActivity :
     }
 
     private fun showAmiiboDetail(tail: String) {
-        startDeepLinkIntent(
-            AMIIBO_DETAIL_DEEPLINK,
-            Bundle().apply {
-                putString(ARGUMENT_TAIL, tail)
-            }
-        )
+        view?.findNavController()
+            ?.navigate(AmiiboListFragmentDirections.actionNavigationListToAmiiboDetail(tail))
     }
 }
 

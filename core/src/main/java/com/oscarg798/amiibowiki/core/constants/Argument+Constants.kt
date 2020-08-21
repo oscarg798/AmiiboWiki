@@ -12,6 +12,6 @@
 
 package com.oscarg798.amiibowiki.core.constants
 
-const val ARGUMENT_TAIL = "tail"
+const val ARGUMENT_TAIL = "ARGUMENT_TAIL"
 const val ARGUMENT_GAME_SERIES = "ARGUMENT_GAME_SERIES"
 const val ARGUMENT_GAME_ID = "ARGUMENT_GAME_ID"

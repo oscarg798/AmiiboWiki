@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.houses
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
+import com.oscarg798.amiibowiki.amiibolist.AmiiboListFragment
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
 import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
@@ -48,8 +48,8 @@ import org.junit.runner.RunWith
 class AmiiboListTest : BaseUITest(DISPATCHER) {
 
     @get:Rule
-    val intentTestRule: IntentsTestRule<AmiiboListActivity> =
-        IntentsTestRule(AmiiboListActivity::class.java, true, true)
+    val intentTestRule: IntentsTestRule<AmiiboListFragment> =
+        IntentsTestRule(AmiiboListFragment::class.java, true, true)
 
     @Inject
     lateinit var amiiboDAO: AmiiboDAO

@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.oscarg798.amiibowiki.AmiiboWikiApplication"
+        android:name=".AmiiboWikiApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,7 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.oscarg798.amiibowiki.splash.SplashActivity"
+            android:name=".navigation.DashboardActivity"
+            android:label="@string/title_activity_dashboard"></activity>
+        <activity
+            android:name=".splash.SplashActivity"
             android:noHistory="true"
             android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>

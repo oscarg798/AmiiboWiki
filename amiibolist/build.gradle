@@ -13,6 +13,7 @@
 apply from: "../gradlescripts/shared.gradle"
 
 dependencies {
+    implementation project(path: ':amiibodetail')
     implementation project(path: ':core')
     implementation project(path: ':network')
 }

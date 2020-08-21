@@ -18,6 +18,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 apply from: '../gradlescripts/signing.gradle'
@@ -122,6 +123,11 @@ dependencies {
     implementation airbnb
     kapt airbnbProcessor
 
+    implementation fragmentNavigation
+    implementation navigationUi
+    implementation fragmentNavigationKtx
+    implementation navigationUiKtx
+
     //Dagger
     implementation dagger
     implementation daggerAndroidSupport
@@ -179,7 +185,6 @@ dependencies {
     implementation project(path: ':logger')
     implementation project(path: ':core')
     implementation project(path: ':amiibolist')
-    implementation project(path: ':amiibodetail')
     implementation project(path: ':nfcreader')
     implementation project(path: ':network')
     implementation project(path: ':gamedetail')

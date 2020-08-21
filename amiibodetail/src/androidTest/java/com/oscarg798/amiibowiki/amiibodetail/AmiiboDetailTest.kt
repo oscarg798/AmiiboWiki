@@ -50,8 +50,8 @@ import org.junit.runner.RunWith
 class AmiiboDetailTest : BaseUITest(DISPATCHER) {
 
     @get:Rule
-    val intentTestRule: IntentsTestRule<AmiiboDetailActivity> =
-        IntentsTestRule(AmiiboDetailActivity::class.java, true, false)
+    val intentTestRule: IntentsTestRule<AmiiboDetailFragment> =
+        IntentsTestRule(AmiiboDetailFragment::class.java, true, false)
 
     @Inject
     lateinit var amiiboDAO: AmiiboDAO
