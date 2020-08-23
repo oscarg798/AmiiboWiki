@@ -17,7 +17,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
-import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_SERIES
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
 import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
@@ -67,7 +66,6 @@ class GameDetailTest : BaseUITest(DISPATCHER) {
         intentTestRule.launchActivity(
             Intent().apply {
                 putExtra(ARGUMENT_GAME_ID, 1)
-                putExtra(ARGUMENT_GAME_SERIES, GAME_SERIES)
             }
         )
     }
@@ -93,7 +91,6 @@ private val DBGAME = DBGame(
     name = "Mario",
     category = 2,
     cover = "cover_url",
-    gameSeries = GAME_SERIES,
     summary = "summary",
     rating = 6.6,
     webSites = setOf("www.google.com"),

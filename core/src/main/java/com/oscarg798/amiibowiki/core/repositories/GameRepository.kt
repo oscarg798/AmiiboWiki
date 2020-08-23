@@ -19,7 +19,7 @@ import com.oscarg798.amiibowiki.core.models.Id
 
 interface GameRepository {
 
-    suspend fun getGame(gameSeries: String, gameId: Id): Game
+    suspend fun getGame(gameId: Id): Game
 
     suspend fun getGameCover(gameIds: Collection<Int>): Collection<GameCover>
 

@@ -49,7 +49,6 @@ data class APIGame(
 ) {
 
     fun toGame(
-        gameSeries: String,
         covers: APIGameCover?,
         webSites: List<APIWebsite>?,
         videos: List<APIGameVideo>?,
@@ -61,7 +60,6 @@ data class APIGame(
         name,
         GameCategory.createFromCategoryId(category),
         covers?.url,
-        gameSeries,
         summary,
         rating,
         webSites?.map { apiWebSite ->
