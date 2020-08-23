@@ -44,6 +44,8 @@ android {
         buildConfigField "String", "GAME_API_KEY", "\"$gameAPIKey\""
         buildConfigField "String", "GOOGLE_API_KEY", "\"$googleAPIKey\""
         buildConfigField "String", "MIX_PANEL_API_KEY", "\"$mixPanelApiKey\""
+
+        testInstrumentationRunner "com.oscarg798.amiibowiki.testutils.testrunner.UITestRunner"
     }
 
     buildTypes {
@@ -92,8 +94,15 @@ android {
         jvmTarget = "1.8"
     }
 
-    viewBinding {
-        enabled = true
+    testOptions {
+        unitTests {
+            includeAndroidResources true
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+        dataBinding false
     }
 
     packagingOptions {
@@ -161,6 +170,19 @@ dependencies {
     implementation roomCompiler
     implementation roomKTX
 
+    implementation firebaseAnalytics
+    implementation crashly
+    implementation(lomeno)
+
+    implementation project(path: ':logger')
+    implementation project(path: ':core')
+    implementation project(path: ':amiibolist')
+    implementation project(path: ':nfcreader')
+    implementation project(path: ':network')
+    implementation project(path: ':gamedetail')
+    implementation project(path: ':settings')
+    implementation project(path: ':searchgames')
+
     //Test
     testImplementation mockk
     testImplementation junit
@@ -178,17 +200,9 @@ dependencies {
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
 
-    implementation firebaseAnalytics
-    implementation crashly
-    implementation(lomeno)
-
-    implementation project(path: ':logger')
-    implementation project(path: ':core')
-    implementation project(path: ':amiibolist')
-    implementation project(path: ':nfcreader')
-    implementation project(path: ':network')
-    implementation project(path: ':gamedetail')
-    implementation project(path: ':settings')
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.28.3-alpha'
+    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.28.3-alpha'
 
     testImplementation project(path: ':testutils')
+    androidTestImplementation project(path: ':testutils')
 }

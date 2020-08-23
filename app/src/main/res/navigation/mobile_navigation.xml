@@ -18,15 +18,8 @@
 
     <include app:graph="@navigation/amiibo_list_navigation" />
 
-    <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.oscarg798.amiibowiki.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+    <include app:graph="@navigation/search_games_navigation" />
 
-    <fragment
-        android:id="@+id/navigation_settings"
-        android:name="com.oscarg798.amiibowiki.settings.SettingsFragment"
-        android:label="@string/settings_navigation_menu_title"
-        tools:layout="@layout/fragment_notifications" />
+    <include app:graph="@navigation/navigation_settings" />
+
 </navigation>

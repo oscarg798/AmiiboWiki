@@ -92,14 +92,13 @@ class GameRepositoryImplTest {
         coEvery { gameDAO.countById(GAME_ID) } answers { 0 }
 
         val game = runBlocking {
-            gameRepository.getGame(GAME_SERIES, GAME_ID)
+            gameRepository.getGame(GAME_ID)
         }
 
         game.id shouldBeEqualTo GAME.id
         game.name shouldBeEqualTo GAME.name
         game.category shouldBeEqualTo GAME.category
         game.cover shouldBeEqualTo GAME.cover
-        game.gameSeries shouldBeEqualTo GAME.gameSeries
         game.summary shouldBeEqualTo GAME.summary
         game.rating shouldBeEqualTo GAME.rating
         game.webSites shouldBeEqualTo GAME.webSites?.toList()
@@ -124,7 +123,6 @@ class GameRepositoryImplTest {
                             dbGame.name == DBGAME.name &&
                             dbGame.category == DBGAME.category &&
                             dbGame.cover == DBGAME.cover &&
-                            dbGame.gameSeries == DBGAME.gameSeries &&
                             dbGame.summary == DBGAME.summary &&
                             dbGame.rating == DBGAME.rating &&
                             dbGame.webSites == DBGAME.webSites?.toList() &&
@@ -153,7 +151,7 @@ class GameRepositoryImplTest {
         coEvery { gameDAO.countById(GAME_ID) } answers { 1 }
 
         runBlocking {
-            gameRepository.getGame(GAME_SERIES, GAME_ID)
+            gameRepository.getGame(GAME_ID)
         } shouldBeEqualTo GAME
 
         coVerify {
@@ -190,7 +188,6 @@ private val GAME = Game(
     name = "name",
     category = GameCategory.Expansion,
     cover = "cover_url",
-    gameSeries = GAME_SERIES,
     summary = "summary",
     rating = 6.6,
     webSites = setOf("web_site_url"),
@@ -219,7 +216,6 @@ private val DBGAME = DBGame(
     name = "name",
     category = 2,
     cover = "cover_url",
-    gameSeries = GAME_SERIES,
     summary = "summary",
     rating = 6.6,
     webSites = setOf("web_site_url"),

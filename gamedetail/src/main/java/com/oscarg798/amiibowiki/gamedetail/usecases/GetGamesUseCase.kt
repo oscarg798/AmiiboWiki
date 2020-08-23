@@ -22,8 +22,8 @@ import javax.inject.Inject
 
 class GetGamesUseCase @Inject constructor(private val gameRepository: GameRepository) {
 
-    suspend fun execute(gameSeries: String, gameId: Id): Game {
-        var game = gameRepository.getGame(gameSeries, gameId)
+    suspend fun execute(gameId: Id): Game {
+        var game = gameRepository.getGame(gameId)
 
         if (game.cover != null) {
             game = game.copy(cover = transformImageUrl(game.cover!!, COVER_SIZE))

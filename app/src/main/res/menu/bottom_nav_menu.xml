@@ -19,9 +19,9 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:id="@+id/search_games_navigation"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search" />
 
     <item
         android:id="@+id/navigation_settings"

@@ -78,7 +78,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = true,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -87,7 +86,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = true,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -96,7 +94,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = listOf(AMIIBO).map { ViewAmiibo(it) },
                 filters = null,
                 amiiboTailToShow = null,
@@ -120,7 +117,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = true,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -129,7 +125,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = true,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -138,7 +133,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -157,7 +151,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = true,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -166,7 +159,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = true,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -175,7 +167,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = listOf(AMIIBO).map { ViewAmiibo(it) },
                 filters = null,
                 amiiboTailToShow = null,
@@ -199,7 +190,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = true,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -208,7 +198,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = true,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -217,7 +206,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -246,7 +234,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = true,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -255,7 +242,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = listOf(ViewAmiiboType("1", "2")),
                 amiiboTailToShow = null,
@@ -278,7 +264,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = true,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -287,7 +272,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = "11",
@@ -309,7 +293,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = true,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -332,7 +315,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = true,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -341,7 +323,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = true,
-                isShowingSettings = false,
                 amiibos = null,
                 filters = null,
                 amiiboTailToShow = null,
@@ -350,7 +331,6 @@ class AmiiboListViewModelTest :
             AmiiboListViewState(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiibos = listOf(AMIIBO).map { ViewAmiibo(it) },
                 filters = null,
                 amiiboTailToShow = null,

@@ -45,7 +45,7 @@ class GameDetailViewModelTest :
 
     @Before
     fun setup() {
-        coEvery { getGamesUseCase.execute(GAME_SERIE, GAME_ID) } answers { GAME }
+        coEvery { getGamesUseCase.execute(GAME_ID) } answers { GAME }
         coEvery { expandGameImagesUseCase.execute(EXPAND_IMAGE_PARAMS) } answers { EXPANDED_IMAGES }
     }
 
@@ -59,7 +59,7 @@ class GameDetailViewModelTest :
 
     @Test
     fun `given a wish to show the game details when its processed then it should return the state with the details`() {
-        viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail(GAME_ID, GAME_SERIE))
+        viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail(GAME_ID))
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
             GameDetailViewState(
@@ -89,7 +89,7 @@ class GameDetailViewModelTest :
         )
 
         coVerify {
-            getGamesUseCase.execute(GAME_SERIE, GAME_ID)
+            getGamesUseCase.execute(GAME_ID)
             gameDetailLogger.trackScreenShown(mapOf("GAME_ID" to GAME_ID.toString()))
         }
 
@@ -104,14 +104,6 @@ class GameDetailViewModelTest :
             GameDetailViewState(
                 isIdling = true,
                 isLoading = false,
-                gameDetails = null,
-                expandedImages = null,
-                gameTrailer = null,
-                error = null
-            ),
-            GameDetailViewState(
-                isIdling = false,
-                isLoading = true,
                 gameDetails = null,
                 expandedImages = null,
                 gameTrailer = null,
@@ -161,14 +153,12 @@ private val EXPANDED_IMAGES = listOf("expand_url")
 private val EXPAND_IMAGE_PARAMS =
     listOf(ExpandableImageParam("url", ExpandableImageType.Cover))
 private const val GAME_ID = 45
-private const val GAME_SERIE = "44"
 private val GAME =
     Game(
         id = GAME_ID,
         name = "2",
         category = GameCategory.createFromCategoryId(0),
         cover = "3",
-        gameSeries = "5",
         summary = "6",
         rating = 7.toDouble(),
         webSites = setOf("8"),

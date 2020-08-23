@@ -12,12 +12,20 @@
 
 apply from: '../gradlescripts/shared.gradle'
 
+android{
+
+    packagingOptions {
+        exclude 'META-INF/metadata.kotlin_module'
+    }
+}
+
 dependencies {
     implementation cardView
     implementation shimmer
 
     implementation project(path: ':core')
     implementation project(path: ':network')
-    testImplementation project(path: ':testutils')
-    implementation project(path: ':searchgames')
+    implementation project(path: ':searchgamesresult')
+
+    androidTestImplementation fragmentTesting
 }

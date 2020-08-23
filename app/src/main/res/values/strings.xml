@@ -15,7 +15,7 @@
     <string name="fetch_types_error">There was an error please restart the application</string>
     <string name="title_activity_dashboard">MainActivity</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="settings_navigation_menu_title">Settings</string>
+    <string name="search">Search</string>
 </resources>

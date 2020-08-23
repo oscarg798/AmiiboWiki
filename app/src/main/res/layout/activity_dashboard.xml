@@ -22,6 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/match_constraint"
         android:layout_marginEnd="@dimen/match_constraint"
+        app:itemIconTint="@drawable/bottom_navigation_icon_colors"
+        app:itemTextColor="@drawable/bottom_navigation_icon_colors"
         android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

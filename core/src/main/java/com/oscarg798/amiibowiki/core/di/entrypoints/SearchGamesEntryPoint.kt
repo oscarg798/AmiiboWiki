@@ -12,26 +12,16 @@
 
 package com.oscarg798.amiibowiki.core.di.entrypoints
 
-import com.oscarg798.amiibowiki.core.di.providers.AmiiboRepositoryProvider
 import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
-import com.oscarg798.amiibowiki.core.di.providers.FeatureFlagProvider
 import com.oscarg798.amiibowiki.core.di.providers.GameRepositoryProvider
 import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
-import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import java.util.Locale
 
 @EntryPoint
 @InstallIn(ApplicationComponent::class)
 interface SearchGamesEntryPoint :
     CoroutinesProvider,
-    FeatureFlagProvider,
     GameRepositoryProvider,
-    AmiiboRepositoryProvider,
-    LoggerProvider,
-    ResourceProviderProvider {
-
-    fun provideLocale(): Locale
-}
+    LoggerProvider

@@ -16,8 +16,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.view.View
 import android.text.InputType as EditTextInputType
+import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -60,7 +60,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     SettingsEntryPoint::class.java
                 )
             ).inject(this)
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

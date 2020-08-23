@@ -10,16 +10,13 @@
  *
  */
 
-apply from: '../gradlescripts/shared.gradle'
+apply from: "../gradlescripts/shared.gradle"
 
 dependencies {
-
-    implementation cardView
-    implementation shimmer
-    
     implementation project(path: ':core')
     implementation project(path: ':network')
+    implementation project(path: ':searchgamesresult')
 
     testImplementation project(path: ':testutils')
-}
 
+}
