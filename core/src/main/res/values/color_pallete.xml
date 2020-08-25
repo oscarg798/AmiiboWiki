@@ -16,6 +16,7 @@
     <attr name="TextColorSecondary" format="color" />
     <attr name="iconColor" format="color" />
     <attr name="skeletonColor" format="color" />
+    <attr name="selectedIconColor" format="color"/>
 
     <color name="silver_chalice">#AAAAAA</color>
     <color name="white">#ffffff</color>
@@ -38,7 +39,7 @@
     <color name="alabaster_100">#F5F5F5</color>
     <color name="alabaster_200">#EEEEEE</color>
 
-    <!-- amiibo colors -->
+    <!-- amiibo bottom_navigation_icon_colors -->
     <color name="cinnabar">#EB322C</color>
     <color name="atlantis">#A7C73E</color>
     <color name="picton_blue">#4AAAE6</color>

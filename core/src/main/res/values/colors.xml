@@ -16,6 +16,7 @@
     <color name="secondaryTextColor">@color/mine_shaft_800</color>
     <color name="invertedTextColor"></color>
     <color name="themeIconColor">@color/mine_shaft_900</color>
+    <color name="selectedIconColor">@color/royal_blue</color>
 
     <color name="colorPrimary">@color/white</color>
     <color name="colorPrimaryDark">@color/white_lilac</color>

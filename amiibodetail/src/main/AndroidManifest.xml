@@ -2,9 +2,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.oscarg798.amiibowiki.amiibodetail">
 
-    <application>
-        <activity android:name=".AmiiboDetailActivity"
-            android:theme="@style/AppTheme.AmiiboDetail"/>
-    </application>
 
 </manifest>

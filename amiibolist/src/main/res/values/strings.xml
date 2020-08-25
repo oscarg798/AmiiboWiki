@@ -12,4 +12,6 @@
 
 <resources>
     <string name="search_menu_item_title">Search</string>
+    <string name="amiibos_fragment_title">Amiibos</string>
+    <string name="amiibo_detail_fragment_title">Amiibo Detail</string>
 </resources>

@@ -13,13 +13,11 @@
 package com.oscarg798.amiibowiki.houses
 
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.oscarg798.amiibowiki.amiibolist.R
-import com.oscarg798.amiibowiki.testutils.idleresources.waitUntilViewIsDisplayed
 import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
 class AmiiboListRobot : TestRobot {
@@ -30,24 +28,5 @@ class AmiiboListRobot : TestRobot {
 
     fun areAmiibosDisplayed() {
         Espresso.onView(withText("Mario")).check(matches(isDisplayed()))
-    }
-
-    fun clickFilterMenu() {
-        Espresso.onView(withId(R.id.action_filter)).perform(click())
-    }
-
-    fun clickOnFigureAmiiboTypeFilter() {
-        waitUntilViewIsDisplayed(withText("Clear Filters"))
-        Espresso.onView(withText("Figure")).perform(click())
-    }
-
-    fun areAmiibosFilteredDisplayed() {
-        Espresso.onView(withText("Luigi")).check(matches(isDisplayed()))
-    }
-
-    fun clearFilters() {
-        clickFilterMenu()
-        waitUntilViewIsDisplayed(withText("Clear Filters"))
-        Espresso.onView(withText("Clear Filters")).perform(click())
     }
 }

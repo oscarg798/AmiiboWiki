@@ -28,8 +28,6 @@ data class DBGame(
     val category: Int,
     @ColumnInfo(name = "cover")
     val cover: String?,
-    @ColumnInfo(name = "gameSeries")
-    val gameSeries: String,
     @ColumnInfo(name = "summary")
     val summary: String?,
     @ColumnInfo(name = "rating")
@@ -49,7 +47,6 @@ data class DBGame(
         game.name,
         game.category.categoryId,
         game.cover,
-        game.gameSeries,
         game.summary,
         game.rating,
         game.webSites,
@@ -64,7 +61,6 @@ data class DBGame(
             name,
             GameCategory.createFromCategoryId(category),
             cover,
-            gameSeries,
             summary,
             rating,
             webSites,

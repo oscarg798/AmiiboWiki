@@ -54,13 +54,11 @@ class GameDetailViewModel @Inject constructor(
         flow {
             trackTrailerClick(wish.gameId.toString())
             emit(GameDetailResult.GameTrailerFound(wish.trailerId) as GameDetailResult)
-        }.onStart {
-            emit(GameDetailResult.Loading)
         }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private fun getGame(wish: GameDetailWish.ShowGameDetail) = flow<GameDetailResult> {
         trackScreenShown(wish)
-        emit(GameDetailResult.GameFetched(getGameUseCase.execute(wish.gameSeries, wish.gameId)))
+        emit(GameDetailResult.GameFetched(getGameUseCase.execute(wish.gameId)))
     }.onStart {
         emit(GameDetailResult.Loading)
     }.catch { cause ->

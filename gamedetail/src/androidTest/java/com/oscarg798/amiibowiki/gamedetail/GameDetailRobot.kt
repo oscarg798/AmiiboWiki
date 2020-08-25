@@ -23,7 +23,6 @@ class GameDetailRobot : TestRobot {
     }
 
     fun isGameDetailDisplayed() {
-        isViewWithTextDisplayed("Super Mario")
         isViewWithTextDisplayed("summary")
         isViewWithTextDisplayed("Screenshots")
         isViewWithTextDisplayed("Artworks")

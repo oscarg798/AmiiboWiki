@@ -216,14 +216,14 @@ ext {
     espressoIntents = "androidx.test.espresso:espresso-intents:$espressoIntentsVersion"
     lifeCycleVersion = "2.3.0-alpha05"
     lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion"
-    viewModelScope= "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha06"
+    viewModelScope = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha06"
 
     idlingResource = 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
     activityx = "androidx.activity:activity-ktx:1.2.0-alpha06"
     picasso = "com.squareup.picasso:picasso:2.0.0"
 
     lomeno = "com.oscarg798.lomeno:Lomeno:1.1.0"
-    flagly =  "com.oscarg798.flagly:Flagly:1.0.5"
+    flagly = "com.oscarg798.flagly:Flagly:1.0.5"
 
     kotlinpoet = 'com.squareup:kotlinpoet:1.6.0'
 
@@ -234,10 +234,15 @@ ext {
 
     zoomImageViewer = "com.github.stfalcon:stfalcon-imageviewer:1.0.10"
 
-    hiltVersion = "2.28-alpha"
-    hiltLib =  "com.google.dagger:hilt-android:$hiltVersion"
-    hiltKAPT=  "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    hiltVersion = "2.28.3-alpha"
+    hiltLib = "com.google.dagger:hilt-android:$hiltVersion"
+    hiltKAPT = "com.google.dagger:hilt-android-compiler:$hiltVersion"
 
     viewPagerVersion = "1.0.0"
-    viewPager =  "androidx.viewpager2:viewpager2:$viewPagerVersion"
+    viewPager = "androidx.viewpager2:viewpager2:$viewPagerVersion"
+
+    fragmentNavigation = "androidx.navigation:navigation-fragment:$navigationVersion"
+    navigationUi = "androidx.navigation:navigation-ui:$navigationVersion"
+    fragmentNavigationKtx = "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    navigationUiKtx = "androidx.navigation:navigation-ui-ktx:$navigationVersion"
 }

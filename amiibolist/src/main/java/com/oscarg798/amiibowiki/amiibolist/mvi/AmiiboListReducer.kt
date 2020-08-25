@@ -27,14 +27,12 @@ class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, Amiibo
             is AmiiboListResult.Loading -> state.copy(
                 isIdling = false,
                 isLoading = true,
-                isShowingSettings = false,
                 amiiboTailToShow = null,
                 error = null
             )
             is AmiiboListResult.AmiibosFetched -> state.copy(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiiboTailToShow = null,
                 filters = null,
                 amiibos = from.amiibos.map { amiibo ->
@@ -45,7 +43,6 @@ class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, Amiibo
             is AmiiboListResult.AmiibosFiltered -> state.copy(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiiboTailToShow = null,
                 filters = null,
                 amiibos = from.amiibos.map { amiibo ->
@@ -56,14 +53,12 @@ class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, Amiibo
             is AmiiboListResult.Error -> state.copy(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 error = from.error,
                 amiiboTailToShow = null
             )
             is AmiiboListResult.FiltersFetched -> state.copy(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiiboTailToShow = null,
                 filters = from.filters.map { amiiboType ->
                     ViewAmiiboType(amiiboType)
@@ -73,18 +68,12 @@ class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, Amiibo
             is AmiiboListResult.ShowAmiiboDetail -> state.copy(
                 isIdling = false,
                 isLoading = false,
-                isShowingSettings = false,
                 amiiboTailToShow = from.amiiboTail,
                 error = null
             )
             is AmiiboListResult.FilterSelectionCancelled -> state.copy(
                 filters = null,
                 isIdling = true,
-                isShowingSettings = false
-            )
-            is AmiiboListResult.OpenSettings -> state.copy(
-                isIdling = false,
-                isShowingSettings = true
             )
         }
     }

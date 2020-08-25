@@ -23,7 +23,6 @@ data class Game(
     val name: String,
     val category: GameCategory,
     val cover: String?,
-    val gameSeries: String,
     val summary: String?,
     val rating: Double?,
     val webSites: Collection<String>?,
