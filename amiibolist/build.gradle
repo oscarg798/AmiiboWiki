@@ -12,7 +12,15 @@
 
 apply from: "../gradlescripts/shared.gradle"
 
+android {
+    packagingOptions {
+        exclude 'META-INF/metadata.kotlin_module'
+    }
+}
 dependencies {
+    implementation project(path: ':amiibodetail')
     implementation project(path: ':core')
     implementation project(path: ':network')
+
+    androidTestImplementation fragmentTesting
 }

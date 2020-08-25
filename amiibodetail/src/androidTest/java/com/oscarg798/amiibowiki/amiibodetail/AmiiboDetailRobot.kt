@@ -26,7 +26,6 @@ class AmiiboDetailRobot : TestRobot {
         isViewWithTextDisplayed("Mario")
         isViewWithTextDisplayed("Super Mario Bros")
         isViewWithTextDisplayed("Figure")
-        isViewWithTextDisplayed("Mario", CHARACTER_VIEW_INDEX)
         isViewWithTextDisplayed("Related Games")
     }
 }

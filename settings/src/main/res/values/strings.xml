@@ -19,4 +19,5 @@
     <string name="search_limit_default_value">20</string>
     <string name="search_filter_lower_limit_error">Search limit should be greater than %d</string>
     <string name="search_filter_upper_limit_error">Search limit should be lower than %d</string>
+    <string name="settings_fragment_title">Settings</string>
 </resources>

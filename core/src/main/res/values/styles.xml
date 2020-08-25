@@ -20,6 +20,7 @@
         <item name="textColor">@color/textColor</item>
         <item name="TextColorSecondary">@color/secondaryTextColor</item>
         <item name="iconColor">@color/themeIconColor</item>
+        <item name="selectedIconColor">@color/selectedIconColor</item>
         <item name="appBackgroundColor">@color/background_color</item>
         <item name="skeletonColor">@color/silver_chalice</item>
         <item name="android:statusBarColor">@color/status_bar_color</item>

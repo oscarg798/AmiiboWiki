@@ -19,7 +19,6 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 data class AmiiboListViewState(
     override val isIdling: Boolean,
     val isLoading: Boolean,
-    val isShowingSettings: Boolean,
     val amiibos: Collection<ViewAmiibo>?,
     val filters: Collection<ViewAmiiboType>?,
     val amiiboTailToShow: String?,
@@ -30,7 +29,6 @@ data class AmiiboListViewState(
         fun init() = AmiiboListViewState(
             isIdling = true,
             isLoading = false,
-            isShowingSettings = false,
             amiibos = null,
             filters = null,
             amiiboTailToShow = null,

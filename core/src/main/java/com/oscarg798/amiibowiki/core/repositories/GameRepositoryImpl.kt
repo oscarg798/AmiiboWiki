@@ -42,20 +42,20 @@ class GameRepositoryImpl @Inject constructor(
     private val sharedPreferencesWrapper: SharedPreferencesWrapper
 ) : GameRepository {
 
-    override suspend fun getGame(gameSeries: String, gameId: Id): Game {
+    override suspend fun getGame(gameId: Id): Game {
         return if (doesALocalGameExists(gameId)) {
             val dbGame = gameDAO.getGameById(gameId)
             val ageRatings = ageRatingDAO.getByGameId(gameId).first()
             return dbGame.toGame(ageRatings)
         } else {
-            getGameFromAPI(gameSeries, gameId)
+            getGameFromAPI(gameId)
         }
     }
 
     private suspend fun doesALocalGameExists(gameId: Id) =
         gameDAO.countById(gameId) > NO_GAMES_COUNT
 
-    private suspend fun getGameFromAPI(gameSeries: String, gameId: Id) = runCatching {
+    private suspend fun getGameFromAPI(gameId: Id) = runCatching {
         val apiGame =
             gameService.getGames(APIGameQuery(whereClause = WhereClause.Id(gameId)).toString())
                 .firstOrNull()
@@ -97,7 +97,7 @@ class GameRepositoryImpl @Inject constructor(
             null
         }
 
-        apiGame.toGame(gameSeries, cover, webSite, video, artworks, ageRating, screenshots)
+        apiGame.toGame(cover, webSite, video, artworks, ageRating, screenshots)
     }.map { game ->
         saveGameToDatabase(game)
     }.getOrTransformNetworkException { networkException ->

@@ -117,21 +117,6 @@
                 tools:text="The Legeng of Zelda Breath of the Wild" />
 
             <TextView
-                android:id="@+id/tvGameSeries"
-                style="@style/Styles.AmiiboWiki.Default"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_medium"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:maxLines="2"
-                android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.L"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ivGameCover"
-                app:layout_constraintTop_toBottomOf="@+id/tvGameName"
-                tools:text="The Lengend of zelda" />
-
-
-            <TextView
                 android:id="@+id/tvGameRating"
                 style="@style/Styles.AmiiboWiki.Default"
                 android:layout_width="wrap_content"
@@ -141,8 +126,8 @@
                 android:layout_marginTop="@dimen/spacing_small"
                 android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.L"
                 android:translationZ="6dp"
-                app:layout_constraintStart_toStartOf="@+id/tvGameSeries"
-                app:layout_constraintTop_toBottomOf="@+id/tvGameSeries"
+                app:layout_constraintStart_toStartOf="@+id/tvGameName"
+                app:layout_constraintTop_toBottomOf="@+id/tvGameName"
                 tools:text="89.9" />
 
             <ImageView

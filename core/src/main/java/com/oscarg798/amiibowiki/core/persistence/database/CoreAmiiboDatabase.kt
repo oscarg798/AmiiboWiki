@@ -27,7 +27,7 @@ import com.oscarg798.amiibowiki.core.persistence.models.DBGame
 
 @Database(
     entities = [DBAmiibo::class, DBAmiiboType::class, DBGame::class, DBAgeRating::class],
-    version = 2
+    version = 3
 )
 @TypeConverters(Converters::class)
 abstract class CoreAmiiboDatabase : RoomDatabase() {

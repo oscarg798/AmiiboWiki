@@ -9,11 +9,6 @@
  *
  *
  */
-include ':searchgames'
-include ':settings'
-include ':gamedetail'
-include ':logger'
-
 rootProject.name = "AmiiboWiki"
 include ':network'
 include ':core'
@@ -23,3 +18,8 @@ include ':amiibodetail'
 include ':testutils'
 include ':nfcreader'
 include ':loggerprocessor'
+include ':searchgamesresult'
+include ':settings'
+include ':gamedetail'
+include ':logger'
+include ':searchgames'

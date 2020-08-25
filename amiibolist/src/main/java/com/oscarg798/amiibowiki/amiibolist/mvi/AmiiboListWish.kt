@@ -21,7 +21,6 @@ sealed class AmiiboListWish : Wish {
     object GetAmiibos : AmiiboListWish()
     object ShowFilters : AmiiboListWish()
     object FilteringCancelled : AmiiboListWish()
-    object OpenSettings : AmiiboListWish()
 
     data class Search(val query: String) : AmiiboListWish()
     data class ShowAmiiboDetail(val viewAmiibo: ViewAmiibo) : AmiiboListWish()

@@ -29,7 +29,6 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.youtube.player.YouTubeStandalonePlayer
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
-import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_SERIES
 import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.entrypoints.GameDetailEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
@@ -121,7 +120,6 @@ class GameDetailActivity : AppCompatActivity() {
     private fun setupViewModel() {
         viewModel.state.onEach { state ->
             currentState = state
-            hideLoading()
             when {
                 state.isLoading -> showLoading()
                 state.error != null -> showError()
@@ -133,10 +131,7 @@ class GameDetailActivity : AppCompatActivity() {
 
         merge(
             flowOf(
-                GameDetailWish.ShowGameDetail(
-                    intent.getIntExtra(ARGUMENT_GAME_ID, DEFAULT_GAME_ID),
-                    intent.getStringExtra(ARGUMENT_GAME_SERIES)!!
-                )
+                GameDetailWish.ShowGameDetail(intent.getIntExtra(ARGUMENT_GAME_ID, DEFAULT_GAME_ID))
             ),
             getTrailerClickFlow()
         ).onEach {
@@ -154,6 +149,7 @@ class GameDetailActivity : AppCompatActivity() {
     }
 
     private fun showError() {
+        hideLoading()
         AlertDialog.Builder(this)
             .setMessage(getString(R.string.error_getting_game))
             .setPositiveButton(getString(R.string.error_dialog_positive_button)) { _, _ ->
@@ -219,8 +215,8 @@ class GameDetailActivity : AppCompatActivity() {
     }
 
     private fun showGameDetails(game: Game) {
+        hideLoading()
         binding.tvGameName.text = game.name
-        binding.tvGameSeries.text = game.gameSeries
 
         game.showRating()
         game.showAgeRating()

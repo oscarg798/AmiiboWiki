@@ -19,18 +19,12 @@
         android:iconTint="?iconColor"
         android:title="@string/search_menu_item_title"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="always|collapseActionView" />
 
     <item
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_filter"
         android:title="Filter"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="Settings"
         app:showAsAction="always" />
 
 </menu>

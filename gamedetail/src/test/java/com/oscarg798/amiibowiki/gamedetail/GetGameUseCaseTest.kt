@@ -36,10 +36,10 @@ class GetGameUseCaseTest {
 
     @Test
     fun `when its executed and it does contain cover, screenshots and artworks then those should be formated`() {
-        coEvery { repository.getGame(GAME_SERIES, GAME_ID) } answers { GAME }
+        coEvery { repository.getGame(GAME_ID) } answers { GAME }
 
         val result = runBlocking {
-            usecase.execute(GAME_SERIES, GAME_ID)
+            usecase.execute(GAME_ID)
         }
 
         result.id shouldBeEqualTo GAME_ID
@@ -55,13 +55,11 @@ class GetGameUseCaseTest {
 }
 
 private const val GAME_ID = 43
-private const val GAME_SERIES = "44"
 private val GAME =
     Game(
         GAME_ID, "2",
         GameCategory.createFromCategoryId(0),
         "//images.igdb.com/igdb/image/upload/t_thumb/a.jpg",
-        GAME_SERIES,
         "6",
         7.toDouble(),
         webSites = setOf("8"),

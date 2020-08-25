@@ -14,13 +14,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 apply from: "$rootProject.projectDir/gradlescripts/ktlint.gradle"
 apply from: "$rootProject.projectDir/gradlescripts/signing.gradle"
 apply from: "$rootProject.projectDir/gradlescripts/tests.gradle.kts"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion appCompileSdkVersion
 
     defaultConfig {
         minSdkVersion appMinSdkVersion
@@ -39,17 +40,17 @@ android {
         staging {
             manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
         }
-
-    }
-
-    viewBinding {
-        enabled = true
     }
 
     testOptions {
         unitTests {
             includeAndroidResources true
         }
+    }
+
+    buildFeatures {
+        viewBinding true
+        dataBinding false
     }
 
     packagingOptions {
@@ -72,7 +73,6 @@ android {
         jvmTarget = "1.8"
     }
 }
-
 
 dependencies {
     implementation(kotlinJDK)
@@ -115,6 +115,16 @@ dependencies {
 
     implementation firebaseAnalytics
 
+    implementation fragmentNavigation
+    implementation navigationUi
+    implementation fragmentNavigationKtx
+    implementation navigationUiKtx
+
+    implementation project(path: ':logger')
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+    kapt project(':loggerprocessor')
+
     //Test
     testImplementation mockk
     testImplementation junit
@@ -132,13 +142,8 @@ dependencies {
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
 
-    kapt project(':loggerprocessor')
-
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.28-alpha'
-    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.28-alpha'
-
-    implementation project(path: ':logger')
-    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.28.3-alpha'
+    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.28.3-alpha'
 
     testImplementation project(path: ':testutils')
     androidTestImplementation project(path: ':testutils')

@@ -32,3 +32,7 @@ fun Fragment.startDeepLinkIntent(
         arguments
     )
 }
+
+fun Fragment.showExpandedImages(imagesUrl: Collection<String>) {
+    (requireActivity() as AppCompatActivity).showExpandedImages(imagesUrl)
+}

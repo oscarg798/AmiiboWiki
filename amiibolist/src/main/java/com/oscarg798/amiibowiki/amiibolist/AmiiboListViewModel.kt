@@ -70,7 +70,6 @@ class AmiiboListViewModel @Inject constructor(
                 trackShowDetailsAmiiboWish(wish)
                 showDetail(wish.viewAmiibo.tail)
             }
-            is AmiiboListWish.OpenSettings -> flowOf(AmiiboListResult.OpenSettings)
             is AmiiboListWish.FilteringCancelled -> flowOf(AmiiboListResult.FilterSelectionCancelled)
         }
     }

@@ -12,10 +12,12 @@
 
 package com.oscarg798.amiibowiki.settings
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType as EditTextInputType
+import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -49,9 +51,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         DaggerSettingsComponent.factory()
             .create(
                 EntryPointAccessors.fromApplication(
@@ -59,7 +60,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     SettingsEntryPoint::class.java
                 )
             ).inject(this)
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupViewModel()
     }
 
@@ -74,7 +83,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     )
                 )
                 it.shouldActivityBeRecreated -> {
-                    startActivity(Intent(requireContext(), SettingsActivity::class.java))
+                    startActivity(requireActivity().intent)
                     requireActivity().finish()
                 }
                 it.preferences != null -> {

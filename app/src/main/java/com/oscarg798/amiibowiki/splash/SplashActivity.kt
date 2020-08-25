@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.splash
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +22,7 @@ import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding
+import com.oscarg798.amiibowiki.navigation.DashboardActivity
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -52,10 +54,7 @@ class SplashActivity : AppCompatActivity() {
             when {
                 state.error != null -> showFetchError()
                 state.navigatingToFirstScreen -> {
-                    startDeepLinkIntent(
-                        AMIIBO_LIST_DEEPLINK
-
-                    )
+                    startActivity(Intent(this, DashboardActivity::class.java))
                 }
 
             }

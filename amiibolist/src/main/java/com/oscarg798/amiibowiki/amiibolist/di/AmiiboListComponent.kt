@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibolist.di
 
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListActivity
+import com.oscarg798.amiibowiki.amiibolist.AmiiboListFragment
 import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboListEntryPoint
 import dagger.Component
 
@@ -31,5 +31,5 @@ interface AmiiboListComponent {
         ): AmiiboListComponent
     }
 
-    fun inject(amiiboListActivity: AmiiboListActivity)
+    fun inject(amiiboListFragment: AmiiboListFragment)
 }

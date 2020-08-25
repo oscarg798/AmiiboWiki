@@ -20,6 +20,7 @@ sealed class GameCategory(val categoryId: Int) {
     object StandAloneExpainsion : GameCategory(STANDALONG_EXPANSION)
     object Mod : GameCategory(MOD)
     object Episode : GameCategory(EPISODE)
+    object Season : GameCategory(SEASON)
 
     companion object {
 
@@ -31,6 +32,7 @@ sealed class GameCategory(val categoryId: Int) {
             STANDALONG_EXPANSION -> StandAloneExpainsion
             MOD -> Mod
             EPISODE -> Episode
+            SEASON -> Season
             else -> throw IllegalArgumentException("Thre is no game category associated with id: $id")
         }
     }
@@ -43,3 +45,4 @@ const val BUNDLE = 3
 const val STANDALONG_EXPANSION = 4
 const val MOD = 5
 const val EPISODE = 6
+const val SEASON = 7
