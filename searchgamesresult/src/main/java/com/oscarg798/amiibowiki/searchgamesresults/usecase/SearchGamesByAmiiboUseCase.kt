@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.usecase
+package com.oscarg798.amiibowiki.searchgamesresults.usecase
 
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.GameSearchResult

@@ -10,10 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.di
+package com.oscarg798.amiibowiki.searchgamesresults.di
 
 import com.oscarg798.amiibowiki.core.di.entrypoints.SearchGamesResultEntryPoint
-import com.oscarg798.amiibowiki.searchgames.SearchResultFragment
+import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import dagger.Component
 
 @SearchResultScope

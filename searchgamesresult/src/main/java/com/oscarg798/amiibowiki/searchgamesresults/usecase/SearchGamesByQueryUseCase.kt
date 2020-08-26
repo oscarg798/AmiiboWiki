@@ -10,14 +10,29 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.mvi
+package com.oscarg798.amiibowiki.searchgamesresults.usecase
 
-import com.oscarg798.amiibowiki.core.mvi.Wish
-import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
+import com.oscarg798.amiibowiki.core.models.GameSearchResult
+import com.oscarg798.amiibowiki.core.repositories.GameRepository
+import com.oscarg798.amiibowiki.core.usecases.FillGameResultCoverUseCase
+import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-sealed class SearchResultWish : Wish {
+class SearchGamesByQueryUseCase @Inject constructor(
+    private val gameRepository: GameRepository,
+    private val fillGameResultCoverUseCase: FillGameResultCoverUseCase
+) {
 
-    object Idle : SearchResultWish()
-    data class SearchGames(val gameSearchGameQueryParam: GameSearchParam) : SearchResultWish()
-    data class ShowGameDetail(val gameId: Int) : SearchResultWish()
+    fun execute(query: String): Flow<Collection<GameSearchResult>> {
+        return flow {
+            val results = gameRepository.searchGame(query)
+            emit(results)
+
+            if (results.isNotEmpty()) {
+                val resultsWithImages = fillGameResultCoverUseCase.execute(results)
+                emit(resultsWithImages)
+            }
+        }
+    }
 }

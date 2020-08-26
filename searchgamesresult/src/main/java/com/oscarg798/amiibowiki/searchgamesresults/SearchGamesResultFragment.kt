@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames
+package com.oscarg798.amiibowiki.searchgamesresults
 
 import android.content.Context
 import android.os.Bundle
@@ -30,13 +30,14 @@ import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.entrypoints.SearchGamesResultEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
-import com.oscarg798.amiibowiki.searchgames.adapter.SearchResultAdapter
-import com.oscarg798.amiibowiki.searchgames.adapter.SearchResultClickListener
-import com.oscarg798.amiibowiki.searchgames.databinding.FragmentSearchResultBinding
-import com.oscarg798.amiibowiki.searchgames.di.DaggerSearchResultComponent
-import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
-import com.oscarg798.amiibowiki.searchgames.models.ViewGameSearchResult
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultWish
+import com.oscarg798.amiibowiki.searchgamesresults.adapter.SearchResultAdapter
+import com.oscarg798.amiibowiki.searchgamesresults.adapter.SearchResultClickListener
+import com.oscarg798.amiibowiki.searchgamesresults.databinding.FragmentSearchResultBinding
+import com.oscarg798.amiibowiki.searchgamesresults.di.DaggerSearchResultComponent
+import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
+import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
@@ -52,6 +53,8 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     private var skeletonScreen: SkeletonScreen? = null
     private var gameSearchResultCoverImageView: ImageView? = null
 
+    private lateinit var currentState: SearchResultViewState
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -63,6 +66,8 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
                 )
             )
             .inject(this)
+
+        setupViewModelInteractions()
     }
 
     override fun onCreateView(
@@ -78,15 +83,40 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setup()
-        setupViewModelInteractions()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (wasPresentingResults()) {
+            showGameResults(currentState.gamesSearchResults!!)
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (!requireActivity().intent.hasExtra(ARGUMENT_CURRENT_SEARCH_RESULT_STATE)) {
+            return
+        }
+
+        currentState = activity?.intent?.getParcelableExtra<SearchResultViewState>(
+            ARGUMENT_CURRENT_SEARCH_RESULT_STATE
+        )!!
+    }
+
+    override fun onDetach() {
+        if (!isShownAsGamesRelatedSection()) {
+            activity?.intent?.putExtra(ARGUMENT_CURRENT_SEARCH_RESULT_STATE, currentState)
+        }
+        super.onDetach()
+    }
+
+    private fun wasPresentingResults() =
+        ::currentState.isInitialized && !currentState.isLoading && currentState.gamesSearchResults != null && !isShownAsGamesRelatedSection()
+
     private fun setup() {
-        val shownAsGameRelatedSection =
-            arguments?.getBoolean(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION)
-                ?: throw IllegalArgumentException("ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION should be provided as arguments")
+        val shownAsGameRelatedSection = isShownAsGamesRelatedSection()
 
         val relatedGamesViewsVisibility = if (shownAsGameRelatedSection) {
             View.VISIBLE
@@ -103,6 +133,12 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         }
     }
 
+    private fun isShownAsGamesRelatedSection() =
+        (
+            arguments?.getBoolean(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION)
+                ?: throw IllegalArgumentException("ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION should be provided as arguments")
+            )
+
     override fun onResultClicked(
         gameSearchResult: ViewGameSearchResult,
         coverImageView: ImageView
@@ -113,28 +149,20 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
 
     private fun setupViewModelInteractions() {
         viewModel.state.onEach {
+            currentState = it
             when {
-                it.isIdling -> onIdle()
                 it.isLoading -> showLoading()
                 it.error != null -> showError(it.error)
                 it.showingGameDetails != null -> showGameDetails(
                     it.showingGameDetails.gameId
                 )
-                it.gamesSearchResults != null -> showGameResults(it.gamesSearchResults.toList())
+                it.gamesSearchResults != null -> showGameResults(it.gamesSearchResults)
             }
         }.launchIn(lifecycleScope)
     }
 
-    private fun hideError() {
-        binding.tvError.visibility = View.GONE
-    }
-
     fun search(gameSearchGameQueryParam: GameSearchParam) {
         viewModel.onWish(SearchResultWish.SearchGames(gameSearchGameQueryParam))
-    }
-
-    private fun onIdle() {
-        hideError()
     }
 
     private fun showGameDetails(gameId: Int) {
@@ -148,14 +176,20 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         )
     }
 
-    private fun showGameResults(gameResults: List<ViewGameSearchResult>) {
+    private fun showGameResults(gameResults: Collection<ViewGameSearchResult>) {
         hideError()
         hideLoading()
-        (binding.rvGamesRelated.adapter as SearchResultAdapter).updateProducts(gameResults)
+        (binding.rvGamesRelated.adapter as SearchResultAdapter).submitList(gameResults.toList())
+        binding.lEmptyState.clEmptyState.visibility = if (gameResults.isEmpty()) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
 
     private fun showLoading() {
         hideError()
+        binding.lEmptyState.clEmptyState.visibility = View.GONE
         skeletonScreen = Skeleton.bind(binding.rvGamesRelated)
             .adapter((binding.rvGamesRelated.adapter as SearchResultAdapter))
             .load(R.layout.game_related_item_skeleton)
@@ -176,6 +210,10 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         binding.tvError.visibility = View.VISIBLE
     }
 
+    private fun hideError() {
+        binding.tvError.visibility = View.GONE
+    }
+
     private fun hideLoading() {
         skeletonScreen?.hide()
         skeletonScreen = null
@@ -190,4 +228,5 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     }
 }
 
+private const val ARGUMENT_CURRENT_SEARCH_RESULT_STATE = "ARGUMENT_CURRENT_SEARCH_RESULT_STATE"
 private const val SHIMMER_ELEMENTS_COUNT = 10

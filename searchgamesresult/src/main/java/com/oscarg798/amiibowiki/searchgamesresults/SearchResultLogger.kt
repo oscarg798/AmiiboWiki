@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames
+package com.oscarg798.amiibowiki.searchgamesresults
 
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.LogSources

@@ -10,10 +10,33 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.models
+package com.oscarg798.amiibowiki.searchgamesresults.mvi
 
-sealed class GameSearchParam {
+import android.os.Parcelable
+import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
+import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
+import kotlinx.android.parcel.Parcelize
 
-    data class AmiiboGameSearchParam(val amiiboId: String) : GameSearchParam()
-    data class StringQueryGameSearchParam(val query: String) : GameSearchParam()
+@Parcelize
+data class ShowingGameDetailsParams(val gameId: Int) : Parcelable
+
+@Parcelize
+data class SearchResultViewState(
+    override val isIdling: Boolean,
+    val isLoading: Boolean,
+    val gamesSearchResults: List<ViewGameSearchResult>? = null,
+    val showingGameDetails: ShowingGameDetailsParams? = null,
+    val error: SearchGameFailure?
+) : ViewState, Parcelable {
+
+    companion object {
+        fun init() = SearchResultViewState(
+            isIdling = true,
+            isLoading = false,
+            gamesSearchResults = null,
+            showingGameDetails = null,
+            error = null
+        )
+    }
 }
