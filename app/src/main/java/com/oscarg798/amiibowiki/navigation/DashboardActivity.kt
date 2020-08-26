@@ -36,6 +36,7 @@ class DashboardActivity : AppCompatActivity() {
                 R.id.amiibo_list_navigation, R.id.search_games_navigation, R.id.navigation_settings
             )
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }

@@ -10,24 +10,18 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.adapter
+package com.oscarg798.amiibowiki.searchgamesresults.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
-import com.oscarg798.amiibowiki.searchgames.databinding.GameRelatedItemBinding
-import com.oscarg798.amiibowiki.searchgames.models.ViewGameSearchResult
+import androidx.recyclerview.widget.ListAdapter
+import com.oscarg798.amiibowiki.searchgamesresults.databinding.GameRelatedItemBinding
+import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 
 class SearchResultAdapter(
     private val gameResultRelatedClickListener: SearchResultClickListener
-) : RecyclerView.Adapter<SearchResultViewHolder>() {
-
-    private val searchResults = ArrayList<ViewGameSearchResult>()
-
-    private fun getItem(position: Int) = searchResults[position]
-
-    override fun getItemCount(): Int = searchResults.size
+) : ListAdapter<ViewGameSearchResult, SearchResultViewHolder>(diff) {
 
     override fun onBindViewHolder(holder: SearchResultViewHolder, position: Int) =
         holder.bind(getItem(position), gameResultRelatedClickListener)
@@ -37,16 +31,19 @@ class SearchResultAdapter(
             GameRelatedItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
-    /**
-     * We did not use [DiffUtil] because most of the time
-     * the whole list will be change just to update the images, then as the whole list
-     * will change [DiffUtil] end up affecting the scroll and moving it to the top so we preffer
-     * [notifyItemRangeChanged].
-     */
-    fun updateProducts(searchResults: List<ViewGameSearchResult>) {
-        this.searchResults.clear()
-        this.searchResults.addAll(searchResults)
-        this.notifyItemRangeChanged(SEARCH_RESULTS_FIRST_POSITION, searchResults.size)
+    companion object {
+
+        val diff = object : DiffUtil.ItemCallback<ViewGameSearchResult>() {
+            override fun areItemsTheSame(
+                oldItem: ViewGameSearchResult,
+                newItem: ViewGameSearchResult
+            ): Boolean = oldItem.gameId == newItem.gameId
+
+            override fun areContentsTheSame(
+                oldItem: ViewGameSearchResult,
+                newItem: ViewGameSearchResult
+            ): Boolean = oldItem == newItem
+        }
     }
 }
 

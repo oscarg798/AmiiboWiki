@@ -10,10 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.mvi
+package com.oscarg798.amiibowiki.searchgamesresults.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.searchgames.models.ViewGameSearchResult
+import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import javax.inject.Inject
 
 class SearchResultReducer @Inject constructor() :

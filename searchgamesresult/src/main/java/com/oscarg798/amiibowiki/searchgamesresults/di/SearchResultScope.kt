@@ -10,27 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.di
+package com.oscarg798.amiibowiki.searchgamesresults.di
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.searchgames.logger.SearchGamesResultLogger
-import com.oscarg798.amiibowiki.searchgames.logger.SearchGamesResultLoggerImpl
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultReducer
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultResult
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultViewState
-import com.oscarg798.lomeno.logger.Logger
-import dagger.Module
-import dagger.Provides
+import javax.inject.Scope
 
-@Module
-object SearchResultModule {
-
-    @SearchResultScope
-    @Provides
-    fun provideSearchResultReducer(searchResultReducer: SearchResultReducer): Reducer<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewState> =
-        searchResultReducer
-
-    @SearchResultScope
-    @Provides
-    fun provideLogger(logger: Logger): SearchGamesResultLogger = SearchGamesResultLoggerImpl(logger)
-}
+@Scope
+annotation class SearchResultScope

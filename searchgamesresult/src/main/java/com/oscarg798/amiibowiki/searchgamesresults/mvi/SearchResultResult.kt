@@ -10,18 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.logger
+package com.oscarg798.amiibowiki.searchgamesresults.mvi
 
-import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
-import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
-import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
-import com.oscarg798.amiibowiki.logger.events.RECYCLER_VIEW_ITEM_TYPE_NAME
+import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
+import com.oscarg798.amiibowiki.core.models.GameSearchResult
+import com.oscarg798.amiibowiki.core.mvi.Result
 
-@LoggerDecorator
-interface SearchGamesResultLogger {
+sealed class SearchResultResult : Result {
 
-    @WidgetClicked(GAME_RESULT_CLICKED_NAME, RECYCLER_VIEW_ITEM_TYPE_NAME)
-    fun trackGameSearchResultClicked(@LogEventProperties properties: Map<String, String>)
+    object None : SearchResultResult()
+    object Loading : SearchResultResult()
+    data class GamesFound(val gamesSearchResult: Collection<GameSearchResult>) :
+        SearchResultResult()
+
+    data class ShowGameDetails(val gameId: Int) : SearchResultResult()
+    data class Error(val failure: SearchGameFailure) : SearchResultResult()
 }
-
-private const val GAME_RESULT_CLICKED_NAME = "GAME_RESULT_ITEM"

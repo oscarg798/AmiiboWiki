@@ -10,15 +10,15 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.adapter
+package com.oscarg798.amiibowiki.searchgamesresults.adapter
 
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.oscarg798.amiibowiki.core.extensions.setImage
-import com.oscarg798.amiibowiki.searchgames.R
-import com.oscarg798.amiibowiki.searchgames.databinding.GameRelatedItemBinding
-import com.oscarg798.amiibowiki.searchgames.models.ViewGameSearchResult
+import com.oscarg798.amiibowiki.searchgamesresults.R
+import com.oscarg798.amiibowiki.searchgamesresults.databinding.GameRelatedItemBinding
+import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import kotlinx.android.extensions.LayoutContainer
 
 class SearchResultViewHolder(private val gameRelatedItemBinding: GameRelatedItemBinding) :
