@@ -10,10 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.adapter
+package com.oscarg798.amiibowiki.searchgamesresults.adapter
 
 import android.widget.ImageView
-import com.oscarg798.amiibowiki.searchgames.models.ViewGameSearchResult
+import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 
 interface SearchResultClickListener {
 

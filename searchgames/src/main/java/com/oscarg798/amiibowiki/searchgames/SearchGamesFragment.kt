@@ -23,8 +23,9 @@ import androidx.lifecycle.lifecycleScope
 import com.oscarg798.amiibowiki.core.di.entrypoints.SearchGamesEntryPoint
 import com.oscarg798.amiibowiki.searchgames.databinding.FragmentSearchGamesBinding
 import com.oscarg798.amiibowiki.searchgames.di.DaggerSearchGameComponent
-import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
+import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
+import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -113,8 +114,8 @@ class SearchGamesFragment : Fragment() {
         }.launchIn(lifecycleScope)
 
         searchFlow
-            .filterNot { it.isEmpty() && it.length < 3 }
-            .debounce(500L)
+            .filterNot { it.isEmpty() && it.length < MINUMUN_SEARCH_QUERY_LENGTH }
+            .debounce(SEARCH_DEBOUNCE)
             .onEach {
                 viewmodel.onWish(SearchGameWish.Search(it))
             }.launchIn(lifecycleScope)
@@ -125,3 +126,5 @@ class SearchGamesFragment : Fragment() {
 }
 
 private const val EMPTY_SEARCH_QUERY = ""
+private const val MINUMUN_SEARCH_QUERY_LENGTH = 3
+private const val SEARCH_DEBOUNCE = 500L

@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.models
+package com.oscarg798.amiibowiki.searchgamesresults.models
 
 import android.os.Parcelable
 import com.oscarg798.amiibowiki.core.models.GameSearchResult

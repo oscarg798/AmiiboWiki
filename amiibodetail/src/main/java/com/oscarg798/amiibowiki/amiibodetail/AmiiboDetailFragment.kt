@@ -31,8 +31,8 @@ import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboDetailEntryPoint
 import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.searchgames.SearchResultFragment
-import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
+import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
+import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn

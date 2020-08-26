@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames
+package com.oscarg798.amiibowiki.searchgamesresults
 
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
@@ -18,13 +18,13 @@ import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import com.oscarg798.amiibowiki.searchgames.logger.SearchGamesResultLogger
-import com.oscarg798.amiibowiki.searchgames.models.GameSearchParam
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultResult
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultViewState
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchResultWish
-import com.oscarg798.amiibowiki.searchgames.usecase.SearchGamesByAmiiboUseCase
-import com.oscarg798.amiibowiki.searchgames.usecase.SearchGamesByQueryUseCase
+import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLogger
+import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultResult
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
+import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByAmiiboUseCase
+import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByQueryUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
