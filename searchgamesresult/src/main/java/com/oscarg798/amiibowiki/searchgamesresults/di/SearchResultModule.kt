@@ -10,19 +10,27 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.mvi
+package com.oscarg798.amiibowiki.searchgamesresults.di
 
-import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
-import com.oscarg798.amiibowiki.core.models.GameSearchResult
-import com.oscarg798.amiibowiki.core.mvi.Result
+import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLogger
+import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLoggerImpl
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultReducer
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultResult
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
+import com.oscarg798.lomeno.logger.Logger
+import dagger.Module
+import dagger.Provides
 
-sealed class SearchResultResult : Result {
+@Module
+object SearchResultModule {
 
-    object None : SearchResultResult()
-    object Loading : SearchResultResult()
-    data class GamesFound(val gamesSearchResult: Collection<GameSearchResult>) :
-        SearchResultResult()
+    @SearchResultScope
+    @Provides
+    fun provideSearchResultReducer(searchResultReducer: SearchResultReducer): Reducer<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewState> =
+        searchResultReducer
 
-    data class ShowGameDetails(val gameId: Int) : SearchResultResult()
-    data class Error(val failure: SearchGameFailure) : SearchResultResult()
+    @SearchResultScope
+    @Provides
+    fun provideLogger(logger: Logger): SearchGamesResultLogger = SearchGamesResultLoggerImpl(logger)
 }

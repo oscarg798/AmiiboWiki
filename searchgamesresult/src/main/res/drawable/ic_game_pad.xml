@@ -1,0 +1,72 @@
+<!--
+  ~ Copyright 2020 Oscar David Gallon Rosero
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  ~
+  ~
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="479.862dp"
+    android:height="479.862dp"
+    android:viewportWidth="479.862"
+    android:viewportHeight="479.862">
+  <path
+      android:pathData="M359.862,127.095v-0.048h-240v0.048C57.531,127.556 7.375,178.46 7.837,240.791c0.462,62.331 51.365,112.487 113.697,112.025c29.992,-0.222 58.663,-12.373 79.681,-33.77h77.296c43.685,44.457 115.139,45.083 159.596,1.398s45.083,-115.139 1.398,-159.596C418.493,139.466 389.839,127.322 359.862,127.095L359.862,127.095z"
+      android:fillColor="#DEDEDE"/>
+  <path
+      android:pathData="M359.862,239.047m-96,0a96,96 0,1 1,192 0a96,96 0,1 1,-192 0"
+      android:fillColor="#C7C7C7"/>
+  <path
+      android:pathData="M359.862,183.047m-24,0a24,24 0,1 1,48 0a24,24 0,1 1,-48 0"
+      android:fillColor="#4398D1"/>
+  <path
+      android:pathData="M359.862,295.047m-24,0a24,24 0,1 1,48 0a24,24 0,1 1,-48 0"
+      android:fillColor="#FDB62F"/>
+  <path
+      android:pathData="M303.862,239.047m-24,0a24,24 0,1 1,48 0a24,24 0,1 1,-48 0"
+      android:fillColor="#88B337"/>
+  <path
+      android:pathData="M415.862,239.047m-24,0a24,24 0,1 1,48 0a24,24 0,1 1,-48 0"
+      android:fillColor="#DE4C3C"/>
+  <path
+      android:pathData="M183.862,215.047h-40v-40h-48v40h-40v48h40v40h48v-40h40V215.047z"
+      android:fillColor="#737373"/>
+  <path
+      android:pathData="M95.862,263.047v40h48v-40h40v-48h-40L95.862,263.047z"
+      android:fillColor="#666666"/>
+  <path
+      android:pathData="M289.086,257.823c4.191,3.365 9.401,5.206 14.776,5.224c13.255,0 24,-10.745 24,-24c-0.018,-5.375 -1.859,-10.585 -5.224,-14.776L289.086,257.823z"
+      android:fillColor="#77A61F"/>
+  <path
+      android:pathData="M345.086,201.823c4.191,3.365 9.401,5.206 14.776,5.224c13.255,0 24,-10.745 24,-24c-0.018,-5.375 -1.859,-10.585 -5.224,-14.776L345.086,201.823z"
+      android:fillColor="#3E8CC7"/>
+  <path
+      android:pathData="M345.086,313.823c4.191,3.365 9.401,5.206 14.776,5.224c13.255,0 24,-10.745 24,-24c-0.018,-5.375 -1.859,-10.585 -5.224,-14.776L345.086,313.823z"
+      android:fillColor="#FFA83D"/>
+  <path
+      android:pathData="M401.086,257.823c4.191,3.365 9.401,5.206 14.776,5.224c13.255,0 24,-10.745 24,-24c-0.018,-5.375 -1.859,-10.585 -5.224,-14.776L401.086,257.823z"
+      android:fillColor="#CF4031"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M359.862,215.047c17.673,0 32,-14.327 32,-32s-14.327,-32 -32,-32s-32,14.327 -32,32S342.189,215.047 359.862,215.047zM359.862,167.047c8.837,0 16,7.163 16,16s-7.163,16 -16,16s-16,-7.163 -16,-16S351.025,167.047 359.862,167.047z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M359.862,263.047c-17.673,0 -32,14.327 -32,32s14.327,32 32,32s32,-14.327 32,-32S377.535,263.047 359.862,263.047zM359.862,311.047c-8.837,0 -16,-7.163 -16,-16s7.163,-16 16,-16s16,7.163 16,16S368.698,311.047 359.862,311.047z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M303.862,207.047c-17.673,0 -32,14.327 -32,32c0,17.673 14.327,32 32,32s32,-14.327 32,-32C335.862,221.374 321.535,207.047 303.862,207.047zM303.862,255.047c-8.837,0 -16,-7.163 -16,-16c0,-8.837 7.163,-16 16,-16s16,7.163 16,16C319.862,247.883 312.698,255.047 303.862,255.047z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M383.862,239.047c0,17.673 14.327,32 32,32s32,-14.327 32,-32c0,-17.673 -14.327,-32 -32,-32S383.862,221.374 383.862,239.047zM431.862,239.047c0,8.837 -7.163,16 -16,16s-16,-7.163 -16,-16c0,-8.837 7.163,-16 16,-16S431.862,230.21 431.862,239.047z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M183.862,207.047h-32v-32c0,-4.418 -3.582,-8 -8,-8h-48c-4.418,0 -8,3.582 -8,8v32h-32c-4.418,0 -8,3.582 -8,8v48c0,4.418 3.582,8 8,8h32v32c0,4.418 3.582,8 8,8h48c4.418,0 8,-3.582 8,-8v-32h32c4.418,0 8,-3.582 8,-8v-48C191.862,210.628 188.28,207.047 183.862,207.047zM175.862,255.047h-32c-4.418,0 -8,3.582 -8,8v32h-32v-32c0,-4.418 -3.582,-8 -8,-8h-32v-32h32c4.418,0 8,-3.582 8,-8v-32h32v32c0,4.418 3.582,8 8,8h32V255.047z"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M360.83,119.103c-0.321,-0.039 -0.644,-0.058 -0.968,-0.056h-240c-0.321,-0.002 -0.642,0.017 -0.96,0.056C52.159,120.187 -1.068,175.171 0.016,241.913c1.071,65.93 54.787,118.835 120.726,118.902c31.254,0.092 61.309,-12.024 83.76,-33.768h70.72c48.094,46.277 124.596,44.804 170.873,-3.289c21.674,-22.525 33.777,-52.572 33.767,-83.831C479.668,173.974 426.773,120.282 360.83,119.103L360.83,119.103zM358.982,344.815c-28.137,0.077 -55.108,-11.238 -74.768,-31.368c-1.5,-1.531 -3.552,-2.395 -5.696,-2.4h-77.312c-2.144,0.005 -4.196,0.869 -5.696,2.4c-40.588,41.307 -106.977,41.889 -148.283,1.301S5.338,207.771 45.926,166.465c19.522,-19.868 46.147,-31.152 74,-31.362c0.267,0 0.535,-0.016 0.8,-0.048H358.99c0.265,0.032 0.533,0.048 0.8,0.048c57.911,0.676 104.309,48.17 103.633,106.08c-0.668,57.269 -47.161,103.408 -104.433,103.64L358.982,344.815z"/>
+</vector>

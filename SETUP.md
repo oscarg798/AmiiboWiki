@@ -6,6 +6,13 @@ In order to setup the project please follow the next steps
 
 Create a Firebase Project, then add the  package name of the project as an Android App. Notice that you need to include the package name for all the build types, each package name is added as a separate app in the same firebase project.
 
+## Android Studio Version
+
+Currently we are using Android Studio Version 4.2
+
+Then classpatch is using version `4.2.0-alpha08` is you do not want to use this version use `4.0.1`
+Also distribution url  for 4.2 is `gradle-6.6-rc-6-bin` but if you do not want change it in `gradle-wrapper.properties`
+
 * Release
 ```kotlin
 com.oscarg798.amiibowiki

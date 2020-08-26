@@ -10,29 +10,10 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.mvi
+package com.oscarg798.amiibowiki.searchgamesresults.models
 
-import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
-import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.searchgames.models.ViewGameSearchResult
+sealed class GameSearchParam {
 
-data class ShowingGameDetailsParams(val gameId: Int)
-
-data class SearchResultViewState(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val gamesSearchResults: Collection<ViewGameSearchResult>? = null,
-    val showingGameDetails: ShowingGameDetailsParams? = null,
-    val error: SearchGameFailure?
-) : ViewState {
-
-    companion object {
-        fun init() = SearchResultViewState(
-            isIdling = true,
-            isLoading = false,
-            gamesSearchResults = null,
-            showingGameDetails = null,
-            error = null
-        )
-    }
+    data class AmiiboGameSearchParam(val amiiboId: String) : GameSearchParam()
+    data class StringQueryGameSearchParam(val query: String) : GameSearchParam()
 }

@@ -10,9 +10,18 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.di
+package com.oscarg798.amiibowiki.searchgamesresults.logger
 
-import javax.inject.Scope
+import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
+import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
+import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
+import com.oscarg798.amiibowiki.logger.events.RECYCLER_VIEW_ITEM_TYPE_NAME
 
-@Scope
-annotation class SearchResultScope
+@LoggerDecorator
+interface SearchGamesResultLogger {
+
+    @WidgetClicked(GAME_RESULT_CLICKED_NAME, RECYCLER_VIEW_ITEM_TYPE_NAME)
+    fun trackGameSearchResultClicked(@LogEventProperties properties: Map<String, String>)
+}
+
+private const val GAME_RESULT_CLICKED_NAME = "GAME_RESULT_ITEM"
