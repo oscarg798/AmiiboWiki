@@ -28,6 +28,7 @@ dependencies {
     implementation shimmer
     implementation picasso
     implementation viewPager
+    implementation mixpanel
 
     implementation project(path: ':core')
     implementation project(path: ':network')

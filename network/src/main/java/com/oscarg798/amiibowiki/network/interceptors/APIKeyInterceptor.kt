@@ -15,15 +15,23 @@ package com.oscarg798.amiibowiki.network.interceptors
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class APIKeyInterceptor(private val apiKey: String) : Interceptor {
+class APIConfig(
+    val apiKey: String,
+    val clientId: String
+)
+
+class APIKeyInterceptor(private val apiConfig: APIConfig) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        val newRequest = request.newBuilder().addHeader(KEY, apiKey)
+        val newRequest = request.newBuilder()
+            .addHeader(KEY, "Bearer ${apiConfig.apiKey}")
+            .addHeader(CLIENT_ID, apiConfig.clientId)
             .build()
 
         return chain.proceed(newRequest)
     }
 }
 
-private const val KEY = "user-key"
+private const val CLIENT_ID = "Client-ID"
+private const val KEY = "Authorization"
