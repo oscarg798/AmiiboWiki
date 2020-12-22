@@ -38,6 +38,7 @@ object AppModule {
         },
         BuildConfig.GOOGLE_API_KEY,
         BuildConfig.GAME_API_KEY,
+        BuildConfig.GAME_API_CLIENT_ID,
         BuildConfig.MIX_PANEL_API_KEY
     )
 }

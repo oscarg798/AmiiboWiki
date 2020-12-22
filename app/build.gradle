@@ -42,6 +42,7 @@ android {
         buildConfigField "String", "BASE_AMIIBO_API_URL", "\"$baseAmiiboUrl\""
         buildConfigField "String", "BASE_GAME_API_URL", "\"$baseGameUrl\""
         buildConfigField "String", "GAME_API_KEY", "\"$gameAPIKey\""
+        buildConfigField "String", "GAME_API_CLIENT_ID", "\"$gameAPIClientId\""
         buildConfigField "String", "GOOGLE_API_KEY", "\"$googleAPIKey\""
         buildConfigField "String", "MIX_PANEL_API_KEY", "\"$mixPanelApiKey\""
 

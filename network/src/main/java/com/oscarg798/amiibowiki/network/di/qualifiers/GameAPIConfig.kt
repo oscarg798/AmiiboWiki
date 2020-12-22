@@ -15,4 +15,4 @@ package com.oscarg798.amiibowiki.network.di.qualifiers
 import javax.inject.Qualifier
 
 @Qualifier
-annotation class GameAPIKey
+annotation class GameAPIConfig

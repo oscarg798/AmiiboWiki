@@ -15,6 +15,7 @@ properties.load(project.rootProject.file("local.properties").newDataInputStream(
 
 def googleApiKey = properties.getProperty("googleApiKey")
 def gameApiKey = properties.getProperty("gameAPIKey")
+def gameAPIClientID = properties.getProperty("gameAPIClientId")
 def accountJsonPath = properties.getProperty("googleAccountServiceFile")
 def mixPanelAPIKey = properties.getProperty("mixpanelToken")
 
@@ -32,5 +33,6 @@ ext {
     appBuildToolsVersion = "30.0.0"
     googleAPIKey = googleApiKey
     gameAPIKey = gameApiKey
+    gameAPIClientId=gameAPIClientID
     googleAccountServiceFile = accountJsonPath
 }

@@ -16,8 +16,9 @@ import com.google.gson.GsonBuilder
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIKey
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIConfig
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
+import com.oscarg798.amiibowiki.network.interceptors.APIConfig
 import com.oscarg798.amiibowiki.network.interceptors.APIKeyInterceptor
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
@@ -49,7 +50,7 @@ object NetworkModule {
     @Provides
     fun provideLogginInterceptor(): HttpLoggingInterceptor {
         val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
 
         return loggingInterceptor
     }
@@ -90,7 +91,7 @@ object NetworkModule {
 
     @Reusable
     @Provides
-    fun provideAPIKeyInterceptor(@GameAPIKey apiKey: String) = APIKeyInterceptor(apiKey)
+    fun provideAPIKeyInterceptor(@GameAPIConfig apiConfig: APIConfig) = APIKeyInterceptor(apiConfig)
 
     @GameApiQualifier
     @Reusable

@@ -18,8 +18,9 @@ import com.oscarg798.amiibowiki.core.network.services.GameService
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIKey
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIConfig
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
+import com.oscarg798.amiibowiki.network.interceptors.APIConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,10 +32,13 @@ import retrofit2.Retrofit
 @InstallIn(ApplicationComponent::class)
 object NetworkConfigModule {
 
-    @GameAPIKey
+    @GameAPIConfig
     @Singleton
     @Provides
-    fun provideGameAPIKey(config: Config) = config.gameAPIKey
+    fun provideGameAPIKey(config: Config) = APIConfig(
+        apiKey = config.gameAPIKey,
+        clientId = config.gameClientId
+    )
 
     @Singleton
     @Provides
