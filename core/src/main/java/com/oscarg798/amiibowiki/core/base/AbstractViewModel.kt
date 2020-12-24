@@ -19,16 +19,21 @@ import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.launch
 
 abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState : MVIViewState>(
-    initialState: ViewState
+    private val initialState: ViewState
 ) : ViewModel() {
 
     protected abstract val reducer: Reducer<Result, ViewState>
@@ -38,23 +43,22 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
     /**
      * We use channels as state flow will omit duplicated states or wishes
      */
-    private val _state = ConflatedBroadcastChannel<ViewState>(initialState)
-    private val wishProcessor = ConflatedBroadcastChannel<Wish>()
+    private val _state = MutableSharedFlow<ViewState>(replay = 0, extraBufferCapacity = 3, onBufferOverflow = BufferOverflow.DROP_LATEST)
+    private val wishProcessor = MutableSharedFlow<Wish>(replay = 0,extraBufferCapacity = 3,  onBufferOverflow = BufferOverflow.DROP_LATEST)
 
-    private val wishProcessorFlow: Flow<Wish>
-        get() = wishProcessor.asFlow()
 
     val state: Flow<ViewState>
-        get() = _state.asFlow()
+        get() = _state
 
     init {
-        wishProcessorFlow
+        _state.tryEmit(initialState)
+        wishProcessor
             .flatMapLatest {
                 getResult(it)
             }.scan(initialState) { state, result ->
                 reducer.reduce(state, result)
             }.onEach {
-                _state.offer(it)
+                _state.emit(it)
             }.launchIn(viewModelScope)
     }
 
@@ -65,12 +69,6 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
     }
 
     fun onWish(wish: Wish) {
-        wishProcessor.offer(wish)
-    }
-
-    override fun onCleared() {
-        wishProcessor.close()
-        _state.close()
-        super.onCleared()
+        wishProcessor.tryEmit(wish)
     }
 }
