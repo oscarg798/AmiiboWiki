@@ -16,7 +16,7 @@ apply from: 'dependencies.gradle'
 apply from: 'gradlescripts/properties.gradle'
 
 buildscript {
-    ext.kotlin_version = "1.4.0"
+    ext.kotlin_version = "1.4.21"
     ext.navigationVersion = "2.3.0"
 
     repositories {
