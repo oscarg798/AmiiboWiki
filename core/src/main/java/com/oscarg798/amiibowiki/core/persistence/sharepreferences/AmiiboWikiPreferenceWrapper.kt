@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.sharepreferences
+package com.oscarg798.amiibowiki.core.persistence.sharepreferences
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

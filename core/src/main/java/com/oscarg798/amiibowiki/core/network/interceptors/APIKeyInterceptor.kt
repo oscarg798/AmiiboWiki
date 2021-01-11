@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,28 +10,34 @@
  *
  */
 
-package com.oscarg798.amiibowiki.network.interceptors
+package com.oscarg798.amiibowiki.core.network.interceptors
 
+import com.oscarg798.amiibowiki.core.repositories.GameAuthRepository
 import okhttp3.Interceptor
 import okhttp3.Response
 
 class APIConfig(
-    val apiKey: String,
     val clientId: String
 )
 
-class APIKeyInterceptor(private val apiConfig: APIConfig) : Interceptor {
+class APIKeyInterceptor(
+    private val apiConfig: APIConfig,
+    private val gameApIRepository: GameAuthRepository
+) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val newRequest = request.newBuilder()
-            .addHeader(KEY, "Bearer ${apiConfig.apiKey}")
+            .addHeader(KEY, getAuthToken())
             .addHeader(CLIENT_ID, apiConfig.clientId)
             .build()
 
         return chain.proceed(newRequest)
     }
+
+    private fun getAuthToken() = "$TOKEN_TYPE ${gameApIRepository.getToken()}"
 }
 
+private const val TOKEN_TYPE = "Bearer"
 private const val CLIENT_ID = "Client-ID"
 private const val KEY = "Authorization"

@@ -13,7 +13,7 @@
 package com.oscarg798.amiibowiki.settings
 
 import com.oscarg798.amiibowiki.core.constants.DARK_MODE_SELECTION_KEY
-import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
 import com.oscarg798.amiibowiki.settings.repositories.SettingsRepository
 import com.oscarg798.amiibowiki.settings.repositories.SettingsRepositoryImpl
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk

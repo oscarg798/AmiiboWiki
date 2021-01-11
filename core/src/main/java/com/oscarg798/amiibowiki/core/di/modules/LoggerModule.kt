@@ -20,6 +20,7 @@ import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.logger.requestprocessor.DefaultRequestProcessor
 import com.oscarg798.amiibowiki.logger.sources.FirebaseSource
 import com.oscarg798.amiibowiki.logger.sources.MixPanelSource
+import com.oscarg798.amiibowiki.network.di.qualifiers.NetworkTrackerInterceptor
 import com.oscarg798.lomeno.interceptor.NetworkLoggerInterceptor
 import com.oscarg798.lomeno.logger.Logger
 import com.oscarg798.lomeno.logger.Lomeno
@@ -30,11 +31,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import okhttp3.Interceptor
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object LoggerModule {
 
     @Singleton
@@ -60,6 +62,7 @@ object LoggerModule {
             )
         )
 
+    @NetworkTrackerInterceptor
     @Singleton
     @Provides
     fun provideNetworkLoggerInterceptor(logger: Logger): Interceptor =

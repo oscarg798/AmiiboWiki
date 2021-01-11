@@ -10,11 +10,14 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di.providers
+package com.oscarg798.amiibowiki.core.persistence.sharepreferences
 
-import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.constants.PREFERENCE_NAME
 
-interface SharedPreferenceProvider {
+interface SharedPreferencesWrapper {
 
-    fun providePreferenceWrapper(): SharedPreferencesWrapper
+    fun addStringValue(key: String, value: String, preferenceName: String = PREFERENCE_NAME)
+    fun getStringValue(key: String, preferenceName: String = PREFERENCE_NAME): String?
+    fun getIntValueFromUserPreferences(key: String): Int
+    fun removePreferenceKey(key: String, preferenceName: String = PREFERENCE_NAME)
 }

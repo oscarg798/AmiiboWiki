@@ -19,10 +19,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     @Provides
@@ -31,13 +32,13 @@ object AppModule {
         BuildConfig.DATABASE_NAME,
         BuildConfig.BASE_AMIIBO_API_URL,
         BuildConfig.BASE_GAME_API_URL,
+        BuildConfig.GAME_API_AUTH_URL,
         when {
             BuildConfig.DEBUG -> Flavor.Debug
             BuildConfig.ALPHA -> Flavor.Alpha
             else -> Flavor.Release
         },
         BuildConfig.GOOGLE_API_KEY,
-        BuildConfig.GAME_API_KEY,
         BuildConfig.GAME_API_CLIENT_ID,
         BuildConfig.MIX_PANEL_API_KEY
     )
