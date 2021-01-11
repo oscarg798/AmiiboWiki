@@ -50,7 +50,6 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
 
     private lateinit var binding: FragmentSearchResultBinding
 
-    private var skeletonScreen: SkeletonScreen? = null
     private var gameSearchResultCoverImageView: ImageView? = null
 
     private lateinit var currentState: SearchResultViewState
@@ -190,12 +189,11 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     private fun showLoading() {
         hideError()
         binding.lEmptyState.clEmptyState.visibility = View.GONE
-        skeletonScreen = Skeleton.bind(binding.rvGamesRelated)
-            .adapter((binding.rvGamesRelated.adapter as SearchResultAdapter))
-            .load(R.layout.game_related_item_skeleton)
-            .count(SHIMMER_ELEMENTS_COUNT)
-            .shimmer(true)
-            .show()
+
+        binding.rvGamesRelated.visibility = View.GONE
+        binding.searchResultAnimationList.gameResultShimmerLoadingView.visibility = View.VISIBLE
+        binding.searchResultAnimationList.gameResultShimmerLoadingView.startShimmer()
+
     }
 
     private fun showError(searchGameFailure: SearchGameFailure) {
@@ -215,8 +213,10 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     }
 
     private fun hideLoading() {
-        skeletonScreen?.hide()
-        skeletonScreen = null
+        binding.searchResultAnimationList.gameResultShimmerLoadingView.visibility = View.GONE
+        binding.searchResultAnimationList.gameResultShimmerLoadingView.stopShimmer()
+        binding.rvGamesRelated.visibility = View.VISIBLE
+
     }
 
     companion object {
