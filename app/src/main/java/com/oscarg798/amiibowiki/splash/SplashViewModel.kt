@@ -23,20 +23,20 @@ import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
 import com.oscarg798.amiibowiki.splash.usecases.AuthenticateApplicationUseCase
+import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
 
 
 class SplashViewModel @Inject constructor(
-    private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
     private val splashLogger: SplashLogger,
-    private val activateRemoteConfigUseCase: ActivateRemoteConfigUseCase,
-    private val authenticateApplicationUseCase: AuthenticateApplicationUseCase,
+    private val initializeApplicationUseCase: InitializeApplicationUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
 ) :
@@ -48,27 +48,18 @@ class SplashViewModel @Inject constructor(
 
     override suspend fun getResult(wish: SplashWish): Flow<SplashResult> = fetchTypes()
 
-    private fun fetchTypes() = getAuthFlow().zip(getRemoteConfigActivationFlow()) { _, _ ->
-        Unit
-    }.flatMapConcat {
-        getRefreshTypesFlow()
-    }.catch { cause ->
-        when(cause){
-            is AmiiboTypeFailure,
-            is GameAPIAuthenticationFailure -> emit(SplashResult.Error(cause as Exception))
-            else -> throw cause
-        }
-    }.flowOn(coroutineContextProvider.backgroundDispatcher)
-
-    private fun getRefreshTypesFlow(): Flow<SplashResult> = flow {
-        updateAmiiboTypeUseCase.execute()
-        emit(SplashResult.TypesFetched)
+    private fun fetchTypes(): Flow<SplashResult> {
+        return initializeApplicationUseCase.execute().map {
+            SplashResult.TypesFetched as SplashResult
+        } .catch { cause ->
+                when (cause) {
+                    is AmiiboTypeFailure,
+                    is GameAPIAuthenticationFailure -> emit(SplashResult.Error(cause as Exception))
+                    else -> throw cause
+                }
+            }.flowOn(coroutineContextProvider.backgroundDispatcher)
     }
 
-    private fun getAuthFlow() = callToUnitFlow { authenticateApplicationUseCase.execute() }
-
-    private fun getRemoteConfigActivationFlow() =
-        callToUnitFlow { activateRemoteConfigUseCase.execute() }
 
     private fun callToUnitFlow(call: suspend () -> Any) = flow<Unit> {
         call.invoke()

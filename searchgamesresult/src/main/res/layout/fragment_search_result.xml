@@ -46,10 +46,10 @@
         android:layout_width="@dimen/match_constraint"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_medium"
-        android:visibility="gone"
         android:gravity="center"
         android:text="There was an error getting data please try again later"
         android:textAppearance="@style/TextAppearance.AmiiboWiki.Body.L"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
@@ -67,8 +67,8 @@
         tools:visibility="gone" />
 
     <include
-        layout="@layout/empty_state"
         android:id="@+id/lEmptyState"
+        layout="@layout/empty_state"
         android:layout_width="@dimen/match_constraint"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -76,5 +76,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <include
+        layout="@layout/game_related_list_animation"
+        android:id="@+id/searchResultAnimationList"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
