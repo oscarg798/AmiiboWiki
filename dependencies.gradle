@@ -27,18 +27,18 @@ ext {
     android_support_version = "28.0.0"
 
     //Android X
-    android_x_appCompat_version = '1.1.0'
-    android_x_test_runner_version = '1.2.0'
-    android_x_espresso_version = '3.2.0'
+    android_x_appCompat_version = '1.2.0'
+    android_x_test_runner_version = '1.3.0'
+    android_x_espresso_version = '3.3.0'
     android_x_annotations_version = '1.1.0'
     android_x_ui_automator_version = "2.2.0"
     android_x_room_version = "2.0.0"
     android_x_multidex_version = "2.0.1"
     android_x_browser_version = "1.2.0"
-    constraintlayout_version = "1.1.3"
+    constraintlayout_version = '2.0.4'
     card_view_version = "1.0.0"
     recylerViewVersion = '1.1.0'
-    materialVersion = '1.3.0-alpha01'
+    materialVersion = '1.3.0-beta01'
     legacy_support_version = "1.0.0"
     preference_version = '1.1.1'
     preference_v14_version = "1.0.0"
@@ -46,11 +46,11 @@ ext {
 
     //Core Mix
     kotlin_coroutines_version = "1.4.2"
-    airbnb_version = '5.1.0'
+    airbnb_version = '5.2.0'
     google_play_core_version = "1.7.1"
 
     //UI Mix
-    lottie_version = '3.4.1'
+    lottie_version = '3.6.0'
     skeleton_version = "1.1.2"
     shimmer_layout_version = "2.1.0"
     emerald_android_version = "0.99.5"
@@ -65,37 +65,37 @@ ext {
 
     // DI
     koin_version = '2.0.1'
-    dagger_version = '2.28.1'
+    dagger_version = '2.30.1'
 
     //Firebase
     firebase_messaging = "17.3.4"
     firebase_core = "16.0.7"
-    firebase_remote_config = '19.2.0'
+    firebase_remote_config = '20.0.2'
     crashlitycs_version = '2.10.1'
 
     // Data Persistense
-    room_version = "2.2.5"
+    room_version = '2.2.6'
 
     //Networking
     gson_version = "2.8.5"
     okhttp_logging_interceptor_version = "3.14.2"
-    okhttp3_version = '4.8.0'
+    okhttp3_version = '4.9.0'
     retrofit_version = '2.9.0'
     retrofit_adapter = "2.2.0"
-    retrofit_interceptor = '4.8.0'
+    retrofit_interceptor = '4.9.0'
     retrofit_converter_scalars_version = "2.1.0"
 
     scalars = "com.squareup.retrofit2:converter-scalars:2.9.0"
 
     //Testing
-    mockk_version = "1.10.0"
+    mockk_version = '1.10.4'
     mockito_core_version = '3.2.4'
     espresso_version = "3.0.2"
     robolectric_version = "4.3.1"
-    junit_version = '4.12'
+    junit_version = '4.13.1'
     mockito_version = "1.4.0"
     kluent_version = "1.61"
-    mock_web_server_version = '4.8.0'
+    mock_web_server_version = '4.9.0'
     testRunnerVersion = "1.0.2"
     test_core_ktx_version = '1.3.0-rc01'
     androidx_truth_version = "1.2.0"
@@ -206,21 +206,21 @@ ext {
 
     mixpanel = "com.mixpanel.android:mixpanel-android:5.8.5"
 
-    firebaseVersion = '17.4.4'
+    firebaseVersion = '18.0.0'
     firebaseAnalytics = "com.google.firebase:firebase-analytics:$firebaseVersion"
     firebaseConfig = 'com.google.firebase:firebase-config:19.1.4'
-    crashlyticsVersion = "17.1.1"
+    crashlyticsVersion = '17.3.0'
     crashly = "com.google.firebase:firebase-crashlytics:$crashlyticsVersion"
 
-    espressoIntentsVersion = "3.2.0"
+    espressoIntentsVersion = '3.3.0'
     espressoIntents = "androidx.test.espresso:espresso-intents:$espressoIntentsVersion"
-    lifeCycleVersion = "2.3.0-alpha05"
+    lifeCycleVersion = '2.3.0-rc01'
     lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion"
     viewModelScope = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha06"
 
     idlingResource = 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
     activityx = "androidx.activity:activity-ktx:1.2.0-alpha06"
-    picasso = "com.squareup.picasso:picasso:2.0.0"
+    picasso = "com.squareup.picasso:picasso:2.71828"
 
     lomeno = "com.oscarg798.lomeno:Lomeno:1.1.0"
     flagly = "com.oscarg798.flagly:Flagly:1.0.5"

@@ -15,7 +15,7 @@ apply plugin: 'kotlin'
 
 
 dependencies {
-    implementation kotlinJDK
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.21"
     implementation(lomeno)
     implementation retrofit
 }

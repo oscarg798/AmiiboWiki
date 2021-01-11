@@ -14,9 +14,8 @@ package com.oscarg798.amiibowiki.splash
 
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.extensions.onException
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
-import com.oscarg798.amiibowiki.core.models.Amiibo
+import com.oscarg798.amiibowiki.core.failures.GameAPIAuthenticationFailure
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
@@ -27,13 +26,9 @@ import com.oscarg798.amiibowiki.splash.usecases.AuthenticateApplicationUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.zip
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 
@@ -58,12 +53,14 @@ class SplashViewModel @Inject constructor(
     }.flatMapConcat {
         getRefreshTypesFlow()
     }.catch { cause ->
-        if (cause !is AmiiboTypeFailure) {
-            throw cause
+        when(cause){
+            is AmiiboTypeFailure,
+            is GameAPIAuthenticationFailure -> emit(SplashResult.Error(cause as Exception))
+            else -> throw cause
         }
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
-    private fun getRefreshTypesFlow(): Flow<SplashResult.TypesFetched> = flow {
+    private fun getRefreshTypesFlow(): Flow<SplashResult> = flow {
         updateAmiiboTypeUseCase.execute()
         emit(SplashResult.TypesFetched)
     }

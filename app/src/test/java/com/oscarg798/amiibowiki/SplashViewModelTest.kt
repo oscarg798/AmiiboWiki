@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki
 
-import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
+import com.oscarg798.amiibowiki.core.failures.SplashError
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.SplashLogger
@@ -84,7 +84,7 @@ class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewState, 
 
     @Test
     fun `given a wish to get the types when events are proccess but there is an error then error should be in the state`() {
-        val error = AmiiboTypeFailure.FetchTypesFailure()
+        val error = SplashError.FetchTypesFailure()
         coEvery { updateAmiiboTypeUseCase.execute() } answers { throw error }
 
         viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)

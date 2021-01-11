@@ -25,18 +25,18 @@ interface ImageLoaderCallback {
 }
 
 fun ImageView.setImage(url: String) {
-    Picasso.with(context).load(url).into(this)
+    Picasso.get().load(url).into(this)
 }
 
 fun ImageView.setImage(url: String, callback: ImageLoaderCallback) {
-    Picasso.with(context).load(url).into(
+    Picasso.get().load(url).into(
         this,
         object : Callback {
             override fun onSuccess() {
                 callback.onSuccess()
             }
 
-            override fun onError() {
+            override fun onError(e: Exception) {
                 callback.onFailure()
             }
         }
@@ -44,14 +44,14 @@ fun ImageView.setImage(url: String, callback: ImageLoaderCallback) {
 }
 
 fun ImageView.setImage(url: String, @DrawableRes fallback: Int) {
-    Picasso.with(context).load(url).into(
+    Picasso.get().load(url).into(
         this,
         object : Callback {
             override fun onSuccess() {
                 // NO_OP
             }
 
-            override fun onError() {
+            override fun onError(e: Exception) {
                 setImageDrawable(ContextCompat.getDrawable(context, fallback))
             }
         }
