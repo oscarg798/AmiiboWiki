@@ -22,16 +22,20 @@ class FirebaseRemoteConfig : RemoteConfig {
 
     private val remoteConfig: FirebaseRemote = FirebaseRemote.getInstance()
 
-    init {
-        val configSettings = FirebaseRemoteConfigSettings.Builder()
-            .setMinimumFetchIntervalInSeconds(FETCH_INTERVAL)
-            .build()
-
-        remoteConfig.setConfigSettings(configSettings)
-    }
-
     override fun activateAsync(): Deferred<Unit> {
         val deferred = CompletableDeferred<Unit>()
+
+        setConfigSettings({
+            fetchAndActivateRemoteConfig(deferred)
+        }, {
+            throw it
+        })
+
+
+        return deferred
+    }
+
+    private fun fetchAndActivateRemoteConfig(deferred: CompletableDeferred<Unit>) {
         remoteConfig.fetchAndActivate()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -42,9 +46,26 @@ class FirebaseRemoteConfig : RemoteConfig {
                     deferred.complete(Unit)
                 }
             }
-
-        return deferred
     }
+
+    private fun setConfigSettings(
+        onRemoteConfigActivated: () -> Unit,
+        onRemoteConfigActivationError: (Exception) -> Unit
+    ) {
+
+        remoteConfig.setConfigSettingsAsync(getConfigSettings()).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                onRemoteConfigActivated()
+            } else {
+                onRemoteConfigActivationError(IllegalArgumentException("We were not able to init firebase"))
+            }
+        }
+
+    }
+
+    private fun getConfigSettings() = FirebaseRemoteConfigSettings.Builder()
+        .setMinimumFetchIntervalInSeconds(FETCH_INTERVAL)
+        .build()
 
     override fun getBoolean(key: String): Boolean {
         return remoteConfig.getBoolean(key)

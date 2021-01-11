@@ -12,13 +12,13 @@
 
 package com.oscarg798.amiibowiki.splash.mvi
 
-import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
+import java.lang.Exception
 
 data class SplashViewState(
     override val isIdling: Boolean,
     val navigatingToFirstScreen: Boolean,
-    val error: AmiiboTypeFailure?
+    val error: Exception?
 ) : ViewState {
 
     companion object {

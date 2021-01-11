@@ -67,7 +67,7 @@ class SplashActivity : AppCompatActivity() {
         Snackbar.make(
             binding.clMain,
             getString(R.string.fetch_types_error),
-            Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_INDEFINITE
         ).show()
     }
 }

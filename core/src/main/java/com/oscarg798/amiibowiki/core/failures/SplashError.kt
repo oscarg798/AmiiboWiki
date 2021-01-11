@@ -21,4 +21,6 @@ sealed class AmiiboTypeFailure(
         override val message: String? = null,
         override val cause: Exception? = null
     ) : AmiiboTypeFailure(message, cause)
+
+
 }

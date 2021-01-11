@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.core
 
-import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
+import com.oscarg798.amiibowiki.core.failures.SplashError
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
@@ -42,14 +42,14 @@ class UpdateAmiibosTypeUseCaseTest {
 
     @Test
     fun `when there is a failure and there are types then it should be success`() {
-        coEvery { amiiboTypeRepository.updateTypes() } answers { throw AmiiboTypeFailure.FetchTypesFailure() }
+        coEvery { amiiboTypeRepository.updateTypes() } answers { throw SplashError.FetchTypesFailure() }
         coEvery { amiiboTypeRepository.hasTypes() } answers { true }
         runBlocking { usecase.execute() } shouldBeEqualTo Unit
     }
 
-    @Test(expected = AmiiboTypeFailure::class)
+    @Test(expected = SplashError::class)
     fun `when there is a failure and there are not types then it should be crash`() {
-        coEvery { amiiboTypeRepository.updateTypes() } answers { throw AmiiboTypeFailure.FetchTypesFailure() }
+        coEvery { amiiboTypeRepository.updateTypes() } answers { throw SplashError.FetchTypesFailure() }
 
         runBlocking { usecase.execute() }
     }
