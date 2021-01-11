@@ -61,7 +61,6 @@ class AmiiboListFragment :
     @Inject
     lateinit var mixpanelLogger: MixpanelLogger
 
-    private var skeleton: SkeletonScreen? = null
     private var filterMenuItem: MenuItem? = null
     private var searchView: SearchView? = null
 
@@ -251,16 +250,14 @@ class AmiiboListFragment :
         binding.rvAmiiboList.isEnabled = false
         filterMenuItem?.isEnabled = false
 
-        skeleton = Skeleton.bind(binding.rvAmiiboList)
-            .adapter(binding.rvAmiiboList.adapter)
-            .load(R.layout.skeleton_amiibo_list_item)
-            .count(SKELETON_ANIMATION_EXAMPLES_COUNT)
-            .show()
+        binding.listAnimation.shimmerLoadingView.visibility = View.VISIBLE
+        binding.listAnimation.shimmerLoadingView.startShimmer()
+
     }
 
     private fun hideLoading() {
-        skeleton?.hide()
-        skeleton = null
+        binding.listAnimation.shimmerLoadingView.visibility = View.GONE
+        binding.listAnimation.shimmerLoadingView.stopShimmer()
         filterMenuItem?.isEnabled = true
         binding.rvAmiiboList.isEnabled = true
         binding.srlMain.isRefreshing = false

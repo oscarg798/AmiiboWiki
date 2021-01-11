@@ -33,7 +33,7 @@
             android:layout_width="@dimen/iv_game_search_cover_width"
             android:layout_height="@dimen/iv_game_search_cover_height"
             android:src="@drawable/ic_placeholder_gray"
-            android:tint="?skeletonColor"
+            app:tint="?skeletonColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

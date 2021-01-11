@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.core
 
-import com.oscarg798.amiibowiki.core.failures.SplashError
+import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.network.models.APIAmiiboType
 import com.oscarg798.amiibowiki.core.network.models.GetAmiiboTypeResponse
@@ -81,7 +81,7 @@ class AmiiboTypeRepositoryTest {
         }
     }
 
-    @Test(expected = SplashError::class)
+    @Test(expected = AmiiboTypeFailure::class)
     fun `when there is a network exception getting types then it should thrown a AmiiboTypeFailire`() {
         coEvery { amiiboTypeService.getTypes() } answers { throw NetworkException.Connection }
 
