@@ -23,10 +23,16 @@ import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
+import com.oscarg798.amiibowiki.splash.usecases.AuthenticateApplicationUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.zip
 import java.lang.NullPointerException
 import javax.inject.Inject
 
@@ -35,6 +41,7 @@ class SplashViewModel @Inject constructor(
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
     private val splashLogger: SplashLogger,
     private val activateRemoteConfigUseCase: ActivateRemoteConfigUseCase,
+    private val authenticateApplicationUseCase: AuthenticateApplicationUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
 ) :
@@ -46,16 +53,30 @@ class SplashViewModel @Inject constructor(
 
     override suspend fun getResult(wish: SplashWish): Flow<SplashResult> = fetchTypes()
 
-    private fun fetchTypes() = flow<SplashResult> {
-        activateRemoteConfigUseCase.execute()
-        updateAmiiboTypeUseCase.execute()
-        emit(SplashResult.TypesFetched)
-    }.catch { cause->
-        if(cause !is AmiiboTypeFailure){
+    private fun fetchTypes() = getAuthFlow().zip(getRemoteConfigActivationFlow()) { _, _ ->
+        Unit
+    }.flatMapConcat {
+        getRefreshTypesFlow()
+    }.catch { cause ->
+        if (cause !is AmiiboTypeFailure) {
             throw cause
         }
-
-        emit(SplashResult.Error(cause))
-
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
+
+    private fun getRefreshTypesFlow(): Flow<SplashResult.TypesFetched> = flow {
+        updateAmiiboTypeUseCase.execute()
+        emit(SplashResult.TypesFetched)
+    }
+
+    private fun getAuthFlow() = callToUnitFlow { authenticateApplicationUseCase.execute() }
+
+    private fun getRemoteConfigActivationFlow() =
+        callToUnitFlow { activateRemoteConfigUseCase.execute() }
+
+    private fun callToUnitFlow(call: suspend () -> Any) = flow<Unit> {
+        call.invoke()
+        emit(Unit)
+    }
+
 }
+

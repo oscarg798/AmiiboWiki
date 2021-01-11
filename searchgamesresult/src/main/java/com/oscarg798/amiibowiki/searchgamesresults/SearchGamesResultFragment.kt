@@ -106,7 +106,7 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     }
 
     override fun onDetach() {
-        if (!isShownAsGamesRelatedSection()) {
+        if (!isShownAsGamesRelatedSection() && ::currentState.isInitialized) {
             activity?.intent?.putExtra(ARGUMENT_CURRENT_SEARCH_RESULT_STATE, currentState)
         }
         super.onDetach()

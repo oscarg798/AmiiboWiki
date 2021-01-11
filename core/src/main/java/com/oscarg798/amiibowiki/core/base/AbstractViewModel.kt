@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.launch
 
 abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState : MVIViewState>(
-    private val initialState: ViewState
+    initialState: ViewState
 ) : ViewModel() {
 
     protected abstract val reducer: Reducer<Result, ViewState>

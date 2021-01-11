@@ -14,15 +14,16 @@ package com.oscarg798.amiibowiki.testutils.di
 
 import com.google.gson.GsonBuilder
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
-import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIConsumer
+import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIConsumer
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiConsumer
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -31,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object TestNetworkModule {
 
     val okHttpClient: OkHttpClient by lazy {
@@ -56,7 +57,23 @@ object TestNetworkModule {
         return GsonConverterFactory.create(gson)
     }
 
-    @AmiiboApiQualifier
+    @AuthAPIConsumer
+    @Reusable
+    @Provides
+    fun provideAuthRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        @AmiiboAPIBaseUrl
+        baseUrl: String
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(gsonConverterFactory)
+            .client(okHttpClient)
+            .build()
+    }
+
+    @AmiiboAPIConsumer
     @Reusable
     @Provides
     fun provideRetrofit(
@@ -72,7 +89,7 @@ object TestNetworkModule {
             .build()
     }
 
-    @GameApiQualifier
+    @GameApiConsumer
     @Reusable
     @Provides
     fun provideGameAPIRetrofit(

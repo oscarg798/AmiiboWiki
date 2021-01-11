@@ -30,7 +30,7 @@ import com.oscarg798.amiibowiki.core.persistence.dao.AgeRatingDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAgeRating
 import com.oscarg798.amiibowiki.core.persistence.models.DBGame
-import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
 import com.oscarg798.amiibowiki.network.exceptions.NetworkException
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first

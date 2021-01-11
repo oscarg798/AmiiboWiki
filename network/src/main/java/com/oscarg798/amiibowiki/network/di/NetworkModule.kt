@@ -14,18 +14,22 @@ package com.oscarg798.amiibowiki.network.di
 
 import com.google.gson.GsonBuilder
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
-import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIClient
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIConsumer
+import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIConsumer
+import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIClient
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIConfig
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiQualifier
-import com.oscarg798.amiibowiki.network.interceptors.APIConfig
-import com.oscarg798.amiibowiki.network.interceptors.APIKeyInterceptor
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIClient
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiConsumer
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIInterceptor
+import com.oscarg798.amiibowiki.network.di.qualifiers.NetworkTrackerInterceptor
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -35,8 +39,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
+
+    private val httpLoggingInterceptor: Interceptor by lazy {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
+
+        loggingInterceptor
+    }
+
+    private val errorInterceptor: ErrorInterceptor by lazy { ErrorInterceptor() }
 
     @Reusable
     @Provides
@@ -46,37 +59,54 @@ object NetworkModule {
         return GsonConverterFactory.create(gson)
     }
 
+
+    private fun getHttpClientBuilder(
+        @NetworkTrackerInterceptor
+        networkLoggerInterceptor: Interceptor,
+    ) = OkHttpClient.Builder()
+        .connectTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+        .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+        .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+        .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(networkLoggerInterceptor)
+        .addInterceptor(errorInterceptor)
+
+    @AmiiboAPIClient
     @Reusable
     @Provides
-    fun provideLogginInterceptor(): HttpLoggingInterceptor {
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
-
-        return loggingInterceptor
-    }
-
-    @Reusable
-    @Provides
-    fun provideHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
+    fun provideAmiiboHttpClient(
+        @NetworkTrackerInterceptor
         networkLoggerInterceptor: Interceptor
-    ): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-            .connectTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-            .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-            .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-            .addInterceptor(ErrorInterceptor())
-            .addInterceptor(loggingInterceptor)
-            .addInterceptor(networkLoggerInterceptor)
+    ): OkHttpClient = getHttpClientBuilder(networkLoggerInterceptor).build()
 
-        return builder.build()
-    }
+    @GameAPIClient
+    @Reusable
+    @Provides
+    fun provideGameHttpClient(
+        @NetworkTrackerInterceptor
+        networkLoggerInterceptor: Interceptor,
+        @GameAPIInterceptor
+        apiKeyInterceptor: Interceptor
+    ): OkHttpClient =
+        getHttpClientBuilder(networkLoggerInterceptor)
+            .addInterceptor(apiKeyInterceptor).build()
 
-    @AmiiboApiQualifier
+
+    @AuthAPIClient
+    @Reusable
+    @Provides
+    fun provideAuthHttpClient(
+        @NetworkTrackerInterceptor
+        networkLoggerInterceptor: Interceptor
+    ): OkHttpClient =
+        getHttpClientBuilder(networkLoggerInterceptor).build()
+
+    @AmiiboAPIConsumer
     @Reusable
     @Provides
     fun provideAmiiboAPIRetrofit(
         gsonConverterFactory: GsonConverterFactory,
+        @AmiiboAPIClient
         httpClient: OkHttpClient,
         @AmiiboAPIBaseUrl
         baseUrl: String
@@ -89,29 +119,39 @@ object NetworkModule {
             .build()
     }
 
-    @Reusable
-    @Provides
-    fun provideAPIKeyInterceptor(@GameAPIConfig apiConfig: APIConfig) = APIKeyInterceptor(apiConfig)
 
-    @GameApiQualifier
+    @GameApiConsumer
     @Reusable
     @Provides
     fun provideGameAPIRetrofit(
         gsonConverterFactory: GsonConverterFactory,
+        @GameAPIClient
         httpClient: OkHttpClient,
-        apiKeyInterceptor: APIKeyInterceptor,
         @GameAPIBaseUrl
         baseUrl: String
-    ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(gsonConverterFactory)
-            .client(
-                httpClient.newBuilder().addInterceptor(apiKeyInterceptor).build()
-            )
-            .build()
-    }
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(gsonConverterFactory)
+        .client(httpClient)
+        .build()
+
+
+    @AuthAPIConsumer
+    @Reusable
+    @Provides
+    fun provideAuthAPIRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        @AuthAPIClient
+        httpClient: OkHttpClient,
+        @AuthAPIBaseUrl
+        baseUrl: String
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(gsonConverterFactory)
+        .client(httpClient)
+        .build()
 }
 
 private const val TIME_OUT_SECONDS = 30L

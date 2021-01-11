@@ -16,13 +16,14 @@ import com.oscarg798.amiibowiki.core.di.providers.ConfigProvider
 import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
 import com.oscarg798.amiibowiki.core.di.providers.FeatureFlagProvider
 import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
-import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 
 @EntryPoint
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 interface SettingsEntryPoint :
     FeatureFlagProvider,
     CoroutinesProvider,

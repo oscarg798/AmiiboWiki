@@ -31,7 +31,7 @@ import com.oscarg798.amiibowiki.core.persistence.models.DBAgeRating
 import com.oscarg798.amiibowiki.core.persistence.models.DBGame
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.repositories.GameRepositoryImpl
-import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
 import com.oscarg798.amiibowiki.testutils.extensions.coVerifyWasNotCalled
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import io.mockk.coEvery

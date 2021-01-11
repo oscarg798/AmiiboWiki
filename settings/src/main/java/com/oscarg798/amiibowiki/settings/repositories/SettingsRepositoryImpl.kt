@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.settings.repositories
 
 import com.oscarg798.amiibowiki.core.constants.DARK_MODE_SELECTION_KEY
 import com.oscarg798.amiibowiki.core.constants.MAX_NUMBER_OF_SEARCH_RESULTS_PREFERENCE_KEY
-import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
 import javax.inject.Inject
 
 class SettingsRepositoryImpl @Inject constructor(private val sharedPreferencesWrapper: SharedPreferencesWrapper) :

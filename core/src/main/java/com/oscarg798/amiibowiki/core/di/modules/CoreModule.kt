@@ -19,25 +19,27 @@ import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepositoryImpl
+import com.oscarg798.amiibowiki.core.repositories.GameAuthRepository
+import com.oscarg798.amiibowiki.core.repositories.GameAuthRepositoryImpl
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.repositories.GameRepositoryImpl
-import com.oscarg798.amiibowiki.core.sharepreferences.AmiiboWikiPreferenceWrapper
-import com.oscarg798.amiibowiki.core.sharepreferences.SharedPreferencesWrapper
+import com.oscarg798.amiibowiki.core.persistence.sharepreferences.AmiiboWikiPreferenceWrapper
+import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.utils.ResourceProvider
 import com.oscarg798.amiibowiki.core.utils.StringResourceProvider
-import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboApiQualifier
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIConsumer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import java.util.Locale
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object CoreModule {
 
     @DatabaseName
@@ -59,7 +61,7 @@ object CoreModule {
 
     @Singleton
     @Provides
-    fun provideAmiiboTypeService(@AmiiboApiQualifier retrofit: Retrofit): AmiiboTypeService =
+    fun provideAmiiboTypeService(@AmiiboAPIConsumer retrofit: Retrofit): AmiiboTypeService =
         retrofit.create(AmiiboTypeService::class.java)
 
     @Singleton
@@ -86,4 +88,8 @@ object CoreModule {
     @Provides
     fun providePreferenceWrapper(amiiboWikiPreferenceWrapper: AmiiboWikiPreferenceWrapper): SharedPreferencesWrapper =
         amiiboWikiPreferenceWrapper
+
+    @Singleton
+    @Provides
+    fun provideGameAuthRepository(gameAuthRepositoryImpl: GameAuthRepositoryImpl): GameAuthRepository = gameAuthRepositoryImpl
 }

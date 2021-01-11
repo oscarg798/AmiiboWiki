@@ -18,9 +18,10 @@ import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 
 @EntryPoint
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 interface SearchGamesEntryPoint :
     CoroutinesProvider,
     GameRepositoryProvider,

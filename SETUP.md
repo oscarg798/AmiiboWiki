@@ -57,7 +57,6 @@ keystorePassword=<Your Keystore password>
 keystoreAlias=<Your Keystore Alias>
 keystorepath=<Keystore path>
 googleApiKey=<Google API Key>
-gameAPIKey=<Game API Key>
 mixpanelToken=<Mixpanel API Key>
 ```
 ### Help 

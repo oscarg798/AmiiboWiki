@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,9 +10,16 @@
  *
  */
 
-package com.oscarg798.amiibowiki.network.di.qualifiers
+package com.oscarg798.amiibowiki.splash.usecases
 
-import javax.inject.Qualifier
+import com.oscarg798.amiibowiki.core.repositories.GameAuthRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
-@Qualifier
-annotation class AmiiboApiQualifier
+@Singleton
+class AuthenticateApplicationUseCase @Inject constructor(private val gameAuthRepository: GameAuthRepository) {
+
+    suspend fun execute() {
+        gameAuthRepository.authenticate()
+    }
+}

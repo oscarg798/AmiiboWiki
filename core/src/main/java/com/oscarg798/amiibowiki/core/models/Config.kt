@@ -16,11 +16,11 @@ data class Config(
     val databaseName: String,
     val amiiboBaseUrl: String,
     val gameBaseUrl: String,
+    val authAPIBaseUrl: String,
     val flavor: Flavor,
     val googleAPIKey: String,
-    val gameAPIKey: String,
     val gameClientId: String,
-    val mixpanelAPIKey: String
+    val mixpanelAPIKey: String,
 )
 
 sealed class Flavor {

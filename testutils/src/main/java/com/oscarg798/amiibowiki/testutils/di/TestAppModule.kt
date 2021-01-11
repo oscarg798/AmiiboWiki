@@ -19,16 +19,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object TestAppModule {
 
     @Provides
     @Singleton
     fun provideConfig() = Config(
         MOCK_DATABASE_NAME,
+        MOCK_WEB_SERVER_URL,
         MOCK_WEB_SERVER_URL,
         MOCK_WEB_SERVER_URL,
         Flavor.Debug,

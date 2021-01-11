@@ -10,11 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di.providers
+package com.oscarg798.amiibowiki.network.di.qualifiers
 
-import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
+import javax.inject.Qualifier
 
-interface SharedPreferenceProvider {
-
-    fun providePreferenceWrapper(): SharedPreferencesWrapper
-}
+@Qualifier
+annotation class GameApiConsumer
