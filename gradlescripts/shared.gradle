@@ -88,6 +88,8 @@ dependencies {
     implementation airbnb
     kapt airbnbProcessor
 
+    implementation facebookShimmer
+
     //Dagger
     implementation dagger
     kapt daggerCompiler

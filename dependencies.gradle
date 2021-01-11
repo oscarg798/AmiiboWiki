@@ -245,4 +245,6 @@ ext {
     navigationUi = "androidx.navigation:navigation-ui:$navigationVersion"
     fragmentNavigationKtx = "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     navigationUiKtx = "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
+    facebookShimmer =  'com.facebook.shimmer:shimmer:0.5.0'
 }
