@@ -37,7 +37,7 @@
                 android:layout_gravity="center"
                 android:clipToPadding="false"
                 android:src="@drawable/ic_placeholder_gray"
-                android:tint="?skeletonColor"
+                app:tint="?skeletonColor"
                 app:layout_anchorGravity="bottom"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -88,7 +88,7 @@
                 android:layout_height="15dp"
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_rating"
-                android:tint="?skeletonColor"
+                app:tint="?skeletonColor"
                 app:layout_constraintStart_toEndOf="@+id/tvGameRating"
                 app:layout_constraintTop_toTopOf="@+id/tvGameRating" />
 

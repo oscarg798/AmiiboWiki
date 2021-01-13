@@ -23,7 +23,7 @@
         android:layout_height="@dimen/amiibo_item_icon_size"
         android:scaleType="centerInside"
         android:src="@drawable/ic_placeholder_gray"
-        android:tint="@color/silver_chalice"
+        app:tint="@color/silver_chalice"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
