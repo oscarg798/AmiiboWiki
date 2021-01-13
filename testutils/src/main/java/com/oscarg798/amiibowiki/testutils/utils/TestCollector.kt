@@ -47,6 +47,16 @@ class TestCollector<T> {
         assert(values.containsAll(_values))
     }
 
+    infix fun valuesWereNotEmitted(_values: Collection<T>) {
+        _values.forEach {
+            valueWasNotEmitted(it)
+        }
+    }
+
+    infix fun valueWasNotEmitted(value: T) {
+        Assert.assertFalse(values.contains(value))
+    }
+
     infix fun wasValueEmiited(value: T) = assert(values.contains(value))
 
     infix fun hasSize(size: Int) = Assert.assertEquals(size, values.size)

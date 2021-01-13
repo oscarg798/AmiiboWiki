@@ -26,27 +26,30 @@
 
         <include
             layout="@layout/game_related_item_skeleton"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
 
         <include
             layout="@layout/game_related_item_skeleton"
-            android:layout_width="match_parent" />
-
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
         <include
             layout="@layout/game_related_item_skeleton"
-            android:layout_width="match_parent" />
-
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
         <include
             layout="@layout/game_related_item_skeleton"
-            android:layout_width="match_parent" />
-
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
         <include
             layout="@layout/game_related_item_skeleton"
-            android:layout_width="match_parent" />
-
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
         <include
             layout="@layout/game_related_item_skeleton"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
+
     </GridLayout>
 
 </com.facebook.shimmer.ShimmerFrameLayout>
