@@ -43,8 +43,16 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
     /**
      * We use channels as state flow will omit duplicated states or wishes
      */
-    private val _state = MutableSharedFlow<ViewState>(replay = 0, extraBufferCapacity = 3, onBufferOverflow = BufferOverflow.DROP_LATEST)
-    private val wishProcessor = MutableSharedFlow<Wish>(replay = 0,extraBufferCapacity = 3,  onBufferOverflow = BufferOverflow.DROP_LATEST)
+    private val _state = MutableSharedFlow<ViewState>(
+        replay = 1,
+        extraBufferCapacity = 3,
+        onBufferOverflow = BufferOverflow.DROP_LATEST
+    )
+    private val wishProcessor = MutableSharedFlow<Wish>(
+        replay = 0,
+        extraBufferCapacity = 3,
+        onBufferOverflow = BufferOverflow.DROP_LATEST
+    )
 
 
     val state: Flow<ViewState>
@@ -52,6 +60,7 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
 
     init {
         _state.tryEmit(initialState)
+
         wishProcessor
             .flatMapLatest {
                 getResult(it)

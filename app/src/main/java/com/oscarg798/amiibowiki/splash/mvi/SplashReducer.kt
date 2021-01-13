@@ -28,7 +28,7 @@ class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewStat
             is SplashResult.Error -> state.copy(
                 isIdling = false,
                 navigatingToFirstScreen = false,
-                error = AmiiboTypeFailure.FetchTypesFailure(from.error.message, from.error.cause as Exception)
+                error = AmiiboTypeFailure.FetchTypesFailure(from.error.message, from.error.cause as? Exception)
             )
         }
 }
