@@ -79,12 +79,18 @@
 
 
     <include
-        layout="@layout/game_related_list_animation"
         android:id="@+id/searchResultAnimationList"
+        layout="@layout/game_related_list_animation"
+        android:layout_width="@dimen/match_constraint"
+        android:layout_height="@dimen/match_constraint"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        android:visibility="gone" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

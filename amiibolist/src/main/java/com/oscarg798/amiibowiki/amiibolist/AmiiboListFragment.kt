@@ -250,6 +250,7 @@ class AmiiboListFragment :
         binding.rvAmiiboList.isEnabled = false
         filterMenuItem?.isEnabled = false
 
+        binding.rvAmiiboList.visibility = View.GONE
         binding.listAnimation.shimmerLoadingView.visibility = View.VISIBLE
         binding.listAnimation.shimmerLoadingView.startShimmer()
 
@@ -257,7 +258,9 @@ class AmiiboListFragment :
 
     private fun hideLoading() {
         binding.listAnimation.shimmerLoadingView.visibility = View.GONE
+        binding.rvAmiiboList.visibility = View.VISIBLE
         binding.listAnimation.shimmerLoadingView.stopShimmer()
+
         filterMenuItem?.isEnabled = true
         binding.rvAmiiboList.isEnabled = true
         binding.srlMain.isRefreshing = false

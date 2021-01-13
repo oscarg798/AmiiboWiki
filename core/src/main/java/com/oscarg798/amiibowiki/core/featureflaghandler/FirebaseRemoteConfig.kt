@@ -41,9 +41,7 @@ class FirebaseRemoteConfig : RemoteConfig {
                 if (task.isSuccessful) {
                     deferred.complete(Unit)
                 } else {
-                    // TODO check if we have defaults for FF otherwise crash
-                    // check defaults deferred.completeExceptionally(FirebaseRemoteConfigInitializationException(task.exception))
-                    deferred.complete(Unit)
+                    deferred.completeExceptionally(IllegalArgumentException("There was an error fetching firebase"))
                 }
             }
     }
