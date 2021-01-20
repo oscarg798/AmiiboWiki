@@ -15,7 +15,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
-apply plugin: 'dagger.hilt.android.plugin'
 
 apply from: "$rootProject.projectDir/gradlescripts/ktlint.gradle"
 apply from: "$rootProject.projectDir/gradlescripts/signing.gradle"
@@ -145,9 +144,6 @@ dependencies {
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
 
-    implementation "androidx.hilt:hilt-common:$hiltVersion2"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltVersion2"
-    kapt hiltKAPT
 
     androidTestImplementation 'com.google.dagger:hilt-android-testing:2.31-alpha'
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.31-alpha'

@@ -16,7 +16,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
-import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListViewModelFactory
 import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
@@ -57,7 +56,7 @@ class AmiiboListViewModel @Inject constructor(
     override val reducer: Reducer<@JvmSuppressWildcards AmiiboListResult, @JvmSuppressWildcards AmiiboListViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(
-    null
+    AmiiboListViewState.init()
 ) {
 
     override fun onScreenShown() {
@@ -149,22 +148,6 @@ class AmiiboListViewModel @Inject constructor(
         }
 
         emit(AmiiboListResult.Error(failure))
-    }
-
-    @dagger.assisted.AssistedFactory
-    interface AssistedFactory {
-        fun create(): AmiiboListViewModel
-    }
-
-    companion object {
-        fun provideFactory(
-            assistedFactory: AssistedFactory
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create() as T
-            }
-        }
     }
 
 }

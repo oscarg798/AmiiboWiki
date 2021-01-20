@@ -12,7 +12,6 @@
 
 apply from: "../gradlescripts/shared.gradle"
 
-
 android {
 
     packagingOptions {

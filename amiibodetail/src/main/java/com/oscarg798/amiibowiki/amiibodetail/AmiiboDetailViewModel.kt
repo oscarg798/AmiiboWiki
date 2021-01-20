@@ -26,6 +26,7 @@ import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import dagger.assisted.AssistedInject
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,18 +38,21 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
+import dagger.assisted.Assisted
 
-@HiltViewModel
-class AmiiboDetailViewModel @Inject constructor(
-    private val amiiboDetailTail: String,
+
+
+class AmiiboDetailViewModel @AssistedInject constructor(
+    @Assisted private val tail: String,
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
     private val amiiboDetailLogger: AmiiboDetailLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState>,
-    override val coroutineContextProvider: CoroutineContextProvider
+    override val coroutineContextProvider: CoroutineContextProvider,
 ) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
     AmiiboDetailViewState.init()
 ) {
+
 
     override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = when (wish) {
         is AmiiboDetailWish.ExpandAmiiboImage -> flowOf(AmiiboDetailResult.ImageExpanded(wish.image))
@@ -56,7 +60,7 @@ class AmiiboDetailViewModel @Inject constructor(
     }
 
     private suspend fun getAmiiboDetail(): Flow<AmiiboDetailResult> = flow {
-        emit(getAmiiboDetailUseCase.execute(amiiboDetailTail))
+        emit(getAmiiboDetailUseCase.execute(tail))
     }.flatMapConcat { amiibo ->
         flow<AmiiboDetailResult> {
             trackViewShown(amiibo)
@@ -87,6 +91,24 @@ class AmiiboDetailViewModel @Inject constructor(
                 GAME_SERIES_TRACKING_PROPERTY to amiibo.gameSeries
             )
         )
+    }
+
+
+    @dagger.assisted.AssistedFactory
+    interface AssistedFactory {
+        fun create(tails: String): AmiiboDetailViewModel
+    }
+
+    companion object {
+        fun provideFactory(
+            assistedFactory: AssistedFactory,
+            tails: String
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return assistedFactory.create(tails) as T
+            }
+        }
     }
 
 

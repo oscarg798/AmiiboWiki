@@ -24,16 +24,29 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @InstallIn(ViewModelComponent::class)
 @Module
 object AmiiboDetailModule {
 
-    @Provides
-    fun provideAmiiboDetailLogger(logger: Logger): AmiiboDetailLogger =
-        AmiiboDetailLoggerImpl(logger)
+
+
+
+}
+
+@InstallIn(SingletonComponent::class)
+@Module
+object X {
+
 
     @Provides
     fun provideAmiiboDetailReducer(amiiboDetailReducer: AmiiboDetailReducer): Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState> =
         amiiboDetailReducer
+
+    @Singleton
+    @Provides
+    fun provideAmiiboDetailLogger(logger: Logger): AmiiboDetailLogger =
+        AmiiboDetailLoggerImpl(logger)
 }

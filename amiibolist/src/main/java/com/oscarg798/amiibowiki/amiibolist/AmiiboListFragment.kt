@@ -38,7 +38,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.FragmentAmiiboListBinding
-import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListViewModelFactory
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
@@ -60,15 +59,10 @@ class AmiiboListFragment :
     SearchView.OnQueryTextListener,
     MenuItem.OnActionExpandListener {
 
-
     @Inject
     lateinit var mixpanelLogger: MixpanelLogger
 
-    @Inject
-    lateinit var detailViewModelFactory: AmiiboListViewModel.AssistedFactory
-
-
-   val  viewModel: AmiiboListViewModel by viewModels()
+    private val viewModel: AmiiboListViewModel by viewModels()
 
     private var filterMenuItem: MenuItem? = null
     private var searchView: SearchView? = null
@@ -90,15 +84,10 @@ class AmiiboListFragment :
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        setupViewModelInteractions()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        setupViewModelInteractions()
     }
 
     override fun onCreateView(

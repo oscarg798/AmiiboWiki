@@ -12,12 +12,17 @@
 
 package com.oscarg798.amiibowiki.di
 
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.oscarg798.amiibowiki.BuildConfig
+import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Flavor
+import com.oscarg798.amiibowiki.navigation.DashboardActivity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -43,3 +48,4 @@ object AppModule {
         BuildConfig.MIX_PANEL_API_KEY
     )
 }
+

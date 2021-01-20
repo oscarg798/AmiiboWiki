@@ -11,6 +11,8 @@
  */
 
 apply from: '../gradlescripts/shared.gradle'
+apply from: "../gradlescripts/hiltshared.gradle"
+
 
 android{
 

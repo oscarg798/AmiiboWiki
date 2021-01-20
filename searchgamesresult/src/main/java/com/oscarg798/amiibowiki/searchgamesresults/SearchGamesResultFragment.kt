@@ -38,11 +38,13 @@ import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class SearchResultFragment : Fragment(), SearchResultClickListener {
 
    private val viewModel: SearchGamesResultViewModel by viewModels()
@@ -53,10 +55,9 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
 
     private lateinit var currentState: SearchResultViewState
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
 
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setupViewModelInteractions()
     }
 
