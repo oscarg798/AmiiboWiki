@@ -15,10 +15,12 @@ package com.oscarg798.amiibowiki.amiibolist.usecases
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboSearchQuery
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
+@ViewModelScoped
 class SearchAmiibosUseCase @Inject constructor(private val amiiboRepository: AmiiboRepository) {
 
     fun execute(query: String): Flow<Collection<Amiibo>> = combine(

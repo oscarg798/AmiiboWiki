@@ -12,6 +12,8 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
@@ -24,6 +26,9 @@ import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -33,6 +38,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
+@HiltViewModel
 class AmiiboDetailViewModel @Inject constructor(
     private val amiiboDetailTail: String,
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
@@ -82,6 +88,8 @@ class AmiiboDetailViewModel @Inject constructor(
             )
         )
     }
+
+
 }
 
 private const val TAIL_TRACKING_PROPERTY = "TAIL"

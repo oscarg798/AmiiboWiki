@@ -16,15 +16,15 @@ import com.oscarg798.amiibowiki.core.di.entrypoints.SearchGamesResultEntryPoint
 import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import dagger.Component
 
-@SearchResultScope
-@Component(dependencies = [SearchGamesResultEntryPoint::class], modules = [SearchResultModule::class])
-interface SearchResultComponent {
-
-    @Component.Factory
-    interface Factory {
-
-        fun create(searchGamesResultEntryPoint: SearchGamesResultEntryPoint): SearchResultComponent
-    }
-
-    fun inject(searchResultFragment: SearchResultFragment)
-}
+//@SearchResultScope
+//@Component(dependencies = [SearchGamesResultEntryPoint::class], modules = [SearchResultModule::class])
+//interface SearchResultComponent {
+//
+//    @Component.Factory
+//    interface Factory {
+//
+//        fun create(searchGamesResultEntryPoint: SearchGamesResultEntryPoint): SearchResultComponent
+//    }
+//
+//    fun inject(searchResultFragment: SearchResultFragment)
+//}

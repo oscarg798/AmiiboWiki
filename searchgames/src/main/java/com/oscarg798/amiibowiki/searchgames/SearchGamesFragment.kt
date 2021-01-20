@@ -22,10 +22,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.oscarg798.amiibowiki.core.di.entrypoints.SearchGamesEntryPoint
 import com.oscarg798.amiibowiki.searchgames.databinding.FragmentSearchGamesBinding
-import com.oscarg798.amiibowiki.searchgames.di.DaggerSearchGameComponent
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
 import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
+import dagger.hilt.EntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@EntryPoint
 class SearchGamesFragment : Fragment() {
 
     @Inject
@@ -45,14 +46,6 @@ class SearchGamesFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
-        DaggerSearchGameComponent.factory()
-            .create(
-                EntryPointAccessors.fromApplication(
-                    requireActivity().application,
-                    SearchGamesEntryPoint::class.java
-                )
-            ).inject(this)
 
         setupViewModelInteractions()
     }

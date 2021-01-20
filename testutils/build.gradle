@@ -60,7 +60,7 @@ dependencies {
     testImplementation roomTesting
 
     // For instrumented tests.
-    implementation 'com.google.dagger:hilt-android-testing:2.28.3-alpha'
+    implementation hiltLib
     // ...with Kotlin.
-    kapt 'com.google.dagger:hilt-android-compiler:2.30.1-alpha'
+    kapt hiltKAPT
 }

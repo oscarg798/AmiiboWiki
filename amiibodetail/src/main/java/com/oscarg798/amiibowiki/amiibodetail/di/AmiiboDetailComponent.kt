@@ -18,21 +18,21 @@ import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Scope
 
-@AmiiboDetailScope
-@Component(dependencies = [AmiiboDetailEntryPoint::class], modules = [AmiiboDetailModule::class])
-interface AmiiboDetailComponent {
-
-    fun inject(amiiboDetailFragment: AmiiboDetailFragment)
-
-    @Component.Factory
-    interface Factory {
-
-        fun create(
-            @BindsInstance tail: String,
-            amiiboDetailEntryPoint: AmiiboDetailEntryPoint
-        ): AmiiboDetailComponent
-    }
-}
-
-@Scope
-annotation class AmiiboDetailScope
+//@AmiiboDetailScope
+//@Component(dependencies = [AmiiboDetailEntryPoint::class], modules = [AmiiboDetailModule::class])
+//interface AmiiboDetailComponent {
+//
+//    fun inject(amiiboDetailFragment: AmiiboDetailFragment)
+//
+//    @Component.Factory
+//    interface Factory {
+//
+//        fun create(
+//            @BindsInstance tail: String,
+//            amiiboDetailEntryPoint: AmiiboDetailEntryPoint
+//        ): AmiiboDetailComponent
+//    }
+//}
+//
+//@Scope
+//annotation class AmiiboDetailScope

@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.core.models
 import com.google.gson.annotations.SerializedName
 
 class GameAuthResponse(
+
     @SerializedName("access_token")
     val accessToken: String
 )

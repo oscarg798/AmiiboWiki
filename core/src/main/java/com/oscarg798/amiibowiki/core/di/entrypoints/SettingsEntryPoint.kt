@@ -19,7 +19,6 @@ import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
 import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.components.SingletonComponent
 
 @EntryPoint

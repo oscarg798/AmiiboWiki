@@ -28,6 +28,10 @@ apply from: '../gradlescripts/release.gradle'
 apply from: '../gradlescripts/playstorerelease.gradle.kts'
 
 android {
+    signingConfigs {
+        demo {
+        }
+    }
     compileSdkVersion appCompileSdkVersion
     buildToolsVersion appBuildToolsVersion
 
@@ -77,8 +81,6 @@ android {
             applicationIdSuffix ".alpha"
 
             manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
-
-            signingConfig signingConfigs.locker
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -201,8 +203,11 @@ dependencies {
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
 
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.30.1-alpha'
-    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.30.1-alpha'
+    androidTestImplementation hiltLib
+    kaptAndroidTest hiltKAPT
+
+    implementation "androidx.hilt:hilt-common:$hiltVersion2"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltVersion2"
 
     testImplementation project(path: ':testutils')
     androidTestImplementation project(path: ':testutils')

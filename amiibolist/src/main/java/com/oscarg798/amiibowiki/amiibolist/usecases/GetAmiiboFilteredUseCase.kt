@@ -12,19 +12,18 @@
 
 package com.oscarg798.amiibowiki.amiibolist.usecases
 
-import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListScope
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
+import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
-@AmiiboListScope
 class GetAmiiboFilteredUseCase @Inject constructor(
     private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
     private val amiiboRepository: AmiiboRepository

@@ -20,6 +20,7 @@ allprojects {
 ext {
     appVersionName = "${major}.${minor}.${patch}"
 
+    hiltVersion2 = '1.0.0-alpha02'
     archLifecycleVersion = "1.1.1"
 
     //Android - Support
@@ -234,7 +235,7 @@ ext {
 
     zoomImageViewer = "com.github.stfalcon:stfalcon-imageviewer:1.0.10"
 
-    hiltVersion = "2.30.1-alpha"
+    hiltVersion = "2.31-alpha"
     hiltLib = "com.google.dagger:hilt-android:$hiltVersion"
     hiltKAPT = "com.google.dagger:hilt-android-compiler:$hiltVersion"
 
@@ -246,5 +247,5 @@ ext {
     fragmentNavigationKtx = "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     navigationUiKtx = "androidx.navigation:navigation-ui-ktx:$navigationVersion"
 
-    facebookShimmer =  'com.facebook.shimmer:shimmer:0.5.0'
+    facebookShimmer = 'com.facebook.shimmer:shimmer:0.5.0'
 }

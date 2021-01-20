@@ -16,20 +16,20 @@ import com.oscarg798.amiibowiki.amiibolist.AmiiboListFragment
 import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboListEntryPoint
 import dagger.Component
 
-@AmiiboListScope
-@Component(
-    dependencies = [AmiiboListEntryPoint::class],
-    modules = [AmiiboListModule::class]
-)
-interface AmiiboListComponent {
-
-    @Component.Factory
-    interface Factory {
-
-        fun create(
-            amiiboListEntryPoint: AmiiboListEntryPoint
-        ): AmiiboListComponent
-    }
-
-    fun inject(amiiboListFragment: AmiiboListFragment)
-}
+//@AmiiboListScope
+//@Component(
+//    dependencies = [AmiiboListEntryPoint::class],
+//    modules = [AmiiboListModule::class]
+//)
+//interface AmiiboListComponent {
+//
+//    @Component.Factory
+//    interface Factory {
+//
+//        fun create(
+//            amiiboListEntryPoint: AmiiboListEntryPoint
+//        ): AmiiboListComponent
+//    }
+//
+//    fun inject(amiiboListFragment: AmiiboListFragment)
+//}

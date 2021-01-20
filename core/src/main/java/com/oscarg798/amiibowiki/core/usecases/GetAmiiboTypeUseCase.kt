@@ -18,7 +18,9 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.map
+import javax.inject.Singleton
 
+@Singleton
 class GetAmiiboTypeUseCase @Inject constructor(
     private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
     private val amiiboTypeRepository: AmiiboTypeRepository
