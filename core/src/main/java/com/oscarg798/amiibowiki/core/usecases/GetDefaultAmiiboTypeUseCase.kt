@@ -14,7 +14,9 @@ package com.oscarg798.amiibowiki.core.usecases
 
 import com.oscarg798.amiibowiki.core.models.AmiiboType
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class GetDefaultAmiiboTypeUseCase @Inject constructor() {
 
     fun execute() = AmiiboType(

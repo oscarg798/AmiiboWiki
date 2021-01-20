@@ -18,10 +18,15 @@ import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesResult
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesViewState
 import dagger.Binds
 import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
+@InstallIn(ViewModelComponent::class)
 @Module
 abstract class SearchGameModule {
 
+    @ViewModelScoped
     @Binds
     abstract fun bindReducer(searchGamesReducer: SearchGamesReducer): Reducer<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewState>
 }

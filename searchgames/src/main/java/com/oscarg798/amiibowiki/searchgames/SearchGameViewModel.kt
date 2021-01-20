@@ -18,9 +18,11 @@ import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesResult
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesViewState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.flowOf
 
+@HiltViewModel
 class SearchGameViewModel @Inject constructor(
     override val reducer: Reducer<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewState>,
     override val coroutineContextProvider: CoroutineContextProvider

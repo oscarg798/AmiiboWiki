@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ethanhua.skeleton.Skeleton
@@ -33,7 +34,6 @@ import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.searchgamesresults.adapter.SearchResultAdapter
 import com.oscarg798.amiibowiki.searchgamesresults.adapter.SearchResultClickListener
 import com.oscarg798.amiibowiki.searchgamesresults.databinding.FragmentSearchResultBinding
-import com.oscarg798.amiibowiki.searchgamesresults.di.DaggerSearchResultComponent
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
@@ -45,8 +45,7 @@ import kotlinx.coroutines.flow.onEach
 
 class SearchResultFragment : Fragment(), SearchResultClickListener {
 
-    @Inject
-    lateinit var viewModel: SearchGamesResultViewModel
+   private val viewModel: SearchGamesResultViewModel by viewModels()
 
     private lateinit var binding: FragmentSearchResultBinding
 
@@ -57,14 +56,6 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        DaggerSearchResultComponent.factory()
-            .create(
-                EntryPointAccessors.fromApplication(
-                    requireActivity().application,
-                    SearchGamesResultEntryPoint::class.java
-                )
-            )
-            .inject(this)
 
         setupViewModelInteractions()
     }

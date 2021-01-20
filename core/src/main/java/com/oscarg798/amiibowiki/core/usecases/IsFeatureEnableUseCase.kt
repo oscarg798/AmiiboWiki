@@ -16,7 +16,9 @@ import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
 import com.oscarg798.flagly.featureflag.FeatureFlag
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class IsFeatureEnableUseCase @Inject constructor(@MainFeatureFlagHandler private val featureFlagHandler: FeatureFlagHandler) {
 
     fun execute(featureFlag: FeatureFlag) = featureFlagHandler.isFeatureEnabled(featureFlag)

@@ -21,16 +21,18 @@ import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
+@InstallIn(ViewModelComponent::class)
 @Module
 object AmiiboDetailModule {
 
-    @AmiiboDetailScope
     @Provides
     fun provideAmiiboDetailLogger(logger: Logger): AmiiboDetailLogger =
         AmiiboDetailLoggerImpl(logger)
 
-    @AmiiboDetailScope
     @Provides
     fun provideAmiiboDetailReducer(amiiboDetailReducer: AmiiboDetailReducer): Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState> =
         amiiboDetailReducer

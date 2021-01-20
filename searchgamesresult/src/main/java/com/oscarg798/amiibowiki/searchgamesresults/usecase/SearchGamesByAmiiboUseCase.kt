@@ -17,6 +17,7 @@ import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.usecases.FillGameResultCoverUseCase
+import dagger.hilt.android.scopes.ViewModelScoped
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
+@ViewModelScoped
 class SearchGamesByAmiiboUseCase @Inject constructor(
     private val gameRepository: GameRepository,
     private val amiiboRepository: AmiiboRepository,

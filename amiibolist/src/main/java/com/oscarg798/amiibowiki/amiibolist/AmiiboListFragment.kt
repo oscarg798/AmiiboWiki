@@ -25,6 +25,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -35,12 +38,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.FragmentAmiiboListBinding
-import com.oscarg798.amiibowiki.amiibolist.di.DaggerAmiiboListComponent
+import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListViewModelFactory
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboListEntryPoint
 import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,17 +53,22 @@ import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 @DeepLink(AMIIBO_LIST_DEEPLINK)
 class AmiiboListFragment :
     Fragment(),
     SearchView.OnQueryTextListener,
     MenuItem.OnActionExpandListener {
 
-    @Inject
-    lateinit var viewModel: AmiiboListViewModel
 
     @Inject
     lateinit var mixpanelLogger: MixpanelLogger
+
+    @Inject
+    lateinit var detailViewModelFactory: AmiiboListViewModel.AssistedFactory
+
+
+   val  viewModel: AmiiboListViewModel by viewModels()
 
     private var filterMenuItem: MenuItem? = null
     private var searchView: SearchView? = null
@@ -83,15 +92,6 @@ class AmiiboListFragment :
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
-        DaggerAmiiboListComponent.factory()
-            .create(
-                EntryPointAccessors.fromApplication(
-                    requireActivity().application,
-                    AmiiboListEntryPoint::class.java
-                )
-            )
-            .inject(this)
 
         setupViewModelInteractions()
     }
@@ -257,9 +257,9 @@ class AmiiboListFragment :
     }
 
     private fun hideLoading() {
-        binding.listAnimation.shimmerLoadingView.visibility = View.GONE
         binding.rvAmiiboList.visibility = View.VISIBLE
         binding.listAnimation.shimmerLoadingView.stopShimmer()
+        binding.listAnimation.shimmerLoadingView.visibility = View.GONE
 
         filterMenuItem?.isEnabled = true
         binding.rvAmiiboList.isEnabled = true

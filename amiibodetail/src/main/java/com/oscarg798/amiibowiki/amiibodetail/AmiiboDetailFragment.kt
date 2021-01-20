@@ -23,7 +23,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibodetail.databinding.FragmentAmiiboDetailBinding
-import com.oscarg798.amiibowiki.amiibodetail.di.DaggerAmiiboDetailComponent
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ShowingAmiiboDetailsParams
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
@@ -33,15 +32,18 @@ import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
+import dagger.hilt.EntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@EntryPoint
 class AmiiboDetailFragment : Fragment() {
 
     @Inject
     lateinit var viewModel: AmiiboDetailViewModel
+
 
     private lateinit var binding: FragmentAmiiboDetailBinding
 
@@ -65,16 +67,6 @@ class AmiiboDetailFragment : Fragment() {
 
         val tail = arguments?.getString(ARGUMENT_TAIL, null)
             ?: throw IllegalArgumentException("Tail is required")
-
-        DaggerAmiiboDetailComponent.factory()
-            .create(
-                tail,
-                EntryPointAccessors.fromApplication(
-                    requireActivity().application,
-                    AmiiboDetailEntryPoint::class.java
-                )
-            )
-            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

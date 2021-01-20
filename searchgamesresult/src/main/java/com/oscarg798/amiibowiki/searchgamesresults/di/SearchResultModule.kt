@@ -21,16 +21,20 @@ import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
+@InstallIn(ViewModelComponent::class)
 @Module
 object SearchResultModule {
 
-    @SearchResultScope
+    @ViewModelScoped
     @Provides
     fun provideSearchResultReducer(searchResultReducer: SearchResultReducer): Reducer<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewState> =
         searchResultReducer
 
-    @SearchResultScope
+    @ViewModelScoped
     @Provides
     fun provideLogger(logger: Logger): SearchGamesResultLogger = SearchGamesResultLoggerImpl(logger)
 }

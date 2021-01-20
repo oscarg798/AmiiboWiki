@@ -15,10 +15,12 @@ package com.oscarg798.amiibowiki.searchgamesresults.usecase
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.usecases.FillGameResultCoverUseCase
+import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+@ViewModelScoped
 class SearchGamesByQueryUseCase @Inject constructor(
     private val gameRepository: GameRepository,
     private val fillGameResultCoverUseCase: FillGameResultCoverUseCase

@@ -12,6 +12,11 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
+import com.oscarg798.amiibowiki.amiibolist.di.AmiiboListViewModelFactory
 import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
@@ -26,6 +31,10 @@ import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import dagger.assisted.AssistedInject
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -37,6 +46,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
+@HiltViewModel
 class AmiiboListViewModel @Inject constructor(
     private val getAmiibosUseCase: GetAmiibosUseCase,
     private val getAmiiboFilteredUseCase: GetAmiiboFilteredUseCase,
@@ -47,7 +57,7 @@ class AmiiboListViewModel @Inject constructor(
     override val reducer: Reducer<@JvmSuppressWildcards AmiiboListResult, @JvmSuppressWildcards AmiiboListViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(
-    AmiiboListViewState.init()
+    null
 ) {
 
     override fun onScreenShown() {
@@ -140,6 +150,23 @@ class AmiiboListViewModel @Inject constructor(
 
         emit(AmiiboListResult.Error(failure))
     }
+
+    @dagger.assisted.AssistedFactory
+    interface AssistedFactory {
+        fun create(): AmiiboListViewModel
+    }
+
+    companion object {
+        fun provideFactory(
+            assistedFactory: AssistedFactory
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return assistedFactory.create() as T
+            }
+        }
+    }
+
 }
 
 private const val APPLIED_FILTER_PROPERTY = "APPLIED_AMIIBO_TYPE_FILTER"
