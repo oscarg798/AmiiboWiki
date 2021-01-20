@@ -20,17 +20,12 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
-import kotlinx.coroutines.launch
 
 abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState : MVIViewState>(
     initialState: ViewState
@@ -53,7 +48,6 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
         extraBufferCapacity = 3,
         onBufferOverflow = BufferOverflow.DROP_LATEST
     )
-
 
     val state: Flow<ViewState>
         get() = _state

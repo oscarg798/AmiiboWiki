@@ -27,7 +27,6 @@ import javax.inject.Singleton
  * specific usecases. As for now we do not have anything else to add to the pipeline
  * we are not going to implemented thay way. YAGNI
  */
-@Singleton
 class InitializeApplicationUseCase  @Inject constructor(
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
     private val activateRemoteConfigUseCase: ActivateRemoteConfigUseCase,

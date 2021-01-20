@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.splash
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -32,8 +33,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var viewModel: SplashViewModel
+    private val viewModel: SplashViewModel by viewModels()
 
     private lateinit var binding: ActivitySplashBinding
 

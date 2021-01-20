@@ -13,28 +13,27 @@
 package com.oscarg798.amiibowiki.core.di.modules
 
 import com.oscarg798.amiibowiki.core.models.Config
+import com.oscarg798.amiibowiki.core.network.interceptors.APIConfig
+import com.oscarg798.amiibowiki.core.network.interceptors.APIKeyInterceptor
 import com.oscarg798.amiibowiki.core.network.services.AmiiboService
 import com.oscarg798.amiibowiki.core.network.services.AuthService
 import com.oscarg798.amiibowiki.core.network.services.GameService
+import com.oscarg798.amiibowiki.core.repositories.GameAuthRepository
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIConsumer
 import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIBaseUrl
+import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIConsumer
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIConfig
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiConsumer
-import com.oscarg798.amiibowiki.core.network.interceptors.APIConfig
-import com.oscarg798.amiibowiki.core.network.interceptors.APIKeyInterceptor
-import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
-import com.oscarg798.amiibowiki.core.repositories.GameAuthRepository
-import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIConsumer
-import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIConsumer
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIInterceptor
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiConsumer
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor
 import javax.inject.Singleton
+import okhttp3.Interceptor
 import retrofit2.Retrofit
 
 @Module

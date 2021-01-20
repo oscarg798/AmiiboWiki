@@ -16,13 +16,13 @@ import com.google.gson.GsonBuilder
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIClient
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIConsumer
-import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIConsumer
 import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIClient
+import com.oscarg798.amiibowiki.network.di.qualifiers.AuthAPIConsumer
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIClient
-import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiConsumer
 import com.oscarg798.amiibowiki.network.di.qualifiers.GameAPIInterceptor
+import com.oscarg798.amiibowiki.network.di.qualifiers.GameApiConsumer
 import com.oscarg798.amiibowiki.network.di.qualifiers.NetworkTrackerInterceptor
 import com.oscarg798.amiibowiki.network.interceptors.ErrorInterceptor
 import dagger.Module
@@ -59,7 +59,6 @@ object NetworkModule {
         return GsonConverterFactory.create(gson)
     }
 
-
     private fun getHttpClientBuilder(
         @NetworkTrackerInterceptor
         networkLoggerInterceptor: Interceptor,
@@ -91,7 +90,6 @@ object NetworkModule {
         getHttpClientBuilder(networkLoggerInterceptor)
             .addInterceptor(apiKeyInterceptor).build()
 
-
     @AuthAPIClient
     @Reusable
     @Provides
@@ -119,7 +117,6 @@ object NetworkModule {
             .build()
     }
 
-
     @GameApiConsumer
     @Reusable
     @Provides
@@ -135,7 +132,6 @@ object NetworkModule {
         .addConverterFactory(gsonConverterFactory)
         .client(httpClient)
         .build()
-
 
     @AuthAPIConsumer
     @Reusable

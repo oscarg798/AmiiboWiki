@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -26,14 +25,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.ethanhua.skeleton.Skeleton
-import com.ethanhua.skeleton.SkeletonScreen
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
@@ -41,10 +36,8 @@ import com.oscarg798.amiibowiki.amiibolist.databinding.FragmentAmiiboListBinding
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
-import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboListEntryPoint
 import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -94,7 +87,7 @@ class AmiiboListFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentAmiiboListBinding.inflate(
             LayoutInflater.from(requireContext()),
             container,
@@ -242,7 +235,6 @@ class AmiiboListFragment :
         binding.rvAmiiboList.visibility = View.GONE
         binding.listAnimation.shimmerLoadingView.visibility = View.VISIBLE
         binding.listAnimation.shimmerLoadingView.startShimmer()
-
     }
 
     private fun hideLoading() {

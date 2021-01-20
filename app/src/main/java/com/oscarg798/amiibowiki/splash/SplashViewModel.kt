@@ -24,6 +24,7 @@ import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
 import com.oscarg798.amiibowiki.splash.usecases.AuthenticateApplicationUseCase
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
@@ -34,13 +35,13 @@ import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
 
 
+@HiltViewModel
 class SplashViewModel @Inject constructor(
     private val splashLogger: SplashLogger,
     private val initializeApplicationUseCase: InitializeApplicationUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) :
-    AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.init()) {
+) : AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.init()) {
 
     override fun onScreenShown() {
         splashLogger.trackScreenShown()

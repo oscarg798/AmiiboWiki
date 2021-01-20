@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.houses
 
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListFragment
 import com.oscarg798.amiibowiki.amiibolist.R
@@ -26,6 +25,7 @@ import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.BaseUITest
 import com.oscarg798.amiibowiki.testutils.extensions.createMockResponse
+import com.oscarg798.amiibowiki.testutils.extensions.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import io.mockk.every
@@ -55,7 +55,7 @@ class AmiiboListTest : BaseUITest(DISPATCHER) {
     override fun prepareTest() {
         every { amiiboDAO.getAmiibos() } answers { flowOf(listOf(DB_AMIIBO)) }
 
-        launchFragmentInContainer<AmiiboListFragment>(themeResId = R.style.AppTheme)
+        launchFragmentInHiltContainer<AmiiboListFragment>(themeResId = R.style.AppTheme)
     }
 
     @Test

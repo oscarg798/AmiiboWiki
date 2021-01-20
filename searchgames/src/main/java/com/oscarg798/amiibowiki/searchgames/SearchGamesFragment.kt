@@ -12,46 +12,37 @@
 
 package com.oscarg798.amiibowiki.searchgames
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.oscarg798.amiibowiki.core.di.entrypoints.SearchGamesEntryPoint
 import com.oscarg798.amiibowiki.searchgames.databinding.FragmentSearchGamesBinding
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
 import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
-import dagger.hilt.EntryPoint
-import dagger.hilt.android.EntryPointAccessors
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-@EntryPoint
+@AndroidEntryPoint
 class SearchGamesFragment : Fragment() {
 
-    @Inject
-    lateinit var viewmodel: SearchGameViewModel
+    private val viewmodel: SearchGameViewModel by viewModels()
 
     private lateinit var binding: FragmentSearchGamesBinding
 
     private val searchFlow = MutableStateFlow<String>(EMPTY_SEARCH_QUERY)
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        setupViewModelInteractions()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupViewModelInteractions()
         setHasOptionsMenu(false)
     }
 
@@ -59,7 +50,7 @@ class SearchGamesFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSearchGamesBinding.inflate(
             LayoutInflater.from(requireContext()),
             container,

@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.settings
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -21,20 +20,18 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.oscarg798.amiibowiki.core.di.entrypoints.SettingsEntryPoint
 import com.oscarg798.amiibowiki.core.utils.TextChangeListenerAdapter
-import com.oscarg798.amiibowiki.settings.di.DaggerSettingsComponent
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity
-import dagger.hilt.android.EntryPointAccessors
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -42,24 +39,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    @Inject
-    lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        DaggerSettingsComponent.factory()
-            .create(
-                EntryPointAccessors.fromApplication(
-                    requireActivity().application,
-                    SettingsEntryPoint::class.java
-                )
-            ).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -19,7 +19,6 @@ interface AuthService {
 
     @POST(AUTH_ROUTE)
     suspend fun authenticate(): GameAuthResponse
-
 }
 
 private const val AUTH_ROUTE = "amiiboWikiAuth"

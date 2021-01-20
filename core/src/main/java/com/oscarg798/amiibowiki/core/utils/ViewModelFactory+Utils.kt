@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,24 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di.entrypoints
+package com.oscarg798.amiibowiki.core.utils
 
-import com.oscarg798.amiibowiki.core.di.providers.AmiiboRepositoryProvider
-import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
-import com.oscarg798.amiibowiki.core.di.providers.FeatureFlagProvider
-import com.oscarg798.amiibowiki.core.di.providers.GameRepositoryProvider
-import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
-import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 
-@EntryPoint
-@InstallIn(SingletonComponent::class)
-interface AmiiboDetailEntryPoint :
-    GameRepositoryProvider,
-    FeatureFlagProvider,
-    AmiiboRepositoryProvider,
-    CoroutinesProvider,
-    LoggerProvider,
-    ResourceProviderProvider
+fun <AssistedFactory : AssistedFactoryCreator<VM, Param>, Param, VM : ViewModel> provideFactory(
+    assistedFactory: AssistedFactory,
+    deliveryAddress: Param
+): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return assistedFactory.create(deliveryAddress) as T
+    }
+}
+
+interface AssistedFactoryCreator<VM : ViewModel, Param> {
+
+    fun create(params: Param): VM
+}

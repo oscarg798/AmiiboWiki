@@ -19,7 +19,6 @@ import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import okhttp3.Interceptor

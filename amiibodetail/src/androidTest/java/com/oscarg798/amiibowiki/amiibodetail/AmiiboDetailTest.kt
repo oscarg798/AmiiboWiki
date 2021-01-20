@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import android.os.Bundle
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
@@ -30,6 +29,7 @@ import com.oscarg798.amiibowiki.testutils.COVER_RESPONSE
 import com.oscarg798.amiibowiki.testutils.GAME_COVER_SEARCH_RESPONSE
 import com.oscarg798.amiibowiki.testutils.GAME_SEARCH_RESPONSE
 import com.oscarg798.amiibowiki.testutils.extensions.createMockResponse
+import com.oscarg798.amiibowiki.testutils.extensions.launchFragmentInHiltContainer
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -67,7 +67,7 @@ class AmiiboDetailTest : BaseUITest(DISPATCHER) {
             mainFeatureFlagHandler.isFeatureEnabled(AmiiboWikiFeatureFlag.ShowRelatedGames)
         } answers { true }
 
-        launchFragmentInContainer<AmiiboDetailFragment>(
+        launchFragmentInHiltContainer<AmiiboDetailFragment>(
             fragmentArgs = Bundle().apply {
                 putString(ARGUMENT_TAIL, AMIIBO_TAIL)
             },

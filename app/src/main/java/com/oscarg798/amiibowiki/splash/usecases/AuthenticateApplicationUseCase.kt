@@ -16,7 +16,7 @@ import com.oscarg798.amiibowiki.core.repositories.GameAuthRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+
 class AuthenticateApplicationUseCase @Inject constructor(private val gameAuthRepository: GameAuthRepository) {
 
     suspend fun execute() {

@@ -12,11 +12,9 @@
 
 package com.oscarg798.amiibowiki.core.repositories
 
-
 interface GameAuthRepository {
 
     suspend fun authenticate()
 
     fun getToken(): String
 }
-

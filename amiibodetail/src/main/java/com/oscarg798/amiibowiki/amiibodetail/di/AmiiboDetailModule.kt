@@ -22,30 +22,20 @@ import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
-import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.components.FragmentComponent
+import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Singleton
 
-@InstallIn(ViewModelComponent::class)
+@InstallIn(FragmentComponent::class)
 @Module
 object AmiiboDetailModule {
 
-
-
-
-}
-
-@InstallIn(SingletonComponent::class)
-@Module
-object X {
-
-
+    @FragmentScoped
     @Provides
     fun provideAmiiboDetailReducer(amiiboDetailReducer: AmiiboDetailReducer): Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState> =
         amiiboDetailReducer
 
-    @Singleton
+    @FragmentScoped
     @Provides
     fun provideAmiiboDetailLogger(logger: Logger): AmiiboDetailLogger =
         AmiiboDetailLoggerImpl(logger)

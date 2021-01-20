@@ -25,12 +25,14 @@ class FirebaseRemoteConfig : RemoteConfig {
     override fun activateAsync(): Deferred<Unit> {
         val deferred = CompletableDeferred<Unit>()
 
-        setConfigSettings({
-            fetchAndActivateRemoteConfig(deferred)
-        }, {
-            throw it
-        })
-
+        setConfigSettings(
+            {
+                fetchAndActivateRemoteConfig(deferred)
+            },
+            {
+                throw it
+            }
+        )
 
         return deferred
     }
@@ -58,7 +60,6 @@ class FirebaseRemoteConfig : RemoteConfig {
                 onRemoteConfigActivationError(IllegalArgumentException("We were not able to init firebase"))
             }
         }
-
     }
 
     private fun getConfigSettings() = FirebaseRemoteConfigSettings.Builder()
