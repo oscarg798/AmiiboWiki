@@ -180,11 +180,13 @@ dependencies {
     implementation project(path: ':logger')
     implementation project(path: ':core')
     implementation project(path: ':amiibolist')
+    implementation project(path: ':amiibodetail')
     implementation project(path: ':nfcreader')
     implementation project(path: ':network')
     implementation project(path: ':gamedetail')
     implementation project(path: ':settings')
     implementation project(path: ':searchgames')
+    implementation project(path: ':searchgamesresult')
 
     //Test
     testImplementation mockk

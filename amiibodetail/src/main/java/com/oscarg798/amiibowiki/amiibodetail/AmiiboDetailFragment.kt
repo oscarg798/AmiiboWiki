@@ -19,6 +19,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
@@ -33,17 +36,24 @@ import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-@EntryPoint
+@AndroidEntryPoint
 class AmiiboDetailFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModel: AmiiboDetailViewModel
 
+    @Inject
+    lateinit var factory: AmiiboDetailViewModel.AssistedFactory
+
+    private lateinit var tail: String
+
+    private val viewModel: AmiiboDetailViewModel by viewModels {
+        AmiiboDetailViewModel.provideFactory(factory, tail)
+    }
 
     private lateinit var binding: FragmentAmiiboDetailBinding
 
@@ -53,24 +63,22 @@ class AmiiboDetailFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentAmiiboDetailBinding.inflate(
             LayoutInflater.from(requireContext()),
             container,
             false
         )
+
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        val tail = arguments?.getString(ARGUMENT_TAIL, null)
-            ?: throw IllegalArgumentException("Tail is required")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        tail = arguments?.getString(ARGUMENT_TAIL, null)
+            ?: throw IllegalArgumentException("Tail is required")
         setHasOptionsMenu(false)
     }
 

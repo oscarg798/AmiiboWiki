@@ -41,9 +41,3 @@ object AmiiboListModule {
         amiiboListReducer
 
 }
-
-@AssistedFactory
-interface AmiiboListViewModelFactory {
-
-    fun create(): AmiiboListViewModel
-}

@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.launch
 
 abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState : MVIViewState>(
-    initialState: ViewState?
+    initialState: ViewState
 ) : ViewModel() {
 
     protected abstract val reducer: Reducer<Result, ViewState>
@@ -59,19 +59,16 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
         get() = _state
 
     init {
-        initialState?.let {
-            _state.tryEmit(initialState)
+        _state.tryEmit(initialState)
 
-            wishProcessor
-                .flatMapLatest {
-                    getResult(it)
-                }.scan(initialState) { state, result ->
-                    reducer.reduce(state, result)
-                }.onEach {
-                    _state.emit(it)
-                }.launchIn(viewModelScope)
-        }
-
+        wishProcessor
+            .flatMapLatest {
+                getResult(it)
+            }.scan(initialState) { state, result ->
+                reducer.reduce(state, result)
+            }.onEach {
+                _state.emit(it)
+            }.launchIn(viewModelScope)
     }
 
     protected abstract suspend fun getResult(wish: Wish): Flow<Result>
