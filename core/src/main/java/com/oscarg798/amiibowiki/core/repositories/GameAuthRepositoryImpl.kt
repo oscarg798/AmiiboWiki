@@ -36,8 +36,5 @@ class GameAuthRepositoryImpl @Inject constructor(
 
     override fun getToken(): String = sharedPreferencesWrapper.getStringValue(AUTH_STRING_KEY)
         ?: throw GameAPIAuthenticationFailure.TokenNotAvailable()
-
 }
 private const val AUTH_STRING_KEY = "game_api_token"
-
-

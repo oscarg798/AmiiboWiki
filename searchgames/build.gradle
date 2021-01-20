@@ -11,6 +11,7 @@
  */
 
 apply from: "../gradlescripts/shared.gradle"
+apply from: "../gradlescripts/hiltshared.gradle"
 
 dependencies {
     implementation project(path: ':core')

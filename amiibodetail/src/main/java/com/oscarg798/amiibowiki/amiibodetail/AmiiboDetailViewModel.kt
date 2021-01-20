@@ -25,12 +25,9 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
+import com.oscarg798.amiibowiki.core.utils.AssistedFactoryCreator
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import dagger.assisted.AssistedInject
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
@@ -39,7 +36,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import dagger.assisted.Assisted
-
+import dagger.assisted.AssistedFactory
 
 
 class AmiiboDetailViewModel @AssistedInject constructor(
@@ -52,7 +49,6 @@ class AmiiboDetailViewModel @AssistedInject constructor(
 ) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
     AmiiboDetailViewState.init()
 ) {
-
 
     override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = when (wish) {
         is AmiiboDetailWish.ExpandAmiiboImage -> flowOf(AmiiboDetailResult.ImageExpanded(wish.image))
@@ -93,25 +89,10 @@ class AmiiboDetailViewModel @AssistedInject constructor(
         )
     }
 
-
-    @dagger.assisted.AssistedFactory
-    interface AssistedFactory {
-        fun create(tails: String): AmiiboDetailViewModel
+    @AssistedFactory
+    interface Factory : AssistedFactoryCreator<AmiiboDetailViewModel, String> {
+        override fun create(params: String): AmiiboDetailViewModel
     }
-
-    companion object {
-        fun provideFactory(
-            assistedFactory: AssistedFactory,
-            tails: String
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create(tails) as T
-            }
-        }
-    }
-
-
 }
 
 private const val TAIL_TRACKING_PROPERTY = "TAIL"

@@ -211,6 +211,8 @@ dependencies {
     implementation "androidx.hilt:hilt-common:$hiltVersion2"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltVersion2"
 
+    implementation preference
+
     testImplementation project(path: ':testutils')
     androidTestImplementation project(path: ':testutils')
 }

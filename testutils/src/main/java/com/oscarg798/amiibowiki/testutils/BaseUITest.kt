@@ -16,11 +16,13 @@ import com.oscarg798.amiibowiki.testutils.idleresources.NetworkIdlingResourceRul
 import com.oscarg798.amiibowiki.testutils.testrules.MockWebServerTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import okhttp3.mockwebserver.Dispatcher
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.RecordedRequest
 import org.junit.Rule
 import org.junit.rules.RuleChain
 import org.junit.rules.TestRule
 
-abstract class BaseUITest(dispatcher: Dispatcher) {
+abstract class BaseUITest(dispatcher: Dispatcher = defaultDispatcher) {
 
     val hiltRule = HiltAndroidRule(this)
 
@@ -32,4 +34,8 @@ abstract class BaseUITest(dispatcher: Dispatcher) {
         .around(NetworkIdlingResourceRule())
 
     abstract fun prepareTest()
+}
+
+private val defaultDispatcher = object : Dispatcher() {
+    override fun dispatch(request: RecordedRequest): MockResponse = MockResponse().setResponseCode(500).setBody("Not Found dispatch response")
 }

@@ -15,6 +15,8 @@ package com.oscarg798.amiibowiki.core.di.modules
 import com.oscarg798.amiibowiki.core.di.qualifiers.DatabaseName
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
+import com.oscarg798.amiibowiki.core.persistence.sharepreferences.AmiiboWikiPreferenceWrapper
+import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepositoryImpl
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
@@ -23,14 +25,13 @@ import com.oscarg798.amiibowiki.core.repositories.GameAuthRepository
 import com.oscarg798.amiibowiki.core.repositories.GameAuthRepositoryImpl
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.repositories.GameRepositoryImpl
-import com.oscarg798.amiibowiki.core.persistence.sharepreferences.AmiiboWikiPreferenceWrapper
-import com.oscarg798.amiibowiki.core.persistence.sharepreferences.SharedPreferencesWrapper
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.utils.ResourceProvider
 import com.oscarg798.amiibowiki.core.utils.StringResourceProvider
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIConsumer
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import java.util.Locale
@@ -59,7 +60,7 @@ object CoreModule {
             Dispatchers.IO
         )
 
-    @Singleton
+    @Reusable
     @Provides
     fun provideAmiiboTypeService(@AmiiboAPIConsumer retrofit: Retrofit): AmiiboTypeService =
         retrofit.create(AmiiboTypeService::class.java)

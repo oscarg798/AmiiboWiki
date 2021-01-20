@@ -236,6 +236,7 @@ ext {
     zoomImageViewer = "com.github.stfalcon:stfalcon-imageviewer:1.0.10"
 
     hiltVersion = "2.31-alpha"
+    hiltAndroidTest = "com.google.dagger:hilt-android-testing:$hiltVersion"
     hiltLib = "com.google.dagger:hilt-android:$hiltVersion"
     hiltKAPT = "com.google.dagger:hilt-android-compiler:$hiltVersion"
 

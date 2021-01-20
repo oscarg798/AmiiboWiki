@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,20 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.di
+package com.oscarg798.amiibowiki.core
 
-import com.oscarg798.amiibowiki.core.di.entrypoints.SearchGamesEntryPoint
-import com.oscarg798.amiibowiki.searchgames.SearchGamesFragment
-import dagger.Component
+import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-//@Component(dependencies = [SearchGamesEntryPoint::class], modules = [SearchGameModule::class])
-//interface SearchGameComponent {
-//
-//    @Component.Factory
-//    interface Factory {
-//
-//        fun create(searchGamesEntryPoint: SearchGamesEntryPoint): SearchGameComponent
-//    }
-//
-//    fun inject(searchGamesFragment: SearchGamesFragment)
-//}
+typealias EnvirormentChecker = () -> Boolean
+
+@InstallIn(SingletonComponent::class)
+@Module
+object EnvirormentCheckerModule {
+
+    @Provides
+    fun provideEnvirormentChecker(): EnvirormentChecker = object : EnvirormentChecker {
+        override fun invoke(): Boolean = isAndroidQOrHigher()
+    }
+}

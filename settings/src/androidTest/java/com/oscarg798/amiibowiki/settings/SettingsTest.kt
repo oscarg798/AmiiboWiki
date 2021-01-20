@@ -12,20 +12,53 @@
 
 package com.oscarg798.amiibowiki.settings
 
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.runner.AndroidJUnit4
-import org.junit.Rule
+import com.oscarg798.amiibowiki.core.EnvirormentChecker
+import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
+import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
+import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
+import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
+import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
+import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
+import com.oscarg798.amiibowiki.network.di.NetworkModule
+import com.oscarg798.amiibowiki.testutils.BaseUITest
+import com.oscarg798.amiibowiki.testutils.extensions.launchFragmentInHiltContainer
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import io.mockk.coEvery
+import io.mockk.every
+import javax.inject.Inject
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@UninstallModules(
+    PersistenceModule::class,
+    FeatureFlagHandlerModule::class,
+    NetworkModule::class,
+    LoggerModule::class,
+    EnvirormentCheckerModule::class
+)
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
-class SettingsTest {
+class SettingsTest : BaseUITest() {
 
-    @get:Rule
-    val intentTestRule: IntentsTestRule<SettingsActivity> =
-        IntentsTestRule(SettingsActivity::class.java, true, true)
+    @Inject
+    @MainFeatureFlagHandler
+    lateinit var mainFeatureFlagHandler: FeatureFlagHandler
+
+    @Inject
+    lateinit var envirormentChecker: EnvirormentChecker
 
     private val settingsRobot = SettingsRobot()
+
+    override fun prepareTest() {
+        every { envirormentChecker.invoke() } answers { true }
+        coEvery { mainFeatureFlagHandler.isFeatureEnabled(AmiiboWikiFeatureFlag.ShowGameDetail) }
+        launchFragmentInHiltContainer<SettingsFragment>(
+            themeResId = R.style.AppTheme
+        )
+    }
 
     @Test
     fun when_view_is_shown_then_it_should_include_user_interface_category_with_dark_mode_on_it() {

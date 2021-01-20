@@ -26,6 +26,11 @@ android {
             buildConfigField "String", "DEEP_LINK_PREFIX", "\"amiibowikialpha\""
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/metadata.kotlin_module'
+    }
+
 }
 
 dependencies {

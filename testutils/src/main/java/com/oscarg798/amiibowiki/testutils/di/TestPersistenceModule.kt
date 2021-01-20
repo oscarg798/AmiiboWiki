@@ -20,7 +20,6 @@ import com.oscarg798.amiibowiki.core.persistence.database.CoreAmiiboDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.components.SingletonComponent
 import io.mockk.mockk
 import javax.inject.Singleton

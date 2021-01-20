@@ -26,11 +26,15 @@ import com.oscarg798.amiibowiki.settings.repositories.SettingsRepositoryImpl
 import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
+@InstallIn(ViewModelComponent::class)
 @Module
 object SettingsModule {
 
-    @SettingsScope
+    @ViewModelScoped
     @Provides
     fun bindFeaturePoint(
         developmentActivityFeatureFactory: DevelopmentActivityFeatureFactory,
@@ -45,11 +49,13 @@ object SettingsModule {
             )
         )
 
-    @SettingsScope
+    @ViewModelScoped
     @Provides
-    fun provideSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository = settingsRepositoryImpl
+    fun provideSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository =
+        settingsRepositoryImpl
 
-    @SettingsScope
+    @ViewModelScoped
     @Provides
-    fun provideSettingsReducer(settingsReducer: SettingsReducer): Reducer<@JvmSuppressWildcards SettingsResult, SettingsViewState> = settingsReducer
+    fun provideSettingsReducer(settingsReducer: SettingsReducer): Reducer<@JvmSuppressWildcards SettingsResult, SettingsViewState> =
+        settingsReducer
 }

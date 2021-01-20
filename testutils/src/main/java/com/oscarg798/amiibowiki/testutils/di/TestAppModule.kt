@@ -18,7 +18,6 @@ import com.oscarg798.amiibowiki.testutils.testrules.MOCK_WEB_SERVER_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 

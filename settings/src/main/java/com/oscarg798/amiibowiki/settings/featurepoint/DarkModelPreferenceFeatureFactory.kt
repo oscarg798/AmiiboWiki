@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.settings.featurepoint
 
-import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
+import com.oscarg798.amiibowiki.core.EnvirormentChecker
 import com.oscarg798.amiibowiki.core.utils.ResourceProvider
 import com.oscarg798.amiibowiki.settings.R
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
@@ -20,7 +20,8 @@ import com.oscarg798.flagly.featurepoint.SuspendFeatureFactory
 import javax.inject.Inject
 
 class DarkModelPreferenceFeatureFactory @Inject constructor(
-    private val stringResourceProvider: ResourceProvider<String>
+    private val stringResourceProvider: ResourceProvider<String>,
+    private val envirormentChecker: EnvirormentChecker
 ) : SuspendFeatureFactory<PreferenceBuilder, Unit> {
 
     override suspend fun create(): PreferenceBuilder = PreferenceBuilder.Clickable(
@@ -29,8 +30,7 @@ class DarkModelPreferenceFeatureFactory @Inject constructor(
         iconResourceId = R.drawable.ic_dark_mode
     )
 
-    override suspend fun isApplicable(params: Unit): Boolean =
-        isAndroidQOrHigher()
+    override suspend fun isApplicable(params: Unit): Boolean = envirormentChecker()
 }
 
 const val DARK_MODE_PREFERENCE_KEY = "dark_mode"

@@ -10,6 +10,7 @@
  *
  */
 apply from: "$rootProject.projectDir/gradlescripts/shared.gradle"
+apply from: "../gradlescripts/hiltshared.gradle"
 
 dependencies {
     implementation project(path: ':core')
@@ -59,8 +60,9 @@ dependencies {
     implementation lomeno
     testImplementation roomTesting
 
-    // For instrumented tests.
+    implementation hiltAndroidTest
     implementation hiltLib
-    // ...with Kotlin.
     kapt hiltKAPT
+
+    implementation fragmentTesting
 }

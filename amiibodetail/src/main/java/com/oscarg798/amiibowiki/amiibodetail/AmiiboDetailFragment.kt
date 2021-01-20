@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,15 +28,14 @@ import com.oscarg798.amiibowiki.amiibodetail.databinding.FragmentAmiiboDetailBin
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ShowingAmiiboDetailsParams
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
-import com.oscarg798.amiibowiki.core.di.entrypoints.AmiiboDetailEntryPoint
+import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.core.utils.provideFactory
 import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -45,14 +43,13 @@ import kotlinx.coroutines.flow.onEach
 @AndroidEntryPoint
 class AmiiboDetailFragment : Fragment() {
 
-
     @Inject
-    lateinit var factory: AmiiboDetailViewModel.AssistedFactory
+    lateinit var factory: AmiiboDetailViewModel.Factory
 
-    private lateinit var tail: String
+    private val tail: String by bundle(ARGUMENT_TAIL)
 
     private val viewModel: AmiiboDetailViewModel by viewModels {
-        AmiiboDetailViewModel.provideFactory(factory, tail)
+        provideFactory(factory, tail)
     }
 
     private lateinit var binding: FragmentAmiiboDetailBinding
@@ -73,12 +70,8 @@ class AmiiboDetailFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        tail = arguments?.getString(ARGUMENT_TAIL, null)
-            ?: throw IllegalArgumentException("Tail is required")
         setHasOptionsMenu(false)
     }
 
