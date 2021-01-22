@@ -14,8 +14,8 @@ package com.oscarg798.amiibowiki
 
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.splash.SplashLogger
-import com.oscarg798.amiibowiki.splash.SplashViewModelCompat
+import com.oscarg798.amiibowiki.splash.ui.SplashLogger
+import com.oscarg798.amiibowiki.splash.ui.SplashViewModel
 import com.oscarg798.amiibowiki.splash.mvi.SplashReducer
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewStateCompat
@@ -35,10 +35,10 @@ import org.junit.Rule
 import org.junit.Test
 
 
-class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewStateCompat, SplashViewModelCompat> {
+class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewStateCompat, SplashViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRule<SplashViewStateCompat, SplashViewModelCompat>(this)
+    val viewModelTestRule = ViewModelTestRule<SplashViewStateCompat, SplashViewModel>(this)
 
     private val logger = relaxedMockk<SplashLogger>()
     private val initializaApplicationUseCase = mockk<InitializeApplicationUseCase>()
@@ -49,7 +49,7 @@ class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewStateCo
         coEvery { initializaApplicationUseCase.execute() }  answers { flowOf(Unit)}
     }
 
-    override fun create(): SplashViewModelCompat = SplashViewModelCompat(
+    override fun create(): SplashViewModel = SplashViewModel(
         logger,
         initializaApplicationUseCase,
         reducer,

@@ -10,19 +10,25 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash
+package com.oscarg798.amiibowiki.amiibodetail.mvi
 
-import com.oscarg798.amiibowiki.logger.annotations.LogSources
-import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
-import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
-import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
 
-@LoggerDecorator
-interface SplashLogger {
+data class ShowingAmiiboDetailsParams(
+    val amiiboDetails: ViewAmiiboDetails,
+    val isRelatedGamesSectionEnabled: Boolean
+)
 
-    @LogSources([FIREBASE_LOG_SOURCE_NAME])
-    @ScreenShown(SCREEN_NAME)
-    fun trackScreenShown()
+sealed class AmiiboDetailViewState :  ViewState {
+
+    object Idling : AmiiboDetailViewState()
+    object Loading : AmiiboDetailViewState()
+    data class ShowingAmiiboDetails(val showingAmiiboDetailsParams: ShowingAmiiboDetailsParams) :
+        AmiiboDetailViewState()
+    data class ShowingAmiiboImage(val imageUrl: String) : AmiiboDetailViewState()
+    data class Error(val exception: AmiiboDetailFailure):AmiiboDetailViewState()
+
 }
-
-private const val SCREEN_NAME = "SPLASH_SCREEN"

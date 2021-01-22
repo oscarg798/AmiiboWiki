@@ -38,7 +38,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class AmiiboListViewModelTest :
-    ViewModelTestRule.ViewModelCreator<AmiiboListViewStateCompat, AmiiboListViewModelCompat> {
+    ViewModelTestRule.ViewModelCreator<AmiiboListViewStateCompat, AmiiboListViewModel> {
 
     private val getAmiibosUseCase = relaxedMockk<GetAmiibosUseCase>()
     private val getAmiibosFilteredUseCase = relaxedMockk<GetAmiiboFilteredUseCase>()
@@ -49,7 +49,7 @@ class AmiiboListViewModelTest :
     private val reducer = AmiiboListReducer()
 
     @get:Rule
-    val viewModelRule: ViewModelTestRule<AmiiboListViewStateCompat, AmiiboListViewModelCompat> =
+    val viewModelRule: ViewModelTestRule<AmiiboListViewStateCompat, AmiiboListViewModel> =
         ViewModelTestRule(this)
 
     @Before
@@ -59,7 +59,7 @@ class AmiiboListViewModelTest :
         every { getAmiibosUseCase.execute() } answers { flowOf(listOf(AMIIBO)) }
     }
 
-    override fun create(): AmiiboListViewModelCompat = AmiiboListViewModelCompat(
+    override fun create(): AmiiboListViewModel = AmiiboListViewModel(
         getAmiibosUseCase,
         getAmiibosFilteredUseCase,
         getAmiiboTypeUseCase,

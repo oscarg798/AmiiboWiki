@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.amiibodetail
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailReducer
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewStateCompat
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ShowingAmiiboDetailsParams
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
@@ -42,10 +42,10 @@ import org.junit.Rule
 import org.junit.Test
 
 class AmiiboDetailViewModelTest :
-    ViewModelTestRule.ViewModelCreator<AmiiboDetailViewStateCompat, AmiiboDetailViewModelCompat> {
+    ViewModelTestRule.ViewModelCreator<AmiiboDetailViewState, AmiiboDetailViewModel> {
 
     @get: Rule
-    val viewModelTestTule = ViewModelTestRule<AmiiboDetailViewStateCompat, AmiiboDetailViewModelCompat>(this)
+    val viewModelTestTule = ViewModelTestRule<AmiiboDetailViewState, AmiiboDetailViewModel>(this)
 
     private val logger = relaxedMockk<AmiiboDetailLogger>()
     private val getAmiiboDetailUseCase = mockk<GetAmiiboDetailUseCase>()
@@ -59,7 +59,7 @@ class AmiiboDetailViewModelTest :
         every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowGameDetail) } answers { false }
     }
 
-    override fun create(): AmiiboDetailViewModelCompat = AmiiboDetailViewModelCompat(
+    override fun create(): AmiiboDetailViewModel = AmiiboDetailViewModel(
         TAIL,
         getAmiiboDetailUseCase,
         logger,
@@ -73,21 +73,21 @@ class AmiiboDetailViewModelTest :
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = true,
                 isLoading = false,
                 imageExpanded = null,
                 amiiboDetails = null,
                 error = null
             ),
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = true,
                 imageExpanded = null,
                 amiiboDetails = null,
                 error = null
             ),
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = false,
                 imageExpanded = null,
@@ -111,21 +111,21 @@ class AmiiboDetailViewModelTest :
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = true,
                 isLoading = false,
                 imageExpanded = null,
                 amiiboDetails = null,
                 error = null
             ),
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = true,
                 imageExpanded = null,
                 amiiboDetails = null,
                 error = null
             ),
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = false,
                 imageExpanded = null,
@@ -152,21 +152,21 @@ class AmiiboDetailViewModelTest :
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = true,
                 isLoading = false,
                 amiiboDetails = null,
                 imageExpanded = null,
                 error = null
             ),
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = true,
                 amiiboDetails = null,
                 imageExpanded = null,
                 error = null
             ),
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = false,
                 imageExpanded = null,
@@ -189,14 +189,14 @@ class AmiiboDetailViewModelTest :
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(AMIIBO_IMAGE_URL))
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = true,
                 isLoading = false,
                 amiiboDetails = null,
                 imageExpanded = null,
                 error = null
             ),
-            AmiiboDetailViewStateCompat(
+            AmiiboDetailViewState(
                 isIdling = false,
                 isLoading = false,
                 amiiboDetails = null,

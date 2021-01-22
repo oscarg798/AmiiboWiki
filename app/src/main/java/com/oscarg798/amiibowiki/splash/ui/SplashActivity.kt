@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash
+package com.oscarg798.amiibowiki.splash.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -22,15 +22,17 @@ import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding
 import com.oscarg798.amiibowiki.navigation.DashboardActivity
+import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
-    private val viewModel: SplashViewModelCompat by viewModels()
+    private val viewModel: SplashViewModel by viewModels()
 
     private lateinit var binding: ActivitySplashBinding
 
@@ -45,17 +47,16 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun setup() {
-        viewModel.onScreenShown()
+        lifecycleScope.launchWhenResumed {
+            viewModel.onScreenShown()
 
-        viewModel.state.onEach { state ->
-            when {
-                state.error != null -> showFetchError()
-                state.navigatingToFirstScreen -> {
-                    startActivity(Intent(this, DashboardActivity::class.java))
+            viewModel.state.collect { state ->
+                when(state){
+                    is SplashViewState.NavigatingToFirstscreen ->  startActivity(Intent(this@SplashActivity, DashboardActivity::class.java))
+                    is SplashViewState.Error -> showFetchError()
                 }
-
             }
-        }.launchIn(lifecycleScope)
+        }
 
         viewModel.onWish(SplashWish.GetTypes)
     }

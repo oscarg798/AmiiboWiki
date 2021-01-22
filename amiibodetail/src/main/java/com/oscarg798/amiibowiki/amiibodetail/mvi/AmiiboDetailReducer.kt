@@ -13,43 +13,24 @@
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import javax.inject.Inject
 
 class AmiiboDetailReducer @Inject constructor() :
-    ReducerCompat<AmiiboDetailResult, AmiiboDetailViewStateCompat> {
+    Reducer<AmiiboDetailResult, AmiiboDetailViewState> {
 
     override suspend fun reduce(
-        state: AmiiboDetailViewStateCompat,
+        state: AmiiboDetailViewState,
         from: AmiiboDetailResult
-    ): AmiiboDetailViewStateCompat = when (from) {
-
-        is AmiiboDetailResult.Loading -> state.copy(
-            isIdling = false,
-            isLoading = true,
-            imageExpanded = null,
-            error = null
-        )
-        is AmiiboDetailResult.DetailFetched -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            imageExpanded = null,
-            amiiboDetails = ShowingAmiiboDetailsParams(
+    ): AmiiboDetailViewState = when (from) {
+        is AmiiboDetailResult.Loading -> AmiiboDetailViewState.Loading
+        is AmiiboDetailResult.DetailFetched -> AmiiboDetailViewState.ShowingAmiiboDetails(
+            ShowingAmiiboDetailsParams(
                 ViewAmiiboDetails(from.amiibo), from.isRelatedGamesSectionEnabled
-            ),
-            error = null
+            )
         )
-        is AmiiboDetailResult.ImageExpanded -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            imageExpanded = from.url,
-            error = null
-        )
-        is AmiiboDetailResult.Error -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            imageExpanded = null,
-            error = from.error
-        )
+        is AmiiboDetailResult.ImageExpanded -> AmiiboDetailViewState.ShowingAmiiboImage(from.url)
+        is AmiiboDetailResult.Error -> AmiiboDetailViewState.Error(from.error)
     }
 }

@@ -10,24 +10,26 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.di
+package com.oscarg798.amiibowiki.searchgames
 
+import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesReducer
+import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesResult
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesViewState
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.flow.flowOf
 
-@InstallIn(ViewModelComponent::class)
-@Module
-abstract class SearchGameModule {
+@HiltViewModel
+class SearchGameViewModel @Inject constructor(
+    override val reducer: Reducer<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewState>,
+    override val coroutineContextProvider: CoroutineContextProvider
+) : AbstractViewModel<SearchGameWish, SearchGamesResult, SearchGamesViewState>(SearchGamesViewState.IsIdling) {
 
-    @ViewModelScoped
-    @Binds
-    abstract fun bindReducer(searchGamesReducer: SearchGamesReducer): Reducer<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewState>
+    override suspend fun getResult(wish: SearchGameWish) =
+        flowOf(SearchGamesResult.SearchGames((wish as SearchGameWish.Search).query))
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,15 +10,15 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash
+package com.oscarg798.amiibowiki.splash.ui
 
+import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.failures.GameAPIAuthenticationFailure
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewStateCompat
+import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,12 +30,12 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModelCompat @Inject constructor(
+class SplashViewModel  @Inject constructor(
     private val splashLogger: SplashLogger,
     private val initializeApplicationUseCase: InitializeApplicationUseCase,
-    override val reducer: ReducerCompat<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewStateCompat>,
+    override val reducer: Reducer<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModelCompat<SplashWish, SplashResult, SplashViewStateCompat>(SplashViewStateCompat.init()) {
+) : AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.IsIdling) {
 
     override fun onScreenShown() {
         splashLogger.trackScreenShown()
