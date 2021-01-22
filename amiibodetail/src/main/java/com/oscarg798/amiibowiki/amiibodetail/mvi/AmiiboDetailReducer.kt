@@ -13,16 +13,16 @@
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import javax.inject.Inject
 
 class AmiiboDetailReducer @Inject constructor() :
-    Reducer<AmiiboDetailResult, AmiiboDetailViewState> {
+    ReducerCompat<AmiiboDetailResult, AmiiboDetailViewStateCompat> {
 
     override suspend fun reduce(
-        state: AmiiboDetailViewState,
+        state: AmiiboDetailViewStateCompat,
         from: AmiiboDetailResult
-    ): AmiiboDetailViewState = when (from) {
+    ): AmiiboDetailViewStateCompat = when (from) {
 
         is AmiiboDetailResult.Loading -> state.copy(
             isIdling = false,

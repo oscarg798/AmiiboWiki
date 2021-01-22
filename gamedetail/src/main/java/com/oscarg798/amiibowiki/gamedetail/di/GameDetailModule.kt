@@ -12,12 +12,12 @@
 
 package com.oscarg798.amiibowiki.gamedetail.di
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLoggerImpl
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailReducer
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailResult
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewStateCompat
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
@@ -31,5 +31,5 @@ object GameDetailModule {
 
     @GameDetailScope
     @Provides
-    fun provideGameDetailReducer(gameDetailReducer: GameDetailReducer): Reducer<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewState> = gameDetailReducer
+    fun provideGameDetailReducer(gameDetailReducer: GameDetailReducer): ReducerCompat<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewStateCompat> = gameDetailReducer
 }

@@ -19,8 +19,6 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
@@ -44,11 +42,11 @@ import kotlinx.coroutines.flow.onEach
 class AmiiboDetailFragment : Fragment() {
 
     @Inject
-    lateinit var factory: AmiiboDetailViewModel.Factory
+    lateinit var factory: AmiiboDetailViewModelCompat.Factory
 
     private val tail: String by bundle(ARGUMENT_TAIL)
 
-    private val viewModel: AmiiboDetailViewModel by viewModels {
+    private val viewModel: AmiiboDetailViewModelCompat by viewModels {
         provideFactory(factory, tail)
     }
 

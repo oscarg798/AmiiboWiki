@@ -46,7 +46,7 @@ import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding
 import com.oscarg798.amiibowiki.gamedetail.di.DaggerGameDetailComponent
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewStateCompat
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
@@ -62,14 +62,14 @@ import kotlinx.coroutines.flow.onEach
 class GameDetailActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModel: GameDetailViewModel
+    lateinit var viewModel: GameDetailViewModelCompat
 
     @Inject
     lateinit var config: Config
 
     private lateinit var binding: ActivityGameDetailBinding
 
-    private lateinit var currentState: GameDetailViewState
+    private lateinit var currentState: GameDetailViewStateCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,7 +139,7 @@ class GameDetailActivity : AppCompatActivity() {
         }.launchIn(lifecycleScope)
     }
 
-    private fun showGameTrailer(state: GameDetailViewState) {
+    private fun showGameTrailer(state: GameDetailViewStateCompat) {
         val intent = YouTubeStandalonePlayer.createVideoIntent(
             this,
             config.googleAPIKey,

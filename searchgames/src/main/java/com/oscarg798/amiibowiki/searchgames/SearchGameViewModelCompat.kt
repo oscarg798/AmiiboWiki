@@ -10,25 +10,24 @@
  *
  */
 
-package com.oscarg798.amiibowiki.settings.mvi
+package com.oscarg798.amiibowiki.searchgames
 
-import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
+import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesResult
+import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesViewStateCompat
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.flow.flowOf
 
-data class SettingsViewState(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val preferences: Collection<PreferenceBuilder>?,
-    val showDevelopmentActivity: Boolean = false,
-    val showDarkModeDialog: Boolean = false,
-    val shouldActivityBeRecreated: Boolean = false
-) : ViewState {
+@HiltViewModel
+class SearchGameViewModelCompat @Inject constructor(
+    override val reducer: ReducerCompat<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewStateCompat>,
+    override val coroutineContextProvider: CoroutineContextProvider
+) : AbstractViewModelCompat<SearchGameWish, SearchGamesResult, SearchGamesViewStateCompat>(SearchGamesViewStateCompat.init()) {
 
-    companion object {
-        fun init() = SettingsViewState(
-            isIdling = true,
-            isLoading = false,
-            preferences = null
-        )
-    }
+    override suspend fun getResult(wish: SearchGameWish) =
+        flowOf(SearchGamesResult.SearchGames((wish as SearchGameWish.Search).query))
 }

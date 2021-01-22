@@ -34,12 +34,14 @@ import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.FragmentAmiiboListBinding
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewStateCompat
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.launchIn
@@ -55,14 +57,12 @@ class AmiiboListFragment :
     @Inject
     lateinit var mixpanelLogger: MixpanelLogger
 
-    private val viewModel: AmiiboListViewModel by viewModels()
+    private val viewModel: AmiiboListViewModelCompat by viewModels()
 
     private var filterMenuItem: MenuItem? = null
     private var searchView: SearchView? = null
 
     private lateinit var binding: FragmentAmiiboListBinding
-
-    private lateinit var currentState: AmiiboListViewState
 
     private val searchFlow = MutableStateFlow(EMPTY_SEARCH_QUERY)
 
@@ -98,18 +98,13 @@ class AmiiboListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setup()
+        binding.setup()
+        viewModel.onScreenShown()
     }
 
     override fun onResume() {
         super.onResume()
-
-        if (::currentState.isInitialized && !currentState.isLoading && currentState.amiibos != null) {
-            showAmiibos(currentState.amiibos!!.toList())
-        } else {
-            viewModel.onWish(AmiiboListWish.GetAmiibos)
-        }
+        viewModel.onWish(AmiiboListWish.GetAmiibos)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -168,9 +163,9 @@ class AmiiboListFragment :
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setup() {
+    private fun FragmentAmiiboListBinding.setup() {
         val context = requireContext()
-        with(binding.srlMain) {
+        with(srlMain) {
             setColorSchemeColors(
                 context.getColor(R.color.cinnabar),
                 context.getColor(R.color.atlantis),
@@ -189,7 +184,7 @@ class AmiiboListFragment :
             }
         }
 
-        with(binding.rvAmiiboList) {
+        with(rvAmiiboList) {
             setHasFixedSize(false)
             layoutManager = GridLayoutManager(context, NUMBER_OF_COLUMNS)
             adapter = AmiiboListAdapter(object : AmiiboClickListener {
@@ -201,43 +196,41 @@ class AmiiboListFragment :
     }
 
     private fun setupViewModelInteractions() {
-        viewModel.onScreenShown()
-
-        viewModel.state.onEach { state ->
-            currentState = state
-            when {
-                state.isIdling -> onIdling()
-                state.isLoading -> showLoading()
-                state.error != null -> showErrors(state.error.message!!)
-                state.filters != null -> showFilters(state.filters.toList())
-                state.amiiboTailToShow != null -> showAmiiboDetail(state.amiiboTailToShow)
-                state.amiibos != null -> showAmiibos(state.amiibos.toList())
+        lifecycleScope.launchWhenResumed {
+            viewModel.state.collect { state ->
+                when(state){
+                    AmiiboListViewState.Idling -> onIdling()
+                    AmiiboListViewState.Loading -> binding.showLoading()
+                    is AmiiboListViewState.ShowingAmiibos -> binding.showAmiibos(state.amiibos.toList())
+                    is AmiiboListViewState.ShowingFilters -> showFilters(state.filters.toList())
+                    is AmiiboListViewState.ShowingAmiiboDetails -> showAmiiboDetail(state.amiiboId)
+                    is AmiiboListViewState.Error -> binding.showErrors(state.error.message!!)
+                }
             }
-        }.launchIn(lifecycleScope)
 
-        searchFlow.debounce(SEARCH_DEBOUNCE)
-            .filterNot { it.isEmpty() && it.length < MINUMUN_SEARCH_QUERY_LENGTH }
-            .onEach {
-                viewModel.onWish(AmiiboListWish.Search(it))
-            }
-            .launchIn(lifecycleScope)
+            searchFlow.debounce(SEARCH_DEBOUNCE)
+                .filterNot { it.isEmpty() && it.length < MINUMUN_SEARCH_QUERY_LENGTH }
+                .onEach {
+                    viewModel.onWish(AmiiboListWish.Search(it))
+                }.launchIn(this)
+       }
     }
 
     private fun onIdling() {
         // DO_NOTHING
     }
 
-    private fun showLoading() {
-        binding.srlMain.isRefreshing = true
-        binding.rvAmiiboList.isEnabled = false
+    private fun FragmentAmiiboListBinding.showLoading() {
+        srlMain.isRefreshing = true
+        rvAmiiboList.isEnabled = false
         filterMenuItem?.isEnabled = false
 
-        binding.rvAmiiboList.visibility = View.GONE
-        binding.listAnimation.shimmerLoadingView.visibility = View.VISIBLE
-        binding.listAnimation.shimmerLoadingView.startShimmer()
+        rvAmiiboList.visibility = View.GONE
+        listAnimation.shimmerLoadingView.visibility = View.VISIBLE
+        listAnimation.shimmerLoadingView.startShimmer()
     }
 
-    private fun hideLoading() {
+    private fun FragmentAmiiboListBinding.hideLoading() {
         binding.rvAmiiboList.visibility = View.VISIBLE
         binding.listAnimation.shimmerLoadingView.stopShimmer()
         binding.listAnimation.shimmerLoadingView.visibility = View.GONE
@@ -265,14 +258,14 @@ class AmiiboListFragment :
         builder.show()
     }
 
-    private fun showAmiibos(amiibos: List<ViewAmiibo>) {
+    private fun FragmentAmiiboListBinding.showAmiibos(amiibos: List<ViewAmiibo>) {
         hideLoading()
-        (binding.rvAmiiboList.adapter as AmiiboListAdapter).submitList(amiibos)
+        (rvAmiiboList.adapter as AmiiboListAdapter).submitList(amiibos)
     }
 
-    private fun showErrors(error: String) {
+    private fun FragmentAmiiboListBinding.showErrors(error: String) {
         hideLoading()
-        Snackbar.make(binding.srlMain, error, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(srlMain, error, Snackbar.LENGTH_LONG).show()
     }
 
     private fun showAmiiboDetail(tail: String) {

@@ -13,12 +13,12 @@
 package com.oscarg798.amiibowiki.splash.mvi
 
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import javax.inject.Inject
 
-class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewState> {
+class SplashReducer @Inject constructor() : ReducerCompat<SplashResult, SplashViewStateCompat> {
 
-    override suspend fun reduce(state: SplashViewState, from: SplashResult): SplashViewState =
+    override suspend fun reduce(state: SplashViewStateCompat, from: SplashResult): SplashViewStateCompat =
         when (from) {
             is SplashResult.TypesFetched -> state.copy(
                 isIdling = false,

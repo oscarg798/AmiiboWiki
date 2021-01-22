@@ -10,31 +10,28 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail.mvi
+package com.oscarg798.amiibowiki.gamedetail.mvi
 
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
+import com.oscarg798.amiibowiki.core.models.Game
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
 
-data class ShowingAmiiboDetailsParams(
-    val amiiboDetails: ViewAmiiboDetails,
-    val isRelatedGamesSectionEnabled: Boolean
-)
-
-data class AmiiboDetailViewState(
+data class GameDetailViewStateCompat(
     override val isIdling: Boolean,
     val isLoading: Boolean,
-    val amiiboDetails: ShowingAmiiboDetailsParams?,
-    val imageExpanded: String?,
-    val error: AmiiboDetailFailure? = null
-) : ViewState {
+    val expandedImages: Collection<String>?,
+    val gameDetails: Game?,
+    val gameTrailer: String?,
+    val error: GameDetailFailure? = null
+) : ViewStateCompat {
 
     companion object {
-        fun init() = AmiiboDetailViewState(
+        fun init() = GameDetailViewStateCompat(
             isIdling = true,
             isLoading = false,
-            amiiboDetails = null,
-            imageExpanded = null,
+            expandedImages = null,
+            gameDetails = null,
+            gameTrailer = null,
             error = null
         )
     }

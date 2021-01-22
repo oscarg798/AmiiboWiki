@@ -28,7 +28,7 @@ import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.databinding.ActivityNFCReaderBinding
 import com.oscarg798.amiibowiki.nfcreader.di.DaggerNFCReaderComponent
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
+import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewStateCompat
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.onEach
 class NFCReaderActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModel: NFCReaderViewModel
+    lateinit var viewModel: NFCReaderViewModelCompat
 
     @Inject
     lateinit var nfcAdapter: NfcAdapter
@@ -68,8 +68,8 @@ class NFCReaderActivity : AppCompatActivity() {
         viewModel.state.onEach {
             when {
                 it.error != null -> showErrorMessage(it.error)
-                it.adapterStatus != null && it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
-                it.adapterStatus != null && it.adapterStatus is NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
+                it.adapterStatus != null && it.adapterStatus is NFCReaderViewStateCompat.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
+                it.adapterStatus != null && it.adapterStatus is NFCReaderViewStateCompat.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
                 it.amiiboIdentifier != null -> showAmiibo(it.amiiboIdentifier)
             }
         }.launchIn(lifecycleScope)

@@ -10,33 +10,25 @@
  *
  */
 
-package com.oscarg798.amiibowiki.nfcreader.mvi
+package com.oscarg798.amiibowiki.settings.mvi
 
-import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
-import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
+import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 
-data class NFCReaderViewState(
+data class SettingsViewStateCompat(
     override val isIdling: Boolean,
     val isLoading: Boolean,
-    val amiiboIdentifier: AmiiboIdentifier?,
-    val adapterStatus: AdapterStatus?,
-    val error: NFCReaderFailure? = null
-) : ViewState {
-
-    sealed class AdapterStatus {
-        object Idle : AdapterStatus()
-        object AdapterAvailable : AdapterStatus()
-        object AdapterReadyToBeStoped : AdapterStatus()
-    }
+    val preferences: Collection<PreferenceBuilder>?,
+    val showDevelopmentActivity: Boolean = false,
+    val showDarkModeDialog: Boolean = false,
+    val shouldActivityBeRecreated: Boolean = false
+) : ViewStateCompat {
 
     companion object {
-        fun init() = NFCReaderViewState(
+        fun init() = SettingsViewStateCompat(
             isIdling = true,
             isLoading = false,
-            amiiboIdentifier = null,
-            adapterStatus = null,
-            error = null
+            preferences = null
         )
     }
 }

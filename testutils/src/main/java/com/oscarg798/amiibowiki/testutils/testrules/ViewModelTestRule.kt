@@ -12,8 +12,8 @@
 
 package com.oscarg798.amiibowiki.testutils.testrules
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat as MVIViewState
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,7 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-class ViewModelTestRule<ViewState : MVIViewState, VM : AbstractViewModel<*, *, ViewState>>(
+class ViewModelTestRule<ViewState : MVIViewState, VM : AbstractViewModelCompat<*, *, ViewState>>(
     private val viewModelCreator: ViewModelCreator<ViewState, VM>
 ) : TestRule {
 
@@ -57,7 +57,7 @@ class ViewModelTestRule<ViewState : MVIViewState, VM : AbstractViewModel<*, *, V
         }
     }
 
-    interface ViewModelCreator<ViewState : MVIViewState, VM : AbstractViewModel<*, *, ViewState>> {
+    interface ViewModelCreator<ViewState : MVIViewState, VM : AbstractViewModelCompat<*, *, ViewState>> {
 
         fun create(): VM
     }

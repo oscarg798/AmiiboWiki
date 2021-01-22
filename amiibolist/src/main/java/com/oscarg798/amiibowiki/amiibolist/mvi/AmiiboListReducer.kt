@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.amiibolist.mvi
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import javax.inject.Inject
 
 class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, AmiiboListViewState> {
@@ -22,59 +23,20 @@ class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, Amiibo
     override suspend fun reduce(
         state: AmiiboListViewState,
         from: AmiiboListResult
-    ): AmiiboListViewState {
-        return when (from) {
-            is AmiiboListResult.Loading -> state.copy(
-                isIdling = false,
-                isLoading = true,
-                amiiboTailToShow = null,
-                error = null
-            )
-            is AmiiboListResult.AmiibosFetched -> state.copy(
-                isIdling = false,
-                isLoading = false,
-                amiiboTailToShow = null,
-                filters = null,
-                amiibos = from.amiibos.map { amiibo ->
-                    ViewAmiibo(amiibo)
-                },
-                error = null
-            )
-            is AmiiboListResult.AmiibosFiltered -> state.copy(
-                isIdling = false,
-                isLoading = false,
-                amiiboTailToShow = null,
-                filters = null,
-                amiibos = from.amiibos.map { amiibo ->
-                    ViewAmiibo(amiibo)
-                },
-                error = null
-            )
-            is AmiiboListResult.Error -> state.copy(
-                isIdling = false,
-                isLoading = false,
-                error = from.error,
-                amiiboTailToShow = null
-            )
-            is AmiiboListResult.FiltersFetched -> state.copy(
-                isIdling = false,
-                isLoading = false,
-                amiiboTailToShow = null,
-                filters = from.filters.map { amiiboType ->
-                    ViewAmiiboType(amiiboType)
-                },
-                error = null
-            )
-            is AmiiboListResult.ShowAmiiboDetail -> state.copy(
-                isIdling = false,
-                isLoading = false,
-                amiiboTailToShow = from.amiiboTail,
-                error = null
-            )
-            is AmiiboListResult.FilterSelectionCancelled -> state.copy(
-                filters = null,
-                isIdling = true,
-            )
-        }
+    ): AmiiboListViewState = when (from) {
+        AmiiboListResult.Loading -> AmiiboListViewState.Loading
+        AmiiboListResult.FilterSelectionCancelled -> AmiiboListViewState.Idling
+        is AmiiboListResult.AmiibosFetched -> AmiiboListViewState.ShowingAmiibos(from.amiibos.map { amiibo ->
+            ViewAmiibo(amiibo)
+        })
+        is AmiiboListResult.AmiibosFiltered -> AmiiboListViewState.ShowingAmiibos(from.amiibos.map { amiibo ->
+            ViewAmiibo(amiibo)
+        })
+        is AmiiboListResult.FiltersFetched -> AmiiboListViewState.ShowingFilters(from.filters.map { amiiboType ->
+            ViewAmiiboType(amiiboType)
+        })
+        is AmiiboListResult.ShowAmiiboDetail -> AmiiboListViewState.ShowingAmiiboDetails(from.amiiboTail)
+        is AmiiboListResult.Error -> AmiiboListViewState.Error(from.error)
     }
+
 }

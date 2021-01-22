@@ -33,7 +33,7 @@ import com.oscarg798.amiibowiki.searchgamesresults.adapter.SearchResultClickList
 import com.oscarg798.amiibowiki.searchgamesresults.databinding.FragmentSearchResultBinding
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewStateCompat
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -42,13 +42,13 @@ import kotlinx.coroutines.flow.onEach
 @AndroidEntryPoint
 class SearchResultFragment : Fragment(), SearchResultClickListener {
 
-    private val viewModel: SearchGamesResultViewModel by viewModels()
+    private val viewModel: SearchGamesResultViewModelCompat by viewModels()
 
     private lateinit var binding: FragmentSearchResultBinding
 
     private var gameSearchResultCoverImageView: ImageView? = null
 
-    private lateinit var currentState: SearchResultViewState
+    private lateinit var currentState: SearchResultViewStateCompat
 
     private  val isShownAsGamesRelatedSection: Boolean by bundle(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION)
 
@@ -87,7 +87,7 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
             return
         }
 
-        currentState = activity?.intent?.getParcelableExtra<SearchResultViewState>(
+        currentState = activity?.intent?.getParcelableExtra<SearchResultViewStateCompat>(
             ARGUMENT_CURRENT_SEARCH_RESULT_STATE
         )!!
     }

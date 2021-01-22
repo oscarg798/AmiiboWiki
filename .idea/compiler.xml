@@ -2,6 +2,18 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
+      <module name="AmiiboWiki.amiibodetail" target="11" />
+      <module name="AmiiboWiki.amiibolist" target="11" />
+      <module name="AmiiboWiki.app" target="11" />
+      <module name="AmiiboWiki.buildSrc" target="11" />
+      <module name="AmiiboWiki.core" target="11" />
+      <module name="AmiiboWiki.gamedetail" target="11" />
+      <module name="AmiiboWiki.network" target="11" />
+      <module name="AmiiboWiki.nfcreader" target="11" />
+      <module name="AmiiboWiki.searchgames" target="11" />
+      <module name="AmiiboWiki.searchgamesresult" target="11" />
+      <module name="AmiiboWiki.settings" target="11" />
+      <module name="AmiiboWiki.testutils" target="11" />
       <module name="logger" target="1.7" />
       <module name="loggerannotationprocessor2" target="1.7" />
       <module name="loggerannotations" target="1.7" />

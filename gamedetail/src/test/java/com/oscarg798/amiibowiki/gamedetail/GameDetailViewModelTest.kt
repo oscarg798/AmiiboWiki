@@ -18,7 +18,7 @@ import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailReducer
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewStateCompat
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
@@ -33,10 +33,10 @@ import org.junit.Rule
 import org.junit.Test
 
 class GameDetailViewModelTest :
-    ViewModelTestRule.ViewModelCreator<GameDetailViewState, GameDetailViewModel> {
+    ViewModelTestRule.ViewModelCreator<GameDetailViewStateCompat, GameDetailViewModelCompat> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRule<GameDetailViewState, GameDetailViewModel>(this)
+    val viewModelTestRule = ViewModelTestRule<GameDetailViewStateCompat, GameDetailViewModelCompat>(this)
 
     private val gameDetailLogger = relaxedMockk<GameDetailLogger>()
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()
@@ -49,7 +49,7 @@ class GameDetailViewModelTest :
         coEvery { expandGameImagesUseCase.execute(EXPAND_IMAGE_PARAMS) } answers { EXPANDED_IMAGES }
     }
 
-    override fun create(): GameDetailViewModel = GameDetailViewModel(
+    override fun create(): GameDetailViewModelCompat = GameDetailViewModelCompat(
         getGamesUseCase,
         expandGameImagesUseCase,
         gameDetailLogger,
@@ -62,7 +62,7 @@ class GameDetailViewModelTest :
         viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail(GAME_ID))
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            GameDetailViewState(
+            GameDetailViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 expandedImages = null,
@@ -70,7 +70,7 @@ class GameDetailViewModelTest :
                 gameTrailer = null,
                 error = null
             ),
-            GameDetailViewState(
+            GameDetailViewStateCompat(
                 isIdling = false,
                 isLoading = true,
                 expandedImages = null,
@@ -78,7 +78,7 @@ class GameDetailViewModelTest :
                 gameTrailer = null,
                 error = null
             ),
-            GameDetailViewState(
+            GameDetailViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 expandedImages = null,
@@ -101,7 +101,7 @@ class GameDetailViewModelTest :
         viewModelTestRule.viewModel.onWish(GameDetailWish.PlayGameTrailer(GAME_ID, GAME.videosId!!.first()))
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            GameDetailViewState(
+            GameDetailViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 gameDetails = null,
@@ -109,7 +109,7 @@ class GameDetailViewModelTest :
                 gameTrailer = null,
                 error = null
             ),
-            GameDetailViewState(
+            GameDetailViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 expandedImages = null,
@@ -129,7 +129,7 @@ class GameDetailViewModelTest :
         viewModelTestRule.viewModel.onWish(GameDetailWish.ExpandImages(EXPAND_IMAGE_PARAMS))
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            GameDetailViewState(
+            GameDetailViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 gameDetails = null,
@@ -137,7 +137,7 @@ class GameDetailViewModelTest :
                 gameTrailer = null,
                 error = null
             ),
-            GameDetailViewState(
+            GameDetailViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 gameDetails = null,
