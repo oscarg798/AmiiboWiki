@@ -12,15 +12,15 @@
 
 package com.oscarg798.amiibowiki.nfcreader.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import javax.inject.Inject
 
-class NFCReducer @Inject constructor() : Reducer<NFCReaderResult, NFCReaderViewState> {
+class NFCReducer @Inject constructor() : ReducerCompat<NFCReaderResult, NFCReaderViewStateCompat> {
 
     override suspend fun reduce(
-        state: NFCReaderViewState,
+        state: NFCReaderViewStateCompat,
         from: NFCReaderResult
-    ): NFCReaderViewState = when (from) {
+    ): NFCReaderViewStateCompat = when (from) {
         is NFCReaderResult.ReadSuccessful -> state.copy(
             isIdling = false,
             isLoading = false,
@@ -36,19 +36,19 @@ class NFCReducer @Inject constructor() : Reducer<NFCReaderResult, NFCReaderViewS
         NFCReaderResult.AdapterReady -> state.copy(
             isIdling = false,
             isLoading = false,
-            adapterStatus = NFCReaderViewState.AdapterStatus.AdapterAvailable,
+            adapterStatus = NFCReaderViewStateCompat.AdapterStatus.AdapterAvailable,
             error = null
         )
         NFCReaderResult.AdapterDisabled -> state.copy(
             isIdling = false,
             isLoading = false,
-            adapterStatus = NFCReaderViewState.AdapterStatus.Idle,
+            adapterStatus = NFCReaderViewStateCompat.AdapterStatus.Idle,
             error = null
         )
         NFCReaderResult.AdapterStoped -> state.copy(
             isIdling = false,
             isLoading = false,
-            adapterStatus = NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped,
+            adapterStatus = NFCReaderViewStateCompat.AdapterStatus.AdapterReadyToBeStoped,
             error = null
         )
         is NFCReaderResult.Error -> state.copy(

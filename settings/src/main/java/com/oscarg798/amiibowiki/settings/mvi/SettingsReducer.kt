@@ -12,15 +12,15 @@
 
 package com.oscarg798.amiibowiki.settings.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import javax.inject.Inject
 
-class SettingsReducer @Inject constructor() : Reducer<SettingsResult, SettingsViewState> {
+class SettingsReducer @Inject constructor() : ReducerCompat<SettingsResult, SettingsViewStateCompat> {
 
     override suspend fun reduce(
-        state: SettingsViewState,
+        state: SettingsViewStateCompat,
         from: SettingsResult
-    ): SettingsViewState = when (from) {
+    ): SettingsViewStateCompat = when (from) {
         is SettingsResult.Loading -> state.copy(
             isIdling = false,
             isLoading = true,

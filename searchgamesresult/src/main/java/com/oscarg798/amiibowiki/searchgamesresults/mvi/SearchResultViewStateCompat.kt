@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.searchgamesresults.mvi
 
 import android.os.Parcelable
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import kotlinx.android.parcel.Parcelize
 
@@ -22,16 +22,16 @@ import kotlinx.android.parcel.Parcelize
 data class ShowingGameDetailsParams(val gameId: Int) : Parcelable
 
 @Parcelize
-data class SearchResultViewState(
+data class SearchResultViewStateCompat(
     override val isIdling: Boolean,
     val isLoading: Boolean,
     val gamesSearchResults: List<ViewGameSearchResult>? = null,
     val showingGameDetails: ShowingGameDetailsParams? = null,
     val error: SearchGameFailure?
-) : ViewState, Parcelable {
+) : ViewStateCompat, Parcelable {
 
     companion object {
-        fun init() = SearchResultViewState(
+        fun init() = SearchResultViewStateCompat(
             isIdling = true,
             isLoading = false,
             gamesSearchResults = null,

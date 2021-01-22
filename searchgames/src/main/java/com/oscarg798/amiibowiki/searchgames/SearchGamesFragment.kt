@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.onEach
 @AndroidEntryPoint
 class SearchGamesFragment : Fragment() {
 
-    private val viewmodel: SearchGameViewModel by viewModels()
+    private val viewmodel: SearchGameViewModelCompat by viewModels()
 
     private lateinit var binding: FragmentSearchGamesBinding
 

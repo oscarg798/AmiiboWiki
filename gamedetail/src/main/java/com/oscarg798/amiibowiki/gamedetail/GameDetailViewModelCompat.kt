@@ -12,14 +12,14 @@
 
 package com.oscarg798.amiibowiki.gamedetail
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailResult
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewStateCompat
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
@@ -30,13 +30,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
-class GameDetailViewModel @Inject constructor(
+class GameDetailViewModelCompat @Inject constructor(
     private val getGameUseCase: GetGamesUseCase,
     private val expandGameImagesUseCase: ExpandGameImagesUseCase,
     private val gameDetailLogger: GameDetailLogger,
-    override val reducer: Reducer<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewState>,
+    override val reducer: ReducerCompat<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewStateCompat>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<GameDetailWish, GameDetailResult, GameDetailViewState>(GameDetailViewState.init()) {
+) : AbstractViewModelCompat<GameDetailWish, GameDetailResult, GameDetailViewStateCompat>(GameDetailViewStateCompat.init()) {
 
     override suspend fun getResult(wish: GameDetailWish): Flow<GameDetailResult> = when (wish) {
         is GameDetailWish.ShowGameDetail -> getGame(wish)

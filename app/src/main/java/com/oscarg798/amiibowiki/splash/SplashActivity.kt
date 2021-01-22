@@ -19,8 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.R
-import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
-import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding
 import com.oscarg798.amiibowiki.navigation.DashboardActivity
@@ -28,12 +26,11 @@ import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
-    private val viewModel: SplashViewModel by viewModels()
+    private val viewModel: SplashViewModelCompat by viewModels()
 
     private lateinit var binding: ActivitySplashBinding
 

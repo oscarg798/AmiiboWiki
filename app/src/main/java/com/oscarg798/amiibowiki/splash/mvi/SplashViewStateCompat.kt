@@ -10,19 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames.mvi
+package com.oscarg798.amiibowiki.splash.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
+import java.lang.Exception
 
-data class SearchGamesViewState(
+data class SplashViewStateCompat(
     override val isIdling: Boolean,
-    val searchingGames: String?
-) : ViewState {
+    val navigatingToFirstScreen: Boolean,
+    val error: Exception?
+) : ViewStateCompat {
 
     companion object {
-        fun init() = SearchGamesViewState(
+        fun init() = SplashViewStateCompat(
             isIdling = true,
-            searchingGames = null
+            navigatingToFirstScreen = false,
+            error = null
         )
     }
 }

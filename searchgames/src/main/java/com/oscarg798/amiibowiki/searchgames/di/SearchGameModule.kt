@@ -12,10 +12,10 @@
 
 package com.oscarg798.amiibowiki.searchgames.di
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesReducer
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesResult
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesViewState
+import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesViewStateCompat
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -28,5 +28,5 @@ abstract class SearchGameModule {
 
     @ViewModelScoped
     @Binds
-    abstract fun bindReducer(searchGamesReducer: SearchGamesReducer): Reducer<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewState>
+    abstract fun bindReducer(searchGamesReducer: SearchGamesReducer): ReducerCompat<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewStateCompat>
 }

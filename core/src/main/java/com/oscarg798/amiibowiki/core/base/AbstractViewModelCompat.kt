@@ -14,10 +14,9 @@ package com.oscarg798.amiibowiki.core.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
-import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import kotlinx.coroutines.channels.BufferOverflow
@@ -28,11 +27,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.scan
 
-abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState : MVIViewState>(
+abstract class AbstractViewModelCompat<Wish : MVIWish, Result : MVIResult, ViewState : MVIViewState>(
     initialState: ViewState
 ) : ViewModel() {
 
-    protected abstract val reducer: Reducer<Result, ViewState>
+    protected abstract val reducer: ReducerCompat<Result, ViewState>
 
     protected abstract val coroutineContextProvider: CoroutineContextProvider
 
@@ -41,7 +40,6 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
         extraBufferCapacity = 3,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-
     private val wishProcessor = MutableSharedFlow<Wish>(
         replay = 0,
         extraBufferCapacity = 3,

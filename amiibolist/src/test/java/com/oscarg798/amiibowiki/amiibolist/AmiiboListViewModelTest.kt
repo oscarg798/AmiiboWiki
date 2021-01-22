@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.amiibolist
 import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListReducer
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewStateCompat
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
@@ -38,7 +38,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class AmiiboListViewModelTest :
-    ViewModelTestRule.ViewModelCreator<AmiiboListViewState, AmiiboListViewModel> {
+    ViewModelTestRule.ViewModelCreator<AmiiboListViewStateCompat, AmiiboListViewModelCompat> {
 
     private val getAmiibosUseCase = relaxedMockk<GetAmiibosUseCase>()
     private val getAmiibosFilteredUseCase = relaxedMockk<GetAmiiboFilteredUseCase>()
@@ -49,7 +49,7 @@ class AmiiboListViewModelTest :
     private val reducer = AmiiboListReducer()
 
     @get:Rule
-    val viewModelRule: ViewModelTestRule<AmiiboListViewState, AmiiboListViewModel> =
+    val viewModelRule: ViewModelTestRule<AmiiboListViewStateCompat, AmiiboListViewModelCompat> =
         ViewModelTestRule(this)
 
     @Before
@@ -59,7 +59,7 @@ class AmiiboListViewModelTest :
         every { getAmiibosUseCase.execute() } answers { flowOf(listOf(AMIIBO)) }
     }
 
-    override fun create(): AmiiboListViewModel = AmiiboListViewModel(
+    override fun create(): AmiiboListViewModelCompat = AmiiboListViewModelCompat(
         getAmiibosUseCase,
         getAmiibosFilteredUseCase,
         getAmiiboTypeUseCase,
@@ -75,7 +75,7 @@ class AmiiboListViewModelTest :
         viewModelRule.viewModel.onWish(AmiiboListWish.RefreshAmiibos)
 
         viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 amiibos = null,
@@ -83,7 +83,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = true,
                 amiibos = null,
@@ -91,7 +91,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 amiibos = listOf(AMIIBO).map { ViewAmiibo(it) },
@@ -114,7 +114,7 @@ class AmiiboListViewModelTest :
         viewModelRule.viewModel.onWish(AmiiboListWish.RefreshAmiibos)
 
         viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 amiibos = null,
@@ -122,7 +122,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = true,
                 amiibos = null,
@@ -130,7 +130,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 amiibos = null,
@@ -148,7 +148,7 @@ class AmiiboListViewModelTest :
         viewModelRule.viewModel.onWish(AmiiboListWish.FilterAmiibos(ViewAmiiboType("1", "2")))
 
         viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 amiibos = null,
@@ -156,7 +156,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = true,
                 amiibos = null,
@@ -164,7 +164,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 amiibos = listOf(AMIIBO).map { ViewAmiibo(it) },
@@ -187,7 +187,7 @@ class AmiiboListViewModelTest :
         viewModelRule.viewModel.onWish(AmiiboListWish.FilterAmiibos(ViewAmiiboType("1", "2")))
 
         viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 amiibos = null,
@@ -195,7 +195,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = true,
                 amiibos = null,
@@ -203,7 +203,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 amiibos = null,
@@ -231,7 +231,7 @@ class AmiiboListViewModelTest :
         viewModelRule.viewModel.onWish(AmiiboListWish.ShowFilters)
 
         viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 amiibos = null,
@@ -239,7 +239,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 amiibos = null,
@@ -261,7 +261,7 @@ class AmiiboListViewModelTest :
         viewModelRule.viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(ViewAmiibo(AMIIBO)))
 
         viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 amiibos = null,
@@ -269,7 +269,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 amiibos = null,
@@ -290,7 +290,7 @@ class AmiiboListViewModelTest :
         viewModelRule.viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(ViewAmiibo(AMIIBO)))
 
         viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 amiibos = null,
@@ -312,7 +312,7 @@ class AmiiboListViewModelTest :
         viewModelRule.viewModel.onWish(AmiiboListWish.Search(MOCK_QUERY))
 
         viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = true,
                 isLoading = false,
                 amiibos = null,
@@ -320,7 +320,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = true,
                 amiibos = null,
@@ -328,7 +328,7 @@ class AmiiboListViewModelTest :
                 amiiboTailToShow = null,
                 error = null
             ),
-            AmiiboListViewState(
+            AmiiboListViewStateCompat(
                 isIdling = false,
                 isLoading = false,
                 amiibos = listOf(AMIIBO).map { ViewAmiibo(it) },

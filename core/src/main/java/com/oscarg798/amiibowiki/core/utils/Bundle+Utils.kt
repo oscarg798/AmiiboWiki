@@ -15,7 +15,6 @@ package com.oscarg798.amiibowiki.core.extensions
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
 
-@JvmSynthetic
 inline fun <reified T> Fragment.bundle(
     key: String,
 ): Lazy<T> = lazy(LazyThreadSafetyMode.NONE) {
@@ -32,7 +31,7 @@ inline fun <reified T> Fragment.bundle(
         Boolean::class.javaObjectType.isAssignableFrom(T::class.java) -> requireArguments().getBoolean(key)
         Parcelable::class.java.isAssignableFrom(T::class.java) -> requireArguments().getParcelable(key)
         else -> illegalArgumentError("Type ${T::class.java.simpleName} not supported")
-    } as? T ?: notFoundError("Something went wrong")
+    } as T
 }
 
 public fun illegalArgumentError(message: String): Nothing = throw IllegalArgumentException(message)

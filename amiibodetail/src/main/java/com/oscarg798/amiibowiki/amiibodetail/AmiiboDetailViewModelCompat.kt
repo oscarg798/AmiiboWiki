@@ -12,17 +12,15 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewStateCompat
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.AssistedFactoryCreator
@@ -39,15 +37,15 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 
 
-class AmiiboDetailViewModel @AssistedInject constructor(
+class AmiiboDetailViewModelCompat @AssistedInject constructor(
     @Assisted private val tail: String,
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
     private val amiiboDetailLogger: AmiiboDetailLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
-    override val reducer: Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState>,
+    override val reducer: ReducerCompat<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewStateCompat>,
     override val coroutineContextProvider: CoroutineContextProvider,
-) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
-    AmiiboDetailViewState.init()
+) : AbstractViewModelCompat<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewStateCompat>(
+    AmiiboDetailViewStateCompat.init()
 ) {
 
     override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = when (wish) {
@@ -90,8 +88,8 @@ class AmiiboDetailViewModel @AssistedInject constructor(
     }
 
     @AssistedFactory
-    interface Factory : AssistedFactoryCreator<AmiiboDetailViewModel, String> {
-        override fun create(params: String): AmiiboDetailViewModel
+    interface Factory : AssistedFactoryCreator<AmiiboDetailViewModelCompat, String> {
+        override fun create(params: String): AmiiboDetailViewModelCompat
     }
 }
 

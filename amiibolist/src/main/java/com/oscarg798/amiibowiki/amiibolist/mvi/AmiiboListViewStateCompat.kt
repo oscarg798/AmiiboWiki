@@ -10,29 +10,40 @@
  *
  */
 
-package com.oscarg798.amiibowiki.gamedetail.mvi
+package com.oscarg798.amiibowiki.amiibolist.mvi
 
-import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
-import com.oscarg798.amiibowiki.core.models.Game
+import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
+import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
 
-data class GameDetailViewState(
+data class AmiiboListViewStateCompat(
     override val isIdling: Boolean,
     val isLoading: Boolean,
-    val expandedImages: Collection<String>?,
-    val gameDetails: Game?,
-    val gameTrailer: String?,
-    val error: GameDetailFailure? = null
-) : ViewState {
+    val amiibos: Collection<ViewAmiibo>?,
+    val filters: Collection<ViewAmiiboType>?,
+    val amiiboTailToShow: String?,
+    val error: AmiiboListFailure?
+) : ViewStateCompat {
 
     companion object {
-        fun init() = GameDetailViewState(
+        fun init() = AmiiboListViewStateCompat(
             isIdling = true,
             isLoading = false,
-            expandedImages = null,
-            gameDetails = null,
-            gameTrailer = null,
+            amiibos = null,
+            filters = null,
+            amiiboTailToShow = null,
             error = null
         )
     }
+}
+
+sealed class AmiiboListViewState: ViewState {
+
+    object Idling : AmiiboListViewState()
+    object Loading: AmiiboListViewState()
+    data class ShowingAmiibos(val amiibos: Collection<ViewAmiibo>): AmiiboListViewState()
+    data class ShowingFilters(val filters: Collection<ViewAmiiboType>): AmiiboListViewState()
+    data class ShowingAmiiboDetails(val amiiboId: String): AmiiboListViewState()
+    data class Error(val error: AmiiboListFailure): AmiiboListViewState()
 }

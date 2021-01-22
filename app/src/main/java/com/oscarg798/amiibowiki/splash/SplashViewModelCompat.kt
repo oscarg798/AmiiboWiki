@@ -13,35 +13,29 @@
 package com.oscarg798.amiibowiki.splash
 
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.failures.GameAPIAuthenticationFailure
-import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
+import com.oscarg798.amiibowiki.splash.mvi.SplashViewStateCompat
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
-import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
-import com.oscarg798.amiibowiki.splash.usecases.AuthenticateApplicationUseCase
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
 
-
 @HiltViewModel
-class SplashViewModel @Inject constructor(
+class SplashViewModelCompat @Inject constructor(
     private val splashLogger: SplashLogger,
     private val initializeApplicationUseCase: InitializeApplicationUseCase,
-    override val reducer: Reducer<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewState>,
+    override val reducer: ReducerCompat<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewStateCompat>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.init()) {
+) : AbstractViewModelCompat<SplashWish, SplashResult, SplashViewStateCompat>(SplashViewStateCompat.init()) {
 
     override fun onScreenShown() {
         splashLogger.trackScreenShown()

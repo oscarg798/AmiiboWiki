@@ -12,12 +12,12 @@
 
 package com.oscarg798.amiibowiki.nfcreader
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
+import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewStateCompat
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
@@ -29,13 +29,13 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
-class NFCReaderViewModel @Inject constructor(
+class NFCReaderViewModelCompat @Inject constructor(
     private val validateAdapterAvailabilityUseCase: ValidateAdapterAvailabilityUseCase,
     private val readTagUseCase: ReadTagUseCase,
-    override val reducer: Reducer<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewState>,
+    override val reducer: ReducerCompat<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewStateCompat>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<NFCReaderWish, NFCReaderResult,
-    NFCReaderViewState>(NFCReaderViewState.init()) {
+) : AbstractViewModelCompat<NFCReaderWish, NFCReaderResult,
+    NFCReaderViewStateCompat>(NFCReaderViewStateCompat.init()) {
 
     override suspend fun getResult(wish: NFCReaderWish): Flow<NFCReaderResult> {
         return when (wish) {

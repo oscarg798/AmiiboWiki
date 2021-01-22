@@ -15,7 +15,15 @@ package com.oscarg798.amiibowiki.core.mvi
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
+interface ReducerCompat<in Result : MVIResult, ViewState : ViewStateCompat> {
+
+    suspend fun reduce(state: ViewState, from: Result): ViewState
+}
+
+
 interface Reducer<in Result : MVIResult, ViewState : MVIViewState> {
 
     suspend fun reduce(state: ViewState, from: Result): ViewState
 }
+
+

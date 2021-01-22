@@ -10,29 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.mvi
+package com.oscarg798.amiibowiki.searchgames.mvi
 
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
 
-data class AmiiboListViewState(
+data class SearchGamesViewStateCompat(
     override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val amiibos: Collection<ViewAmiibo>?,
-    val filters: Collection<ViewAmiiboType>?,
-    val amiiboTailToShow: String?,
-    val error: AmiiboListFailure?
-) : ViewState {
+    val searchingGames: String?
+) : ViewStateCompat {
 
     companion object {
-        fun init() = AmiiboListViewState(
+        fun init() = SearchGamesViewStateCompat(
             isIdling = true,
-            isLoading = false,
-            amiibos = null,
-            filters = null,
-            amiiboTailToShow = null,
-            error = null
+            searchingGames = null
         )
     }
 }

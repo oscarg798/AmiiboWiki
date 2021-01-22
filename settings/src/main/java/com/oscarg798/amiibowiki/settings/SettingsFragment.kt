@@ -42,7 +42,7 @@ import kotlinx.coroutines.flow.onEach
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private val viewModel: SettingsViewModel by viewModels()
+    private val viewModel: SettingsViewModelCompat by viewModels()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -105,7 +105,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         builder.show()
     }
 
-    private fun setupPreferencesClickListener(viewModel: SettingsViewModel) {
+    private fun setupPreferencesClickListener(viewModel: SettingsViewModelCompat) {
         merge(getDarkModePreferenceClick(), getDevelopmentActivityClick())
             .onEach {
                 viewModel.onWish(it)

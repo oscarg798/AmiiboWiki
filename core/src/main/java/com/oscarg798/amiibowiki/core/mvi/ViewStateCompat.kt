@@ -10,22 +10,12 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.mvi
+package com.oscarg798.amiibowiki.core.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.ViewState
-import java.lang.Exception
+@Deprecated("Use ViewState")
+interface ViewStateCompat {
 
-data class SplashViewState(
-    override val isIdling: Boolean,
-    val navigatingToFirstScreen: Boolean,
-    val error: Exception?
-) : ViewState {
-
-    companion object {
-        fun init() = SplashViewState(
-            isIdling = true,
-            navigatingToFirstScreen = false,
-            error = null
-        )
-    }
+    val isIdling: Boolean
 }
+
+interface ViewState

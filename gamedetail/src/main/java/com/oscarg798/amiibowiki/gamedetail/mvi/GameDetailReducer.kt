@@ -12,15 +12,15 @@
 
 package com.oscarg798.amiibowiki.gamedetail.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import javax.inject.Inject
 
-class GameDetailReducer @Inject constructor() : Reducer<GameDetailResult, GameDetailViewState> {
+class GameDetailReducer @Inject constructor() : ReducerCompat<GameDetailResult, GameDetailViewStateCompat> {
 
     override suspend fun reduce(
-        state: GameDetailViewState,
+        state: GameDetailViewStateCompat,
         from: GameDetailResult
-    ): GameDetailViewState = when (from) {
+    ): GameDetailViewStateCompat = when (from) {
         is GameDetailResult.Loading -> state.copy(
             isLoading = true,
             isIdling = false,

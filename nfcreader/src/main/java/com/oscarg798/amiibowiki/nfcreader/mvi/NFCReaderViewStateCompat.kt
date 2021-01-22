@@ -10,24 +10,33 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgames
+package com.oscarg798.amiibowiki.nfcreader.mvi
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesResult
-import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesViewState
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlinx.coroutines.flow.flowOf
+import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
+import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
+import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 
-@HiltViewModel
-class SearchGameViewModel @Inject constructor(
-    override val reducer: Reducer<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewState>,
-    override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SearchGameWish, SearchGamesResult, SearchGamesViewState>(SearchGamesViewState.init()) {
+data class NFCReaderViewStateCompat(
+    override val isIdling: Boolean,
+    val isLoading: Boolean,
+    val amiiboIdentifier: AmiiboIdentifier?,
+    val adapterStatus: AdapterStatus?,
+    val error: NFCReaderFailure? = null
+) : ViewStateCompat {
 
-    override suspend fun getResult(wish: SearchGameWish) =
-        flowOf(SearchGamesResult.SearchGames((wish as SearchGameWish.Search).query))
+    sealed class AdapterStatus {
+        object Idle : AdapterStatus()
+        object AdapterAvailable : AdapterStatus()
+        object AdapterReadyToBeStoped : AdapterStatus()
+    }
+
+    companion object {
+        fun init() = NFCReaderViewStateCompat(
+            isIdling = true,
+            isLoading = false,
+            amiiboIdentifier = null,
+            adapterStatus = null,
+            error = null
+        )
+    }
 }

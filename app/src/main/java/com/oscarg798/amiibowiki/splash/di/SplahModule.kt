@@ -12,19 +12,17 @@
 
 package com.oscarg798.amiibowiki.splash.di
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.splash.SplashLogger
 import com.oscarg798.amiibowiki.splash.SplashLoggerImpl
 import com.oscarg798.amiibowiki.splash.mvi.SplashReducer
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
+import com.oscarg798.amiibowiki.splash.mvi.SplashViewStateCompat
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 
 
@@ -38,6 +36,6 @@ object SplahModule {
 
     @ViewModelScoped
     @Provides
-    fun provideSplashReducer(splashReducer: SplashReducer): Reducer<SplashResult, SplashViewState> = splashReducer
+    fun provideSplashReducer(splashReducer: SplashReducer): ReducerCompat<SplashResult, SplashViewStateCompat> = splashReducer
 
 }
