@@ -12,18 +12,16 @@
 
 package com.oscarg798.amiibowiki.searchgames.mvi
 
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import javax.inject.Inject
 
-class SearchGamesReducer @Inject constructor() : ReducerCompat<SearchGamesResult, SearchGamesViewStateCompat> {
+class SearchGamesReducer @Inject constructor() : Reducer<SearchGamesResult, SearchGamesViewState> {
 
     override suspend fun reduce(
-        state: SearchGamesViewStateCompat,
+        state: SearchGamesViewState,
         from: SearchGamesResult
-    ): SearchGamesViewStateCompat = when (from) {
-        is SearchGamesResult.SearchGames -> state.copy(
-            isIdling = false,
-            searchingGames = from.query
-        )
+    ): SearchGamesViewState = when (from) {
+        is SearchGamesResult.SearchGames -> SearchGamesViewState.SearchingGames(from.query)
     }
 }

@@ -34,7 +34,6 @@ import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.FragmentAmiiboListBinding
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewStateCompat
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
@@ -57,7 +56,7 @@ class AmiiboListFragment :
     @Inject
     lateinit var mixpanelLogger: MixpanelLogger
 
-    private val viewModel: AmiiboListViewModelCompat by viewModels()
+    private val viewModel: AmiiboListViewModel by viewModels()
 
     private var filterMenuItem: MenuItem? = null
     private var searchView: SearchView? = null
@@ -198,7 +197,7 @@ class AmiiboListFragment :
     private fun setupViewModelInteractions() {
         lifecycleScope.launchWhenResumed {
             viewModel.state.collect { state ->
-                when(state){
+                when (state) {
                     AmiiboListViewState.Idling -> onIdling()
                     AmiiboListViewState.Loading -> binding.showLoading()
                     is AmiiboListViewState.ShowingAmiibos -> binding.showAmiibos(state.amiibos.toList())
@@ -207,13 +206,12 @@ class AmiiboListFragment :
                     is AmiiboListViewState.Error -> binding.showErrors(state.error.message!!)
                 }
             }
-
-            searchFlow.debounce(SEARCH_DEBOUNCE)
-                .filterNot { it.isEmpty() && it.length < MINUMUN_SEARCH_QUERY_LENGTH }
-                .onEach {
-                    viewModel.onWish(AmiiboListWish.Search(it))
-                }.launchIn(this)
-       }
+        }
+        searchFlow.debounce(SEARCH_DEBOUNCE)
+            .filterNot { it.isEmpty() && it.length < MINUMUN_SEARCH_QUERY_LENGTH }
+            .onEach {
+                viewModel.onWish(AmiiboListWish.Search(it))
+            }.launchIn(lifecycleScope)
     }
 
     private fun onIdling() {

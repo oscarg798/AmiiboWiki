@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,32 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail.mvi
+package com.oscarg798.amiibowiki.splash.ui
 
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
+import com.oscarg798.amiibowiki.logger.annotations.LogSources
+import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
+import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
+import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
 
-data class ShowingAmiiboDetailsParams(
-    val amiiboDetails: ViewAmiiboDetails,
-    val isRelatedGamesSectionEnabled: Boolean
-)
+@LoggerDecorator
+interface SplashLogger {
 
-data class AmiiboDetailViewStateCompat(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val amiiboDetails: ShowingAmiiboDetailsParams?,
-    val imageExpanded: String?,
-    val error: AmiiboDetailFailure? = null
-) : ViewStateCompat {
-
-    companion object {
-        fun init() = AmiiboDetailViewStateCompat(
-            isIdling = true,
-            isLoading = false,
-            amiiboDetails = null,
-            imageExpanded = null,
-            error = null
-        )
-    }
+    @LogSources([FIREBASE_LOG_SOURCE_NAME])
+    @ScreenShown(SCREEN_NAME)
+    fun trackScreenShown()
 }
+
+private const val SCREEN_NAME = "SPLASH_SCREEN"

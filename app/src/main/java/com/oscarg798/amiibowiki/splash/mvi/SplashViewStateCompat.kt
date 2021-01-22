@@ -12,20 +12,13 @@
 
 package com.oscarg798.amiibowiki.splash.mvi
 
+import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
-import java.lang.Exception
+import kotlin.Exception
 
-data class SplashViewStateCompat(
-    override val isIdling: Boolean,
-    val navigatingToFirstScreen: Boolean,
-    val error: Exception?
-) : ViewStateCompat {
+sealed class SplashViewState() : ViewState {
 
-    companion object {
-        fun init() = SplashViewStateCompat(
-            isIdling = true,
-            navigatingToFirstScreen = false,
-            error = null
-        )
-    }
+    object IsIdling: SplashViewState()
+    object NavigatingToFirstscreen: SplashViewState()
+    data class Error(val exception: Exception): SplashViewState()
 }

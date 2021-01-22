@@ -17,27 +17,6 @@ import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
 
-data class AmiiboListViewStateCompat(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val amiibos: Collection<ViewAmiibo>?,
-    val filters: Collection<ViewAmiiboType>?,
-    val amiiboTailToShow: String?,
-    val error: AmiiboListFailure?
-) : ViewStateCompat {
-
-    companion object {
-        fun init() = AmiiboListViewStateCompat(
-            isIdling = true,
-            isLoading = false,
-            amiibos = null,
-            filters = null,
-            amiiboTailToShow = null,
-            error = null
-        )
-    }
-}
-
 sealed class AmiiboListViewState: ViewState {
 
     object Idling : AmiiboListViewState()
