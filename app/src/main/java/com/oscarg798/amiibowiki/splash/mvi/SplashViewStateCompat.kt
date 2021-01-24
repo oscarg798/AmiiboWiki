@@ -13,7 +13,7 @@
 package com.oscarg798.amiibowiki.splash.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
+
 import kotlin.Exception
 
 sealed class SplashViewState() : ViewState {

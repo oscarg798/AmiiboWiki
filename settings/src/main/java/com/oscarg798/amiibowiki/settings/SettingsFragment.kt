@@ -29,12 +29,14 @@ import com.oscarg798.amiibowiki.core.utils.TextChangeListenerAdapter
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
+import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
@@ -59,28 +61,30 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupViewModel() {
-        viewModel.state.onEach {
-            when {
-                it.showDarkModeDialog -> showDarkModeDialog()
-                it.showDevelopmentActivity -> startActivity(
-                    Intent(
-                        requireContext(),
-                        FeatureFlagHandlerActivity::class.java
+        lifecycleScope.launchWhenResumed {
+            viewModel.state.collect { state->
+                when(state){
+                    is SettingsViewState.Preferences -> {
+                        /**
+                         * Preferences must exists before setting click listener
+                         */
+                        setupPreferencesClickListener(viewModel)
+                        addPreferences(state.preferences)
+                    }
+                    SettingsViewState.ShowingDevelopmentActivity -> startActivity(
+                        Intent(
+                            requireContext(),
+                            FeatureFlagHandlerActivity::class.java
+                        )
                     )
-                )
-                it.shouldActivityBeRecreated -> {
-                    startActivity(requireActivity().intent)
-                    requireActivity().finish()
-                }
-                it.preferences != null -> {
-                    /**
-                     * Preferences must exists before setting click listener
-                     */
-                    setupPreferencesClickListener(viewModel)
-                    addPreferences(it.preferences)
+                    SettingsViewState.ActivityShouldBeRecreated ->  {
+                        startActivity(requireActivity().intent)
+                        requireActivity().finish()
+                    }
+                    SettingsViewState.ShowingDarkModeDialog ->showDarkModeDialog()
                 }
             }
-        }.launchIn(lifecycleScope)
+        }
 
         viewModel.onWish(SettingsWish.CreatePreferences)
     }

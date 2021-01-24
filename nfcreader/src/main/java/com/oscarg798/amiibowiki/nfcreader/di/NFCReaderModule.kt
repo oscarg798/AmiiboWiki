@@ -14,9 +14,10 @@ package com.oscarg798.amiibowiki.nfcreader.di
 
 import android.content.Context
 import android.nfc.NfcAdapter
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+import com.oscarg798.amiibowiki.core.mvi.Reducer
+
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewStateCompat
+import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReducer
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepositoryImpl
@@ -55,5 +56,5 @@ object NFCReaderModule {
 
     @NFCReaderScope
     @Provides
-    fun provideNFCReaderReducer(nfcReaderReducer: NFCReducer): ReducerCompat<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewStateCompat> = nfcReaderReducer
+    fun provideNFCReaderReducer(nfcReaderReducer: NFCReducer): Reducer<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewState> = nfcReaderReducer
 }

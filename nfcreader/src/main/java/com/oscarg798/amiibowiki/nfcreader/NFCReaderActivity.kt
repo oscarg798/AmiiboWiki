@@ -16,6 +16,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -28,9 +29,10 @@ import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.databinding.ActivityNFCReaderBinding
 import com.oscarg798.amiibowiki.nfcreader.di.DaggerNFCReaderComponent
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewStateCompat
+import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -38,7 +40,7 @@ import kotlinx.coroutines.flow.onEach
 class NFCReaderActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModel: NFCReaderViewModelCompat
+    lateinit var viewModel: NFCReaderViewModel
 
     @Inject
     lateinit var nfcAdapter: NfcAdapter
@@ -65,14 +67,18 @@ class NFCReaderActivity : AppCompatActivity() {
     }
 
     private fun setup() {
-        viewModel.state.onEach {
-            when {
-                it.error != null -> showErrorMessage(it.error)
-                it.adapterStatus != null && it.adapterStatus is NFCReaderViewStateCompat.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
-                it.adapterStatus != null && it.adapterStatus is NFCReaderViewStateCompat.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
-                it.amiiboIdentifier != null -> showAmiibo(it.amiiboIdentifier)
+        lifecycleScope.launchWhenResumed {
+            viewModel.state.collect { state ->
+                when (state) {
+                    is NFCReaderViewState.ShowingAmiibo -> showAmiibo(state.amiiboIdentifier)
+                    is NFCReaderViewState.AdapterStatusFound -> when (state.status) {
+                        NFCReaderViewState.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
+                        NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
+                    }
+                    is NFCReaderViewState.Error -> showErrorMessage(state.error)
+                }
             }
-        }.launchIn(lifecycleScope)
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -85,6 +91,7 @@ class NFCReaderActivity : AppCompatActivity() {
     }
 
     private fun showAmiibo(amiiboIdentifier: AmiiboIdentifier) {
+        Log.i("PENE", "PENE1")
         startDeepLinkIntent(
             AMIIBO_DETAIL_DEEPLINK,
             Bundle().apply {
@@ -93,16 +100,15 @@ class NFCReaderActivity : AppCompatActivity() {
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onWish(NFCReaderWish.ValidateAdapterAvailability)
+    override fun onStart() {
+        super.onStart()
+        //viewModel.onWish(NFCReaderWish.ValidateAdapterAvailability)
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.onWish(NFCReaderWish.StopAdapter)
+    override fun onStop() {
+        super.onStop()
+       // viewModel.onWish(NFCReaderWish.StopAdapter)
     }
-
     private fun setupForegroundDispatch() {
         nfcAdapter.enableForegroundDispatch(
             this,

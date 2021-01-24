@@ -10,33 +10,14 @@
  *
  */
 
-package com.oscarg798.amiibowiki.searchgamesresults.mvi
+package com.oscarg798.amiibowiki.core.mvi
 
-import android.os.Parcelable
-import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
-import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
-import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
-import kotlinx.android.parcel.Parcelize
+import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
-@Parcelize
-data class ShowingGameDetailsParams(val gameId: Int) : Parcelable
+interface Reducer<in Result : MVIResult, ViewState : MVIViewState> {
 
-@Parcelize
-data class SearchResultViewStateCompat(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val gamesSearchResults: List<ViewGameSearchResult>? = null,
-    val showingGameDetails: ShowingGameDetailsParams? = null,
-    val error: SearchGameFailure?
-) : ViewStateCompat, Parcelable {
-
-    companion object {
-        fun init() = SearchResultViewStateCompat(
-            isIdling = true,
-            isLoading = false,
-            gamesSearchResults = null,
-            showingGameDetails = null,
-            error = null
-        )
-    }
+    suspend fun reduce(state: ViewState, from: Result): ViewState
 }
+
+

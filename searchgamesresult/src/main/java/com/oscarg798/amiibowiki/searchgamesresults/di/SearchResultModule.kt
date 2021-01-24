@@ -12,12 +12,13 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults.di
 
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+import com.oscarg798.amiibowiki.core.mvi.Reducer
+
 import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLogger
 import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLoggerImpl
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultReducer
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultResult
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewStateCompat
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
@@ -31,10 +32,11 @@ object SearchResultModule {
 
     @ViewModelScoped
     @Provides
-    fun provideSearchResultReducer(searchResultReducer: SearchResultReducer): ReducerCompat<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewStateCompat> =
+    fun provideSearchResultReducer(searchResultReducer: SearchResultReducer): Reducer<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewState> =
         searchResultReducer
 
     @ViewModelScoped
     @Provides
     fun provideLogger(logger: Logger): SearchGamesResultLogger = SearchGamesResultLoggerImpl(logger)
 }
+

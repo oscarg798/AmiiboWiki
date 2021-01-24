@@ -12,16 +12,19 @@
 
 package com.oscarg798.amiibowiki.gamedetail
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
+import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+import com.oscarg798.amiibowiki.core.models.Id
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import com.oscarg798.amiibowiki.gamedetail.di.GameId
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailResult
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewStateCompat
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
+import com.oscarg798.amiibowiki.gamedetail.usecases.GetGameTrailerUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -30,16 +33,21 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
-class GameDetailViewModelCompat @Inject constructor(
+class GameDetailViewModel @Inject constructor(
+    @GameId
+    private val gameId: Id,
     private val getGameUseCase: GetGamesUseCase,
     private val expandGameImagesUseCase: ExpandGameImagesUseCase,
+    private val getGameTrailerUseCase: GetGameTrailerUseCase,
     private val gameDetailLogger: GameDetailLogger,
-    override val reducer: ReducerCompat<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewStateCompat>,
+    override val reducer: Reducer<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModelCompat<GameDetailWish, GameDetailResult, GameDetailViewStateCompat>(GameDetailViewStateCompat.init()) {
+) : AbstractViewModel<GameDetailWish, GameDetailResult, GameDetailViewState>(
+    GameDetailViewState.Idling
+) {
 
     override suspend fun getResult(wish: GameDetailWish): Flow<GameDetailResult> = when (wish) {
-        is GameDetailWish.ShowGameDetail -> getGame(wish)
+        is GameDetailWish.ShowGameDetail -> getGame()
         is GameDetailWish.PlayGameTrailer -> getGameTrailer(wish)
         is GameDetailWish.ExpandImages -> expandImages(wish.expandableImageParams)
     }
@@ -52,13 +60,13 @@ class GameDetailViewModelCompat @Inject constructor(
 
     private fun getGameTrailer(wish: GameDetailWish.PlayGameTrailer): Flow<GameDetailResult> =
         flow {
-            trackTrailerClick(wish.gameId.toString())
-            emit(GameDetailResult.GameTrailerFound(wish.trailerId) as GameDetailResult)
+            trackTrailerClick(gameId)
+            emit(GameDetailResult.GameTrailerFound(getGameTrailerUseCase.execute(gameId)) as GameDetailResult)
         }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
-    private fun getGame(wish: GameDetailWish.ShowGameDetail) = flow<GameDetailResult> {
-        trackScreenShown(wish)
-        emit(GameDetailResult.GameFetched(getGameUseCase.execute(wish.gameId)))
+    private fun getGame() = flow<GameDetailResult> {
+        trackScreenShown()
+        emit(GameDetailResult.GameFetched(getGameUseCase.execute(gameId)))
     }.onStart {
         emit(GameDetailResult.Loading)
     }.catch { cause ->
@@ -69,12 +77,12 @@ class GameDetailViewModelCompat @Inject constructor(
         emit(GameDetailResult.Error(cause))
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
 
-    private fun trackScreenShown(wish: GameDetailWish.ShowGameDetail) {
-        gameDetailLogger.trackScreenShown(mapOf(GAME_ID_PROPERTY_NAME to wish.gameId.toString()))
+    private fun trackScreenShown() {
+        gameDetailLogger.trackScreenShown(mapOf(GAME_ID_PROPERTY_NAME to gameId.toString()))
     }
 
-    private fun trackTrailerClick(gameId: String) {
-        gameDetailLogger.trackTrailerClicked(mapOf(GAME_ID_PROPERTY_NAME to gameId))
+    private fun trackTrailerClick(gameId: Id) {
+        gameDetailLogger.trackTrailerClicked(mapOf(GAME_ID_PROPERTY_NAME to gameId.toString()))
     }
 }
 

@@ -10,25 +10,17 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail.mvi
+package com.oscarg798.amiibowiki.settings.mvi
 
-import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
+import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 
-data class ShowingAmiiboDetailsParams(
-    val amiiboDetails: ViewAmiiboDetails,
-    val isRelatedGamesSectionEnabled: Boolean
-)
-
-sealed class AmiiboDetailViewState :  ViewState {
-
-    object Idling : AmiiboDetailViewState()
-    object Loading : AmiiboDetailViewState()
-    data class ShowingAmiiboDetails(val showingAmiiboDetailsParams: ShowingAmiiboDetailsParams) :
-        AmiiboDetailViewState()
-    data class ShowingAmiiboImage(val imageUrl: String) : AmiiboDetailViewState()
-    data class Error(val exception: AmiiboDetailFailure):AmiiboDetailViewState()
-
+sealed class SettingsViewState() : ViewState {
+    object Idling : SettingsViewState()
+    object Loading : SettingsViewState()
+    data class Preferences(val preferences: Collection<PreferenceBuilder>) : SettingsViewState()
+    object ShowingDevelopmentActivity : SettingsViewState()
+    object ActivityShouldBeRecreated : SettingsViewState()
+    object ShowingDarkModeDialog: SettingsViewState()
 }

@@ -31,6 +31,7 @@ import com.google.android.youtube.player.YouTubeStandalonePlayer
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.entrypoints.GameDetailEntryPoint
+import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
 import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
@@ -46,13 +47,14 @@ import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding
 import com.oscarg798.amiibowiki.gamedetail.di.DaggerGameDetailComponent
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewStateCompat
+import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
@@ -62,22 +64,22 @@ import kotlinx.coroutines.flow.onEach
 class GameDetailActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModel: GameDetailViewModelCompat
+    lateinit var viewModel: GameDetailViewModel
 
     @Inject
     lateinit var config: Config
 
     private lateinit var binding: ActivityGameDetailBinding
 
-    private lateinit var currentState: GameDetailViewStateCompat
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGameDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val gameId: Int by bundle(ARGUMENT_GAME_ID)
         DaggerGameDetailComponent.factory()
             .create(
+                gameId,
                 EntryPointAccessors.fromApplication(
                     application,
                     GameDetailEntryPoint::class.java
@@ -118,20 +120,22 @@ class GameDetailActivity : AppCompatActivity() {
         isAndroidQOrHigher() && AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
     private fun setupViewModel() {
-        viewModel.state.onEach { state ->
-            currentState = state
-            when {
-                state.isLoading -> showLoading()
-                state.error != null -> showError()
-                state.gameTrailer != null -> showGameTrailer(state)
-                state.expandedImages != null -> showExpandedImages(state.expandedImages)
-                state.gameDetails != null -> showGameDetails(state.gameDetails)
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.state.collect { state ->
+                when(state){
+                    is GameDetailViewState.Loading -> showLoading()
+                    is GameDetailViewState.ShowingGameImages ->showExpandedImages(state.images)
+                    is GameDetailViewState.ShowingGameDetails -> showGameDetails(state.game)
+                    is GameDetailViewState.ShowingGameTrailer -> showGameTrailer(state)
+                    is GameDetailViewState.Error -> showError()
+                }
             }
-        }.launchIn(lifecycleScope)
+        }
 
         merge(
             flowOf(
-                GameDetailWish.ShowGameDetail(intent.getIntExtra(ARGUMENT_GAME_ID, DEFAULT_GAME_ID))
+                GameDetailWish.ShowGameDetail
             ),
             getTrailerClickFlow()
         ).onEach {
@@ -139,11 +143,11 @@ class GameDetailActivity : AppCompatActivity() {
         }.launchIn(lifecycleScope)
     }
 
-    private fun showGameTrailer(state: GameDetailViewStateCompat) {
+    private fun showGameTrailer(state: GameDetailViewState.ShowingGameTrailer) {
         val intent = YouTubeStandalonePlayer.createVideoIntent(
             this,
             config.googleAPIKey,
-            state.gameTrailer, START_TIME, true, true
+            state.trailer, START_TIME, true, true
         )
         startActivity(intent)
     }
@@ -197,21 +201,11 @@ class GameDetailActivity : AppCompatActivity() {
     }
 
     private fun getTrailerClickFlow() = callbackFlow<GameDetailWish> {
-        binding.tvTrailer.setOnClickListener { offerTrailerClickWish() }
+        binding.tvTrailer.setOnClickListener {   offer(GameDetailWish.PlayGameTrailer)}
 
         awaitClose {
             binding.tvTrailer.setOnClickListener {}
         }
-    }
-
-    private fun ProducerScope<GameDetailWish>.offerTrailerClickWish() {
-        val game = currentState.gameDetails ?: throw NullPointerException("Game can not be null")
-
-        val trailerId =
-            game.videosId?.firstOrNull() ?: throw GameDetailFailure.GameDoesNotIncludeTrailer(
-                game.id
-            )
-        offer(GameDetailWish.PlayGameTrailer(game.id, trailerId))
     }
 
     private fun showGameDetails(game: Game) {

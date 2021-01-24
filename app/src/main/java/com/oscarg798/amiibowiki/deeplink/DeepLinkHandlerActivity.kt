@@ -14,22 +14,27 @@ package com.oscarg798.amiibowiki.deeplink
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import com.airbnb.deeplinkdispatch.DeepLinkHandler
+import com.oscarg798.amiibowiki.amiibodetail.deeplink.AmiiboDetailDeepLinkModule
+import com.oscarg798.amiibowiki.amiibodetail.deeplink.AmiiboDetailDeepLinkModuleRegistry
 
 import com.oscarg798.amiibowiki.gamedetail.deeplink.GameDetailDeepLinkModule
 import com.oscarg798.amiibowiki.gamedetail.deeplink.GameDetailDeepLinkModuleRegistry
 
 @DeepLinkHandler(
-    GameDetailDeepLinkModule::class
+    GameDetailDeepLinkModule::class,
+    AmiiboDetailDeepLinkModule::class
 )
 class DeepLinkHandlerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val deepLinkDelegate = DeepLinkDelegate(
-            GameDetailDeepLinkModuleRegistry()
+            GameDetailDeepLinkModuleRegistry(),
+            AmiiboDetailDeepLinkModuleRegistry()
         )
-        
+
         deepLinkDelegate.dispatchFrom(this)
         finish()
     }

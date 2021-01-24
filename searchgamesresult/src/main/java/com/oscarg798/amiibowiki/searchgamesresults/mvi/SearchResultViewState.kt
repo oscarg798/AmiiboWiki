@@ -10,33 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.nfcreader.mvi
+package com.oscarg798.amiibowiki.searchgamesresults.mvi
 
-import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
-import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
-import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
+import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
+import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
+import kotlinx.android.parcel.Parcelize
 
-data class NFCReaderViewStateCompat(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val amiiboIdentifier: AmiiboIdentifier?,
-    val adapterStatus: AdapterStatus?,
-    val error: NFCReaderFailure? = null
-) : ViewStateCompat {
 
-    sealed class AdapterStatus {
-        object Idle : AdapterStatus()
-        object AdapterAvailable : AdapterStatus()
-        object AdapterReadyToBeStoped : AdapterStatus()
-    }
+data class ShowingGameDetailsParams(val gameId: Int)
 
-    companion object {
-        fun init() = NFCReaderViewStateCompat(
-            isIdling = true,
-            isLoading = false,
-            amiiboIdentifier = null,
-            adapterStatus = null,
-            error = null
-        )
-    }
+sealed class SearchResultViewState() : ViewState {
+
+    object Idling : SearchResultViewState()
+    object Loading : SearchResultViewState()
+    data class ShowingGameResults(val results: List<ViewGameSearchResult>) : SearchResultViewState()
+    data class ShowingGameDetails(val details: ShowingGameDetailsParams) : SearchResultViewState()
+    data class Error(val error: SearchGameFailure) : SearchResultViewState()
+
 }

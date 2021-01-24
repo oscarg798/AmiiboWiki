@@ -12,16 +12,16 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
+import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLogger
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultResult
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewStateCompat
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByAmiiboUseCase
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByQueryUseCase
@@ -42,10 +42,10 @@ class SearchGamesResultViewModelCompat @Inject constructor(
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val searchGamesByQueryUseCase: SearchGamesByQueryUseCase,
     private val searchGamesLogger: SearchGamesResultLogger,
-    override val reducer: ReducerCompat<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewStateCompat>,
+    override val reducer: Reducer<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModelCompat<SearchResultWish, SearchResultResult, SearchResultViewStateCompat>(
-    SearchResultViewStateCompat.init()
+) : AbstractViewModel<SearchResultWish, SearchResultResult, SearchResultViewState>(
+    SearchResultViewState.Idling
 ) {
     override suspend fun getResult(wish: SearchResultWish): Flow<SearchResultResult> = when {
         wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.AmiiboGameSearchParam -> {

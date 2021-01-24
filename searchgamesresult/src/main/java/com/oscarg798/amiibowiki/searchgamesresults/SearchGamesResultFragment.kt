@@ -33,9 +33,10 @@ import com.oscarg798.amiibowiki.searchgamesresults.adapter.SearchResultClickList
 import com.oscarg798.amiibowiki.searchgamesresults.databinding.FragmentSearchResultBinding
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewStateCompat
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -47,8 +48,6 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     private lateinit var binding: FragmentSearchResultBinding
 
     private var gameSearchResultCoverImageView: ImageView? = null
-
-    private lateinit var currentState: SearchResultViewStateCompat
 
     private  val isShownAsGamesRelatedSection: Boolean by bundle(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION)
 
@@ -72,35 +71,6 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         super.onViewCreated(view, savedInstanceState)
         setup()
     }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (wasPresentingResults()) {
-            showGameResults(currentState.gamesSearchResults!!)
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (!requireActivity().intent.hasExtra(ARGUMENT_CURRENT_SEARCH_RESULT_STATE)) {
-            return
-        }
-
-        currentState = activity?.intent?.getParcelableExtra<SearchResultViewStateCompat>(
-            ARGUMENT_CURRENT_SEARCH_RESULT_STATE
-        )!!
-    }
-
-    override fun onDetach() {
-        if (!isShownAsGamesRelatedSection && ::currentState.isInitialized) {
-            activity?.intent?.putExtra(ARGUMENT_CURRENT_SEARCH_RESULT_STATE, currentState)
-        }
-        super.onDetach()
-    }
-
-    private fun wasPresentingResults() =
-        ::currentState.isInitialized && !currentState.isLoading && currentState.gamesSearchResults != null && !isShownAsGamesRelatedSection
 
     private fun setup() {
         val relatedGamesViewsVisibility = if (isShownAsGamesRelatedSection) {
@@ -127,17 +97,18 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     }
 
     private fun setupViewModelInteractions() {
-        viewModel.state.onEach {
-            currentState = it
-            when {
-                it.isLoading -> showLoading()
-                it.error != null -> showError(it.error)
-                it.showingGameDetails != null -> showGameDetails(
-                    it.showingGameDetails.gameId
-                )
-                it.gamesSearchResults != null -> showGameResults(it.gamesSearchResults)
+        lifecycleScope.launchWhenResumed {
+            viewModel.state.collect { state->
+                when(state){
+                    SearchResultViewState.Loading -> showLoading()
+                    is SearchResultViewState.ShowingGameResults ->showGameResults(state.results)
+                    is SearchResultViewState.ShowingGameDetails -> showGameDetails(
+                        state.details.gameId
+                    )
+                    is SearchResultViewState.Error -> showError(state.error)
+                }
             }
-        }.launchIn(lifecycleScope)
+        }
     }
 
     fun search(gameSearchGameQueryParam: GameSearchParam) {

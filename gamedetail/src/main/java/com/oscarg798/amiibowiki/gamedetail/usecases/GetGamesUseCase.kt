@@ -15,14 +15,23 @@ package com.oscarg798.amiibowiki.gamedetail.usecases
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
+import com.oscarg798.amiibowiki.gamedetail.di.GameDetailScope
 import com.oscarg798.amiibowiki.gamedetail.models.COVER_SIZE
 import com.oscarg798.amiibowiki.gamedetail.models.ORIGINAL_IMAGE_SIZE
 import com.oscarg798.amiibowiki.gamedetail.models.SCREENSHOT_IMAGE_SIZE
+import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
 
+@GameDetailScope
 class GetGamesUseCase @Inject constructor(private val gameRepository: GameRepository) {
 
+    private lateinit var cachedGame: Game
+
     suspend fun execute(gameId: Id): Game {
+        if (isGameCached(gameId)) {
+            return cachedGame
+        }
+
         var game = gameRepository.getGame(gameId)
 
         if (game.cover != null) {
@@ -47,6 +56,8 @@ class GetGamesUseCase @Inject constructor(private val gameRepository: GameReposi
 
         return game
     }
+
+    private fun isGameCached(gameId: Id) = ::cachedGame.isInitialized && cachedGame.id == gameId
 
     private fun transformImageUrl(url: String, desiredSize: String = SCREENSHOT_IMAGE_SIZE) =
         url.replace(ORIGINAL_SCHEMA, DESIRED_SCHEMA).replace(ORIGINAL_IMAGE_SIZE, desiredSize)

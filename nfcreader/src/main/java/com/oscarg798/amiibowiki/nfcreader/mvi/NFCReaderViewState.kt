@@ -10,20 +10,24 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.mvi
+package com.oscarg798.amiibowiki.nfcreader.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
-import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
+import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
+import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-interface ReducerCompat<in Result : MVIResult, ViewState : ViewStateCompat> {
+import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 
-    suspend fun reduce(state: ViewState, from: Result): ViewState
+sealed class NFCReaderViewState : ViewState {
+
+    object Idling: NFCReaderViewState()
+    object Loading: NFCReaderViewState()
+    data class ShowingAmiibo(val amiiboIdentifier: AmiiboIdentifier): NFCReaderViewState()
+    data class AdapterStatusFound(val status: AdapterStatus): NFCReaderViewState()
+    data class Error(val error: NFCReaderFailure): NFCReaderViewState()
+
+    sealed class AdapterStatus {
+        object Idle : AdapterStatus()
+        object AdapterAvailable : AdapterStatus()
+        object AdapterReadyToBeStoped : AdapterStatus()
+    }
 }
-
-
-interface Reducer<in Result : MVIResult, ViewState : MVIViewState> {
-
-    suspend fun reduce(state: ViewState, from: Result): ViewState
-}
-
-
