@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,26 +10,29 @@
  *
  */
 
-package com.oscarg798.amiibowiki.nfcreader.mvi
+package com.oscarg798.amiibowiki.amiibodetail
 
+import android.app.Activity
+import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import androidx.appcompat.app.AppCompatActivity
+import com.airbnb.deeplinkdispatch.DeepLink
+import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailDeeplinkBinding
+import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
+import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
+import dagger.hilt.android.AndroidEntryPoint
 
-import javax.inject.Inject
+@AndroidEntryPoint
+@DeepLink(AMIIBO_DETAIL_DEEPLINK)
+class AmiiboDetailDeepLinkActivity : AppCompatActivity() {
 
-class NFCReducer @Inject constructor() : Reducer<NFCReaderResult, NFCReaderViewState> {
-
-    override suspend fun reduce(
-        state: NFCReaderViewState,
-        from: NFCReaderResult
-    ): NFCReaderViewState  {
-        return when (from) {
-            is NFCReaderResult.Reading -> NFCReaderViewState.Loading
-            is NFCReaderResult.AdapterReady -> NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterAvailable)
-            is NFCReaderResult.AdapterDisabled,
-            is NFCReaderResult.AdapterStoped -> NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped)
-            is NFCReaderResult.ReadSuccessful -> NFCReaderViewState.ShowingAmiibo(from.amiiboIdentifier)
-            is NFCReaderResult.Error -> NFCReaderViewState.Error(from.error)
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(ActivityAmiiboDetailDeeplinkBinding.inflate(layoutInflater).root)
+        supportFragmentManager.beginTransaction().replace(R.id.flMain, AmiiboDetailFragment().apply {
+            arguments = intent.extras
+        }).commitNow()
+        Log.i("PENE", "PENE")
     }
 }

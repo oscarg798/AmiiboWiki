@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,29 +10,21 @@
  *
  */
 
-package com.oscarg798.amiibowiki.gamedetail.mvi
+package com.oscarg798.amiibowiki.gamedetail.usecases
 
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
-import com.oscarg798.amiibowiki.core.models.Game
-import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
+import com.oscarg798.amiibowiki.core.models.Id
+import com.oscarg798.amiibowiki.gamedetail.di.GameDetailScope
+import dagger.hilt.android.scopes.FragmentScoped
+import javax.inject.Inject
 
-data class GameDetailViewStateCompat(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val expandedImages: Collection<String>?,
-    val gameDetails: Game?,
-    val gameTrailer: String?,
-    val error: GameDetailFailure? = null
-) : ViewStateCompat {
+@GameDetailScope
+class GetGameTrailerUseCase @Inject constructor(private val getGamesUseCase: GetGamesUseCase) {
 
-    companion object {
-        fun init() = GameDetailViewStateCompat(
-            isIdling = true,
-            isLoading = false,
-            expandedImages = null,
-            gameDetails = null,
-            gameTrailer = null,
-            error = null
-        )
+    suspend fun execute(gameId: Id): String {
+        return getGamesUseCase.execute(gameId).videosId?.firstOrNull()
+            ?: throw GameDetailFailure.GameDoesNotIncludeTrailer(
+                gameId
+            )
     }
 }

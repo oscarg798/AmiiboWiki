@@ -13,9 +13,7 @@
 package com.oscarg798.amiibowiki.searchgames
 
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesResult

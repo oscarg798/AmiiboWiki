@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.amiibolist.mvi
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+
 import javax.inject.Inject
 
 class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, AmiiboListViewState> {

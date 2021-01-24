@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.splash.mvi
 
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+
 import javax.inject.Inject
 
 class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewState> {

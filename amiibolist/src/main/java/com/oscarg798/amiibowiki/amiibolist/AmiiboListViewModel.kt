@@ -21,10 +21,8 @@ import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.SearchAmiibosUseCase
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider

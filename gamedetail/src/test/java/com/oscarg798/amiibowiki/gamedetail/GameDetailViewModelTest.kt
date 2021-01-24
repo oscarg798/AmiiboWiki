@@ -33,10 +33,10 @@ import org.junit.Rule
 import org.junit.Test
 
 class GameDetailViewModelTest :
-    ViewModelTestRule.ViewModelCreator<GameDetailViewStateCompat, GameDetailViewModelCompat> {
+    ViewModelTestRule.ViewModelCreator<GameDetailViewStateCompat, GameDetailViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRule<GameDetailViewStateCompat, GameDetailViewModelCompat>(this)
+    val viewModelTestRule = ViewModelTestRule<GameDetailViewStateCompat, GameDetailViewModel>(this)
 
     private val gameDetailLogger = relaxedMockk<GameDetailLogger>()
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()
@@ -49,7 +49,7 @@ class GameDetailViewModelTest :
         coEvery { expandGameImagesUseCase.execute(EXPAND_IMAGE_PARAMS) } answers { EXPANDED_IMAGES }
     }
 
-    override fun create(): GameDetailViewModelCompat = GameDetailViewModelCompat(
+    override fun create(): GameDetailViewModel = GameDetailViewModel(
         getGamesUseCase,
         expandGameImagesUseCase,
         gameDetailLogger,

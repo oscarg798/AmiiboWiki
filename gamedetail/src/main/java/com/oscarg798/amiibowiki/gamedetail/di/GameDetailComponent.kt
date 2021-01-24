@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.gamedetail.di
 
 import com.oscarg798.amiibowiki.core.di.entrypoints.GameDetailEntryPoint
 import com.oscarg798.amiibowiki.gamedetail.GameDetailActivity
+import dagger.BindsInstance
 import dagger.Component
 
 @GameDetailScope
@@ -24,6 +25,9 @@ interface GameDetailComponent {
     interface Factory {
 
         fun create(
+            @GameId
+            @BindsInstance
+            gameId: Int,
             gameDetailEntryPoint: GameDetailEntryPoint
         ): GameDetailComponent
     }

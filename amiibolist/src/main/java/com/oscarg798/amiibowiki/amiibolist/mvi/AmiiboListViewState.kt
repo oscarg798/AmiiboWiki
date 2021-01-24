@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.amiibolist.mvi
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
+
 
 sealed class AmiiboListViewState: ViewState {
 

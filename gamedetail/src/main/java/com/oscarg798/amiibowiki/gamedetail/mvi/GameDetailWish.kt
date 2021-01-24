@@ -17,7 +17,7 @@ import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 
 sealed class GameDetailWish : Wish {
 
-    data class ShowGameDetail(val gameId: Int) : GameDetailWish()
-    data class PlayGameTrailer(val gameId: Int, val trailerId: String) : GameDetailWish()
+    object ShowGameDetail : GameDetailWish()
+    object PlayGameTrailer : GameDetailWish()
     data class ExpandImages(val expandableImageParams: Collection<ExpandableImageParam>) : GameDetailWish()
 }

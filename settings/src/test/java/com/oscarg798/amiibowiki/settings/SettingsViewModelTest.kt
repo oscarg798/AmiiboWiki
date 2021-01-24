@@ -16,7 +16,7 @@ import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 import com.oscarg798.amiibowiki.settings.mvi.SettingsReducer
-import com.oscarg798.amiibowiki.settings.mvi.SettingsViewStateCompat
+import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
@@ -28,10 +28,10 @@ import io.mockk.spyk
 import org.junit.Rule
 import org.junit.Test
 
-class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewStateCompat, SettingsViewModelCompat> {
+class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewState, SettingsViewModelCompat> {
 
     @get: Rule
-    val viewModelTestTule = ViewModelTestRule<SettingsViewStateCompat, SettingsViewModelCompat>(this)
+    val viewModelTestTule = ViewModelTestRule<SettingsViewState, SettingsViewModelCompat>(this)
 
     private val featurePoint = relaxedMockk<SuspendFeaturePoint<PreferenceBuilder, Unit>>()
     private val saveDarkModeSelectionUseCase = relaxedMockk<SaveDarkModeSelectionUseCase>()
@@ -50,10 +50,10 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
 
         viewModelTestTule.viewModel.onWish(SettingsWish.CreatePreferences)
 
-        viewModelTestTule.testCollector wasValueEmiited SettingsViewStateCompat.init()
+        viewModelTestTule.testCollector wasValueEmiited SettingsViewState.init()
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = true,
                 isLoading = false,
                 shouldActivityBeRecreated = false,
@@ -61,7 +61,7 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
                 showDevelopmentActivity = false,
                 preferences = null
             ),
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = false,
                 isLoading = true,
                 shouldActivityBeRecreated = false,
@@ -69,7 +69,7 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
                 showDevelopmentActivity = false,
                 preferences = null
             ),
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = false,
                 isLoading = false,
                 shouldActivityBeRecreated = false,
@@ -89,7 +89,7 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
         viewModelTestTule.viewModel.onWish(SettingsWish.PreferenceClicked(DARK_MODE_PREFERENCE_KEY))
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = true,
                 isLoading = false,
                 shouldActivityBeRecreated = false,
@@ -97,7 +97,7 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
                 showDevelopmentActivity = false,
                 preferences = null
             ),
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = false,
                 isLoading = false,
                 shouldActivityBeRecreated = false,
@@ -117,7 +117,7 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
         viewModelTestTule.viewModel.onWish(SettingsWish.PreferenceClicked(DEVELOPMENT_ACTIVITY_PREFERENCE_KEY))
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = true,
                 isLoading = false,
                 shouldActivityBeRecreated = false,
@@ -125,7 +125,7 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
                 showDevelopmentActivity = false,
                 preferences = null
             ),
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = false,
                 isLoading = false,
                 shouldActivityBeRecreated = false,
@@ -145,7 +145,7 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
         viewModelTestTule.viewModel.onWish(SettingsWish.DarkModeOptionSelected("1"))
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = true,
                 isLoading = false,
                 shouldActivityBeRecreated = false,
@@ -153,7 +153,7 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
                 showDevelopmentActivity = false,
                 preferences = null
             ),
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = false,
                 isLoading = true,
                 shouldActivityBeRecreated = false,
@@ -161,7 +161,7 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
                 showDevelopmentActivity = false,
                 preferences = null
             ),
-            SettingsViewStateCompat(
+            SettingsViewState(
                 isIdling = true,
                 isLoading = false,
                 shouldActivityBeRecreated = false,

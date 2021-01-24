@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,28 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.mvi
+package com.oscarg798.amiibowiki.gamedetail.di
 
-import com.oscarg798.amiibowiki.core.mvi.Actions as MVIActions
-import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
+import javax.inject.Qualifier
 
-interface ViewRenderer<Result : MVIResult, State : ViewStateCompat, Actions : MVIActions> {
-
-    fun render(state: State, actions: Actions)
-}
-
-interface ChildRenderer<Result : MVIResult, State : ViewStateCompat, Actions : MVIActions> : ViewRenderer<Result, State, Actions> {
-
-    fun isApplicable(state: State): Boolean
-}
-
-abstract class AbstractViewRenderer<Result : MVIResult, State : ViewStateCompat, Actions : MVIActions>(
-    private val childRenderers: List<ChildRenderer<Result, State, Actions>>
-) : ViewRenderer<Result, State, Actions> {
-
-    override fun render(state: State, actions: Actions) {
-        childRenderers.first {
-            it.isApplicable(state)
-        }.render(state, actions)
-    }
-}
+@Qualifier
+annotation class GameId

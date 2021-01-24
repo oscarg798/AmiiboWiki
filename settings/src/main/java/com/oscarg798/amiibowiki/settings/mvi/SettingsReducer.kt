@@ -12,48 +12,20 @@
 
 package com.oscarg798.amiibowiki.settings.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+import com.oscarg798.amiibowiki.core.mvi.Reducer
+
 import javax.inject.Inject
 
-class SettingsReducer @Inject constructor() : ReducerCompat<SettingsResult, SettingsViewStateCompat> {
+class SettingsReducer @Inject constructor() : Reducer<SettingsResult, SettingsViewState> {
 
     override suspend fun reduce(
-        state: SettingsViewStateCompat,
+        state: SettingsViewState,
         from: SettingsResult
-    ): SettingsViewStateCompat = when (from) {
-        is SettingsResult.Loading -> state.copy(
-            isIdling = false,
-            isLoading = true,
-            shouldActivityBeRecreated = false
-        )
-        is SettingsResult.PreferencesCreated -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            preferences = from.preferences,
-            showDevelopmentActivity = false,
-            showDarkModeDialog = false,
-            shouldActivityBeRecreated = false
-        )
-        is SettingsResult.DarkModeSelectionSaved -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            showDevelopmentActivity = false,
-            showDarkModeDialog = false,
-            shouldActivityBeRecreated = true
-        )
-        is SettingsResult.ShowDevelopmentActivity -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            showDevelopmentActivity = true,
-            showDarkModeDialog = false,
-            shouldActivityBeRecreated = false
-        )
-        SettingsResult.ShowDarkModeDialog -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            showDevelopmentActivity = false,
-            showDarkModeDialog = true,
-            shouldActivityBeRecreated = false
-        )
+    ): SettingsViewState = when (from) {
+        is SettingsResult.Loading -> SettingsViewState.Loading
+        is SettingsResult.PreferencesCreated -> SettingsViewState.Preferences(from.preferences)
+        is SettingsResult.DarkModeSelectionSaved -> SettingsViewState.ActivityShouldBeRecreated
+        is SettingsResult.ShowDevelopmentActivity -> SettingsViewState.ShowingDevelopmentActivity
+        is SettingsResult.ShowDarkModeDialog -> SettingsViewState.ShowingDarkModeDialog
     }
 }

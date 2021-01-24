@@ -10,25 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.settings.mvi
+package com.oscarg798.amiibowiki.gamedetail.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.ViewStateCompat
-import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
+import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
+import com.oscarg798.amiibowiki.core.models.Game
+import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-data class SettingsViewStateCompat(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val preferences: Collection<PreferenceBuilder>?,
-    val showDevelopmentActivity: Boolean = false,
-    val showDarkModeDialog: Boolean = false,
-    val shouldActivityBeRecreated: Boolean = false
-) : ViewStateCompat {
 
-    companion object {
-        fun init() = SettingsViewStateCompat(
-            isIdling = true,
-            isLoading = false,
-            preferences = null
-        )
-    }
+sealed class GameDetailViewState : ViewState {
+
+    object Idling: GameDetailViewState()
+    object Loading: GameDetailViewState()
+    data class ShowingGameImages(val images: Collection<String>): GameDetailViewState()
+    data class ShowingGameDetails(val game: Game): GameDetailViewState()
+    data class ShowingGameTrailer(val trailer: String): GameDetailViewState()
+    data class Error(val error: GameDetailFailure): GameDetailViewState()
 }

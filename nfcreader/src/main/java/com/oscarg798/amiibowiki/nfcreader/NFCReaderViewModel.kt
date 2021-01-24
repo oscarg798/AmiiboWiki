@@ -12,12 +12,12 @@
 
 package com.oscarg798.amiibowiki.nfcreader
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewStateCompat
+import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
@@ -28,14 +28,15 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 
-class NFCReaderViewModelCompat @Inject constructor(
+class NFCReaderViewModel @Inject constructor(
     private val validateAdapterAvailabilityUseCase: ValidateAdapterAvailabilityUseCase,
     private val readTagUseCase: ReadTagUseCase,
-    override val reducer: ReducerCompat<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewStateCompat>,
+    override val reducer: Reducer<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModelCompat<NFCReaderWish, NFCReaderResult,
-    NFCReaderViewStateCompat>(NFCReaderViewStateCompat.init()) {
+) : AbstractViewModel<NFCReaderWish, NFCReaderResult,
+    NFCReaderViewState>(NFCReaderViewState.Idling) {
 
     override suspend fun getResult(wish: NFCReaderWish): Flow<NFCReaderResult> {
         return when (wish) {
@@ -56,14 +57,15 @@ class NFCReaderViewModelCompat @Inject constructor(
         .flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private fun readTag(wish: NFCReaderWish.Read): Flow<NFCReaderResult> = flow {
-        emit(NFCReaderResult.Reading)
         val result = readTagUseCase.execute(wish.tag)
-        emit(NFCReaderResult.ReadSuccessful(result))
+        emit(NFCReaderResult.ReadSuccessful(result) as NFCReaderResult)
     }.catch { cause ->
         if (cause !is NFCReaderFailure) {
             throw cause
         }
 
         emit(NFCReaderResult.Error(cause))
+    }.onStart {
+        emit(NFCReaderResult.Reading)
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
 }

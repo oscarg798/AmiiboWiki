@@ -16,7 +16,7 @@ import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewStateCompat
+import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReducer
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
@@ -35,10 +35,10 @@ import org.junit.Test
 @InternalCoroutinesApi
 
 class NFCReaderViewModelTest :
-    ViewModelTestRule.ViewModelCreator<NFCReaderViewStateCompat, NFCReaderViewModelCompat> {
+    ViewModelTestRule.ViewModelCreator<NFCReaderViewState, NFCReaderViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRule<NFCReaderViewStateCompat, NFCReaderViewModelCompat>(this)
+    val viewModelTestRule = ViewModelTestRule<NFCReaderViewState, NFCReaderViewModel>(this)
 
     private val validateAdapterAvailabilityUseCase = mockk<ValidateAdapterAvailabilityUseCase>()
     private val readTagUseCase = mockk<ReadTagUseCase>()
@@ -51,7 +51,7 @@ class NFCReaderViewModelTest :
         every { readTagUseCase.execute(tag) } answers { AMIIBO_IDENTIFIER }
     }
 
-    override fun create(): NFCReaderViewModelCompat = NFCReaderViewModelCompat(
+    override fun create(): NFCReaderViewModel = NFCReaderViewModel(
         validateAdapterAvailabilityUseCase,
         readTagUseCase,
         reducer,
@@ -63,16 +63,16 @@ class NFCReaderViewModelTest :
         viewModelTestRule.viewModel.onWish(NFCReaderWish.ValidateAdapterAvailability)
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = true,
                 isLoading = false,
                 adapterStatus = null,
                 amiiboIdentifier = null
             ),
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = false,
                 isLoading = false,
-                adapterStatus = NFCReaderViewStateCompat.AdapterStatus.AdapterAvailable,
+                adapterStatus = NFCReaderViewState.AdapterStatus.AdapterAvailable,
                 amiiboIdentifier = null
             )
         )
@@ -82,7 +82,7 @@ class NFCReaderViewModelTest :
         }
         coVerify(exactly = 1) {
             reducer.reduce(
-                NFCReaderViewStateCompat(
+                NFCReaderViewState(
                     isIdling = true,
                     isLoading = false,
                     adapterStatus = null,
@@ -99,16 +99,16 @@ class NFCReaderViewModelTest :
         viewModelTestRule.viewModel.onWish(NFCReaderWish.ValidateAdapterAvailability)
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = true,
                 isLoading = false,
                 adapterStatus = null,
                 amiiboIdentifier = null
             ),
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = false,
                 isLoading = false,
-                adapterStatus = NFCReaderViewStateCompat.AdapterStatus.Idle,
+                adapterStatus = NFCReaderViewState.AdapterStatus.Idle,
                 amiiboIdentifier = null
             )
         )
@@ -116,7 +116,7 @@ class NFCReaderViewModelTest :
         coVerify {
             validateAdapterAvailabilityUseCase.execute()
             reducer.reduce(
-                NFCReaderViewStateCompat(
+                NFCReaderViewState(
                     isIdling = true,
                     isLoading = false,
                     adapterStatus = null,
@@ -132,23 +132,23 @@ class NFCReaderViewModelTest :
         viewModelTestRule.viewModel.onWish(NFCReaderWish.StopAdapter)
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = true,
                 isLoading = false,
                 adapterStatus = null,
                 amiiboIdentifier = null
             ),
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = false,
                 isLoading = false,
-                adapterStatus = NFCReaderViewStateCompat.AdapterStatus.AdapterReadyToBeStoped,
+                adapterStatus = NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped,
                 amiiboIdentifier = null
             )
         )
 
         coVerify {
             reducer.reduce(
-                NFCReaderViewStateCompat(
+                NFCReaderViewState(
                     isIdling = true,
                     isLoading = false,
                     adapterStatus = null,
@@ -164,19 +164,19 @@ class NFCReaderViewModelTest :
         viewModelTestRule.viewModel.onWish(NFCReaderWish.Read(tag))
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = true,
                 isLoading = false,
                 adapterStatus = null,
                 amiiboIdentifier = null
             ),
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = false,
                 isLoading = true,
                 adapterStatus = null,
                 amiiboIdentifier = null
             ),
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = false,
                 isLoading = false,
                 adapterStatus = null,
@@ -196,19 +196,19 @@ class NFCReaderViewModelTest :
         viewModelTestRule.viewModel.onWish(NFCReaderWish.Read(tag))
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = true,
                 isLoading = false,
                 adapterStatus = null,
                 amiiboIdentifier = null
             ),
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = false,
                 isLoading = true,
                 adapterStatus = null,
                 amiiboIdentifier = null
             ),
-            NFCReaderViewStateCompat(
+            NFCReaderViewState(
                 isIdling = false,
                 isLoading = false,
                 adapterStatus = null,

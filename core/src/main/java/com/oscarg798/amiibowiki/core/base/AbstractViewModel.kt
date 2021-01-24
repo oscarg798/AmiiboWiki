@@ -15,7 +15,6 @@ package com.oscarg798.amiibowiki.core.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish

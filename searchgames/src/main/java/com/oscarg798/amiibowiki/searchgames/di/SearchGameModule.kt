@@ -13,7 +13,7 @@
 package com.oscarg798.amiibowiki.searchgames.di
 
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesReducer
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesResult
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesViewState

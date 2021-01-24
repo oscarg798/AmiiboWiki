@@ -13,7 +13,7 @@
 package com.oscarg798.amiibowiki.splash.di
 
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.core.mvi.ReducerCompat
+
 import com.oscarg798.amiibowiki.splash.ui.SplashLogger
 import com.oscarg798.amiibowiki.splash.mvi.SplashReducer
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
