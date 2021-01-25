@@ -15,7 +15,6 @@ package com.oscarg798.amiibowiki.amiibolist.mvi
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import javax.inject.Inject
 
 class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, AmiiboListViewState> {
@@ -26,17 +25,22 @@ class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, Amiibo
     ): AmiiboListViewState = when (from) {
         AmiiboListResult.Loading -> AmiiboListViewState.Loading
         AmiiboListResult.FilterSelectionCancelled -> AmiiboListViewState.Idling
-        is AmiiboListResult.AmiibosFetched -> AmiiboListViewState.ShowingAmiibos(from.amiibos.map { amiibo ->
-            ViewAmiibo(amiibo)
-        })
-        is AmiiboListResult.AmiibosFiltered -> AmiiboListViewState.ShowingAmiibos(from.amiibos.map { amiibo ->
-            ViewAmiibo(amiibo)
-        })
-        is AmiiboListResult.FiltersFetched -> AmiiboListViewState.ShowingFilters(from.filters.map { amiiboType ->
-            ViewAmiiboType(amiiboType)
-        })
+        is AmiiboListResult.AmiibosFetched -> AmiiboListViewState.ShowingAmiibos(
+            from.amiibos.map { amiibo ->
+                ViewAmiibo(amiibo)
+            }
+        )
+        is AmiiboListResult.AmiibosFiltered -> AmiiboListViewState.ShowingAmiibos(
+            from.amiibos.map { amiibo ->
+                ViewAmiibo(amiibo)
+            }
+        )
+        is AmiiboListResult.FiltersFetched -> AmiiboListViewState.ShowingFilters(
+            from.filters.map { amiiboType ->
+                ViewAmiiboType(amiiboType)
+            }
+        )
         is AmiiboListResult.ShowAmiiboDetail -> AmiiboListViewState.ShowingAmiiboDetails(from.amiiboTail)
         is AmiiboListResult.Error -> AmiiboListViewState.Error(from.error)
     }
-
 }

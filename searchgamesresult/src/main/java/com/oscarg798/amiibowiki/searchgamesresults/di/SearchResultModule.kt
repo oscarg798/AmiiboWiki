@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.searchgamesresults.di
 
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLogger
 import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLoggerImpl
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultReducer
@@ -39,4 +38,3 @@ object SearchResultModule {
     @Provides
     fun provideLogger(logger: Logger): SearchGamesResultLogger = SearchGamesResultLoggerImpl(logger)
 }
-

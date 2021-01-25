@@ -17,7 +17,6 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
-    id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
 }
 
@@ -26,6 +25,7 @@ apply from: '../gradlescripts/tests.gradle.kts'
 apply from: '../gradlescripts/citask.gradle.kts'
 apply from: '../gradlescripts/release.gradle'
 apply from: '../gradlescripts/playstorerelease.gradle.kts'
+apply from: "../gradlescripts/hiltshared.gradle"
 
 android {
     signingConfigs {
@@ -140,12 +140,6 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.2"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.2"
 
-    //Dagger
-    implementation dagger
-    implementation daggerAndroidSupport
-    kapt daggerCompiler
-    kapt daggerAndroidProcessor
-
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02"
     implementation hiltLib
     kapt hiltKAPT
@@ -205,11 +199,8 @@ dependencies {
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
 
-    androidTestImplementation hiltLib
-    kaptAndroidTest hiltKAPT
-
-    implementation "androidx.hilt:hilt-common:$hiltVersion2"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltVersion2"
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.31-alpha'
+    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.31-alpha'
 
     implementation preference
 

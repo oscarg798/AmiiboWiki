@@ -32,10 +32,8 @@ import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import dagger.hilt.android.EntryPointAccessors
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collect
 
 class NFCReaderActivity : AppCompatActivity() {
 
@@ -102,12 +100,12 @@ class NFCReaderActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        //viewModel.onWish(NFCReaderWish.ValidateAdapterAvailability)
+        // viewModel.onWish(NFCReaderWish.ValidateAdapterAvailability)
     }
 
     override fun onStop() {
         super.onStop()
-       // viewModel.onWish(NFCReaderWish.StopAdapter)
+        // viewModel.onWish(NFCReaderWish.StopAdapter)
     }
     private fun setupForegroundDispatch() {
         nfcAdapter.enableForegroundDispatch(

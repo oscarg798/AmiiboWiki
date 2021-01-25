@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.searchgames.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import javax.inject.Inject
 
 class SearchGamesReducer @Inject constructor() : Reducer<SearchGamesResult, SearchGamesViewState> {

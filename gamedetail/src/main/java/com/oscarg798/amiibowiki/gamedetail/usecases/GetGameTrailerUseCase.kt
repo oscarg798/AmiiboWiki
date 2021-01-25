@@ -15,7 +15,6 @@ package com.oscarg798.amiibowiki.gamedetail.usecases
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.gamedetail.di.GameDetailScope
-import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
 
 @GameDetailScope

@@ -73,5 +73,3 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
         wishProcessor.tryEmit(wish)
     }
 }
-
-

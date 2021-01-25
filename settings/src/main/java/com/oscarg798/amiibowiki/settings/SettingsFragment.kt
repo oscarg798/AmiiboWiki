@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.onEach
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private val viewModel: SettingsViewModelCompat by viewModels()
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -62,8 +62,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun setupViewModel() {
         lifecycleScope.launchWhenResumed {
-            viewModel.state.collect { state->
-                when(state){
+            viewModel.state.collect { state ->
+                when (state) {
                     is SettingsViewState.Preferences -> {
                         /**
                          * Preferences must exists before setting click listener
@@ -77,11 +77,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             FeatureFlagHandlerActivity::class.java
                         )
                     )
-                    SettingsViewState.ActivityShouldBeRecreated ->  {
+                    SettingsViewState.ActivityShouldBeRecreated -> {
                         startActivity(requireActivity().intent)
                         requireActivity().finish()
                     }
-                    SettingsViewState.ShowingDarkModeDialog ->showDarkModeDialog()
+                    SettingsViewState.ShowingDarkModeDialog -> showDarkModeDialog()
                 }
             }
         }
@@ -109,7 +109,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         builder.show()
     }
 
-    private fun setupPreferencesClickListener(viewModel: SettingsViewModelCompat) {
+    private fun setupPreferencesClickListener(viewModel: SettingsViewModel) {
         merge(getDarkModePreferenceClick(), getDevelopmentActivityClick())
             .onEach {
                 viewModel.onWish(it)

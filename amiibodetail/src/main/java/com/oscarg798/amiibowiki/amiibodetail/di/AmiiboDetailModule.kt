@@ -18,7 +18,6 @@ import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailReducer
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides

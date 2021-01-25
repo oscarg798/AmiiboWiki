@@ -25,10 +25,12 @@ class SearchResultReducer @Inject constructor() :
     ): SearchResultViewState = when (from) {
         is SearchResultResult.None -> SearchResultViewState.Idling
         is SearchResultResult.Loading -> SearchResultViewState.Loading
-        is SearchResultResult.GamesFound -> SearchResultViewState.ShowingGameResults(from.gamesSearchResult.map {
-            ViewGameSearchResult(it)
-        })
-        is SearchResultResult.ShowGameDetails -> SearchResultViewState.ShowingGameDetails( ShowingGameDetailsParams(from.gameId))
+        is SearchResultResult.GamesFound -> SearchResultViewState.ShowingGameResults(
+            from.gamesSearchResult.map {
+                ViewGameSearchResult(it)
+            }
+        )
+        is SearchResultResult.ShowGameDetails -> SearchResultViewState.ShowingGameDetails(ShowingGameDetailsParams(from.gameId))
         is SearchResultResult.Error -> SearchResultViewState.Error(from.failure)
     }
 }

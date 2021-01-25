@@ -14,7 +14,6 @@ package com.oscarg798.amiibowiki.amiibodetail.mvi
 
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import javax.inject.Inject
 
 class AmiiboDetailReducer @Inject constructor() :

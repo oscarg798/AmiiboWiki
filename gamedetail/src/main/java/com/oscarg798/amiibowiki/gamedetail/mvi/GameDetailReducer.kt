@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.gamedetail.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import javax.inject.Inject
 
 class GameDetailReducer @Inject constructor() : Reducer<GameDetailResult, GameDetailViewState> {

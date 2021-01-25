@@ -16,13 +16,12 @@ import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-
-sealed class AmiiboListViewState: ViewState {
+sealed class AmiiboListViewState : ViewState {
 
     object Idling : AmiiboListViewState()
-    object Loading: AmiiboListViewState()
-    data class ShowingAmiibos(val amiibos: Collection<ViewAmiibo>): AmiiboListViewState()
-    data class ShowingFilters(val filters: Collection<ViewAmiiboType>): AmiiboListViewState()
-    data class ShowingAmiiboDetails(val amiiboId: String): AmiiboListViewState()
-    data class Error(val error: AmiiboListFailure): AmiiboListViewState()
+    object Loading : AmiiboListViewState()
+    data class ShowingAmiibos(val amiibos: Collection<ViewAmiibo>) : AmiiboListViewState()
+    data class ShowingFilters(val filters: Collection<ViewAmiiboType>) : AmiiboListViewState()
+    data class ShowingAmiiboDetails(val amiiboId: String) : AmiiboListViewState()
+    data class Error(val error: AmiiboListFailure) : AmiiboListViewState()
 }

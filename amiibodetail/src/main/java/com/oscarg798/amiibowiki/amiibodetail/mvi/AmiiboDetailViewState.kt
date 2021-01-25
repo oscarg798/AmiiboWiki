@@ -16,19 +16,17 @@ import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-
 data class ShowingAmiiboDetailsParams(
     val amiiboDetails: ViewAmiiboDetails,
     val isRelatedGamesSectionEnabled: Boolean
 )
 
-sealed class AmiiboDetailViewState :  ViewState {
+sealed class AmiiboDetailViewState : ViewState {
 
     object Idling : AmiiboDetailViewState()
     object Loading : AmiiboDetailViewState()
     data class ShowingAmiiboDetails(val showingAmiiboDetailsParams: ShowingAmiiboDetailsParams) :
         AmiiboDetailViewState()
     data class ShowingAmiiboImage(val imageUrl: String) : AmiiboDetailViewState()
-    data class Error(val exception: AmiiboDetailFailure):AmiiboDetailViewState()
-
+    data class Error(val exception: AmiiboDetailFailure) : AmiiboDetailViewState()
 }

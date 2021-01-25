@@ -19,7 +19,6 @@ import com.oscarg798.amiibowiki.gamedetail.di.GameDetailScope
 import com.oscarg798.amiibowiki.gamedetail.models.COVER_SIZE
 import com.oscarg798.amiibowiki.gamedetail.models.ORIGINAL_IMAGE_SIZE
 import com.oscarg798.amiibowiki.gamedetail.models.SCREENSHOT_IMAGE_SIZE
-import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
 
 @GameDetailScope
@@ -54,7 +53,9 @@ class GetGamesUseCase @Inject constructor(private val gameRepository: GameReposi
             )
         }
 
-        return game
+        return game.also {
+            cachedGame = it
+        }
     }
 
     private fun isGameCached(gameId: Id) = ::cachedGame.isInitialized && cachedGame.id == gameId

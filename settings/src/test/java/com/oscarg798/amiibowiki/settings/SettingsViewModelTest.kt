@@ -28,16 +28,16 @@ import io.mockk.spyk
 import org.junit.Rule
 import org.junit.Test
 
-class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewState, SettingsViewModelCompat> {
+class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewState, SettingsViewModel> {
 
     @get: Rule
-    val viewModelTestTule = ViewModelTestRule<SettingsViewState, SettingsViewModelCompat>(this)
+    val viewModelTestTule = ViewModelTestRule<SettingsViewState, SettingsViewModel>(this)
 
     private val featurePoint = relaxedMockk<SuspendFeaturePoint<PreferenceBuilder, Unit>>()
     private val saveDarkModeSelectionUseCase = relaxedMockk<SaveDarkModeSelectionUseCase>()
     private val reducer = spyk(SettingsReducer())
 
-    override fun create(): SettingsViewModelCompat = SettingsViewModelCompat(
+    override fun create(): SettingsViewModel = SettingsViewModel(
         saveDarkModeSelectionUseCase,
         featurePoint,
         reducer,
@@ -50,33 +50,12 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
 
         viewModelTestTule.viewModel.onWish(SettingsWish.CreatePreferences)
 
-        viewModelTestTule.testCollector wasValueEmiited SettingsViewState.init()
+        viewModelTestTule.testCollector wasValueEmiited SettingsViewState.Idling
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewState(
-                isIdling = true,
-                isLoading = false,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = false,
-                showDevelopmentActivity = false,
-                preferences = null
-            ),
-            SettingsViewState(
-                isIdling = false,
-                isLoading = true,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = false,
-                showDevelopmentActivity = false,
-                preferences = null
-            ),
-            SettingsViewState(
-                isIdling = false,
-                isLoading = false,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = false,
-                showDevelopmentActivity = false,
-                preferences = PREFERENCES.toList()
-            )
+            SettingsViewState.Idling,
+            SettingsViewState.Loading,
+            SettingsViewState.Preferences(PREFERENCES.toList())
         )
 
         coVerify(exactly = 2) {
@@ -89,22 +68,8 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
         viewModelTestTule.viewModel.onWish(SettingsWish.PreferenceClicked(DARK_MODE_PREFERENCE_KEY))
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewState(
-                isIdling = true,
-                isLoading = false,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = false,
-                showDevelopmentActivity = false,
-                preferences = null
-            ),
-            SettingsViewState(
-                isIdling = false,
-                isLoading = false,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = true,
-                showDevelopmentActivity = false,
-                preferences = null
-            )
+            SettingsViewState.Idling,
+            SettingsViewState.ShowingDarkModeDialog
         )
 
         coVerify(exactly = 1) {
@@ -117,22 +82,8 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
         viewModelTestTule.viewModel.onWish(SettingsWish.PreferenceClicked(DEVELOPMENT_ACTIVITY_PREFERENCE_KEY))
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewState(
-                isIdling = true,
-                isLoading = false,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = false,
-                showDevelopmentActivity = false,
-                preferences = null
-            ),
-            SettingsViewState(
-                isIdling = false,
-                isLoading = false,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = false,
-                showDevelopmentActivity = true,
-                preferences = null
-            )
+            SettingsViewState.Idling,
+            SettingsViewState.ShowingDevelopmentActivity
         )
 
         coVerify(exactly = 1) {
@@ -145,30 +96,9 @@ class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewSta
         viewModelTestTule.viewModel.onWish(SettingsWish.DarkModeOptionSelected("1"))
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewState(
-                isIdling = true,
-                isLoading = false,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = false,
-                showDevelopmentActivity = false,
-                preferences = null
-            ),
-            SettingsViewState(
-                isIdling = false,
-                isLoading = true,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = false,
-                showDevelopmentActivity = false,
-                preferences = null
-            ),
-            SettingsViewState(
-                isIdling = true,
-                isLoading = false,
-                shouldActivityBeRecreated = false,
-                showDarkModeDialog = false,
-                showDevelopmentActivity = false,
-                preferences = null
-            )
+            SettingsViewState.Idling,
+            SettingsViewState.Loading,
+            SettingsViewState.Idling
         )
 
         coVerify(exactly = 2) {

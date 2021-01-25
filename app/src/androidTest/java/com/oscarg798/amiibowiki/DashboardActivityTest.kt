@@ -16,6 +16,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListFragment
 import com.oscarg798.amiibowiki.amiibolist.R
+import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
 import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
@@ -44,6 +45,7 @@ import javax.inject.Inject
 @UninstallModules(
     PersistenceModule::class,
     FeatureFlagHandlerModule::class,
+    EnvirormentCheckerModule::class,
     NetworkModule::class,
     LoggerModule::class,
     AppModule::class

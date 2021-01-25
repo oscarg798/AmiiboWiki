@@ -35,7 +35,6 @@ import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
 import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
-import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.models.AgeRating
 import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
 import com.oscarg798.amiibowiki.core.models.Config
@@ -51,7 +50,6 @@ import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
-import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
@@ -123,9 +121,9 @@ class GameDetailActivity : AppCompatActivity() {
 
         lifecycleScope.launchWhenResumed {
             viewModel.state.collect { state ->
-                when(state){
+                when (state) {
                     is GameDetailViewState.Loading -> showLoading()
-                    is GameDetailViewState.ShowingGameImages ->showExpandedImages(state.images)
+                    is GameDetailViewState.ShowingGameImages -> showExpandedImages(state.images)
                     is GameDetailViewState.ShowingGameDetails -> showGameDetails(state.game)
                     is GameDetailViewState.ShowingGameTrailer -> showGameTrailer(state)
                     is GameDetailViewState.Error -> showError()
@@ -201,7 +199,7 @@ class GameDetailActivity : AppCompatActivity() {
     }
 
     private fun getTrailerClickFlow() = callbackFlow<GameDetailWish> {
-        binding.tvTrailer.setOnClickListener {   offer(GameDetailWish.PlayGameTrailer)}
+        binding.tvTrailer.setOnClickListener { offer(GameDetailWish.PlayGameTrailer) }
 
         awaitClose {
             binding.tvTrailer.setOnClickListener {}

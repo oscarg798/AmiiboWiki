@@ -14,7 +14,6 @@ package com.oscarg798.amiibowiki.gamedetail.usecases
 
 import com.oscarg798.amiibowiki.gamedetail.di.GameDetailScope
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
-import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
 
 @GameDetailScope

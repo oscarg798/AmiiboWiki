@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.gamedetail.di
 
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLoggerImpl
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailReducer

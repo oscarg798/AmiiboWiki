@@ -19,5 +19,3 @@ interface Reducer<in Result : MVIResult, ViewState : MVIViewState> {
 
     suspend fun reduce(state: ViewState, from: Result): ViewState
 }
-
-

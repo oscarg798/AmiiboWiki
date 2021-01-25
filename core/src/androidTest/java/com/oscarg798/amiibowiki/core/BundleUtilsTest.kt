@@ -15,14 +15,12 @@ package com.oscarg798.amiibowiki.core
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
 import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
 import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import io.mockk.every
@@ -30,7 +28,6 @@ import kotlinx.parcelize.Parcelize
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 
 @UninstallModules(
     PersistenceModule::class,
@@ -104,11 +101,10 @@ class BundleUtilsTest {
     fun given_a_key_for_a_unsupported_type_when_bundle_is_invoke_then_it_should_then_it_should_thown() {
         fragment.bundle<ATestClass>(KEY).value
     }
-
 }
 
 private const val BOOLEAN_VALUE = true
-private const val PARCELABLE_AGE =35
+private const val PARCELABLE_AGE = 35
 private const val PARCELABLE_NAME = "Mario Bross"
 private val PARCELABLE_VALUE = MyParcelable("Mario Bross", 35)
 private const val DELTA = 0.0
@@ -121,4 +117,4 @@ private const val KEY = "String"
 private class ATestClass
 
 @Parcelize
-private class MyParcelable(val name: String, val age: Int): Parcelable
+private class MyParcelable(val name: String, val age: Int) : Parcelable
