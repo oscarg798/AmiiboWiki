@@ -12,9 +12,7 @@
 
 package com.oscarg798.amiibowiki.nfcreader.mvi
 
-import android.util.Log
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import javax.inject.Inject
 
 class NFCReducer @Inject constructor() : Reducer<NFCReaderResult, NFCReaderViewState> {
@@ -22,7 +20,7 @@ class NFCReducer @Inject constructor() : Reducer<NFCReaderResult, NFCReaderViewS
     override suspend fun reduce(
         state: NFCReaderViewState,
         from: NFCReaderResult
-    ): NFCReaderViewState  {
+    ): NFCReaderViewState {
         return when (from) {
             is NFCReaderResult.Reading -> NFCReaderViewState.Loading
             is NFCReaderResult.AdapterReady -> NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterAvailable)

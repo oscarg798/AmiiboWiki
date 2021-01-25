@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.settings.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import javax.inject.Inject
 
 class SettingsReducer @Inject constructor() : Reducer<SettingsResult, SettingsViewState> {

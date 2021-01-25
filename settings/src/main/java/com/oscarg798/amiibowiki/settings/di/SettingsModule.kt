@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.settings.di
 
 import com.oscarg798.amiibowiki.core.mvi.Reducer
-
 import com.oscarg798.amiibowiki.settings.featurepoint.DarkModelPreferenceFeatureFactory
 import com.oscarg798.amiibowiki.settings.featurepoint.DevelopmentActivityFeatureFactory
 import com.oscarg798.amiibowiki.settings.featurepoint.MaxNumberOfResultInSearchFeatureFactory

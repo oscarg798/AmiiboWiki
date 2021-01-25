@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 
 @HiltViewModel
-class SettingsViewModelCompat @Inject constructor(
+class SettingsViewModel @Inject constructor(
     private val saveDarkModeSelectionUseCase: SaveDarkModeSelectionUseCase,
     private val featurePoint: SuspendFeaturePoint<@JvmSuppressWildcards PreferenceBuilder, @JvmSuppressWildcards Unit>,
     override val reducer: Reducer<@JvmSuppressWildcards SettingsResult, @JvmSuppressWildcards SettingsViewState>,

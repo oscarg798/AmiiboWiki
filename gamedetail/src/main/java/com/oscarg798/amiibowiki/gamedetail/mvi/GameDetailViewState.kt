@@ -16,13 +16,12 @@ import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-
 sealed class GameDetailViewState : ViewState {
 
-    object Idling: GameDetailViewState()
-    object Loading: GameDetailViewState()
-    data class ShowingGameImages(val images: Collection<String>): GameDetailViewState()
-    data class ShowingGameDetails(val game: Game): GameDetailViewState()
-    data class ShowingGameTrailer(val trailer: String): GameDetailViewState()
-    data class Error(val error: GameDetailFailure): GameDetailViewState()
+    object Idling : GameDetailViewState()
+    object Loading : GameDetailViewState()
+    data class ShowingGameImages(val images: Collection<String>) : GameDetailViewState()
+    data class ShowingGameDetails(val game: Game) : GameDetailViewState()
+    data class ShowingGameTrailer(val trailer: String) : GameDetailViewState()
+    data class Error(val error: GameDetailFailure) : GameDetailViewState()
 }

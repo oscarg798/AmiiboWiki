@@ -73,26 +73,13 @@ class AmiiboDetailViewModelTest :
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewState(
-                isIdling = true,
-                isLoading = false,
-                imageExpanded = null,
-                amiiboDetails = null,
-                error = null
-            ),
-            AmiiboDetailViewState(
-                isIdling = false,
-                isLoading = true,
-                imageExpanded = null,
-                amiiboDetails = null,
-                error = null
-            ),
-            AmiiboDetailViewState(
-                isIdling = false,
-                isLoading = false,
-                imageExpanded = null,
-                amiiboDetails = ShowingAmiiboDetailsParams(VIEW_AMIIBO_DETAIL, false),
-                error = null
+            AmiiboDetailViewState.Idling,
+            AmiiboDetailViewState.Loading,
+            AmiiboDetailViewState.ShowingAmiiboDetails(
+                ShowingAmiiboDetailsParams(
+                    VIEW_AMIIBO_DETAIL,
+                    false
+                )
             )
         )
 
@@ -111,26 +98,13 @@ class AmiiboDetailViewModelTest :
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewState(
-                isIdling = true,
-                isLoading = false,
-                imageExpanded = null,
-                amiiboDetails = null,
-                error = null
-            ),
-            AmiiboDetailViewState(
-                isIdling = false,
-                isLoading = true,
-                imageExpanded = null,
-                amiiboDetails = null,
-                error = null
-            ),
-            AmiiboDetailViewState(
-                isIdling = false,
-                isLoading = false,
-                imageExpanded = null,
-                amiiboDetails = ShowingAmiiboDetailsParams(VIEW_AMIIBO_DETAIL, true),
-                error = null
+            AmiiboDetailViewState.Idling,
+            AmiiboDetailViewState.Loading,
+            AmiiboDetailViewState.ShowingAmiiboDetails(
+                ShowingAmiiboDetailsParams(
+                    VIEW_AMIIBO_DETAIL,
+                    true
+                )
             )
         )
 
@@ -152,27 +126,9 @@ class AmiiboDetailViewModelTest :
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewState(
-                isIdling = true,
-                isLoading = false,
-                amiiboDetails = null,
-                imageExpanded = null,
-                error = null
-            ),
-            AmiiboDetailViewState(
-                isIdling = false,
-                isLoading = true,
-                amiiboDetails = null,
-                imageExpanded = null,
-                error = null
-            ),
-            AmiiboDetailViewState(
-                isIdling = false,
-                isLoading = false,
-                imageExpanded = null,
-                amiiboDetails = null,
-                error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)
-            )
+            AmiiboDetailViewState.Idling,
+            AmiiboDetailViewState.Loading,
+            AmiiboDetailViewState.Error(AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL))
         )
 
         coVerify {
@@ -189,20 +145,8 @@ class AmiiboDetailViewModelTest :
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(AMIIBO_IMAGE_URL))
 
         viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewState(
-                isIdling = true,
-                isLoading = false,
-                amiiboDetails = null,
-                imageExpanded = null,
-                error = null
-            ),
-            AmiiboDetailViewState(
-                isIdling = false,
-                isLoading = false,
-                amiiboDetails = null,
-                imageExpanded = AMIIBO_IMAGE_URL,
-                error = null
-            )
+            AmiiboDetailViewState.Idling,
+            AmiiboDetailViewState.ShowingAmiiboImage(AMIIBO_IMAGE_URL)
         )
     }
 

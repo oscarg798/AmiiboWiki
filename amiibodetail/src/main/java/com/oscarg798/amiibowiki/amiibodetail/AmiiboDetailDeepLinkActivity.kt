@@ -12,15 +12,12 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import android.app.Activity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailDeeplinkBinding
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
-import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,9 +27,12 @@ class AmiiboDetailDeepLinkActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ActivityAmiiboDetailDeeplinkBinding.inflate(layoutInflater).root)
-        supportFragmentManager.beginTransaction().replace(R.id.flMain, AmiiboDetailFragment().apply {
-            arguments = intent.extras
-        }).commitNow()
+        supportFragmentManager.beginTransaction().replace(
+            R.id.flMain,
+            AmiiboDetailFragment().apply {
+                arguments = intent.extras
+            }
+        ).commitNow()
         Log.i("PENE", "PENE")
     }
 }

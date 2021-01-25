@@ -18,7 +18,7 @@ import com.oscarg798.amiibowiki.splash.ui.SplashLogger
 import com.oscarg798.amiibowiki.splash.ui.SplashViewModel
 import com.oscarg798.amiibowiki.splash.mvi.SplashReducer
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewStateCompat
+import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
@@ -35,10 +35,10 @@ import org.junit.Rule
 import org.junit.Test
 
 
-class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewStateCompat, SplashViewModel> {
+class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewState, SplashViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRule<SplashViewStateCompat, SplashViewModel>(this)
+    val viewModelTestRule = ViewModelTestRule<SplashViewState, SplashViewModel>(this)
 
     private val logger = relaxedMockk<SplashLogger>()
     private val initializaApplicationUseCase = mockk<InitializeApplicationUseCase>()
@@ -60,19 +60,10 @@ class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewStateCo
     fun `given a wish to get the types when events are proccess then state value should be loading and then fetch success`() {
         viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
-        val initState = SplashViewStateCompat(
-            isIdling = true,
-            navigatingToFirstScreen = false,
-            error = null
-        )
-
+        val initState = SplashViewState.IsIdling
         viewModelTestRule.testCollector wereValuesEmitted listOf(
             initState,
-            SplashViewStateCompat(
-                isIdling = false,
-                navigatingToFirstScreen = true,
-                error = null
-            )
+            SplashViewState.NavigatingToFirstscreen
         )
 
         coVerify {
@@ -88,19 +79,10 @@ class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewStateCo
 
         viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
-        val initState = SplashViewStateCompat(
-            isIdling = true,
-            navigatingToFirstScreen = false,
-            error = null
-        )
-
+        val initState = SplashViewState.IsIdling
         viewModelTestRule.testCollector wereValuesEmitted listOf(
             initState,
-            SplashViewStateCompat(
-                isIdling = false,
-                navigatingToFirstScreen = false,
-                error = error
-            )
+            SplashViewState.Error(error)
         )
 
         coVerify {

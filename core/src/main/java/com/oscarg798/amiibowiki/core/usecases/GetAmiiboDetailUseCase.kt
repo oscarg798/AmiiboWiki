@@ -16,7 +16,6 @@ import com.oscarg798.amiibowiki.core.extensions.getOrTransform
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
-import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 
 class GetAmiiboDetailUseCase @Inject constructor(private val repository: AmiiboRepository) {

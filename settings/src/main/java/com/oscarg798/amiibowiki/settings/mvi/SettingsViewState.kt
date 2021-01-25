@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.settings.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.ViewState
-
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 
 sealed class SettingsViewState() : ViewState {
@@ -22,5 +21,5 @@ sealed class SettingsViewState() : ViewState {
     data class Preferences(val preferences: Collection<PreferenceBuilder>) : SettingsViewState()
     object ShowingDevelopmentActivity : SettingsViewState()
     object ActivityShouldBeRecreated : SettingsViewState()
-    object ShowingDarkModeDialog: SettingsViewState()
+    object ShowingDarkModeDialog : SettingsViewState()
 }

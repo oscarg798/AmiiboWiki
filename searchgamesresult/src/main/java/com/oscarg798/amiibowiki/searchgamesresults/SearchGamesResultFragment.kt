@@ -37,19 +37,17 @@ import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class SearchResultFragment : Fragment(), SearchResultClickListener {
 
-    private val viewModel: SearchGamesResultViewModelCompat by viewModels()
+    private val viewModel: SearchGamesResultViewModel by viewModels()
 
     private lateinit var binding: FragmentSearchResultBinding
 
     private var gameSearchResultCoverImageView: ImageView? = null
 
-    private  val isShownAsGamesRelatedSection: Boolean by bundle(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION)
+    private val isShownAsGamesRelatedSection: Boolean by bundle(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,10 +96,10 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
 
     private fun setupViewModelInteractions() {
         lifecycleScope.launchWhenResumed {
-            viewModel.state.collect { state->
-                when(state){
+            viewModel.state.collect { state ->
+                when (state) {
                     SearchResultViewState.Loading -> showLoading()
-                    is SearchResultViewState.ShowingGameResults ->showGameResults(state.results)
+                    is SearchResultViewState.ShowingGameResults -> showGameResults(state.results)
                     is SearchResultViewState.ShowingGameDetails -> showGameDetails(
                         state.details.gameId
                     )

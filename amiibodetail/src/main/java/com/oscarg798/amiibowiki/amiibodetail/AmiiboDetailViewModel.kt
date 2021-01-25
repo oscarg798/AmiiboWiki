@@ -25,6 +25,8 @@ import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.AssistedFactoryCreator
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -33,9 +35,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-
 
 class AmiiboDetailViewModel @AssistedInject constructor(
     @Assisted private val tail: String,

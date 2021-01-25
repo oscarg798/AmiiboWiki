@@ -15,8 +15,6 @@ package com.oscarg798.amiibowiki.searchgamesresults.mvi
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
-import kotlinx.android.parcel.Parcelize
-
 
 data class ShowingGameDetailsParams(val gameId: Int)
 
@@ -27,5 +25,4 @@ sealed class SearchResultViewState() : ViewState {
     data class ShowingGameResults(val results: List<ViewGameSearchResult>) : SearchResultViewState()
     data class ShowingGameDetails(val details: ShowingGameDetailsParams) : SearchResultViewState()
     data class Error(val error: SearchGameFailure) : SearchResultViewState()
-
 }

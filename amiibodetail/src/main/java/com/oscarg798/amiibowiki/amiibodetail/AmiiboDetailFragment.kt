@@ -35,10 +35,8 @@ import com.oscarg798.amiibowiki.core.utils.provideFactory
 import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class AmiiboDetailFragment : Fragment() {
@@ -100,7 +98,7 @@ class AmiiboDetailFragment : Fragment() {
         configureBackDrop()
     }
 
-    private fun setupViewModelInteractions(){
+    private fun setupViewModelInteractions() {
         lifecycleScope.launchWhenResumed {
             viewModel.state.collect {
                 when (it) {

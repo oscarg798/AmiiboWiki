@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 @HiltViewModel
-class SearchGamesResultViewModelCompat @Inject constructor(
+class SearchGamesResultViewModel @Inject constructor(
     private val searchGamesByAmiiboUseCase: SearchGamesByAmiiboUseCase,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val searchGamesByQueryUseCase: SearchGamesByQueryUseCase,
