@@ -25,6 +25,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@master
         with:
+          project_id: babyrecord-336ca 
           service_account_key: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
 
       - name: build debug apk 
