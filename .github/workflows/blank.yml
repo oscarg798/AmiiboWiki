@@ -36,9 +36,13 @@ jobs:
               echo gameAPIClientId=1 >> local.properties &&
               echo firebaseProjectId=2 >> local.properties &&
               echo keystoreAlias=3 >> local.properties &&
-              echo googleAccountServiceFile=/x.json >> local.properties &&
+              echo googleAccountServiceFile=/ >> local.properties &&
               echo mixpanelToken=3 >> local.properties &&
               echo gameAuthUrl=4 >> local.properties
+
+      - name: Create google-services.json
+        run:  touch app/google-services.json &&
+          echo ${{ secrets.GOOGLE_SERVICES_JSON}} >> local.properties
 
       - name: build debug apk
         run: ./gradlew assembleDebug
