@@ -36,7 +36,7 @@ jobs:
               echo gameAPIClientId=1 >> local.properties &&
               echo firebaseProjectId=2 >> local.properties &&
               echo keystoreAlias=3 >> local.properties &&
-              echo googleAccountServiceFile=/ >> local.properties &&
+              echo googleAccountServiceFile=/x.json >> local.properties &&
               echo mixpanelToken=3 >> local.properties &&
               echo gameAuthUrl=4 >> local.properties
 
