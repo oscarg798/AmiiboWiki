@@ -12,8 +12,10 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors
 
+import com.oscarg798.amiibowiki.logger.annotations.AppCrashed
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.CrashEventDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.ScreenShownMethodDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.exceptions.IllegalMethodToBeProcesseedException
@@ -22,7 +24,7 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.tools.Diagnostic
 
-class ScreenShownMethodProcessor(nextProcessor: MethodProcessor? = null) :
+class CrashMethodProcessor(nextProcessor: MethodProcessor? = null) :
     AbstractMethodProcessor(nextProcessor) {
 
     override fun processInternally(
@@ -43,15 +45,12 @@ class ScreenShownMethodProcessor(nextProcessor: MethodProcessor? = null) :
         return methodDecoratorBuilder.build()
     }
 
-    private fun getMethodMethodDecoratorBuilder(methodElement: ExecutableElement): ScreenShownMethodDecorator.Builder {
-        val screeName =
-            (methodElement.getAnnotation(ScreenShown::class.java) as ScreenShown).name
-
-        return ScreenShownMethodDecorator.Builder(screeName, getMethodName(methodElement))
+    private fun getMethodMethodDecoratorBuilder(methodElement: ExecutableElement): CrashEventDecorator.Builder {
+        return CrashEventDecorator.Builder(getMethodName(methodElement))
     }
 
     override fun canMethodBeProcessed(methodElement: Element): Boolean =
-        methodElement.getAnnotationsByType(ScreenShown::class.java).isNotEmpty()
+        methodElement.getAnnotationsByType(AppCrashed::class.java).isNotEmpty()
 
 
 }
