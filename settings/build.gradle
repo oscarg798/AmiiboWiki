@@ -12,14 +12,6 @@
 apply from: "../gradlescripts/shared.gradle"
 apply from: "../gradlescripts/hiltshared.gradle"
 
-android {
-
-    packagingOptions {
-        exclude 'META-INF/metadata.kotlin_module'
-    }
-
-}
-
 dependencies {
     implementation cardView
     implementation preference

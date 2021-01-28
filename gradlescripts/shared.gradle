@@ -61,6 +61,7 @@ android {
         exclude 'META-INF/metadata.jvm.kotlin_module'
         exclude 'kotlin/coroutines/coroutines.kotlin_builtins'
         exclude 'META-INF/descriptors.kotlin_module'
+        exclude 'META-INF/metadata.kotlin_module'
     }
 
     compileOptions {
