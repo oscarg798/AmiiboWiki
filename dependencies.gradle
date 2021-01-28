@@ -171,7 +171,6 @@ ext {
     roomTesting = "androidx.room:room-testing:$room_version"
     roomRX = "androidx.room:room-rxjava2:$android_x_room_version"
 
-
     // Network
     retrofit = "com.squareup.retrofit2:converter-gson:$retrofit_version"
     retrofitConverterScalar = "com.squareup.retrofit2:converter-scalars:$retrofit_converter_scalars_version"
