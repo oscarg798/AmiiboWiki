@@ -25,7 +25,6 @@ jobs:
       - name: Set up Cloud SDK
         uses: actions-hub/gcloud@master
         env:
-          PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
           APPLICATION_CREDENTIALS: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
 
       - name: build debug apk 
