@@ -1,0 +1,16 @@
+OnePlus3T:
+
+
+type: instrumentation
+
+
+timeout: 30m
+
+
+device-ids: OnePlus3T
+
+
+os-version-ids: [28, 30]
+
+
+locales: en
