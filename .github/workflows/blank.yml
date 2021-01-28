@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up Cloud SDK
-        uses:  actions-hub/gcloud@master
+        uses: actions-hub/gcloud@master
         env:
           PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
           APPLICATION_CREDENTIALS: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
