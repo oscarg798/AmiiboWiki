@@ -41,7 +41,7 @@ jobs:
               echo gameAuthUrl=4 >> local.properties
 
       - name: Create google-services.json
-        run:  touch app/google-services.json &&
+        run:  touch app/google-services.json
 
       - name: build debug apk
         run: ./gradlew assembleDebug
