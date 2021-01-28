@@ -38,7 +38,7 @@ jobs:
               echo keystoreAlias=3 >> local.properties &&
               echo googleAccountServiceFile=/ >> local.properties &&
               echo mixpanelToken=3 >> local.properties &&
-              echo gameAuthUrl=4 >> local.properties &&
+              echo gameAuthUrl=4 >> local.properties
 
       - name: build debug apk
         run: ./gradlew assembleDebug
