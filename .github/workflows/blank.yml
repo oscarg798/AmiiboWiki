@@ -24,12 +24,24 @@ jobs:
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@master
-        with: 
-            project_id: babyrecord-336ca
-            service_account_key: ${{ secrets.GCP_SA_KEY }}
-            
-      - name: Use gcloud CLI
-        run: gcloud projects list
+        with:
+          project_id: babyrecord-336ca
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
 
-      - name: build android tests apk 
+      - name: Create local.properties
+        run:  touch local.properties &&
+          echo googleApiKey=2 >> local.properties &&
+          echo keystorepath=/ >> local.properties &&
+          echo keystorePassword=dummy >> local.properties &&
+          echo gameAPIClientId=1 >> local.properties &&
+          echo firebaseProjectId=2 >> local.properties &&
+          echo keystoreAlias=3 >> local.properties &&
+          echo googleAccountServiceFile=/ >> local.properties &&
+          echo mixpanelToken=3 >> local.properties &&
+          echo gameAuthUrl=4 >> local.properties &&
+
+      - name: build debug apk
+        run: ./gradlew assembleDebug
+
+      - name: build android tests apk
         run: ./gradlew assembleAndroidTest
