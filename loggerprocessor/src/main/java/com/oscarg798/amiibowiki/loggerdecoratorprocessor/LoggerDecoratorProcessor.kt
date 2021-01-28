@@ -15,10 +15,12 @@ package com.oscarg798.amiibowiki.loggerdecoratorprocessor
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.DecoratorBuilder
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.CrashEventFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.FunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.RegularEventFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.ScreenShownFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.WidgetClikedFunctionCreator
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.CrashMethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.MethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.RegularEventMethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.ScreenShownMethodProcessor
@@ -53,12 +55,19 @@ class LoggerDecoratorProcessor : AbstractProcessor() {
      */
     private val decoratorBuilders = mutableSetOf<DecoratorBuilder>()
     private val screenShownMethodProcessor: MethodProcessor =
-        ScreenShownMethodProcessor(WidgetClickedMethodProcessor(RegularEventMethodProcessor()))
+        ScreenShownMethodProcessor(
+            WidgetClickedMethodProcessor(
+                RegularEventMethodProcessor(
+                    CrashMethodProcessor()
+                )
+            )
+        )
 
     private val functionCreators = setOf<FunctionCreator<MethodDecorator>>(
         ScreenShownFunctionCreator() as FunctionCreator<MethodDecorator>,
         WidgetClikedFunctionCreator() as FunctionCreator<MethodDecorator>,
-        RegularEventFunctionCreator() as FunctionCreator<MethodDecorator>
+        RegularEventFunctionCreator() as FunctionCreator<MethodDecorator>,
+        CrashEventFunctionCreator() as FunctionCreator<MethodDecorator>
     )
 
     private lateinit var filer: Filer

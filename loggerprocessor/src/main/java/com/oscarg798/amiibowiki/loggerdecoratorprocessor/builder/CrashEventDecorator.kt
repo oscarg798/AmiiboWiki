@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,22 +10,42 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail.logger
+package com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder
 
-import com.oscarg798.amiibowiki.logger.annotations.AppCrashed
-import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
-import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
-import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
-import java.lang.Exception
+import com.oscarg798.lomeno.event.LogSource
 
-@LoggerDecorator
-interface AmiiboDetailLogger {
+class CrashEventDecorator(
+    override val methodName: MethodName,
+    override val propertiesName: PropertiesName,
+    override val sources: Set<LogSource>?,
+) : MethodDecorator {
 
-    @ScreenShown(AMIIBO_DETAIL_SCREEN_NAME)
-    fun trackScreenShown(@LogEventProperties properties: Map<String, String>)
+    private constructor(builder: Builder) : this(
+        builder.methodName,
+        builder.propertiesName,
+        builder.sources,
+    )
 
-    @AppCrashed
-    fun onDetailCrash(@LogEventProperties exception: Exception)
+    class Builder constructor(
+        val methodName: MethodName
+    ) {
+
+        lateinit var propertiesName: PropertiesName
+
+        var sources: Set<LogSource>? = null
+            private set
+
+        fun withSources(sources: Set<LogSource>): Builder {
+            this.sources = sources
+            return this
+        }
+
+        fun withPropertiesName(propertiesName: PropertiesName): Builder {
+            this.propertiesName = propertiesName
+            return this
+        }
+
+        fun build(): CrashEventDecorator =
+            CrashEventDecorator(this)
+    }
 }
-
-private const val AMIIBO_DETAIL_SCREEN_NAME = "AMIIBO_DETAIL"
