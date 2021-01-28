@@ -145,8 +145,7 @@ dependencies {
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
     androidTestImplementation  appCompatV4
-
-
+    
     androidTestImplementation 'com.google.dagger:hilt-android-testing:2.31-alpha'
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.31-alpha'
 
