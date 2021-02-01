@@ -10,24 +10,23 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.amiibolist
 
-import com.oscarg798.amiibowiki.testutils.isViewWithIdDisplayed
-import com.oscarg798.amiibowiki.testutils.isViewWithTextDisplayed
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.oscarg798.amiibowiki.amiibolist.R
 import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
-class AmiiboDetailRobot : TestRobot {
+class AmiiboListRobot : TestRobot {
 
     override fun isViewDisplayed() {
-        isViewWithIdDisplayed(R.id.ivImage)
+        Espresso.onView(withId(R.id.srlMain)).check(matches(isDisplayed()))
     }
 
-    fun isAmiiboDataDisplayed() {
-        isViewWithTextDisplayed("Mario")
-        isViewWithTextDisplayed("Super Mario Bros")
-        isViewWithTextDisplayed("Figure")
-        isViewWithTextDisplayed("Related Games")
+    fun areAmiibosDisplayed() {
+        Espresso.onView(withText("Mario")).check(matches(isDisplayed()))
     }
 }
-
-private const val CHARACTER_VIEW_INDEX = 1

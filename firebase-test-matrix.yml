@@ -1,4 +1,4 @@
-OnePlus3T:
+Nexus9:
 
 
 type: instrumentation
@@ -7,10 +7,11 @@ type: instrumentation
 timeout: 30m
 
 
-device-ids: OnePlus3T
+device-ids: Nexus9
 
 
-os-version-ids: [28, 30]
+os-version-ids: [24]
 
 
 locales: en
+

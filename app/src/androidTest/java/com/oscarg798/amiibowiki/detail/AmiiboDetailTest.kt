@@ -1,19 +1,22 @@
 /*
-* Copyright 2020 Oscar David Gallon Rosero
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-*
-*/
+ * Copyright 2021 Oscar David Gallon Rosero
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *
+ */
 
-package com.oscarg798.amiibowiki.amiibodetail
+package com.oscarg798.amiibowiki.detail
 
 import android.os.Bundle
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import com.oscarg798.amiibowiki.HiltTestActivity
+import com.oscarg798.amiibowiki.R
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailFragment
+import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
@@ -23,6 +26,7 @@ import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
+import com.oscarg798.amiibowiki.di.AppModule
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.BaseUITest
 import com.oscarg798.amiibowiki.testutils.COVER_RESPONSE
@@ -40,16 +44,16 @@ import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
 import org.junit.Test
-import org.junit.runner.RunWith
 
 @UninstallModules(
     PersistenceModule::class,
     FeatureFlagHandlerModule::class,
     NetworkModule::class,
-    LoggerModule::class
+    LoggerModule::class,
+    EnvirormentCheckerModule::class,
+    AppModule::class
 )
 @HiltAndroidTest
-@RunWith(AndroidJUnit4ClassRunner::class)
 class AmiiboDetailTest : BaseUITest(DISPATCHER) {
 
     @Inject
@@ -67,7 +71,7 @@ class AmiiboDetailTest : BaseUITest(DISPATCHER) {
             mainFeatureFlagHandler.isFeatureEnabled(AmiiboWikiFeatureFlag.ShowRelatedGames)
         } answers { true }
 
-        launchFragmentInHiltContainer<AmiiboDetailFragment>(
+        launchFragmentInHiltContainer<AmiiboDetailFragment>(HiltTestActivity::class.java,
             fragmentArgs = Bundle().apply {
                 putString(ARGUMENT_TAIL, AMIIBO_TAIL)
             },

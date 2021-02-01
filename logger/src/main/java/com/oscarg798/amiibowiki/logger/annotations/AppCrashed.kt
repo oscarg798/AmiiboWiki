@@ -12,4 +12,6 @@
 
 package com.oscarg798.amiibowiki.logger.annotations
 
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
 annotation class AppCrashed

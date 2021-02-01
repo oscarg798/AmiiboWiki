@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor
 
+import com.google.auto.service.AutoService
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.DecoratorBuilder
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
@@ -38,6 +39,7 @@ import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Filer
 import javax.annotation.processing.Messager
 import javax.annotation.processing.ProcessingEnvironment
+import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
@@ -48,6 +50,7 @@ import javax.tools.Diagnostic
  * Useful resource to understand how it works:
  * https://medium.com/@iammert/annotation-processing-dont-repeat-yourself-generate-your-code-8425e60c6657
  */
+@AutoService(Processor::class)
 class LoggerDecoratorProcessor : AbstractProcessor() {
 
     /**

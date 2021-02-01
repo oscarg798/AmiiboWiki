@@ -16,14 +16,15 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.StyleRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import com.oscarg798.amiibowiki.testutils.R
-import com.oscarg798.amiibowiki.testutils.utils.HiltTestActivity
 
 inline fun <reified T : Fragment> launchFragmentInHiltContainer(
+    activityClass: Class<*>,
     fragmentArgs: Bundle? = null,
     @StyleRes themeResId: Int = R.style.AppTheme,
     crossinline action: Fragment.() -> Unit = {}
@@ -31,11 +32,13 @@ inline fun <reified T : Fragment> launchFragmentInHiltContainer(
     val startActivityIntent = Intent.makeMainActivity(
         ComponentName(
             ApplicationProvider.getApplicationContext(),
-            HiltTestActivity::class.java
+            activityClass
         )
     ).putExtra(EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY, themeResId)
 
-    ActivityScenario.launch<HiltTestActivity>(startActivityIntent).onActivity { activity ->
+    ActivityScenario.launch<AppCompatActivity>(
+        startActivityIntent
+    ).onActivity { activity ->
         val classLoader = T::class.java.classLoader
         require(classLoader != null)
         val fragment: Fragment = activity.supportFragmentManager.fragmentFactory.instantiate(

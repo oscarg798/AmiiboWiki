@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -16,6 +16,7 @@ import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
@@ -24,6 +25,7 @@ import com.oscarg798.amiibowiki.core.persistence.dao.AgeRatingDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAgeRating
 import com.oscarg798.amiibowiki.core.persistence.models.DBGame
+import com.oscarg798.amiibowiki.di.AppModule
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.BaseUITest
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -41,7 +43,9 @@ import org.junit.Test
     PersistenceModule::class,
     FeatureFlagHandlerModule::class,
     NetworkModule::class,
-    LoggerModule::class
+    LoggerModule::class,
+    EnvirormentCheckerModule::class,
+    AppModule::class
 )
 @HiltAndroidTest
 class GameDetailTest : BaseUITest(DISPATCHER) {

@@ -27,5 +27,4 @@ interface AmiiboDetailLogger {
     @AppCrashed
     fun onDetailCrash(@LogEventProperties exception: Exception)
 }
-
 private const val AMIIBO_DETAIL_SCREEN_NAME = "AMIIBO_DETAIL"
