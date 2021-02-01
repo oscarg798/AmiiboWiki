@@ -13,8 +13,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.oscarg798.amiibowiki.testutils">
     
-    <application android:usesCleartextTraffic="true">
-        <activity android:name=".utils.HiltTestActivity" />
-    </application>
+    <application android:usesCleartextTraffic="true"/>
 
 </manifest>

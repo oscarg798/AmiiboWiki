@@ -10,10 +10,25 @@
  *
  */
 
-package com.oscarg798.amiibowiki.testutils.utils
+package com.oscarg798.amiibowiki.detail
 
-import androidx.appcompat.app.AppCompatActivity
-import dagger.hilt.android.AndroidEntryPoint
+import com.oscarg798.amiibowiki.R
+import com.oscarg798.amiibowiki.testutils.isViewWithIdDisplayed
+import com.oscarg798.amiibowiki.testutils.isViewWithTextDisplayed
+import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
-@AndroidEntryPoint
-class HiltTestActivity : AppCompatActivity()
+class AmiiboDetailRobot : TestRobot {
+
+    override fun isViewDisplayed() {
+        isViewWithIdDisplayed(R.id.ivImage)
+    }
+
+    fun isAmiiboDataDisplayed() {
+        isViewWithTextDisplayed("Mario")
+        isViewWithTextDisplayed("Super Mario Bros")
+        isViewWithTextDisplayed("Figure")
+        isViewWithTextDisplayed("Related Games")
+    }
+}
+
+private const val CHARACTER_VIEW_INDEX = 1

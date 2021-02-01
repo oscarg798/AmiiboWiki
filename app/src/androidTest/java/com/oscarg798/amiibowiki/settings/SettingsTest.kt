@@ -9,10 +9,10 @@
  *
  *
  */
-
 package com.oscarg798.amiibowiki.settings
 
 import androidx.test.runner.AndroidJUnit4
+import com.oscarg798.amiibowiki.HiltTestActivity
 import com.oscarg798.amiibowiki.core.EnvirormentChecker
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
@@ -20,6 +20,7 @@ import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
 import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
 import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
+import com.oscarg798.amiibowiki.di.AppModule
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.BaseUITest
 import com.oscarg798.amiibowiki.testutils.extensions.launchFragmentInHiltContainer
@@ -32,12 +33,14 @@ import javax.inject.Inject
 import org.junit.Test
 import org.junit.runner.RunWith
 
+
 @UninstallModules(
     PersistenceModule::class,
     FeatureFlagHandlerModule::class,
     NetworkModule::class,
     LoggerModule::class,
-    EnvirormentCheckerModule::class
+    EnvirormentCheckerModule::class,
+    AppModule::class
 )
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -56,6 +59,7 @@ class SettingsTest : BaseUITest() {
         every { envirormentChecker.invoke() } answers { true }
         coEvery { mainFeatureFlagHandler.isFeatureEnabled(AmiiboWikiFeatureFlag.ShowGameDetail) }
         launchFragmentInHiltContainer<SettingsFragment>(
+            HiltTestActivity::class.java,
             themeResId = R.style.AppTheme
         )
     }

@@ -16,10 +16,12 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListFragment
 import com.oscarg798.amiibowiki.amiibolist.R
+import com.oscarg798.amiibowiki.core.EnvirormentChecker
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
 import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
+import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
@@ -30,6 +32,7 @@ import com.oscarg798.amiibowiki.navigation.DashboardActivity
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.BaseUITest
 import com.oscarg798.amiibowiki.testutils.extensions.createMockResponse
+import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import io.mockk.every
@@ -51,7 +54,8 @@ import javax.inject.Inject
     AppModule::class
 )
 @HiltAndroidTest
-@RunWith(AndroidJUnit4ClassRunner::class)
+
+
 class DashboardActivityTest : BaseUITest(DISPATCHER)  {
 
     private val dashboardTestRobot = DashboardTestRobot()
@@ -61,12 +65,20 @@ class DashboardActivityTest : BaseUITest(DISPATCHER)  {
         IntentsTestRule(DashboardActivity::class.java, true, true)
 
     @Inject
+    @MainFeatureFlagHandler
+    lateinit var mainFeatureFlagHandler: FeatureFlagHandler
+
+    @Inject
+    lateinit var envirormentChecker: EnvirormentChecker
+
+    @Inject
     lateinit var amiiboDAO: AmiiboDAO
 
     @Inject
     lateinit var amiiboTypeDAO: AmiiboTypeDAO
 
     override fun prepareTest() {
+        every { envirormentChecker.invoke() } answers { true }
         every { amiiboDAO.getAmiibos() } answers { flowOf(listOf(DB_AMIIBO)) }
         every { amiiboTypeDAO.getTypes() } answers { flowOf(DB_AMIIBO_TYPES) }
     }
