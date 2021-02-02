@@ -41,11 +41,9 @@ jobs:
           echo gameAuthUrl=4 >> local.properties
 
       - name: Create google-services.json
-        run:  touch app/src/main/google-services.json &&
-              echo "$GSJ" > app/src/main/google-services.json
-        shell: bash
+        run:  touch app/src/main/google-services.json && echo "$GSJ" > app/src/main/google-services.json
         env:
-            GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
+          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
 
       - name: build debug apk
         run: ./gradlew assembleDebug
