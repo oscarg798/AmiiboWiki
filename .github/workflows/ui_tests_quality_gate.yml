@@ -41,7 +41,7 @@ jobs:
           echo gameAuthUrl=4 >> local.properties
 
       - name: Create google-services.json
-        run:  touch app/src/main/google-services.json && echo "$GSJ" > app/src/main/google-services.json
+        run:  touch app/src/main/google-services.json && echo "$GSJ" > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json
         env:
           GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
 
