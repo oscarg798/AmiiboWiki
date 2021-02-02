@@ -86,3 +86,4 @@ lint/tmp/
 # lint/reports/
 .DS_Store
 app/src/main/google-services.json
+app/google-services.json

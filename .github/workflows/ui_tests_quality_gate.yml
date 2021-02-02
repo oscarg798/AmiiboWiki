@@ -1,0 +1,71 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Acceptance Tests Quality
+
+# Controls when the action will run. 
+on:
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: babyrecord-336ca
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Create local.properties
+        run:  touch local.properties &&
+          echo googleApiKey=2 >> local.properties &&
+          echo keystorepath=/ >> local.properties &&
+          echo keystorePassword=dummy >> local.properties &&
+          echo gameAPIClientId=1 >> local.properties &&
+          echo firebaseProjectId=2 >> local.properties &&
+          echo keystoreAlias=3 >> local.properties &&
+          echo googleAccountServiceFile=/x.json >> local.properties &&
+          echo mixpanelToken=3 >> local.properties &&
+          echo gameAuthUrl=4 >> local.properties
+
+      - name: Create google-services.json
+        run:  touch app/src/main/google-services.json && echo "$GSJ" > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json
+        env:
+          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
+
+      - name: build debug apk
+        run: ./gradlew assembleDebug
+
+      - name: build android tests apk
+        run: ./gradlew assembleAndroidTest
+
+      - name: run test on testlab
+        run:  gcloud firebase test android run --device-ids=OnePlus6T --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --os-version-ids=28  --use-orchestrator
+
+      - name: Discord success notification
+        if: ${{ job.status == "success" }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Ui test ran successfully <3 :love: :smile:'
+
+      - name: Discord failure notification
+        if: ${{ job.status == "failure" }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Ui test failed :warning:'

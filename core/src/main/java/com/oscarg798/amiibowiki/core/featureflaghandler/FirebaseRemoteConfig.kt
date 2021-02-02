@@ -43,7 +43,12 @@ class FirebaseRemoteConfig : RemoteConfig {
                 if (task.isSuccessful) {
                     deferred.complete(Unit)
                 } else {
-                    deferred.completeExceptionally(IllegalArgumentException("There was an error fetching firebase"))
+                    deferred.completeExceptionally(
+                        IllegalArgumentException(
+                            "There was an error fetching firebase",
+                            task.exception
+                        )
+                    )
                 }
             }
     }

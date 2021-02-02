@@ -142,7 +142,7 @@ dependencies {
     //Dagger
     implementation dagger
     kapt daggerCompiler
-    implementation hiltLib
+    implementation daggerHilt.android
 
     //Coroutines
     implementation kotlinCoroutines
@@ -161,6 +161,7 @@ dependencies {
 
     implementation flagly
 
+    implementation platform(firebase.boom)
     implementation firebaseAnalytics
 
     implementation fragmentNavigation
@@ -209,14 +210,17 @@ dependencies {
     androidTestImplementation mockkAndroid
     androidTestImplementation appCompatV4
 
-    implementation "androidx.hilt:hilt-common:$hiltVersion2"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltVersion2"
+    implementation daggerHilt.common
+    implementation daggerHilt.viewModel
 
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.31-alpha'
-    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.31-alpha'
+    androidTestImplementation daggerHilt.androidTesting
+    kaptAndroidTest daggerHilt.compiler
 
     testImplementation project(path: ':testutils')
     androidTestImplementation project(path: ':testutils')
 
-    androidTestUtil 'androidx.test:orchestrator:1.3.0'
+    androidTestUtil androidTesting.orchestrator
+
+    debugImplementation chucker.library
+    releaseImplementation chucker.no_op
 }
