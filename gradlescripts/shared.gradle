@@ -89,7 +89,7 @@ dependencies {
     //Dagger
     implementation dagger
     kapt daggerCompiler
-    implementation hiltLib
+    implementation daggerHilt.android
 
     //Coroutines
     implementation kotlinCoroutines
@@ -111,6 +111,7 @@ dependencies {
 
     implementation flagly
 
+    implementation platform(firebase.boom)
     implementation firebaseAnalytics
 
     implementation fragmentNavigation
@@ -141,8 +142,8 @@ dependencies {
     androidTestImplementation mockkAndroid
     androidTestImplementation appCompatV4
 
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.31-alpha'
-    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.31-alpha'
+    androidTestImplementation daggerHilt.androidTesting
+    kaptAndroidTest daggerHilt.compiler
 
     testImplementation project(path: ':testutils')
     androidTestImplementation project(path: ':testutils')

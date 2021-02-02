@@ -13,8 +13,8 @@
 apply plugin: 'dagger.hilt.android.plugin'
 
 dependencies {
-    implementation "androidx.hilt:hilt-common:$hiltVersion2"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltVersion2"
-    kapt hiltKAPT
-    kapt "androidx.hilt:hilt-compiler:1.0.0-alpha02"
+    implementation daggerHilt.common
+    implementation daggerHilt.viewModel
+
+    kapt daggerHilt.compiler
 }

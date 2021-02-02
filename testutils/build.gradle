@@ -20,8 +20,6 @@ dependencies {
     implementation dagger
     implementation daggerAndroidSupport
     kapt daggerCompiler
-    kapt daggerAndroidProcessor
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     //Coroutines
     implementation kotlinCoroutines
@@ -60,9 +58,9 @@ dependencies {
     implementation lomeno
     testImplementation roomTesting
 
-    implementation hiltAndroidTest
-    implementation hiltLib
-    kapt hiltKAPT
+    implementation daggerHilt.androidTesting
+    implementation daggerHilt.android
+    kapt daggerHilt.compiler
 
     implementation fragmentTesting
 }
