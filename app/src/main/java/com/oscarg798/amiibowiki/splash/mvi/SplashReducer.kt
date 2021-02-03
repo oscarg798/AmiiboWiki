@@ -14,21 +14,19 @@ package com.oscarg798.amiibowiki.splash.mvi
 
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.mvi.Reducer
+
 import javax.inject.Inject
 
 class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewState> {
 
     override suspend fun reduce(state: SplashViewState, from: SplashResult): SplashViewState =
         when (from) {
-            is SplashResult.TypesFetched -> state.copy(
-                isIdling = false,
-                navigatingToFirstScreen = true,
-                error = null
-            )
-            is SplashResult.Error -> state.copy(
-                isIdling = false,
-                navigatingToFirstScreen = false,
-                error = AmiiboTypeFailure.FetchTypesFailure(from.error.message, from.error.cause as? Exception)
+            is SplashResult.TypesFetched -> SplashViewState.NavigatingToFirstscreen
+            is SplashResult.Error -> SplashViewState.Error(
+                AmiiboTypeFailure.FetchTypesFailure(
+                    from.error.message,
+                    from.error.cause as? Exception
+                )
             )
         }
 }

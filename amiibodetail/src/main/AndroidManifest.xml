@@ -3,4 +3,7 @@
     package="com.oscarg798.amiibowiki.amiibodetail">
 
 
+    <application>
+        <activity android:name=".AmiiboDetailDeepLinkActivity" />
+    </application>
 </manifest>

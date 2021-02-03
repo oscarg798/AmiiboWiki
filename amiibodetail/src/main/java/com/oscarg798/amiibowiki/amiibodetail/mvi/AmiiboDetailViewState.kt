@@ -21,21 +21,12 @@ data class ShowingAmiiboDetailsParams(
     val isRelatedGamesSectionEnabled: Boolean
 )
 
-data class AmiiboDetailViewState(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val amiiboDetails: ShowingAmiiboDetailsParams?,
-    val imageExpanded: String?,
-    val error: AmiiboDetailFailure? = null
-) : ViewState {
+sealed class AmiiboDetailViewState : ViewState {
 
-    companion object {
-        fun init() = AmiiboDetailViewState(
-            isIdling = true,
-            isLoading = false,
-            amiiboDetails = null,
-            imageExpanded = null,
-            error = null
-        )
-    }
+    object Idling : AmiiboDetailViewState()
+    object Loading : AmiiboDetailViewState()
+    data class ShowingAmiiboDetails(val showingAmiiboDetailsParams: ShowingAmiiboDetailsParams) :
+        AmiiboDetailViewState()
+    data class ShowingAmiiboImage(val imageUrl: String) : AmiiboDetailViewState()
+    data class Error(val exception: AmiiboDetailFailure) : AmiiboDetailViewState()
 }

@@ -34,5 +34,5 @@ class MockWebServerTestRule(private val dispatcher: Dispatcher) : TestRule {
         }
     }
 }
-const val MOCK_WEB_SERVER_URL = "http://localhost:8080"
-private const val MOCK_WEB_SERVER_PORT = 8080
+const val MOCK_WEB_SERVER_URL = "http://localhost:8083"
+private const val MOCK_WEB_SERVER_PORT = 8083

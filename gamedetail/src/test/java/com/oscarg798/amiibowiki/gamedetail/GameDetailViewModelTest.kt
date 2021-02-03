@@ -21,6 +21,7 @@ import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailReducer
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
+import com.oscarg798.amiibowiki.gamedetail.usecases.GetGameTrailerUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
@@ -41,6 +42,7 @@ class GameDetailViewModelTest :
     private val gameDetailLogger = relaxedMockk<GameDetailLogger>()
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()
     private val expandGameImagesUseCase = relaxedMockk<ExpandGameImagesUseCase>()
+    private val getGameTrailerUseCase = relaxedMockk<GetGameTrailerUseCase>()
     private val reducer = spyk(GameDetailReducer())
 
     @Before
@@ -50,8 +52,10 @@ class GameDetailViewModelTest :
     }
 
     override fun create(): GameDetailViewModel = GameDetailViewModel(
+        GAME_ID,
         getGamesUseCase,
         expandGameImagesUseCase,
+        getGameTrailerUseCase,
         gameDetailLogger,
         reducer,
         viewModelTestRule.coroutineContextProvider
@@ -59,33 +63,12 @@ class GameDetailViewModelTest :
 
     @Test
     fun `given a wish to show the game details when its processed then it should return the state with the details`() {
-        viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail(GAME_ID))
+        viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail)
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            GameDetailViewState(
-                isIdling = true,
-                isLoading = false,
-                expandedImages = null,
-                gameDetails = null,
-                gameTrailer = null,
-                error = null
-            ),
-            GameDetailViewState(
-                isIdling = false,
-                isLoading = true,
-                expandedImages = null,
-                gameDetails = null,
-                gameTrailer = null,
-                error = null
-            ),
-            GameDetailViewState(
-                isIdling = false,
-                isLoading = false,
-                expandedImages = null,
-                gameDetails = GAME,
-                gameTrailer = null,
-                error = null
-            )
+            GameDetailViewState.Idling,
+            GameDetailViewState.Loading,
+            GameDetailViewState.ShowingGameDetails(GAME)
         )
 
         coVerify {
@@ -98,25 +81,14 @@ class GameDetailViewModelTest :
 
     @Test
     fun `given a wish to show the game trailer when its processed then it should return the state with the trailer id`() {
-        viewModelTestRule.viewModel.onWish(GameDetailWish.PlayGameTrailer(GAME_ID, GAME.videosId!!.first()))
+        coEvery { getGameTrailerUseCase.execute(GAME_ID) } answers { "9" }
+        viewModelTestRule.viewModel.onWish(
+            GameDetailWish.PlayGameTrailer
+        )
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            GameDetailViewState(
-                isIdling = true,
-                isLoading = false,
-                gameDetails = null,
-                expandedImages = null,
-                gameTrailer = null,
-                error = null
-            ),
-            GameDetailViewState(
-                isIdling = false,
-                isLoading = false,
-                expandedImages = null,
-                gameDetails = null,
-                gameTrailer = "9",
-                error = null
-            )
+            GameDetailViewState.Idling,
+            GameDetailViewState.ShowingGameTrailer("9")
         )
 
         verify {
@@ -129,22 +101,8 @@ class GameDetailViewModelTest :
         viewModelTestRule.viewModel.onWish(GameDetailWish.ExpandImages(EXPAND_IMAGE_PARAMS))
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(
-            GameDetailViewState(
-                isIdling = true,
-                isLoading = false,
-                gameDetails = null,
-                expandedImages = null,
-                gameTrailer = null,
-                error = null
-            ),
-            GameDetailViewState(
-                isIdling = false,
-                isLoading = false,
-                gameDetails = null,
-                expandedImages = EXPANDED_IMAGES,
-                gameTrailer = null,
-                error = null
-            )
+            GameDetailViewState.Idling,
+            GameDetailViewState.ShowingGameImages(EXPANDED_IMAGES)
         )
     }
 }

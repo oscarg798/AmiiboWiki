@@ -44,7 +44,7 @@ abstract class AbstractFunctionCreator<Decorator : MethodDecorator> : FunctionCr
         FunSpec.builder(methodDecorator.methodName)
             .addModifiers(KModifier.PUBLIC, KModifier.OVERRIDE)
 
-    private fun addProperties(funSpecBuilder: FunSpec.Builder, methodDecorator: Decorator) =
+    protected open fun addProperties(funSpecBuilder: FunSpec.Builder, methodDecorator: Decorator) =
         methodDecorator.propertiesName?.let { propertiesName ->
             funSpecBuilder.addParameter(
                 propertiesName,

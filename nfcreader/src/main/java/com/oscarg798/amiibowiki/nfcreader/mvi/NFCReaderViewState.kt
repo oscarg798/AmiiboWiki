@@ -16,27 +16,17 @@ import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 
-data class NFCReaderViewState(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val amiiboIdentifier: AmiiboIdentifier?,
-    val adapterStatus: AdapterStatus?,
-    val error: NFCReaderFailure? = null
-) : ViewState {
+sealed class NFCReaderViewState : ViewState {
+
+    object Idling : NFCReaderViewState()
+    object Loading : NFCReaderViewState()
+    data class ShowingAmiibo(val amiiboIdentifier: AmiiboIdentifier) : NFCReaderViewState()
+    data class AdapterStatusFound(val status: AdapterStatus) : NFCReaderViewState()
+    data class Error(val error: NFCReaderFailure) : NFCReaderViewState()
 
     sealed class AdapterStatus {
         object Idle : AdapterStatus()
         object AdapterAvailable : AdapterStatus()
         object AdapterReadyToBeStoped : AdapterStatus()
-    }
-
-    companion object {
-        fun init() = NFCReaderViewState(
-            isIdling = true,
-            isLoading = false,
-            amiiboIdentifier = null,
-            adapterStatus = null,
-            error = null
-        )
     }
 }

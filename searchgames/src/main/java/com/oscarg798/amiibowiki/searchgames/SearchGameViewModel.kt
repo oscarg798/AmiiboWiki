@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.flowOf
 class SearchGameViewModel @Inject constructor(
     override val reducer: Reducer<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SearchGameWish, SearchGamesResult, SearchGamesViewState>(SearchGamesViewState.init()) {
+) : AbstractViewModel<SearchGameWish, SearchGamesResult, SearchGamesViewState>(SearchGamesViewState.IsIdling) {
 
     override suspend fun getResult(wish: SearchGameWish) =
         flowOf(SearchGamesResult.SearchGames((wish as SearchGameWish.Search).query))

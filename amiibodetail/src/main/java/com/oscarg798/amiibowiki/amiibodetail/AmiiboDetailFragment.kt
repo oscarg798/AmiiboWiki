@@ -19,12 +19,11 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibodetail.databinding.FragmentAmiiboDetailBinding
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ShowingAmiiboDetailsParams
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
@@ -37,8 +36,7 @@ import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class AmiiboDetailFragment : Fragment() {
@@ -73,11 +71,13 @@ class AmiiboDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
+        setupViewModelInteractions()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setup()
+        viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
     }
 
     private fun setup() {
@@ -96,26 +96,21 @@ class AmiiboDetailFragment : Fragment() {
         }
 
         configureBackDrop()
-
-        viewModel.state.onEach {
-            when {
-                it.isLoading -> showLoading()
-                it.error != null -> showError(it.error)
-                it.imageExpanded != null -> showExpandedImages(listOf(it.imageExpanded))
-                it.amiiboDetails != null -> showDetail(it.amiiboDetails)
-            }
-        }.launchIn(lifecycleScope)
-
-        viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
     }
 
-//    override fun onBackPressed() {
-//        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
-//            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-//        } else {
-//            super.onBackPressed()
-//        }
-//    }
+    private fun setupViewModelInteractions() {
+        lifecycleScope.launchWhenResumed {
+            viewModel.state.collect {
+                when (it) {
+                    is AmiiboDetailViewState.Loading -> showLoading()
+                    is AmiiboDetailViewState.ShowingAmiiboDetails -> showDetail(it.showingAmiiboDetailsParams)
+                    is AmiiboDetailViewState.ShowingAmiiboImage -> showExpandedImages(listOf(it.imageUrl))
+                    is AmiiboDetailViewState.Error -> showError(it.exception)
+                    else -> {}
+                }
+            }
+        }
+    }
 
     private fun showError(amiiboDetailFailure: AmiiboDetailFailure) {
         hideLoading()
@@ -136,7 +131,6 @@ class AmiiboDetailFragment : Fragment() {
     ) {
         hideLoading()
         val viewAmiiboDetails = showingAmiiboDetailsParams.amiiboDetails
-//        supportActionBar?.title = viewAmiiboDetails.name
 
         with(binding) {
             ivImage.setImage(viewAmiiboDetails.imageUrl)

@@ -24,7 +24,7 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.ExecutableElement
 import javax.tools.Diagnostic
 
-class RegularEventMethodProcessor : AbstractMethodProcessor() {
+class RegularEventMethodProcessor(nextProcessor: MethodProcessor) : AbstractMethodProcessor(nextProcessor) {
 
     override fun processInternally(
         methodElement: ExecutableElement,

@@ -12,7 +12,12 @@
 
 package com.oscarg798.amiibowiki.network.di
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.RetentionManager
 import com.google.gson.GsonBuilder
+import com.oscarg798.amiibowiki.network.BuildConfig
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIBaseUrl
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIClient
 import com.oscarg798.amiibowiki.network.di.qualifiers.AmiiboAPIConsumer
@@ -29,6 +34,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
@@ -59,24 +65,46 @@ object NetworkModule {
         return GsonConverterFactory.create(gson)
     }
 
+    private fun chunckerInterceptor(context: Context) =
+        ChuckerInterceptor.Builder(context).collector(
+            ChuckerCollector(
+                context = context,
+                // Toggles visibility of the push notification
+                showNotification = true,
+                // Allows to customize the retention period of collected data
+                retentionPeriod = RetentionManager.Period.ONE_HOUR
+            )
+        ).build()
+
     private fun getHttpClientBuilder(
         @NetworkTrackerInterceptor
         networkLoggerInterceptor: Interceptor,
-    ) = OkHttpClient.Builder()
-        .connectTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-        .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-        .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-        .addInterceptor(httpLoggingInterceptor)
-        .addInterceptor(networkLoggerInterceptor)
-        .addInterceptor(errorInterceptor)
+        context: Context
+    ): OkHttpClient.Builder {
+        val builder = OkHttpClient.Builder()
+            .connectTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+            .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+            .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+            .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(networkLoggerInterceptor)
+            .addInterceptor(errorInterceptor)
+
+        if(BuildConfig.DEBUG){
+            builder.addInterceptor(chunckerInterceptor(context))
+
+        }
+
+        return builder
+    }
 
     @AmiiboAPIClient
     @Reusable
     @Provides
     fun provideAmiiboHttpClient(
         @NetworkTrackerInterceptor
-        networkLoggerInterceptor: Interceptor
-    ): OkHttpClient = getHttpClientBuilder(networkLoggerInterceptor).build()
+        networkLoggerInterceptor: Interceptor,
+        @ApplicationContext context: Context
+    ): OkHttpClient = getHttpClientBuilder(networkLoggerInterceptor, context).build()
 
     @GameAPIClient
     @Reusable
@@ -85,9 +113,10 @@ object NetworkModule {
         @NetworkTrackerInterceptor
         networkLoggerInterceptor: Interceptor,
         @GameAPIInterceptor
-        apiKeyInterceptor: Interceptor
+        apiKeyInterceptor: Interceptor,
+        @ApplicationContext context: Context
     ): OkHttpClient =
-        getHttpClientBuilder(networkLoggerInterceptor)
+        getHttpClientBuilder(networkLoggerInterceptor, context)
             .addInterceptor(apiKeyInterceptor).build()
 
     @AuthAPIClient
@@ -95,9 +124,10 @@ object NetworkModule {
     @Provides
     fun provideAuthHttpClient(
         @NetworkTrackerInterceptor
-        networkLoggerInterceptor: Interceptor
+        networkLoggerInterceptor: Interceptor,
+        @ApplicationContext context: Context
     ): OkHttpClient =
-        getHttpClientBuilder(networkLoggerInterceptor).build()
+        getHttpClientBuilder(networkLoggerInterceptor, context).build()
 
     @AmiiboAPIConsumer
     @Reusable

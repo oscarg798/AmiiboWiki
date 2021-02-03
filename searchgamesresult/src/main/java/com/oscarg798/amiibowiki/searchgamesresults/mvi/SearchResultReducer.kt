@@ -23,35 +23,14 @@ class SearchResultReducer @Inject constructor() :
         state: SearchResultViewState,
         from: SearchResultResult
     ): SearchResultViewState = when (from) {
-        is SearchResultResult.None -> state.copy(
-            isIdling = true,
-            isLoading = false,
-            error = null
-        )
-        is SearchResultResult.Loading -> state.copy(
-            isIdling = false,
-            isLoading = true,
-            error = null
-        )
-        is SearchResultResult.GamesFound -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            error = null,
-            gamesSearchResults = from.gamesSearchResult.map {
+        is SearchResultResult.None -> SearchResultViewState.Idling
+        is SearchResultResult.Loading -> SearchResultViewState.Loading
+        is SearchResultResult.GamesFound -> SearchResultViewState.ShowingGameResults(
+            from.gamesSearchResult.map {
                 ViewGameSearchResult(it)
-            },
-            showingGameDetails = null
+            }
         )
-        is SearchResultResult.ShowGameDetails -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            error = null,
-            showingGameDetails = ShowingGameDetailsParams(from.gameId)
-        )
-        is SearchResultResult.Error -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            error = from.failure
-        )
+        is SearchResultResult.ShowGameDetails -> SearchResultViewState.ShowingGameDetails(ShowingGameDetailsParams(from.gameId))
+        is SearchResultResult.Error -> SearchResultViewState.Error(from.failure)
     }
 }

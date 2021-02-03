@@ -35,18 +35,16 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
 
     protected abstract val coroutineContextProvider: CoroutineContextProvider
 
-    /**
-     * We use channels as state flow will omit duplicated states or wishes
-     */
-    private val _state = MutableSharedFlow<ViewState>(
+    protected val _state = MutableSharedFlow<ViewState>(
         replay = 1,
         extraBufferCapacity = 3,
-        onBufferOverflow = BufferOverflow.DROP_LATEST
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
+
     private val wishProcessor = MutableSharedFlow<Wish>(
         replay = 0,
         extraBufferCapacity = 3,
-        onBufferOverflow = BufferOverflow.DROP_LATEST
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
     val state: Flow<ViewState>
@@ -71,7 +69,7 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
         // DO_NOTHING
     }
 
-    fun onWish(wish: Wish) {
+    open fun onWish(wish: Wish) {
         wishProcessor.tryEmit(wish)
     }
 }

@@ -18,7 +18,7 @@ dependencies {
     implementation dagger
     kapt daggerCompiler
 
-    kapt hiltKAPT
+    kapt daggerHilt.compiler
 
     //Coroutines
     implementation kotlinCoroutines
@@ -34,4 +34,7 @@ dependencies {
     implementation okhttp3
     implementation okhttpLoggingInterceptor
     implementation scalars
+
+    debugImplementation chucker.library
+    releaseImplementation chucker.no_op
 }

@@ -24,7 +24,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.android.scopes.FragmentScoped
-import javax.inject.Singleton
 
 @InstallIn(FragmentComponent::class)
 @Module

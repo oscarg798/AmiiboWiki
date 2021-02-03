@@ -23,33 +23,13 @@ class AmiiboDetailReducer @Inject constructor() :
         state: AmiiboDetailViewState,
         from: AmiiboDetailResult
     ): AmiiboDetailViewState = when (from) {
-
-        is AmiiboDetailResult.Loading -> state.copy(
-            isIdling = false,
-            isLoading = true,
-            imageExpanded = null,
-            error = null
-        )
-        is AmiiboDetailResult.DetailFetched -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            imageExpanded = null,
-            amiiboDetails = ShowingAmiiboDetailsParams(
+        is AmiiboDetailResult.Loading -> AmiiboDetailViewState.Loading
+        is AmiiboDetailResult.DetailFetched -> AmiiboDetailViewState.ShowingAmiiboDetails(
+            ShowingAmiiboDetailsParams(
                 ViewAmiiboDetails(from.amiibo), from.isRelatedGamesSectionEnabled
-            ),
-            error = null
+            )
         )
-        is AmiiboDetailResult.ImageExpanded -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            imageExpanded = from.url,
-            error = null
-        )
-        is AmiiboDetailResult.Error -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            imageExpanded = null,
-            error = from.error
-        )
+        is AmiiboDetailResult.ImageExpanded -> AmiiboDetailViewState.ShowingAmiiboImage(from.url)
+        is AmiiboDetailResult.Error -> AmiiboDetailViewState.Error(from.error)
     }
 }

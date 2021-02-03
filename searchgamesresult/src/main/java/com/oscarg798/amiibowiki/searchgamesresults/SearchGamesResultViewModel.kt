@@ -45,7 +45,7 @@ class SearchGamesResultViewModel @Inject constructor(
     override val reducer: Reducer<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<SearchResultWish, SearchResultResult, SearchResultViewState>(
-    SearchResultViewState.init()
+    SearchResultViewState.Idling
 ) {
     override suspend fun getResult(wish: SearchResultWish): Flow<SearchResultResult> = when {
         wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.AmiiboGameSearchParam -> {

@@ -52,4 +52,6 @@ class ScreenShownMethodProcessor(nextProcessor: MethodProcessor? = null) :
 
     override fun canMethodBeProcessed(methodElement: Element): Boolean =
         methodElement.getAnnotationsByType(ScreenShown::class.java).isNotEmpty()
+
+
 }
