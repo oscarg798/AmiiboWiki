@@ -1,6 +1,6 @@
 # AmiiboWiki
 
-[<img src="http://oscarg-teamcity.eu.ngrok.io.ngrok.io/app/rest/builds/aggregated/strob:(buildType:(project:(id:amiibo_wiki)))/statusIcon?guest=guest"/>](http://oscarg-teamcity.eu.ngrok.io.ngrok.io/project.html?projectId=amiibo_wiki&tab=projectOverview)
+![Acceptance Tests Quality](https://github.com/oscarg798/AmiiboWiki/workflows/Acceptance%20Tests%20Quality/badge.svg)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 
