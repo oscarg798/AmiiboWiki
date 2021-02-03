@@ -22,10 +22,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.oscarg798.amiibowiki.searchgames.databinding.FragmentSearchGamesBinding
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
+import com.oscarg798.amiibowiki.searchgames.mvi.SearchGamesViewState
 import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.launchIn
@@ -87,15 +89,15 @@ class SearchGamesFragment : Fragment() {
     }
 
     private fun setupViewModelInteractions() {
-        viewmodel.state.onEach { state ->
-            when {
-                state.searchingGames != null -> getSearchResultFragment().search(
+        lifecycleScope.launchWhenResumed {
+            viewmodel.state.collect { state ->
+                if (state is SearchGamesViewState.SearchingGames) getSearchResultFragment().search(
                     GameSearchParam.StringQueryGameSearchParam(
-                        state.searchingGames
+                        state.query
                     )
                 )
             }
-        }.launchIn(lifecycleScope)
+        }
 
         searchFlow
             .filterNot { it.isEmpty() && it.length < MINUMUN_SEARCH_QUERY_LENGTH }

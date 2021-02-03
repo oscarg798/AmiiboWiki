@@ -17,7 +17,6 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
-    id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
 }
 
@@ -26,6 +25,7 @@ apply from: '../gradlescripts/tests.gradle.kts'
 apply from: '../gradlescripts/citask.gradle.kts'
 apply from: '../gradlescripts/release.gradle'
 apply from: '../gradlescripts/playstorerelease.gradle.kts'
+apply from: "../gradlescripts/hiltshared.gradle"
 
 android {
     signingConfigs {
@@ -98,6 +98,7 @@ android {
     }
 
     testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
         unitTests {
             includeAndroidResources true
         }
@@ -122,33 +123,26 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.21")
+    implementation(kotlinJDK)
 
     implementation appCompat
     implementation cardView
     implementation recyclerView
     implementation design
-    implementation constraintLayout
     implementation appCompatV4
+    implementation constraintLayout
     implementation multidex
+    implementation activityx
 
     implementation airbnb
     kapt airbnbProcessor
 
-    implementation "androidx.navigation:navigation-fragment:2.3.2"
-    implementation "androidx.navigation:navigation-ui:2.3.2"
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.2"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.2"
+    implementation facebookShimmer
 
     //Dagger
     implementation dagger
-    implementation daggerAndroidSupport
     kapt daggerCompiler
-    kapt daggerAndroidProcessor
-
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02"
-    implementation hiltLib
-    kapt hiltKAPT
+    implementation daggerHilt.android
 
     //Coroutines
     implementation kotlinCoroutines
@@ -159,7 +153,7 @@ dependencies {
     implementation okhttp3
     implementation okhttpLoggingInterceptor
 
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-rc01'
+    implementation viewModelScope
     implementation lifecycleExtensions
     implementation lifecycle
 
@@ -167,15 +161,22 @@ dependencies {
 
     implementation flagly
 
-    kapt project(':loggerprocessor')
+    implementation platform(firebase.boom)
+    implementation firebaseAnalytics
+
+    implementation fragmentNavigation
+    implementation navigationUi
+    implementation fragmentNavigationKtx
+    implementation navigationUiKtx
+
+    implementation crashly
+    implementation(lomeno)
+
+    implementation preference
 
     implementation roomRuntime
     implementation roomCompiler
     implementation roomKTX
-
-    implementation firebaseAnalytics
-    implementation crashly
-    implementation(lomeno)
 
     implementation project(path: ':logger')
     implementation project(path: ':core')
@@ -187,6 +188,9 @@ dependencies {
     implementation project(path: ':settings')
     implementation project(path: ':searchgames')
     implementation project(path: ':searchgamesresult')
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+    kapt project(':loggerprocessor')
 
     //Test
     testImplementation mockk
@@ -204,15 +208,19 @@ dependencies {
     androidTestImplementation espressoIntents
     androidTestImplementation uiAutomator
     androidTestImplementation mockkAndroid
+    androidTestImplementation appCompatV4
 
-    androidTestImplementation hiltLib
-    kaptAndroidTest hiltKAPT
+    implementation daggerHilt.common
+    implementation daggerHilt.viewModel
 
-    implementation "androidx.hilt:hilt-common:$hiltVersion2"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltVersion2"
-
-    implementation preference
+    androidTestImplementation daggerHilt.androidTesting
+    kaptAndroidTest daggerHilt.compiler
 
     testImplementation project(path: ':testutils')
     androidTestImplementation project(path: ':testutils')
+
+    androidTestUtil androidTesting.orchestrator
+
+    debugImplementation chucker.library
+    releaseImplementation chucker.no_op
 }

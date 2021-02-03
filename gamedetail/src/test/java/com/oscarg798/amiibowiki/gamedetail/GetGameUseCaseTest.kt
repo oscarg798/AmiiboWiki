@@ -18,6 +18,7 @@ import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
@@ -51,6 +52,25 @@ class GetGameUseCaseTest {
         result.cover shouldBeEqualTo "https://images.igdb.com/igdb/image/upload/t_cover_big/a.jpg"
         result.artworks!!.first() shouldBeEqualTo "https://images.igdb.com/igdb/image/upload/t_screenshot_med/b.jpg"
         result.screenshots!!.first() shouldBeEqualTo "https://images.igdb.com/igdb/image/upload/t_screenshot_med/c.jpg"
+
+        coVerify(exactly = 1) { repository.getGame(GAME_ID) }
+    }
+
+    @Test
+    fun `when its executed two times with the same id then it should cached the response`() {
+        coEvery { repository.getGame(GAME_ID) } answers { GAME }
+
+        val result = runBlocking {
+            usecase.execute(GAME_ID)
+        }
+
+        val result2 = runBlocking {
+            usecase.execute(GAME_ID)
+        }
+
+        result shouldBeEqualTo result2
+
+        coVerify(exactly = 1) { repository.getGame(GAME_ID) }
     }
 }
 

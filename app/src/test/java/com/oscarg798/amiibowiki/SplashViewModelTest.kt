@@ -14,14 +14,12 @@ package com.oscarg798.amiibowiki
 
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.splash.SplashLogger
-import com.oscarg798.amiibowiki.splash.SplashViewModel
+import com.oscarg798.amiibowiki.splash.ui.SplashLogger
+import com.oscarg798.amiibowiki.splash.ui.SplashViewModel
 import com.oscarg798.amiibowiki.splash.mvi.SplashReducer
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
-import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
@@ -62,19 +60,10 @@ class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewState, 
     fun `given a wish to get the types when events are proccess then state value should be loading and then fetch success`() {
         viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
-        val initState = SplashViewState(
-            isIdling = true,
-            navigatingToFirstScreen = false,
-            error = null
-        )
-
+        val initState = SplashViewState.IsIdling
         viewModelTestRule.testCollector wereValuesEmitted listOf(
             initState,
-            SplashViewState(
-                isIdling = false,
-                navigatingToFirstScreen = true,
-                error = null
-            )
+            SplashViewState.NavigatingToFirstscreen
         )
 
         coVerify {
@@ -90,19 +79,10 @@ class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewState, 
 
         viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
-        val initState = SplashViewState(
-            isIdling = true,
-            navigatingToFirstScreen = false,
-            error = null
-        )
-
+        val initState = SplashViewState.IsIdling
         viewModelTestRule.testCollector wereValuesEmitted listOf(
             initState,
-            SplashViewState(
-                isIdling = false,
-                navigatingToFirstScreen = false,
-                error = error
-            )
+            SplashViewState.Error(error)
         )
 
         coVerify {

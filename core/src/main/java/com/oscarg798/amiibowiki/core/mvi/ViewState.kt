@@ -12,7 +12,4 @@
 
 package com.oscarg798.amiibowiki.core.mvi
 
-interface ViewState {
-
-    val isIdling: Boolean
-}
+interface ViewState

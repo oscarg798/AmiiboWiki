@@ -1,0 +1,17 @@
+Nexus9:
+
+
+type: instrumentation
+
+
+timeout: 30m
+
+
+device-ids: Nexus9
+
+
+os-version-ids: [24]
+
+
+locales: en
+

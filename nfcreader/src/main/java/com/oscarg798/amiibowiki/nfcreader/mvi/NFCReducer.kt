@@ -20,41 +20,14 @@ class NFCReducer @Inject constructor() : Reducer<NFCReaderResult, NFCReaderViewS
     override suspend fun reduce(
         state: NFCReaderViewState,
         from: NFCReaderResult
-    ): NFCReaderViewState = when (from) {
-        is NFCReaderResult.ReadSuccessful -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            error = null,
-            adapterStatus = null,
-            amiiboIdentifier = from.amiiboIdentifier
-        )
-        NFCReaderResult.Reading -> state.copy(
-            isIdling = false,
-            isLoading = true,
-            error = null
-        )
-        NFCReaderResult.AdapterReady -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            adapterStatus = NFCReaderViewState.AdapterStatus.AdapterAvailable,
-            error = null
-        )
-        NFCReaderResult.AdapterDisabled -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            adapterStatus = NFCReaderViewState.AdapterStatus.Idle,
-            error = null
-        )
-        NFCReaderResult.AdapterStoped -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            adapterStatus = NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped,
-            error = null
-        )
-        is NFCReaderResult.Error -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            error = from.error
-        )
+    ): NFCReaderViewState {
+        return when (from) {
+            is NFCReaderResult.Reading -> NFCReaderViewState.Loading
+            is NFCReaderResult.AdapterReady -> NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterAvailable)
+            is NFCReaderResult.AdapterDisabled,
+            is NFCReaderResult.AdapterStoped -> NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped)
+            is NFCReaderResult.ReadSuccessful -> NFCReaderViewState.ShowingAmiibo(from.amiiboIdentifier)
+            is NFCReaderResult.Error -> NFCReaderViewState.Error(from.error)
+        }
     }
 }

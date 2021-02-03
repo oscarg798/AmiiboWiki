@@ -21,39 +21,10 @@ class SettingsReducer @Inject constructor() : Reducer<SettingsResult, SettingsVi
         state: SettingsViewState,
         from: SettingsResult
     ): SettingsViewState = when (from) {
-        is SettingsResult.Loading -> state.copy(
-            isIdling = false,
-            isLoading = true,
-            shouldActivityBeRecreated = false
-        )
-        is SettingsResult.PreferencesCreated -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            preferences = from.preferences,
-            showDevelopmentActivity = false,
-            showDarkModeDialog = false,
-            shouldActivityBeRecreated = false
-        )
-        is SettingsResult.DarkModeSelectionSaved -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            showDevelopmentActivity = false,
-            showDarkModeDialog = false,
-            shouldActivityBeRecreated = true
-        )
-        is SettingsResult.ShowDevelopmentActivity -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            showDevelopmentActivity = true,
-            showDarkModeDialog = false,
-            shouldActivityBeRecreated = false
-        )
-        SettingsResult.ShowDarkModeDialog -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            showDevelopmentActivity = false,
-            showDarkModeDialog = true,
-            shouldActivityBeRecreated = false
-        )
+        is SettingsResult.Loading -> SettingsViewState.Loading
+        is SettingsResult.PreferencesCreated -> SettingsViewState.Preferences(from.preferences)
+        is SettingsResult.DarkModeSelectionSaved -> SettingsViewState.ActivityShouldBeRecreated
+        is SettingsResult.ShowDevelopmentActivity -> SettingsViewState.ShowingDevelopmentActivity
+        is SettingsResult.ShowDarkModeDialog -> SettingsViewState.ShowingDarkModeDialog
     }
 }

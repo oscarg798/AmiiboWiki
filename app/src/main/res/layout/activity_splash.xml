@@ -18,7 +18,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_medium"
     android:background="?appBackgroundColor"
-    tools:context=".splash.SplashActivity">
+    tools:context=".splash.ui.SplashActivity">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animationView"

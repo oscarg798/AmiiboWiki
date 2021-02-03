@@ -21,9 +21,6 @@ class SearchGamesReducer @Inject constructor() : Reducer<SearchGamesResult, Sear
         state: SearchGamesViewState,
         from: SearchGamesResult
     ): SearchGamesViewState = when (from) {
-        is SearchGamesResult.SearchGames -> state.copy(
-            isIdling = false,
-            searchingGames = from.query
-        )
+        is SearchGamesResult.SearchGames -> SearchGamesViewState.SearchingGames(from.query)
     }
 }

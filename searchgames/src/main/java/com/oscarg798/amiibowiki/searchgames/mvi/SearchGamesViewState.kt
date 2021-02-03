@@ -14,15 +14,8 @@ package com.oscarg798.amiibowiki.searchgames.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-data class SearchGamesViewState(
-    override val isIdling: Boolean,
-    val searchingGames: String?
-) : ViewState {
+sealed class SearchGamesViewState : ViewState {
 
-    companion object {
-        fun init() = SearchGamesViewState(
-            isIdling = true,
-            searchingGames = null
-        )
-    }
+    object IsIdling : SearchGamesViewState()
+    data class SearchingGames(val query: String) : SearchGamesViewState()
 }

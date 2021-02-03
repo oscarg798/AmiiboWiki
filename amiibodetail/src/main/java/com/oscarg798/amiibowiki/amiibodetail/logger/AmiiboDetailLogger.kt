@@ -12,15 +12,19 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.logger
 
+import com.oscarg798.amiibowiki.logger.annotations.AppCrashed
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
+import java.lang.Exception
 
 @LoggerDecorator
 interface AmiiboDetailLogger {
 
     @ScreenShown(AMIIBO_DETAIL_SCREEN_NAME)
     fun trackScreenShown(@LogEventProperties properties: Map<String, String>)
-}
 
+    @AppCrashed
+    fun onDetailCrash(@LogEventProperties exception: Exception)
+}
 private const val AMIIBO_DETAIL_SCREEN_NAME = "AMIIBO_DETAIL"

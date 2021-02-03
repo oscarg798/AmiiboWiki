@@ -36,7 +36,7 @@ class SettingsViewModel @Inject constructor(
     private val featurePoint: SuspendFeaturePoint<@JvmSuppressWildcards PreferenceBuilder, @JvmSuppressWildcards Unit>,
     override val reducer: Reducer<@JvmSuppressWildcards SettingsResult, @JvmSuppressWildcards SettingsViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SettingsWish, SettingsResult, SettingsViewState>(SettingsViewState.init()) {
+) : AbstractViewModel<SettingsWish, SettingsResult, SettingsViewState>(SettingsViewState.Idling) {
 
     override suspend fun getResult(wish: SettingsWish): Flow<SettingsResult> = when (wish) {
         is SettingsWish.CreatePreferences -> getCreatePreferenceResult()

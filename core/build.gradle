@@ -35,8 +35,8 @@ android {
 
 dependencies {
 
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02"
-    kapt hiltKAPT
+    implementation daggerHilt.viewModel
+    kapt daggerHilt.compiler
 
     implementation picasso
     implementation project(path: ':network')

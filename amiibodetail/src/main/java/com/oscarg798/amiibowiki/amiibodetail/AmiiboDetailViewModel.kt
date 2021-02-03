@@ -12,8 +12,6 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
@@ -27,6 +25,8 @@ import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.AssistedFactoryCreator
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -35,9 +35,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-
 
 class AmiiboDetailViewModel @AssistedInject constructor(
     @Assisted private val tail: String,
@@ -47,12 +44,12 @@ class AmiiboDetailViewModel @AssistedInject constructor(
     override val reducer: Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState>,
     override val coroutineContextProvider: CoroutineContextProvider,
 ) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
-    AmiiboDetailViewState.init()
+    AmiiboDetailViewState.Idling
 ) {
 
     override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = when (wish) {
         is AmiiboDetailWish.ExpandAmiiboImage -> flowOf(AmiiboDetailResult.ImageExpanded(wish.image))
-        AmiiboDetailWish.ShowAmiiboDetail -> getAmiiboDetail()
+        is AmiiboDetailWish.ShowAmiiboDetail -> getAmiiboDetail()
     }
 
     private suspend fun getAmiiboDetail(): Flow<AmiiboDetailResult> = flow {

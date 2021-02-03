@@ -15,20 +15,11 @@ package com.oscarg798.amiibowiki.settings.mvi
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 
-data class SettingsViewState(
-    override val isIdling: Boolean,
-    val isLoading: Boolean,
-    val preferences: Collection<PreferenceBuilder>?,
-    val showDevelopmentActivity: Boolean = false,
-    val showDarkModeDialog: Boolean = false,
-    val shouldActivityBeRecreated: Boolean = false
-) : ViewState {
-
-    companion object {
-        fun init() = SettingsViewState(
-            isIdling = true,
-            isLoading = false,
-            preferences = null
-        )
-    }
+sealed class SettingsViewState() : ViewState {
+    object Idling : SettingsViewState()
+    object Loading : SettingsViewState()
+    data class Preferences(val preferences: Collection<PreferenceBuilder>) : SettingsViewState()
+    object ShowingDevelopmentActivity : SettingsViewState()
+    object ActivityShouldBeRecreated : SettingsViewState()
+    object ShowingDarkModeDialog : SettingsViewState()
 }

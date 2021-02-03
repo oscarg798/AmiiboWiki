@@ -21,40 +21,10 @@ class GameDetailReducer @Inject constructor() : Reducer<GameDetailResult, GameDe
         state: GameDetailViewState,
         from: GameDetailResult
     ): GameDetailViewState = when (from) {
-        is GameDetailResult.Loading -> state.copy(
-            isLoading = true,
-            isIdling = false,
-            expandedImages = null,
-            gameTrailer = null,
-            error = null
-        )
-        is GameDetailResult.GameTrailerFound -> state.copy(
-            isLoading = false,
-            isIdling = false,
-            expandedImages = null,
-            gameTrailer = from.trailerId,
-            error = null
-        )
-        is GameDetailResult.GameFetched -> state.copy(
-            isLoading = false,
-            isIdling = false,
-            gameDetails = from.game,
-            expandedImages = null,
-            gameTrailer = null,
-            error = null
-        )
-        is GameDetailResult.Error -> state.copy(
-            isLoading = false,
-            isIdling = false,
-            expandedImages = null,
-            error = from.exception
-        )
-        is GameDetailResult.ImagesExpanded -> state.copy(
-            isIdling = false,
-            isLoading = false,
-            gameTrailer = null,
-            expandedImages = from.images,
-            error = null
-        )
+        GameDetailResult.Loading -> GameDetailViewState.Loading
+        is GameDetailResult.GameTrailerFound -> GameDetailViewState.ShowingGameTrailer(from.trailerId)
+        is GameDetailResult.GameFetched -> GameDetailViewState.ShowingGameDetails(from.game)
+        is GameDetailResult.ImagesExpanded -> GameDetailViewState.ShowingGameImages(from.images)
+        is GameDetailResult.Error -> GameDetailViewState.Error(from.exception)
     }
 }

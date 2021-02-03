@@ -12,13 +12,16 @@
 
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor
 
+import com.google.auto.service.AutoService
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.DecoratorBuilder
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.CrashEventFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.FunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.RegularEventFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.ScreenShownFunctionCreator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator.WidgetClikedFunctionCreator
+import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.CrashMethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.MethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.RegularEventMethodProcessor
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.methodprocessors.ScreenShownMethodProcessor
@@ -36,6 +39,7 @@ import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Filer
 import javax.annotation.processing.Messager
 import javax.annotation.processing.ProcessingEnvironment
+import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
@@ -46,6 +50,7 @@ import javax.tools.Diagnostic
  * Useful resource to understand how it works:
  * https://medium.com/@iammert/annotation-processing-dont-repeat-yourself-generate-your-code-8425e60c6657
  */
+@AutoService(Processor::class)
 class LoggerDecoratorProcessor : AbstractProcessor() {
 
     /**
@@ -53,12 +58,19 @@ class LoggerDecoratorProcessor : AbstractProcessor() {
      */
     private val decoratorBuilders = mutableSetOf<DecoratorBuilder>()
     private val screenShownMethodProcessor: MethodProcessor =
-        ScreenShownMethodProcessor(WidgetClickedMethodProcessor(RegularEventMethodProcessor()))
+        ScreenShownMethodProcessor(
+            WidgetClickedMethodProcessor(
+                RegularEventMethodProcessor(
+                    CrashMethodProcessor()
+                )
+            )
+        )
 
     private val functionCreators = setOf<FunctionCreator<MethodDecorator>>(
         ScreenShownFunctionCreator() as FunctionCreator<MethodDecorator>,
         WidgetClikedFunctionCreator() as FunctionCreator<MethodDecorator>,
-        RegularEventFunctionCreator() as FunctionCreator<MethodDecorator>
+        RegularEventFunctionCreator() as FunctionCreator<MethodDecorator>,
+        CrashEventFunctionCreator() as FunctionCreator<MethodDecorator>
     )
 
     private lateinit var filer: Filer

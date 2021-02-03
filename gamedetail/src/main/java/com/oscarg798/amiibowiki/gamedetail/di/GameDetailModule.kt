@@ -31,5 +31,6 @@ object GameDetailModule {
 
     @GameDetailScope
     @Provides
-    fun provideGameDetailReducer(gameDetailReducer: GameDetailReducer): Reducer<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewState> = gameDetailReducer
+    fun provideGameDetailReducer(gameDetailReducer: GameDetailReducer): Reducer<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewState> =
+        gameDetailReducer
 }

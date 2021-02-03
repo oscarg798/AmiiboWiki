@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 
 class NFCReaderViewModel @Inject constructor(
     private val validateAdapterAvailabilityUseCase: ValidateAdapterAvailabilityUseCase,
@@ -35,7 +36,7 @@ class NFCReaderViewModel @Inject constructor(
     override val reducer: Reducer<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<NFCReaderWish, NFCReaderResult,
-    NFCReaderViewState>(NFCReaderViewState.init()) {
+    NFCReaderViewState>(NFCReaderViewState.Idling) {
 
     override suspend fun getResult(wish: NFCReaderWish): Flow<NFCReaderResult> {
         return when (wish) {
@@ -56,14 +57,15 @@ class NFCReaderViewModel @Inject constructor(
         .flowOn(coroutineContextProvider.backgroundDispatcher)
 
     private fun readTag(wish: NFCReaderWish.Read): Flow<NFCReaderResult> = flow {
-        emit(NFCReaderResult.Reading)
         val result = readTagUseCase.execute(wish.tag)
-        emit(NFCReaderResult.ReadSuccessful(result))
+        emit(NFCReaderResult.ReadSuccessful(result) as NFCReaderResult)
     }.catch { cause ->
         if (cause !is NFCReaderFailure) {
             throw cause
         }
 
         emit(NFCReaderResult.Error(cause))
+    }.onStart {
+        emit(NFCReaderResult.Reading)
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
 }
