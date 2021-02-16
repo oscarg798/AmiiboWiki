@@ -18,4 +18,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="settings_navigation_menu_title">Settings</string>
     <string name="search">Search</string>
+    <string name="update_available">There is a new version of the app</string>
+    <string name="update_dialog_positive_button">Update</string>
+    <string name="update_dialog_negative_button">Cancel</string>
 </resources>

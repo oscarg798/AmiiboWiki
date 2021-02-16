@@ -107,6 +107,7 @@ class NFCReaderActivity : AppCompatActivity() {
         super.onStop()
         // viewModel.onWish(NFCReaderWish.StopAdapter)
     }
+
     private fun setupForegroundDispatch() {
         nfcAdapter.enableForegroundDispatch(
             this,

@@ -13,7 +13,10 @@
 package com.oscarg798.amiibowiki.navigation
 
 import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -21,10 +24,19 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
+import com.oscarg798.amiibowiki.navigation.mvi.DashboardViewState
+import com.oscarg798.amiibowiki.navigation.mvi.DashboardWish
+import com.oscarg798.amiibowiki.updatechecker.UpdateType
+import com.oscarg798.amiibowiki.updatechecker.requestUpdate
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class DashboardActivity : AppCompatActivity() {
+
+    private val viewModel: DashboardViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         verifyNightMode()
@@ -41,5 +53,24 @@ class DashboardActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        observeViewModelState()
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onWish(DashboardWish.CheckUpdates)
+    }
+
+
+    private fun observeViewModelState() {
+        lifecycleScope.launchWhenResumed {
+            viewModel.state.collect { state ->
+                when (state) {
+                    is DashboardViewState.RequestingUpdate -> requestUpdate(state.type)
+                }
+            }
+        }
+    }
+
+
 }

@@ -21,5 +21,4 @@
     <include app:graph="@navigation/search_games_navigation" />
 
     <include app:graph="@navigation/navigation_settings" />
-
 </navigation>

@@ -89,9 +89,8 @@ object NetworkModule {
             .addInterceptor(networkLoggerInterceptor)
             .addInterceptor(errorInterceptor)
 
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             builder.addInterceptor(chunckerInterceptor(context))
-
         }
 
         return builder
