@@ -18,15 +18,18 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'shipbot'
 }
 
 apply from: '../gradlescripts/signing.gradle'
 apply from: '../gradlescripts/tests.gradle.kts'
 apply from: '../gradlescripts/citask.gradle.kts'
 apply from: '../gradlescripts/release.gradle'
-apply from: '../gradlescripts/playstorerelease.gradle.kts'
 apply from: "../gradlescripts/hiltshared.gradle"
 
+configurations {
+    compileDebugClasspath
+}
 android {
     signingConfigs {
         demo {
@@ -65,8 +68,6 @@ android {
 
         debug {
             buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database_debug\""
-
-            versionNameSuffix "-DEBUG"
             applicationIdSuffix ".debug"
             manifestPlaceholders = [appName: "AmiiboWiki-Debug"]
 
@@ -86,6 +87,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "version"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -223,4 +226,10 @@ dependencies {
 
     debugImplementation chucker.library
     releaseImplementation chucker.no_op
+}
+
+releasePlugin {
+    unitTestRequired = true
+    buildTypes = ["debug", "alpha", "release"]
+    firebaseToken = "1//03hozum1PUjaRCgYIARAAGAMSNwF-L9IrmwSraeT8l6Bi1wKpa1tkuQSIw0cOiOnzlh52DJIYBGo1HE4BDE_dhgDmj_Dryqiyy-k"
 }

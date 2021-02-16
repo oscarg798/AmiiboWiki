@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.nfcreader.usecase
 import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.extensions.getOrTransform
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
+import com.oscarg798.amiibowiki.core.usecases.AuthenticateApplicationUseCase
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.errors.UnknownReadError
@@ -23,11 +24,13 @@ import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
 import javax.inject.Inject
 
 class ReadTagUseCase @Inject constructor(
+    private val authenticateApplicationUseCase: AuthenticateApplicationUseCase,
     private val repository: NFCReaderRepository
 ) {
 
-    fun execute(tag: Tag): AmiiboIdentifier {
+    suspend fun execute(tag: Tag): AmiiboIdentifier {
         return runCatching {
+            authenticateApplicationUseCase.execute()
             repository.getamiiboIdentifierFromTag(tag)
         }.getOrTransform {
             throw when (it) {

@@ -22,8 +22,11 @@ import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding
 import com.oscarg798.amiibowiki.navigation.DashboardActivity
+import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
+import com.oscarg798.amiibowiki.updatechecker.UpdateType
+import com.oscarg798.amiibowiki.updatechecker.requestUpdate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
@@ -42,7 +45,6 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setup()
     }
 
@@ -51,14 +53,26 @@ class SplashActivity : AppCompatActivity() {
             viewModel.onScreenShown()
 
             viewModel.state.collect { state ->
-                when(state){
-                    is SplashViewState.NavigatingToFirstscreen ->  startActivity(Intent(this@SplashActivity, DashboardActivity::class.java))
-                    is SplashViewState.Error -> showFetchError()
+                when (state) {
+                    is SplashViewState.NavigatingToFirstscreen -> startActivity(
+                        Intent(
+                            this@SplashActivity,
+                            DashboardActivity::class.java
+                        )
+                    )
+                    is SplashViewState.Error -> showError(state)
                 }
             }
         }
 
         viewModel.onWish(SplashWish.GetTypes)
+    }
+
+    private fun showError(error: SplashViewState.Error) {
+        when (error.exception) {
+            is OutdatedAppException -> requestUpdate(UpdateType.Immediate)
+            else -> showFetchError()
+        }
     }
 
     private fun showFetchError() {

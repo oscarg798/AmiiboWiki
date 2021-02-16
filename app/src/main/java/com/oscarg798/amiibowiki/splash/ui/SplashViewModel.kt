@@ -17,6 +17,7 @@ import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.failures.GameAPIAuthenticationFailure
 import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
 import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
@@ -30,7 +31,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel  @Inject constructor(
+class SplashViewModel @Inject constructor(
     private val splashLogger: SplashLogger,
     private val initializeApplicationUseCase: InitializeApplicationUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewState>,
@@ -46,13 +47,14 @@ class SplashViewModel  @Inject constructor(
     private fun fetchTypes(): Flow<SplashResult> {
         return initializeApplicationUseCase.execute().map {
             SplashResult.TypesFetched as SplashResult
-        } .catch { cause ->
-                when (cause) {
-                    is AmiiboTypeFailure,
-                    is GameAPIAuthenticationFailure -> emit(SplashResult.Error(cause as Exception))
-                    else -> throw cause
-                }
-            }.flowOn(coroutineContextProvider.backgroundDispatcher)
+        }.catch { cause ->
+            when (cause) {
+                is OutdatedAppException,
+                is AmiiboTypeFailure,
+                is GameAPIAuthenticationFailure -> emit(SplashResult.Error(cause as Exception))
+                else -> throw cause
+            }
+        }.flowOn(coroutineContextProvider.backgroundDispatcher)
     }
 
 

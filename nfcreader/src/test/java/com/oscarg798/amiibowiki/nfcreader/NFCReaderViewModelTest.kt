@@ -22,6 +22,7 @@ import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReducer
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -48,7 +49,7 @@ class NFCReaderViewModelTest :
     @Before
     fun setup() {
         every { validateAdapterAvailabilityUseCase.execute() } answers { true }
-        every { readTagUseCase.execute(tag) } answers { AMIIBO_IDENTIFIER }
+        coEvery { readTagUseCase.execute(tag) } answers { AMIIBO_IDENTIFIER }
     }
 
     override fun create(): NFCReaderViewModel = NFCReaderViewModel(
@@ -132,7 +133,7 @@ class NFCReaderViewModelTest :
     @Test
     fun `given read tag wish when wish is process and there is an NFCReader Failure then  it should return it in status as error`() {
         val error = NFCReaderFailure.TagNotSupported(Exception())
-        every { readTagUseCase.execute(tag) } answers { throw error }
+        coEvery { readTagUseCase.execute(tag) } answers { throw error }
         viewModelTestRule.viewModel.onWish(NFCReaderWish.Read(tag))
 
         viewModelTestRule.testCollector wereValuesEmitted listOf(

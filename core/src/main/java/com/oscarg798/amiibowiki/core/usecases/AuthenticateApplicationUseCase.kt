@@ -10,13 +10,13 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.usecases
+package com.oscarg798.amiibowiki.core.usecases
 
 import com.oscarg798.amiibowiki.core.repositories.GameAuthRepository
+import dagger.Reusable
 import javax.inject.Inject
-import javax.inject.Singleton
 
-
+@Reusable
 class AuthenticateApplicationUseCase @Inject constructor(private val gameAuthRepository: GameAuthRepository) {
 
     suspend fun execute() {

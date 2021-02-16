@@ -16,7 +16,7 @@ apply plugin: 'kotlin-kapt'
 
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.21"
+    implementation kotlinStd
     implementation 'com.squareup:kotlinpoet:1.7.2'
     implementation(lomeno)
     implementation project(path: ':logger')

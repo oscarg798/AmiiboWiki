@@ -106,7 +106,6 @@ class AmiiboDetailFragment : Fragment() {
                     is AmiiboDetailViewState.ShowingAmiiboDetails -> showDetail(it.showingAmiiboDetailsParams)
                     is AmiiboDetailViewState.ShowingAmiiboImage -> showExpandedImages(listOf(it.imageUrl))
                     is AmiiboDetailViewState.Error -> showError(it.exception)
-                    else -> {}
                 }
             }
         }

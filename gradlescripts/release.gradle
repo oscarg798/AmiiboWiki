@@ -18,7 +18,10 @@ play {
     defaultToAppBundles = true
     fromTrack = "internal"
     promoteTrack = "alpha"
+    updatePriority = 5
+
 }
+
 
 
 

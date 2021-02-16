@@ -14,30 +14,3 @@ tasks.register<tasks.VersionUpdate>("updateVersion") {
     description =
         "It will update the app version using the param [versionUpdateParam] that should be major, minor, patch o buildNumber"
 }
-
-tasks.register<tasks.BuildGenerator>("createBuild") {
-    group = "CI Tasks"
-    description =
-        "creates an apk based on param [buildType] should debug or alpha"
-}
-
-tasks.register<tasks.FirebasePublisher>("firebaseDistribution") {
-    group = "CI Tasks"
-    description =
-        "Build the app and upload it to firebase distribution, param [buildType] should debug or alpha"
-
-    dependsOn("clean")
-
-    val cleanTaks = getTasksByName("clean", false).first()
-    val unitTestTask = getTasksByName("unitTests", false).first()
-    val createBuildTask = getTasksByName("createBuild", false).first()
-    val updateVersionTask = getTasksByName("updateVersion", false).first()
-
-    unitTestTask.dependsOn(cleanTaks)
-    createBuildTask.dependsOn(unitTestTask)
-    createBuildTask.dependsOn(unitTestTask)
-
-    this.dependsOn(createBuildTask)
-    this.finalizedBy("updateVersion")
-}
-
