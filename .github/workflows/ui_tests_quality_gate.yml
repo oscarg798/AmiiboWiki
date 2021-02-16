@@ -60,12 +60,12 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-         args: 'Ui test ran successfully <3 :love: :smile:'
-      
+          args: 'Ui test ran successfully <3 :love: :smile:'
+
       - name: Discord failure notification
         if: ${{ job.status != 'success' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-         args: 'Ui test failed :warning:'
+          args: 'Ui test failed :warning:'

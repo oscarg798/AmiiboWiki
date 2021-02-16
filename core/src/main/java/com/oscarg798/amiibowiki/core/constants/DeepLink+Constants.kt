@@ -12,9 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.constants
 
-import com.oscarg798.amiibowiki.core.BuildConfig
-
-const val SCHEMA = BuildConfig.DEEP_LINK_PREFIX
+const val SCHEMA = "amiibowiki"
 const val AMIIBO_LIST_DEEPLINK = "$SCHEMA://list"
 const val AMIIBO_DETAIL_DEEPLINK = "$SCHEMA://detail"
 const val GAME_DETAIL_DEEPLINK = "$SCHEMA://gamedetail"
