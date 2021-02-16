@@ -63,7 +63,7 @@ jobs:
          args: 'Ui test ran successfully <3 :love: :smile:'
       
       - name: Discord failure notification
-        if: ${{ job.status == 'failure' }}
+        if: ${{ job.status != 'failure' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master

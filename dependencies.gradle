@@ -124,7 +124,7 @@ ext {
 
     // Kotlin
     kotlinJDK = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    kotlin = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    kotlinStd = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     kotlinCoroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
     kotlinCoroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
@@ -269,3 +269,10 @@ def chucker = [:]
 chucker.library = "com.github.chuckerteam.chucker:library:3.4.0"
 chucker.no_op = "com.github.chuckerteam.chucker:library-no-op:3.4.0"
 ext.chucker = chucker
+
+ext.googlePlayCoreVersion = "1.9.1"
+
+def googlePlay = [:]
+googlePlay.core = "com.google.android.play:core:$googlePlayCoreVersion"
+googlePlay.coreKtx = "com.google.android.play:core-ktx:1.8.1"
+ext.googlePlay = googlePlay

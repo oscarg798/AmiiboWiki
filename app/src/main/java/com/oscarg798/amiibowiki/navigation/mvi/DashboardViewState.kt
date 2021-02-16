@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,24 +10,12 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di.entrypoints
+package com.oscarg798.amiibowiki.navigation.mvi
 
-import com.oscarg798.amiibowiki.core.di.providers.ContextProvider
-import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
-import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
-import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
-import com.oscarg798.amiibowiki.core.usecases.AuthenticateApplicationUseCase
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.updatechecker.UpdateType
 
-@EntryPoint
-@InstallIn(SingletonComponent::class)
-interface NFCReaderEntryPoint :
-    ContextProvider,
-    CoroutinesProvider,
-    LoggerProvider,
-    ResourceProviderProvider {
-
-    fun provideAuthenticateApplicationUseCase(): AuthenticateApplicationUseCase
+sealed class DashboardViewState : ViewState {
+    object Idling : DashboardViewState()
+    data class RequestingUpdate(val type: UpdateType) : DashboardViewState()
 }

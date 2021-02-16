@@ -198,7 +198,6 @@ class AmiiboListFragment :
         lifecycleScope.launchWhenResumed {
             viewModel.state.collect { state ->
                 when (state) {
-                    AmiiboListViewState.Idling -> onIdling()
                     AmiiboListViewState.Loading -> binding.showLoading()
                     is AmiiboListViewState.ShowingAmiibos -> binding.showAmiibos(state.amiibos.toList())
                     is AmiiboListViewState.ShowingFilters -> showFilters(state.filters.toList())

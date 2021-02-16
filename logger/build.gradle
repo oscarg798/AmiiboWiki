@@ -13,13 +13,12 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.21"
+    implementation kotlinStd
     implementation(lomeno)
     implementation retrofit
 }
-
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"

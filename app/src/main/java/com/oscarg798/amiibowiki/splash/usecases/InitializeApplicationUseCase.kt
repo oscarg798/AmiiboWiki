@@ -12,14 +12,19 @@
 
 package com.oscarg798.amiibowiki.splash.usecases
 
+import com.oscarg798.amiibowiki.core.usecases.AuthenticateApplicationUseCase
+import com.oscarg798.amiibowiki.updatechecker.UpdateCheckerUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.splash.mvi.SplashResult
+import com.oscarg798.amiibowiki.navigation.UpdateStatus
+import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * In the future we might need to refactor this in order to pass a list
@@ -27,16 +32,21 @@ import javax.inject.Singleton
  * specific usecases. As for now we do not have anything else to add to the pipeline
  * we are not going to implemented thay way. YAGNI
  */
-class InitializeApplicationUseCase  @Inject constructor(
+class InitializeApplicationUseCase @Inject constructor(
+    private val updateCheckerUseCase: UpdateCheckerUseCase,
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase,
     private val activateRemoteConfigUseCase: ActivateRemoteConfigUseCase,
     private val authenticateApplicationUseCase: AuthenticateApplicationUseCase,
 ) {
 
-    fun execute(): Flow<Unit> =
-        getAuthFlow().zip(getRemoteConfigActivationFlow()) { _, _ -> }.flatMapConcat {
-            getRefreshTypesFlow()
+    fun execute(): Flow<Unit> = getRemoteConfigActivationFlow().map {
+        val updateStatus = updateCheckerUseCase.execute()
+        if (updateStatus is UpdateStatus.UpdateAvailable.Immediate) {
+            throw OutdatedAppException()
         }
+    }.flatMapMerge {
+        getAuthFlow().zip(getRefreshTypesFlow()) { _, _ ->  }
+    }
 
     private fun getAuthFlow() = callToUnitFlow { authenticateApplicationUseCase.execute() }
 

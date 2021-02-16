@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.splash.mvi
 
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.mvi.Reducer
+import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
 
 import javax.inject.Inject
 
@@ -22,11 +23,17 @@ class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewStat
     override suspend fun reduce(state: SplashViewState, from: SplashResult): SplashViewState =
         when (from) {
             is SplashResult.TypesFetched -> SplashViewState.NavigatingToFirstscreen
-            is SplashResult.Error -> SplashViewState.Error(
-                AmiiboTypeFailure.FetchTypesFailure(
-                    from.error.message,
-                    from.error.cause as? Exception
+            is SplashResult.Error -> if (from.error is OutdatedAppException) {
+                SplashViewState.Error(
+                    from.error
                 )
-            )
+            } else {
+                SplashViewState.Error(
+                    AmiiboTypeFailure.FetchTypesFailure(
+                        from.error.message,
+                        from.error.cause as? Exception
+                    )
+                )
+            }
         }
 }

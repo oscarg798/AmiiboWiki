@@ -20,6 +20,8 @@ sealed class AmiiboWikiFeatureFlag(override val name: String) : FeatureFlag {
     object ShowRelatedGames : AmiiboWikiFeatureFlag("show_related_games")
     object ShowAmiiboDetail : AmiiboWikiFeatureFlag("amiibo_detail")
     object ShowGameDetail : AmiiboWikiFeatureFlag("show_game_detail")
+    object ImmediateUpdate : AmiiboWikiFeatureFlag("update_immediate")
+    object FlexibleUpdate : AmiiboWikiFeatureFlag("update_flexible")
 
     companion object {
         fun getValues() = AmiiboWikiFeatureFlag::class.nestedClasses.filter { klass ->

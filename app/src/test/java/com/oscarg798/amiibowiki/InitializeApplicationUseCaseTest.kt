@@ -16,13 +16,15 @@ import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.failures.GameAPIAuthenticationFailure
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
-import com.oscarg798.amiibowiki.splash.usecases.AuthenticateApplicationUseCase
+import com.oscarg798.amiibowiki.core.usecases.AuthenticateApplicationUseCase
+import com.oscarg798.amiibowiki.navigation.UpdateStatus
+import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.utils.TestCollector
+import com.oscarg798.amiibowiki.updatechecker.UpdateCheckerUseCase
 import io.mockk.Runs
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.just
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -41,6 +43,7 @@ class InitializeApplicationUseCaseTest {
 
     private lateinit var usecase: InitializeApplicationUseCase
 
+    private val updateCheckerUseCase: UpdateCheckerUseCase = relaxedMockk()
     private val updateAmiiboTypeUseCase: UpdateAmiiboTypeUseCase = relaxedMockk()
     private val activateRemoteConfigUseCase: ActivateRemoteConfigUseCase = relaxedMockk()
     private val authenticateApplicationUseCase: AuthenticateApplicationUseCase = relaxedMockk()
@@ -49,11 +52,13 @@ class InitializeApplicationUseCaseTest {
     fun setup() {
         testCollector = TestCollector()
 
+        coEvery { updateCheckerUseCase.execute() } answers { UpdateStatus.AlreadyUpdated }
         coEvery { activateRemoteConfigUseCase.execute() } just Runs
         coEvery { updateAmiiboTypeUseCase.execute() } just Runs
         coEvery { authenticateApplicationUseCase.execute() } just Runs
 
         usecase = InitializeApplicationUseCase(
+            updateCheckerUseCase,
             updateAmiiboTypeUseCase,
             activateRemoteConfigUseCase,
             authenticateApplicationUseCase
@@ -103,5 +108,29 @@ class InitializeApplicationUseCaseTest {
         testCollector valueWasNotEmitted Unit
         testCoroutineScope.uncaughtExceptions.size shouldBeEqualTo 1
         testCoroutineScope.uncaughtExceptions.first() shouldBeInstanceOf AmiiboTypeFailure.FetchTypesFailure::class.java
+    }
+
+    @Test
+    fun `when there is an immediate update available then it should throw outdate exception`() {
+        coEvery { updateCheckerUseCase.execute() } answers { UpdateStatus.UpdateAvailable.Immediate }
+
+        testCollector.test(testCoroutineScope, usecase.execute())
+        testCoroutineScope.uncaughtExceptions.size shouldBeEqualTo 1
+        testCoroutineScope.uncaughtExceptions.first() shouldBeInstanceOf OutdatedAppException::class
+    }
+
+    @Test
+    fun `when there is a flexible update available then it should emit unit`(){
+        coEvery { updateCheckerUseCase.execute() } answers { UpdateStatus.UpdateAvailable.Flexible }
+        testCollector.test(testCoroutineScope, usecase.execute())
+
+        testCollector wasValueEmiited Unit
+    }
+
+    @Test
+    fun `when app is updated then it should emit unit`(){
+        testCollector.test(testCoroutineScope, usecase.execute())
+
+        testCollector wasValueEmiited Unit
     }
 }
