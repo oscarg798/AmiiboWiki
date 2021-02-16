@@ -31,10 +31,7 @@ configurations {
     compileDebugClasspath
 }
 android {
-    signingConfigs {
-        demo {
-        }
-    }
+
     compileSdkVersion appCompileSdkVersion
     buildToolsVersion appBuildToolsVersion
 
@@ -52,39 +49,41 @@ android {
         buildConfigField "String", "GOOGLE_API_KEY", "\"$googleAPIKey\""
         buildConfigField "String", "MIX_PANEL_API_KEY", "\"$mixPanelApiKey\""
         buildConfigField "String", "GAME_API_AUTH_URL", "\"$gameAPIAuthUrl\""
+        buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database\""
 
         testInstrumentationRunner "com.oscarg798.amiibowiki.testutils.testrunner.UITestRunner"
     }
 
     buildTypes {
         release {
-            buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database\""
-
             signingConfig signingConfigs.locker
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
-        debug {
+        debug{
+            minifyEnabled false
+        }
+    }
+
+    productFlavors {
+        development {
             buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database_debug\""
             applicationIdSuffix ".debug"
             manifestPlaceholders = [appName: "AmiiboWiki-Debug"]
-
-            minifyEnabled false
         }
 
-        staging {
+        alpha {
             buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database_alpha\""
             buildConfigField "Boolean", "ALPHA", "true"
 
-            versionNameSuffix "-ALPHA"
             applicationIdSuffix ".alpha"
-
             manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
+        }
 
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        production {
+            buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database\""
         }
     }
 
@@ -230,6 +229,7 @@ dependencies {
 
 releasePlugin {
     unitTestRequired = true
-    buildTypes = ["debug", "alpha", "release"]
+    buildTypes = ["debug", "release"]
+    flavors = ["development", "alpha"]
     firebaseToken = "1//03hozum1PUjaRCgYIARAAGAMSNwF-L9IrmwSraeT8l6Bi1wKpa1tkuQSIw0cOiOnzlh52DJIYBGo1HE4BDE_dhgDmj_Dryqiyy-k"
 }
