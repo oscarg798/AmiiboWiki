@@ -14,13 +14,16 @@ package com.oscarg798.amiibowiki.nfcreader
 
 import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
+import com.oscarg798.amiibowiki.core.usecases.AuthenticateApplicationUseCase
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
 import org.junit.Test
@@ -29,29 +32,36 @@ class ReadTagUseCaseTest {
 
     private val tag = mockk<Tag>()
     private val nfcReaderRepository = mockk<NFCReaderRepository>()
+    private val authenticateApplicationUseCase: AuthenticateApplicationUseCase = relaxedMockk()
     private lateinit var usecase: ReadTagUseCase
 
     @Before
     fun setup() {
         every { nfcReaderRepository.getamiiboIdentifierFromTag(tag) } answers { AMIIBO_IDENTIFIER }
-        usecase = ReadTagUseCase(nfcReaderRepository)
+        usecase = ReadTagUseCase(authenticateApplicationUseCase, nfcReaderRepository)
     }
 
     @Test
     fun `given a valid tag when its executed then it should return the amiibo identifier`() {
-        usecase.execute(tag) shouldBeEqualTo AMIIBO_IDENTIFIER
+        runBlocking {
+            usecase.execute(tag)
+        } shouldBeEqualTo AMIIBO_IDENTIFIER
     }
 
     @Test(expected = NFCReaderFailure.TagNotSupported::class)
     fun `when its executed and there is an InvalidTagDataException then it should throw TagNotSupported`() {
         every { nfcReaderRepository.getamiiboIdentifierFromTag(tag) } answers { throw InvalidTagDataException() }
-        usecase.execute(tag)
+        runBlocking {
+            usecase.execute(tag)
+        }
     }
 
     @Test(expected = NFCReaderFailure.TagNotSupported::class)
     fun `when its executed and there is an WrongPageFormatException then it should throw TagNotSupported`() {
         every { nfcReaderRepository.getamiiboIdentifierFromTag(tag) } answers { throw WrongPageFormatException() }
-        usecase.execute(tag)
+        runBlocking {
+            usecase.execute(tag)
+        }
     }
 
     @Test(expected = NFCReaderFailure.Unknow::class)
@@ -61,13 +71,17 @@ class ReadTagUseCaseTest {
                 Exception()
             )
         }
-        usecase.execute(tag)
+        runBlocking {
+            usecase.execute(tag)
+        }
     }
 
     @Test(expected = Exception::class)
     fun `when its executed and there is an Exception then it should throw Exception`() {
         every { nfcReaderRepository.getamiiboIdentifierFromTag(tag) } answers { throw Exception() }
-        usecase.execute(tag)
+        runBlocking {
+            usecase.execute(tag)
+        }
     }
 }
 

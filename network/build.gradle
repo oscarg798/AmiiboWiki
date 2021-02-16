@@ -14,7 +14,7 @@ apply from: "../gradlescripts/shared.gradle"
 
 dependencies {
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.21")
+    implementation kotlinStd
     implementation dagger
     kapt daggerCompiler
 
