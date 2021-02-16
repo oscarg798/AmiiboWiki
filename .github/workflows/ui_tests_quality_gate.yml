@@ -46,13 +46,13 @@ jobs:
           GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
 
       - name: build debug apk
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDevelopmentDebug
 
       - name: build android tests apk
         run: ./gradlew assembleAndroidTest
 
       - name: run test on testlab
-        run:  gcloud firebase test android run --device-ids=OnePlus6T --app app/build/outputs/apk/debug/app-debug.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --test app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --os-version-ids=28  --use-orchestrator
+        run:  gcloud firebase test android run --device-ids=OnePlus6T --app app/build/outputs/apk/development/debug/app-development-debug.apk --test app/build/outputs/apk/androidTest/development/debug/app-development-debug-androidTest.apk --os-version-ids=28  --use-orchestrator
 
       - name: Discord success notification
         if: ${{ job.status == 'success' }}
@@ -60,12 +60,12 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-         args: 'Ui test ran successfully <3 :love: :smile:'
-      
+          args: 'Ui test ran successfully <3 :love: :smile:'
+
       - name: Discord failure notification
-        if: ${{ job.status != 'failure' }}
+        if: ${{ job.status != 'success' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-         args: 'Ui test failed :warning:'
+          args: 'Ui test failed :warning:'
