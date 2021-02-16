@@ -56,8 +56,6 @@ android {
 
     buildTypes {
         release {
-            buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database\""
-
             signingConfig signingConfigs.locker
 
             minifyEnabled true
@@ -82,6 +80,10 @@ android {
 
             applicationIdSuffix ".alpha"
             manifestPlaceholders = [appName: "AmiiboWiki-Alpha"]
+        }
+
+        production {
+            buildConfigField "String", "DATABASE_NAME", "\"core_amiibo_database\""
         }
     }
 
