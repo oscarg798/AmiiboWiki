@@ -13,20 +13,6 @@ apply from: "../gradlescripts/shared.gradle"
 
 android {
 
-    buildTypes {
-        release {
-            buildConfigField "String", "DEEP_LINK_PREFIX", "\"amiibowiki\""
-        }
-
-        debug {
-            buildConfigField "String", "DEEP_LINK_PREFIX", "\"amiibowikidebug\""
-        }
-
-        staging {
-            buildConfigField "String", "DEEP_LINK_PREFIX", "\"amiibowikialpha\""
-        }
-    }
-
     packagingOptions {
         exclude 'META-INF/metadata.kotlin_module'
     }
