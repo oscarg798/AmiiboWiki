@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -9,17 +9,35 @@
  *
  *
  */
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
-include ':nfcreader'
-include ':loggerprocessor'
-include ':searchgamesresult'
-include ':settings'
-include ':gamedetail'
-include ':logger'
-include ':searchgames'
+
+package com.oscarg798.amiibowiki.plugin
+
+import com.oscarg798.amiibowiki.plugin.charger.IMPLEMENTATION
+import com.oscarg798.amiibowiki.plugin.charger.dependencies.CoroutinesCharger
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.gradle.api.Project
+import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.junit.Test
+
+class CoroutinesChargerTest {
+
+    private val project = mockk<Project>()
+    private val dependencyHandler = mockk<DependencyHandler>(relaxed = true)
+
+    @Test
+    fun `when charger applied then it should add dependencies`() {
+        every { project.dependencies } answers { dependencyHandler }
+
+        val charger = CoroutinesCharger()
+        charger.charge(project)
+
+        verify {
+            dependencyHandler.add(IMPLEMENTATION, Coroutines.Libraries.core)
+            dependencyHandler.add(IMPLEMENTATION, Coroutines.Libraries.android)
+        }
+
+        verify(exactly = 2) { dependencyHandler.add(any(), any()) }
+    }
+}

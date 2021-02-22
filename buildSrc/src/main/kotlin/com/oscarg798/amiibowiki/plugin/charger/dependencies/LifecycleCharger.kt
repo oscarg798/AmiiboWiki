@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -9,17 +9,22 @@
  *
  *
  */
-rootProject.name = "AmiiboWiki"
-include ':network'
-include ':core'
-include ':app'
-include ':amiibolist'
-include ':amiibodetail'
-include ':testutils'
-include ':nfcreader'
-include ':loggerprocessor'
-include ':searchgamesresult'
-include ':settings'
-include ':gamedetail'
-include ':logger'
-include ':searchgames'
+
+package com.oscarg798.amiibowiki.plugin.charger.dependencies
+
+import com.oscarg798.amiibowiki.plugin.Lifecycle
+import com.oscarg798.amiibowiki.plugin.charger.Charger
+import com.oscarg798.amiibowiki.plugin.charger.IMPLEMENTATION
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
+
+class LifecycleCharger : Charger {
+
+    override fun charge(project: Project) {
+        project.dependencies {
+            add(IMPLEMENTATION, Lifecycle.Libraries.viewModel)
+            add(IMPLEMENTATION, Lifecycle.Libraries.runtime)
+            add(IMPLEMENTATION, Lifecycle.Libraries.extensions)
+        }
+    }
+}

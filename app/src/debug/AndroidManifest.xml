@@ -4,19 +4,6 @@
 
     <application>
         <activity android:name="com.oscarg798.amiibowiki.HiltTestActivity" />
-        <activity
-            android:name="com.oscarg798.amiibowiki.deeplink.DeepLinkHandlerActivity"
-            tools:node="replace"
-            android:theme="@style/android:Theme.NoDisplay">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="amiibowikidebug" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

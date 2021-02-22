@@ -9,20 +9,83 @@
  *
  *
  */
-apply from: "../gradlescripts/shared.gradle"
+plugins {
+    id('LibraryChargerPlugin')
+}
 
 android {
+    compileSdkVersion appCompileSdkVersion
+
+    defaultConfig {
+        minSdkVersion appMinSdkVersion
+        targetSdkVersion appTargetSdkVersion
+        versionCode appVersionCode
+        versionName appVersionName
+        testInstrumentationRunner "com.oscarg798.amiibowiki.testutils.testrunner.UITestRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources true
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+        dataBinding false
+    }
 
     packagingOptions {
+        exclude "**/attach_hotspot_windows.dll"
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/licenses/ASM'
+        exclude 'META-INF/metadata.jvm.kotlin_module'
+        exclude 'kotlin/coroutines/coroutines.kotlin_builtins'
+        exclude 'META-INF/descriptors.kotlin_module'
         exclude 'META-INF/metadata.kotlin_module'
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        freeCompilerArgs = ["-Xallow-result-return-type", "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi", "-Xopt-in=kotlinx.coroutines.FlowPreview", "-Xopt-in=kotlin.contracts.ExperimentalContracts"]
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
 
-    implementation daggerHilt.viewModel
-    kapt daggerHilt.compiler
+    implementation facebookShimmer
+    implementation shimmerLayout
+
+    implementation(lomeno)
+
+    implementation flagly
+
+    implementation platform(firebase.boom)
+    implementation firebaseAnalytics
+
+    implementation project(path: ':logger')
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+    kapt project(':loggerprocessor')
+
+    androidTestImplementation daggerHilt.androidTesting
+    kaptAndroidTest daggerHilt.compiler
+
+    testImplementation project(path: ':testutils')
+    androidTestImplementation project(path: ':testutils')
 
     implementation picasso
     implementation project(path: ':network')
@@ -33,12 +96,14 @@ dependencies {
     implementation firebaseRemoteConfig
     implementation zoomImageViewer
 
-    implementation roomRuntime
-    implementation roomCompiler
-    implementation roomKTX
+
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.21"
     implementation flagly
     implementation preference
 
-    testImplementation roomTesting
+}
+
+
+charger {
+    plugins = ["navigation"]
 }

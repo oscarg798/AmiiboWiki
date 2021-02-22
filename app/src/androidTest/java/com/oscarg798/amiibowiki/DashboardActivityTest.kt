@@ -54,8 +54,6 @@ import javax.inject.Inject
     AppModule::class
 )
 @HiltAndroidTest
-
-
 class DashboardActivityTest : BaseUITest(DISPATCHER)  {
 
     private val dashboardTestRobot = DashboardTestRobot()
