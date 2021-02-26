@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.amiibodetail
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailDeeplinkBinding
@@ -33,6 +32,5 @@ class AmiiboDetailDeepLinkActivity : AppCompatActivity() {
                 arguments = intent.extras
             }
         ).commitNow()
-        Log.i("PENE", "PENE")
     }
 }

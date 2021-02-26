@@ -16,6 +16,7 @@
     <attr name="TextColorSecondary" format="color" />
     <attr name="iconColor" format="color" />
     <attr name="skeletonColor" format="color" />
+
     <attr name="selectedIconColor" format="color"/>
 
     <color name="silver_chalice">#AAAAAA</color>

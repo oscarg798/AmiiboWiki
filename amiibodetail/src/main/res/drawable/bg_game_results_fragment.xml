@@ -15,7 +15,4 @@
         android:topLeftRadius="@dimen/corner_radius_large"
         android:topRightRadius="@dimen/corner_radius_large" />
     <solid android:color="?attr/colorPrimary" />
-    <stroke
-        android:width="2dp"
-        android:color="?attr/colorPrimary" />
 </shape>

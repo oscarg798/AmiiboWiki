@@ -16,6 +16,10 @@ import com.oscarg798.amiibowiki.core.mvi.Wish
 
 sealed class AmiiboDetailWish : Wish {
 
-    data class ExpandAmiiboImage(val image: String) : AmiiboDetailWish()
+    data class ExpandAmiiboImage(val image: String) : AmiiboDetailWish() {
+        override fun equals(other: Any?): Boolean = other === this
+    }
+
+    object ShowRelatedGames : AmiiboDetailWish()
     object ShowAmiiboDetail : AmiiboDetailWish()
 }

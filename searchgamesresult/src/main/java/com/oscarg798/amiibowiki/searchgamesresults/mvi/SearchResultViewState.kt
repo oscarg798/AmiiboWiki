@@ -22,7 +22,13 @@ sealed class SearchResultViewState() : ViewState {
 
     object Idling : SearchResultViewState()
     object Loading : SearchResultViewState()
-    data class ShowingGameResults(val results: List<ViewGameSearchResult>) : SearchResultViewState()
-    data class ShowingGameDetails(val details: ShowingGameDetailsParams) : SearchResultViewState()
+    data class ShowingGameResults(val results: List<ViewGameSearchResult>) :
+        SearchResultViewState() {
+        override fun equals(other: Any?): Boolean = other === this
+    }
+
+    data class ShowingGameDetails(val details: ShowingGameDetailsParams) : SearchResultViewState() {
+        override fun equals(other: Any?): Boolean = other === this
+    }
     data class Error(val error: SearchGameFailure) : SearchResultViewState()
 }

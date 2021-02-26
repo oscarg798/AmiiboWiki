@@ -16,7 +16,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -89,7 +88,6 @@ class NFCReaderActivity : AppCompatActivity() {
     }
 
     private fun showAmiibo(amiiboIdentifier: AmiiboIdentifier) {
-        Log.i("PENE", "PENE1")
         startDeepLinkIntent(
             AMIIBO_DETAIL_DEEPLINK,
             Bundle().apply {

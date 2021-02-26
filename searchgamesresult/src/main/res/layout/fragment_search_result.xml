@@ -19,26 +19,19 @@
     tools:background="?colorPrimaryDark"
     tools:context="com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment">
 
-    <ImageView
-        android:id="@+id/tvSlideUpIndicator"
-        android:layout_width="@dimen/slide_up_indicator_icon_size"
-        android:layout_height="@dimen/slide_up_indicator_icon_size"
-        android:src="@drawable/ic_toggle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvTitle"
         style="@style/Styles.AmiiboWiki.Default"
         android:layout_width="@dimen/match_constraint"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
         android:gravity="center"
         android:text="@string/related_games_title"
         android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.M"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSlideUpIndicator" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvError"
