@@ -17,12 +17,17 @@ import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.Wish
 
 sealed class AmiiboListWish : Wish {
-    object RefreshAmiibos : AmiiboListWish()
+    object RefreshAmiibos : AmiiboListWish() {
+        override fun equals(other: Any?): Boolean = false
+    }
     object GetAmiibos : AmiiboListWish()
     object ShowFilters : AmiiboListWish()
     object FilteringCancelled : AmiiboListWish()
 
     data class Search(val query: String) : AmiiboListWish()
-    data class ShowAmiiboDetail(val viewAmiibo: ViewAmiibo) : AmiiboListWish()
+    data class ShowAmiiboDetail(val viewAmiibo: ViewAmiibo) : AmiiboListWish() {
+        override fun equals(other: Any?): Boolean = this === other
+    }
+
     data class FilterAmiibos(val filter: ViewAmiiboType) : AmiiboListWish()
 }

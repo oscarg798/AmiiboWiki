@@ -18,9 +18,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_result_fragment_tag">search_result_fragment_tag</string>
-    <string name="serie_title">Game Serie:</string>
+    <string name="serie_title"></string>
     <string name="character_title_label">Character:</string>
-    <string name="type_title">Type:</string>
+    <string name="type_title"></string>
     <string name="related_games_title">Related Games</string>
     <string name="general_error">There was an eror please try again later</string>
 </resources>

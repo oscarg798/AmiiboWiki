@@ -20,8 +20,12 @@ sealed class GameDetailViewState : ViewState {
 
     object Idling : GameDetailViewState()
     object Loading : GameDetailViewState()
-    data class ShowingGameImages(val images: Collection<String>) : GameDetailViewState()
+    data class ShowingGameImages(val images: Collection<String>) : GameDetailViewState() {
+        override fun equals(other: Any?): Boolean = other === this
+    }
     data class ShowingGameDetails(val game: Game) : GameDetailViewState()
-    data class ShowingGameTrailer(val trailer: String) : GameDetailViewState()
+    data class ShowingGameTrailer(val trailer: String) : GameDetailViewState() {
+        override fun equals(other: Any?): Boolean = other === this
+    }
     data class Error(val error: GameDetailFailure) : GameDetailViewState()
 }

@@ -16,10 +16,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.amiibodetail.databinding.FragmentAmiiboDetailBinding
@@ -32,8 +32,6 @@ import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.utils.provideFactory
-import com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment
-import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
@@ -74,28 +72,9 @@ class AmiiboDetailFragment : Fragment() {
         setupViewModelInteractions()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setup()
+    override fun onResume() {
+        super.onResume()
         viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
-    }
-
-    private fun setup() {
-        childFragmentManager.beginTransaction()
-            .replace(
-                R.id.searchResultFragment,
-                SearchResultFragment.newInstance(),
-                getString(R.string.search_result_fragment_tag)
-            )
-            .commit()
-
-        ViewCompat.isNestedScrollingEnabled(binding.searchResultFragment)
-
-        binding.searchResultFragment.setOnClickListener {
-            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-
-        configureBackDrop()
     }
 
     private fun setupViewModelInteractions() {
@@ -106,6 +85,7 @@ class AmiiboDetailFragment : Fragment() {
                     is AmiiboDetailViewState.ShowingAmiiboDetails -> showDetail(it.showingAmiiboDetailsParams)
                     is AmiiboDetailViewState.ShowingAmiiboImage -> showExpandedImages(listOf(it.imageUrl))
                     is AmiiboDetailViewState.Error -> showError(it.exception)
+                    is AmiiboDetailViewState.ShowingRelatedGames -> showRelatedGames(it.amiiboId)
                 }
             }
         }
@@ -118,11 +98,6 @@ class AmiiboDetailFragment : Fragment() {
             amiiboDetailFailure.message ?: getString(R.string.general_error),
             Snackbar.LENGTH_LONG
         ).show()
-    }
-
-    private fun configureBackDrop() {
-        bottomSheetBehavior = BottomSheetBehavior.from<View>(binding.searchResultFragment)
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     private fun showDetail(
@@ -140,31 +115,28 @@ class AmiiboDetailFragment : Fragment() {
             ivImage.setOnClickListener {
                 viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(viewAmiiboDetails.imageUrl))
             }
-        }
 
-        if (showingAmiiboDetailsParams.isRelatedGamesSectionEnabled) {
-            showSearchResultFragment(viewAmiiboDetails.id)
-        } else {
-            hideSearchResultFragment()
+            btnRelatedGames.visibility =
+                if (showingAmiiboDetailsParams.isRelatedGamesSectionEnabled) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+
+            binding.btnRelatedGames.setOnClickListener {
+                viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
+            }
         }
     }
 
-    private fun showSearchResultFragment(amiiboId: String) {
-        binding.searchResultFragment.visibility = View.VISIBLE
-        val searchResultFragment = getSearchResultsFragment() ?: return
-        searchResultFragment.search(GameSearchParam.AmiiboGameSearchParam(amiiboId))
-    }
-
-    private fun hideSearchResultFragment() {
-        binding.searchResultFragment.visibility = View.GONE
+    private fun showRelatedGames(amiiboId: String) {
+        findNavController().navigate(AmiiboDetailFragmentDirections.actionAmiiboDetailFragmentToSearchResultFragment(amiiboId, true))
     }
 
     private fun showLoading() {
         with(binding) {
             shimmer.root.visibility = View.VISIBLE
             shimmer.shimmerViewContainer.startShimmer()
-            tvSerieTitle.visibility = View.GONE
-            tvTypeTitle.visibility = View.GONE
         }
     }
 
@@ -172,13 +144,7 @@ class AmiiboDetailFragment : Fragment() {
         with(binding) {
             shimmer.root.visibility = View.GONE
             shimmer.shimmerViewContainer.stopShimmer()
-            tvSerieTitle.visibility = View.VISIBLE
-            tvTypeTitle.visibility = View.VISIBLE
         }
-    }
-
-    private fun getSearchResultsFragment(): SearchResultFragment? {
-        return childFragmentManager.findFragmentByTag(getString(R.string.search_result_fragment_tag)) as? SearchResultFragment
     }
 }
 

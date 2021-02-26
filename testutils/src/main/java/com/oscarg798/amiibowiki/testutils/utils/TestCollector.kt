@@ -46,7 +46,6 @@ class TestCollector<T> {
     infix fun wereValuesEmitted(_values: Collection<T>) {
         assert(values.containsAll(_values))
     }
-
     infix fun valuesWereNotEmitted(_values: Collection<T>) {
         _values.forEach {
             valueWasNotEmitted(it)

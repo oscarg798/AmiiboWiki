@@ -19,9 +19,9 @@ import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -35,25 +35,16 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
 
     protected abstract val coroutineContextProvider: CoroutineContextProvider
 
-    protected val _state = MutableSharedFlow<ViewState>(
-        replay = 1,
-        extraBufferCapacity = 3,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    protected val _state = MutableStateFlow<ViewState>(initialState)
 
-    private val wishProcessor = MutableSharedFlow<Wish>(
-        replay = 0,
-        extraBufferCapacity = 3,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    private val wishProcessor = MutableStateFlow<Wish?>(null)
 
     val state: Flow<ViewState>
         get() = _state
 
     init {
-        _state.tryEmit(initialState)
-
         wishProcessor
+            .filterNotNull()
             .flatMapLatest {
                 getResult(it)
             }.scan(initialState) { state, result ->
@@ -70,6 +61,6 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
     }
 
     open fun onWish(wish: Wish) {
-        wishProcessor.tryEmit(wish)
+        wishProcessor.value = wish
     }
 }

@@ -15,5 +15,5 @@
     <dimen name="amiibo_detail_skeleton_image_size">200dp</dimen>
     <dimen name="amiibo_detail_card_elevation">5dp</dimen>
     <dimen name="search_result_elevation">10dp</dimen>
-    <dimen name="iv_amiibo_image_size">250dp</dimen>
+    <dimen name="iv_amiibo_image_size">350dp</dimen>
 </resources>

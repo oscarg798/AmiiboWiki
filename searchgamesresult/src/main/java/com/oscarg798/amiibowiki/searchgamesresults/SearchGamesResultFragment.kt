@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.oscarg798.amiibowiki.core.constants.ARGUMENT_AMIIBO_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION
 import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
@@ -71,18 +72,19 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     }
 
     private fun setup() {
-        val relatedGamesViewsVisibility = if (isShownAsGamesRelatedSection) {
+        binding.tvTitle.visibility = if (isShownAsGamesRelatedSection) {
             View.VISIBLE
         } else {
             View.GONE
         }
 
-        binding.tvSlideUpIndicator.visibility = relatedGamesViewsVisibility
-        binding.tvTitle.visibility = relatedGamesViewsVisibility
-
         with(binding.rvGamesRelated) {
             layoutManager = LinearLayoutManager(context)
             adapter = SearchResultAdapter(this@SearchResultFragment)
+        }
+
+        arguments?.getString(ARGUMENT_AMIIBO_ID)?.let {
+            search(GameSearchParam.AmiiboGameSearchParam(it))
         }
     }
 

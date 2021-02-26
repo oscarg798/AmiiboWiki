@@ -25,8 +25,10 @@ sealed class AmiiboDetailViewState : ViewState {
 
     object Idling : AmiiboDetailViewState()
     object Loading : AmiiboDetailViewState()
-    data class ShowingAmiiboDetails(val showingAmiiboDetailsParams: ShowingAmiiboDetailsParams) :
-        AmiiboDetailViewState()
-    data class ShowingAmiiboImage(val imageUrl: String) : AmiiboDetailViewState()
+    data class ShowingAmiiboDetails(val showingAmiiboDetailsParams: ShowingAmiiboDetailsParams) : AmiiboDetailViewState()
+    data class ShowingRelatedGames(val amiiboId: String) : AmiiboDetailViewState()
+    data class ShowingAmiiboImage(val imageUrl: String) : AmiiboDetailViewState() {
+        override fun equals(other: Any?): Boolean = this === other
+    }
     data class Error(val exception: AmiiboDetailFailure) : AmiiboDetailViewState()
 }
