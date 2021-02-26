@@ -18,8 +18,12 @@ import com.oscarg798.amiibowiki.core.mvi.Result
 
 sealed class GameDetailResult : Result {
     object Loading : GameDetailResult()
-    data class GameTrailerFound(val trailerId: String) : GameDetailResult()
+    data class GameTrailerFound(val trailerId: String) : GameDetailResult() {
+        override fun equals(other: Any?): Boolean = this === other
+    }
     data class GameFetched(val game: Game) : GameDetailResult()
-    data class ImagesExpanded(val images: Collection<String>) : GameDetailResult()
+    data class ImagesExpanded(val images: Collection<String>) : GameDetailResult() {
+        override fun equals(other: Any?): Boolean = this === other
+    }
     data class Error(val exception: GameDetailFailure) : GameDetailResult()
 }

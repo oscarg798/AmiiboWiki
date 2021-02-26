@@ -17,11 +17,11 @@ import androidx.lifecycle.ViewModelProvider
 
 fun <AssistedFactory : AssistedFactoryCreator<VM, Param>, Param, VM : ViewModel> provideFactory(
     assistedFactory: AssistedFactory,
-    deliveryAddress: Param
+    param: Param
 ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return assistedFactory.create(deliveryAddress) as T
+        return assistedFactory.create(param) as T
     }
 }
 

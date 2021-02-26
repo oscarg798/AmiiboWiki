@@ -267,7 +267,7 @@ class AmiiboListFragment :
 
     private fun showAmiiboDetail(tail: String) {
         view?.findNavController()
-            ?.navigate(AmiiboListFragmentDirections.actionNavigationListToAmiiboDetail(tail))
+            ?.navigate(AmiiboListFragmentDirections.actionNavigationListToNavigationAmiiboDetail(tail))
     }
 }
 

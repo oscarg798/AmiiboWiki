@@ -31,5 +31,6 @@ class AmiiboDetailReducer @Inject constructor() :
         )
         is AmiiboDetailResult.ImageExpanded -> AmiiboDetailViewState.ShowingAmiiboImage(from.url)
         is AmiiboDetailResult.Error -> AmiiboDetailViewState.Error(from.error)
+        is AmiiboDetailResult.ShowingRelatedGames -> AmiiboDetailViewState.ShowingRelatedGames(from.amiiboId)
     }
 }

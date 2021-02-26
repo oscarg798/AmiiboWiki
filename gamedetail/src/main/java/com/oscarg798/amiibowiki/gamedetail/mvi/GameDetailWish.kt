@@ -18,6 +18,12 @@ import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 sealed class GameDetailWish : Wish {
 
     object ShowGameDetail : GameDetailWish()
-    object PlayGameTrailer : GameDetailWish()
-    data class ExpandImages(val expandableImageParams: Collection<ExpandableImageParam>) : GameDetailWish()
+    object PlayGameTrailer : GameDetailWish() {
+        override fun equals(other: Any?): Boolean = false
+    }
+
+    data class ExpandImages(val expandableImageParams: Collection<ExpandableImageParam>) :
+        GameDetailWish() {
+        override fun equals(other: Any?): Boolean = other == this
+    }
 }

@@ -19,7 +19,9 @@ import com.oscarg798.amiibowiki.core.mvi.Result
 sealed class AmiiboDetailResult : Result {
     object Loading : AmiiboDetailResult()
 
+    data class ShowingRelatedGames(val amiiboId: String) : AmiiboDetailResult()
     data class ImageExpanded(val url: String) : AmiiboDetailResult()
-    data class DetailFetched(val amiibo: Amiibo, val isRelatedGamesSectionEnabled: Boolean) : AmiiboDetailResult()
+    data class DetailFetched(val amiibo: Amiibo, val isRelatedGamesSectionEnabled: Boolean) :
+        AmiiboDetailResult()
     data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
 }
