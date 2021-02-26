@@ -50,6 +50,7 @@ class AmiiboDetailViewModel @AssistedInject constructor(
     override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = when (wish) {
         is AmiiboDetailWish.ExpandAmiiboImage -> flowOf(AmiiboDetailResult.ImageExpanded(wish.image))
         is AmiiboDetailWish.ShowAmiiboDetail -> getAmiiboDetail()
+        is AmiiboDetailWish.ShowRelatedGames -> flowOf(AmiiboDetailResult.ShowingRelatedGames(tail))
     }
 
     private suspend fun getAmiiboDetail(): Flow<AmiiboDetailResult> = flow {
@@ -57,7 +58,6 @@ class AmiiboDetailViewModel @AssistedInject constructor(
     }.flatMapConcat { amiibo ->
         flow<AmiiboDetailResult> {
             trackViewShown(amiibo)
-
             emit(
                 AmiiboDetailResult.DetailFetched(
                     amiibo,

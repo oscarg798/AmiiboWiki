@@ -20,7 +20,9 @@ sealed class AmiiboListViewState : ViewState {
 
     object Idling : AmiiboListViewState()
     object Loading : AmiiboListViewState()
-    data class ShowingAmiibos(val amiibos: Collection<ViewAmiibo>) : AmiiboListViewState()
+    data class ShowingAmiibos(val amiibos: Collection<ViewAmiibo>) : AmiiboListViewState() {
+        override fun equals(other: Any?): Boolean = this === other
+    }
     data class ShowingFilters(val filters: Collection<ViewAmiiboType>) : AmiiboListViewState()
     data class ShowingAmiiboDetails(val amiiboId: String) : AmiiboListViewState()
     data class Error(val error: AmiiboListFailure) : AmiiboListViewState()
