@@ -12,6 +12,8 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
@@ -46,6 +48,8 @@ class AmiiboDetailViewModel @AssistedInject constructor(
 ) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
     AmiiboDetailViewState.Idling
 ) {
+
+    val state2: LiveData<AmiiboDetailViewState> = state.asLiveData()
 
     override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = when (wish) {
         is AmiiboDetailWish.ExpandAmiiboImage -> flowOf(AmiiboDetailResult.ImageExpanded(wish.image))
