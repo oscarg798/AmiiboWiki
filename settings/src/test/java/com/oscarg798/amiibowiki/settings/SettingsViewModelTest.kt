@@ -20,7 +20,7 @@ import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
 import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,10 +28,10 @@ import io.mockk.spyk
 import org.junit.Rule
 import org.junit.Test
 
-class SettingsViewModelTest : ViewModelTestRule.ViewModelCreator<SettingsViewState, SettingsViewModel> {
+class SettingsViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SettingsViewState, SettingsViewModel> {
 
     @get: Rule
-    val viewModelTestTule = ViewModelTestRule<SettingsViewState, SettingsViewModel>(this)
+    val viewModelTestTule = ViewModelTestRuleCompat<SettingsViewState, SettingsViewModel>(this)
 
     private val featurePoint = relaxedMockk<SuspendFeaturePoint<PreferenceBuilder, Unit>>()
     private val saveDarkModeSelectionUseCase = relaxedMockk<SaveDarkModeSelectionUseCase>()

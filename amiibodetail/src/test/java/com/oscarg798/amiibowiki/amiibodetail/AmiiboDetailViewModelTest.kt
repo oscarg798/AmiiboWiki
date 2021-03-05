@@ -12,11 +12,12 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
+import androidx.lifecycle.SavedStateHandle
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
-import com.oscarg798.amiibowiki.amiibodetail.mvi.ShowingAmiiboDetailsParams
+import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
@@ -24,33 +25,32 @@ import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.spyk
 import io.mockk.verify
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
-class AmiiboDetailViewModelTest :
-    ViewModelTestRule.ViewModelCreator<AmiiboDetailViewState, AmiiboDetailViewModel> {
+internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboDetailViewState, AmiiboDetailViewModel> {
 
     @get: Rule
-    val viewModelTestTule = ViewModelTestRule<AmiiboDetailViewState, AmiiboDetailViewModel>(this)
+    val viewModelTestTule =
+        ViewModelTestRule<AmiiboDetailViewState, UIEffect, AmiiboDetailViewModel>(this)
 
     private val logger = relaxedMockk<AmiiboDetailLogger>()
     private val getAmiiboDetailUseCase = mockk<GetAmiiboDetailUseCase>()
     private val isFeatureFlagEnableUseCase = mockk<IsFeatureEnableUseCase>()
-    private val reducer = spyk(AmiiboDetailReducer())
+    private val savedStateHandle = relaxedMockk<SavedStateHandle>()
 
     @Before
     fun setup() {
+        coEvery { savedStateHandle.get<SearchResultViewState>(any()) } answers { null }
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } answers { AMIIBO }
         every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { false }
         every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowGameDetail) } answers { false }
@@ -58,10 +58,10 @@ class AmiiboDetailViewModelTest :
 
     override fun create(): AmiiboDetailViewModel = AmiiboDetailViewModel(
         TAIL,
+        savedStateHandle,
         getAmiiboDetailUseCase,
         logger,
         isFeatureFlagEnableUseCase,
-        reducer,
         viewModelTestTule.coroutineContextProvider
     )
 
@@ -69,23 +69,15 @@ class AmiiboDetailViewModelTest :
     fun `given showrelated games FF is off and ShowDetail wish when view model process it then it should update the state with the amiibo result`() {
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
-        viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewState.Idling,
-            AmiiboDetailViewState.Loading,
-            AmiiboDetailViewState.ShowingAmiiboDetails(
-                ShowingAmiiboDetailsParams(
-                    VIEW_AMIIBO_DETAIL,
-                    false
-                )
-            )
+        viewModelTestTule.stateCollector wereValuesEmitted listOf(
+            STATE,
+            STATE.copy(loading = true),
+            STATE.copy(amiibo = VIEW_AMIIBO_DETAIL),
+            STATE.copy(relatedGamesSectionEnabled = false)
         )
 
         coVerify {
             getAmiiboDetailUseCase.execute(TAIL)
-        }
-
-        coVerify(exactly = 2) {
-            reducer.reduce(any(), any())
         }
     }
 
@@ -94,67 +86,98 @@ class AmiiboDetailViewModelTest :
         every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { true }
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
-        viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewState.Idling,
-            AmiiboDetailViewState.Loading,
-            AmiiboDetailViewState.ShowingAmiiboDetails(
-                ShowingAmiiboDetailsParams(
-                    VIEW_AMIIBO_DETAIL,
-                    true
-                )
-            )
+        viewModelTestTule.stateCollector wereValuesEmitted listOf(
+            STATE,
+            STATE.copy(loading = true),
+            STATE.copy(amiibo = VIEW_AMIIBO_DETAIL),
+            STATE.copy(relatedGamesSectionEnabled = true, amiibo = VIEW_AMIIBO_DETAIL)
         )
 
         coVerify {
             getAmiiboDetailUseCase.execute(TAIL)
         }
-
-        coVerify(exactly = 2) {
-            reducer.reduce(any(), any())
-        }
     }
 
     @Test
-    fun `given show amiibo detail wish when view model process and there is an AmiiboNotFoundByTail failure it then it should update the state with the error`() {
+    fun `given show amiibo detail wish when view model process it  and there is an AmiiboNotFoundByTail failure it then it should update the state with the error`() {
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } throws AmiiboDetailFailure.AmiiboNotFoundByTail(
             TAIL
         )
 
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
-        viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewState.Idling,
-            AmiiboDetailViewState.Loading,
-            AmiiboDetailViewState.Error(AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL))
+        viewModelTestTule.stateCollector wereValuesEmitted listOf(
+            STATE,
+            STATE.copy(loading = true),
+            STATE.copy(error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)),
         )
 
         coVerify {
             getAmiiboDetailUseCase.execute(TAIL)
         }
-
-        coVerify(exactly = 2) {
-            reducer.reduce(any(), any())
-        }
     }
 
     @Test
-    fun `given expand image wish when its processed then it should return the expanded image`() {
+    fun `given expand image wish when its processed then it should generate a side effect to show the image`() {
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(AMIIBO_IMAGE_URL))
 
-        viewModelTestTule.testCollector wereValuesEmitted listOf(
-            AmiiboDetailViewState.Idling,
-            AmiiboDetailViewState.ShowingAmiiboImage(AMIIBO_IMAGE_URL)
+        viewModelTestTule.effectCollector.wereValuesEmiited(
+            listOf(
+                UIEffect.ShowAmiiboImage(
+                    AMIIBO_IMAGE_URL
+                )
+            ), object : Comparator<UIEffect> {
+                override fun compare(
+                    o1: UIEffect,
+                    o2: UIEffect
+                ): Int {
+                    if (o1 !is UIEffect.ShowAmiiboImage || o2 !is UIEffect.ShowAmiiboImage) {
+                        throw   IllegalArgumentException("must provide ShowAmiiboImages")
+                    }
+
+                    return o1.url.compareTo(o2.url)
+                }
+            }
         )
     }
 
-    @Ignore("Crash is in the coroutine boundary, in the viewmodel scope")
-    @Test(expected = NullPointerException::class)
-    fun `given ShowDetail wish when view model process and there is an Exception failure it then it should throw it`() {
-        coEvery { getAmiiboDetailUseCase.execute(TAIL) } throws NullPointerException()
+    @Test
+    fun `given show related games wish when its processed then it should generate a side effect to show them`() {
+        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
 
-        runBlockingTest {
-            viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
-            viewModelTestTule.viewModel.state.launchIn(this).cancelAndJoin()
+        viewModelTestTule.effectCollector.wereValuesEmiited(
+            listOf(
+                UIEffect.ShowRelatedGames(TAIL)
+            ), object : Comparator<UIEffect> {
+                override fun compare(
+                    o1: UIEffect,
+                    o2: UIEffect
+                ): Int {
+                    if (o1 !is UIEffect.ShowRelatedGames || o2 !is UIEffect.ShowRelatedGames) {
+                        throw   IllegalArgumentException("must provide ShowRelatedGames")
+                    }
+
+                    return o1.amiiboId.compareTo(o2.amiiboId)
+                }
+            }
+        )
+    }
+
+    @Test
+    fun `given ShowDetail wish when view model process and there is an Exception failure it then it should return it a unknow`() {
+        val error = NullPointerException()
+        coEvery { getAmiiboDetailUseCase.execute(TAIL) } throws error
+
+        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
+
+        viewModelTestTule.stateCollector wereValuesEmitted listOf(
+            STATE,
+            STATE.copy(loading = true),
+            STATE.copy(error = AmiiboDetailFailure.UnknowError(error)),
+        )
+
+        coVerify {
+            getAmiiboDetailUseCase.execute(TAIL)
         }
     }
 
@@ -176,6 +199,7 @@ class AmiiboDetailViewModelTest :
     }
 }
 
+private val STATE = AmiiboDetailViewState()
 private const val AMIIBO_IMAGE_URL = "5"
 private const val GAME_ID = 4
 private const val GAME_SERIES = "22"

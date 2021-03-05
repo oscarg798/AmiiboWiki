@@ -24,6 +24,6 @@ sealed class GameDetailWish : Wish {
 
     data class ExpandImages(val expandableImageParams: Collection<ExpandableImageParam>) :
         GameDetailWish() {
-        override fun equals(other: Any?): Boolean = other == this
+        override fun equals(other: Any?): Boolean = other === this
     }
 }

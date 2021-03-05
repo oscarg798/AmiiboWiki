@@ -12,11 +12,17 @@
 
 package com.oscarg798.amiibowiki.core.extensions
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 
 interface ImageLoaderCallback {
 
@@ -56,4 +62,12 @@ fun ImageView.setImage(url: String, @DrawableRes fallback: Int) {
             }
         }
     )
+}
+
+fun loadImage(url: String): State<LoadImageFromURLState> {
+    val state = mutableStateOf<LoadImageFromURLState>(LoadImageFromURLState.Loading)
+    val target = ComposeImageTarget(state)
+
+    Picasso.get().load(url).into(target)
+    return state
 }

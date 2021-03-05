@@ -12,8 +12,11 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.composeui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 
@@ -24,7 +27,7 @@ internal fun Detail(
     onImageClick: (String) -> Unit,
     onRelatedGamesButtonClick: () -> Unit
 ) {
-    Column() {
+    Column(Modifier.background(MaterialTheme.colors.background)) {
         ImageDetail(amiibo.imageUrl, onImageClick)
         DetailDescription(
             amiibo,
@@ -32,9 +35,4 @@ internal fun Detail(
             onRelatedGamesButtonClick
         )
     }
-}
-
-@Composable
-private fun ShowDetail() {
-
 }

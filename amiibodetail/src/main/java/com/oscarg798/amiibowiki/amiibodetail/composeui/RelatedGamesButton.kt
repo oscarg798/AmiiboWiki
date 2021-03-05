@@ -17,35 +17,37 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboWikiTextAppearence
 import com.oscarg798.amiibowiki.amiibodetail.R
-import com.oscarg798.amiibowiki.core.CORNER_RADIUS_SMALL
-import com.oscarg798.amiibowiki.core.PADDING_MEDIUM
-import com.oscarg798.amiibowiki.core.PADDING_SMALL
+import com.oscarg798.amiibowiki.core.cornerRadiusSmall
+import com.oscarg798.amiibowiki.core.spacingMedium
+import com.oscarg798.amiibowiki.core.spacingSmall
 
 @Composable
 internal fun RelatedGamesButton(id: String, onRelatedGamesButtonClick: () -> Unit = {}) {
-    Row(modifier = Modifier.fillMaxWidth().layoutId(id)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .layoutId(id)
+    ) {
         Button(
-            shape = RoundedCornerShape(CORNER_RADIUS_SMALL),
+            shape = RoundedCornerShape(cornerRadiusSmall),
             onClick = { onRelatedGamesButtonClick() },
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
             modifier = Modifier
-                .padding(top = PADDING_MEDIUM)
+                .padding(top = spacingMedium)
                 .fillMaxWidth()
         ) {
 
@@ -53,11 +55,11 @@ internal fun RelatedGamesButton(id: String, onRelatedGamesButtonClick: () -> Uni
 
             ConstraintLayout(constraintSet = set, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    "Related Games",
-                    style = AmiiboWikiTextAppearence.h3.merge(TextStyle(color = Color.White)),
+                    LocalContext.current.getString(R.string.related_games_title),
+                    style = AmiiboWikiTextAppearence.h3.merge(TextStyle(MaterialTheme.colors.onSecondary)),
                     modifier = Modifier
                         .layoutId(RELEATED_GAMES_TITLE_ID)
-                        .padding(PADDING_SMALL)
+                        .padding(spacingSmall)
                 )
 
                 val image: Painter = painterResource(id = R.drawable.ic_next)
@@ -66,14 +68,13 @@ internal fun RelatedGamesButton(id: String, onRelatedGamesButtonClick: () -> Uni
                     contentDescription = null,
                     modifier = Modifier
                         .layoutId(RELEATED_GAMES_RIGHT_DRAWABLE_ID)
-                        .padding(end = PADDING_SMALL)
+                        .padding(end = spacingSmall)
                 )
             }
         }
     }
 }
 
-@Composable
 private fun getConstraints() = ConstraintSet {
     val btnRelatedGamesTitle = createRefFor(RELEATED_GAMES_TITLE_ID)
     val imageDrawable = createRefFor(RELEATED_GAMES_RIGHT_DRAWABLE_ID)

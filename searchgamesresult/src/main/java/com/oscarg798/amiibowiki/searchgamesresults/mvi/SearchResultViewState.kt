@@ -12,23 +12,19 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults.mvi
 
+import android.os.Parcelable
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
+import javax.annotation.concurrent.Immutable
+import kotlinx.parcelize.Parcelize
 
 data class ShowingGameDetailsParams(val gameId: Int)
 
-sealed class SearchResultViewState() : ViewState {
-
-    object Idling : SearchResultViewState()
-    object Loading : SearchResultViewState()
-    data class ShowingGameResults(val results: List<ViewGameSearchResult>) :
-        SearchResultViewState() {
-        override fun equals(other: Any?): Boolean = other === this
-    }
-
-    data class ShowingGameDetails(val details: ShowingGameDetailsParams) : SearchResultViewState() {
-        override fun equals(other: Any?): Boolean = other === this
-    }
-    data class Error(val error: SearchGameFailure) : SearchResultViewState()
-}
+@Immutable
+@Parcelize
+data class SearchResultViewState(
+    val isLoading: Boolean = false,
+    val gamesResult: List<ViewGameSearchResult>? = null,
+    val error: SearchGameFailure? = null
+) : ViewState, Parcelable

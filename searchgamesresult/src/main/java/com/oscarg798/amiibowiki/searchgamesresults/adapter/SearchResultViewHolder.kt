@@ -21,7 +21,7 @@ import com.oscarg798.amiibowiki.searchgamesresults.databinding.GameRelatedItemBi
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import kotlinx.android.extensions.LayoutContainer
 
-class SearchResultViewHolder(private val gameRelatedItemBinding: GameRelatedItemBinding) :
+internal class SearchResultViewHolder(private val gameRelatedItemBinding: GameRelatedItemBinding) :
     RecyclerView.ViewHolder(gameRelatedItemBinding.root), LayoutContainer {
 
     override val containerView: View?

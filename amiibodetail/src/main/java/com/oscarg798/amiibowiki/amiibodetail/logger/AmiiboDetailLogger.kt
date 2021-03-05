@@ -19,7 +19,7 @@ import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import java.lang.Exception
 
 @LoggerDecorator
-interface AmiiboDetailLogger {
+internal interface AmiiboDetailLogger {
 
     @ScreenShown(AMIIBO_DETAIL_SCREEN_NAME)
     fun trackScreenShown(@LogEventProperties properties: Map<String, String>)
@@ -27,4 +27,5 @@ interface AmiiboDetailLogger {
     @AppCrashed
     fun onDetailCrash(@LogEventProperties exception: Exception)
 }
+
 private const val AMIIBO_DETAIL_SCREEN_NAME = "AMIIBO_DETAIL"

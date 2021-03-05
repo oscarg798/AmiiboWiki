@@ -21,7 +21,7 @@ import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReducer
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
-import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -36,10 +36,10 @@ import org.junit.Test
 @InternalCoroutinesApi
 
 class NFCReaderViewModelTest :
-    ViewModelTestRule.ViewModelCreator<NFCReaderViewState, NFCReaderViewModel> {
+    ViewModelTestRuleCompat.ViewModelCreator<NFCReaderViewState, NFCReaderViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRule<NFCReaderViewState, NFCReaderViewModel>(this)
+    val viewModelTestRule = ViewModelTestRuleCompat<NFCReaderViewState, NFCReaderViewModel>(this)
 
     private val validateAdapterAvailabilityUseCase = mockk<ValidateAdapterAvailabilityUseCase>()
     private val readTagUseCase = mockk<ReadTagUseCase>()

@@ -22,7 +22,7 @@ import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -35,10 +35,10 @@ import org.junit.Rule
 import org.junit.Test
 
 
-class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewState, SplashViewModel> {
+class SplashViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SplashViewState, SplashViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRule<SplashViewState, SplashViewModel>(this)
+    val viewModelTestRule = ViewModelTestRuleCompat<SplashViewState, SplashViewModel>(this)
 
     private val logger = relaxedMockk<SplashLogger>()
     private val initializaApplicationUseCase = mockk<InitializeApplicationUseCase>()

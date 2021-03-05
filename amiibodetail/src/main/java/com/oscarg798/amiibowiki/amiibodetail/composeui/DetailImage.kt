@@ -22,16 +22,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
+import com.oscarg798.amiibowiki.core.commonui.LoadingImage
+import com.oscarg798.amiibowiki.core.extensions.LoadImageFromURLState
+import com.oscarg798.amiibowiki.core.extensions.loadImage
+import com.oscarg798.amiibowiki.core.spacingMedium
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-
 
 @Composable
 internal fun ImageDetail(url: String, onImageClick: (String) -> Unit) {
     Row(
         modifier = Modifier
-            .padding(16.dp)
-            .height(250.dp)
+            .padding(spacingMedium)
+            .height(AMIIBO_IMAGE_SIZE)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
@@ -39,44 +42,28 @@ internal fun ImageDetail(url: String, onImageClick: (String) -> Unit) {
     }
 }
 
-private sealed class ImageResource {
-
-    object Loading : ImageResource()
-    data class Image(val image: Bitmap) : ImageResource()
-}
-
 @Composable
 private fun AmiiboImage(url: String, onImageClick: (String) -> Unit) {
-
-    var bitmapState by remember { mutableStateOf(ImageResource.Loading) as MutableState<ImageResource> }
-
-    val target = object : Target {
-        override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) {
-            bitmapState = ImageResource.Image(bitmap)
-        }
-
-        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-            TODO("Not yet implemented")
-        }
-
-        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-            TODO("Not yet implemented")
-        }
-
-    }
-    Picasso.get().load(url).into(target)
+    val state by remember { loadImage(url) }
 
     Row {
-        when (bitmapState) {
-            is ImageResource.Loading -> Text("Loading")
-            is ImageResource.Image -> Image(
-                bitmap = (bitmapState as ImageResource.Image).image.asImageBitmap(),
+        when (state) {
+            is LoadImageFromURLState.Error,
+            is LoadImageFromURLState.Loading -> LoadingImage(modifier = Modifier.getAmiiboImageModifiers())
+            is LoadImageFromURLState.Image -> Image(
+                bitmap = (state as LoadImageFromURLState.Image).image.asImageBitmap(),
                 contentDescription = null,
                 modifier = Modifier
+                    .getAmiiboImageModifiers()
                     .clickable { onImageClick(url) }
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+
             )
         }
     }
 }
+
+private fun Modifier.getAmiiboImageModifiers() = Modifier
+    .fillMaxWidth()
+    .fillMaxHeight()
+
+internal val AMIIBO_IMAGE_SIZE = 250.dp

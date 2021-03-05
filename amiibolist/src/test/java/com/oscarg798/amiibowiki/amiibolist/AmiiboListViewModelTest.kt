@@ -27,7 +27,7 @@ import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.flow.flow
@@ -38,7 +38,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class AmiiboListViewModelTest :
-    ViewModelTestRule.ViewModelCreator<AmiiboListViewState, AmiiboListViewModel> {
+    ViewModelTestRuleCompat.ViewModelCreator<AmiiboListViewState, AmiiboListViewModel> {
 
     private val getAmiibosUseCase = relaxedMockk<GetAmiibosUseCase>()
     private val getAmiibosFilteredUseCase = relaxedMockk<GetAmiiboFilteredUseCase>()
@@ -49,8 +49,8 @@ class AmiiboListViewModelTest :
     private val reducer = AmiiboListReducer()
 
     @get:Rule
-    val viewModelRule: ViewModelTestRule<AmiiboListViewState, AmiiboListViewModel> =
-        ViewModelTestRule(this)
+    val viewModelRule: ViewModelTestRuleCompat<AmiiboListViewState, AmiiboListViewModel> =
+        ViewModelTestRuleCompat(this)
 
     @Before
     fun setup() {

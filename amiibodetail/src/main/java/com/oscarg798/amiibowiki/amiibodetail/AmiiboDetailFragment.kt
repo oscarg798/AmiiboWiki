@@ -36,14 +36,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
+import androidx.savedstate.SavedStateRegistryOwner
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
-import com.oscarg798.amiibowiki.amiibodetail.composeui.Detail
-import com.oscarg798.amiibowiki.amiibodetail.composeui.ImageDetail
-import com.oscarg798.amiibowiki.amiibodetail.composeui.Loading
-import com.oscarg798.amiibowiki.amiibodetail.composeui.RelatedGamesButton
+import com.oscarg798.amiibowiki.amiibodetail.composeui.*
 import com.oscarg798.amiibowiki.amiibodetail.databinding.FragmentAmiiboDetailBinding
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
@@ -53,13 +51,14 @@ import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.core.utils.provideFactory
+import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 
+
 @AndroidEntryPoint
-class AmiiboDetailFragment : Fragment() {
+internal class AmiiboDetailFragment : Fragment() {
 
     @Inject
     lateinit var factory: AmiiboDetailViewModel.Factory
@@ -67,12 +66,10 @@ class AmiiboDetailFragment : Fragment() {
     private val tail: String by bundle(ARGUMENT_TAIL)
 
     private val viewModel: AmiiboDetailViewModel by viewModels {
-        provideFactory(factory, tail)
+        SavedInstanceViewModelFactory(factoryCreator = {
+            factory.create(tail, it)
+        }, owner = this)
     }
-
-    private lateinit var binding: FragmentAmiiboDetailBinding
-
-    private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,7 +78,7 @@ class AmiiboDetailFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                DetailScreen(viewModel, onRelatedGamesButtonClick = {
+                Screen(viewModel, onRelatedGamesButtonClick = {
                     viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
                 }, onImageClick = {
                     viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(it))
@@ -112,15 +109,6 @@ class AmiiboDetailFragment : Fragment() {
         }
     }
 
-    private fun showError(amiiboDetailFailure: AmiiboDetailFailure) {
-        hideLoading()
-        Snackbar.make(
-            binding.clMain,
-            amiiboDetailFailure.message ?: getString(R.string.general_error),
-            Snackbar.LENGTH_LONG
-        ).show()
-    }
-
     private fun showRelatedGames(amiiboId: String) {
         findNavController().navigate(
             AmiiboDetailFragmentDirections.actionAmiiboDetailFragmentToSearchResultFragment(
@@ -128,42 +116,6 @@ class AmiiboDetailFragment : Fragment() {
                 true
             )
         )
-    }
-
-    private fun showLoading() {
-        with(binding) {
-            shimmer.root.visibility = View.VISIBLE
-            shimmer.shimmerViewContainer.startShimmer()
-        }
-    }
-
-    private fun hideLoading() {
-        with(binding) {
-            shimmer.root.visibility = View.GONE
-            shimmer.shimmerViewContainer.stopShimmer()
-        }
-    }
-}
-
-
-@Composable
-fun DetailScreen(
-    viewModel: AmiiboDetailViewModel,
-    onImageClick: (String) -> Unit,
-    onRelatedGamesButtonClick: () -> Unit
-) {
-    val state by viewModel.state.collectAsState(initial = AmiiboDetailViewState())
-
-    Box {
-        when {
-            state.loading -> Loading()
-            state.showingDetails != null -> Detail(
-                amiibo = state.showingDetails!!,
-                relatedGamesSectionEnabled = state.relatedGamesSectionEnabled,
-                onImageClick = onImageClick,
-                onRelatedGamesButtonClick = onRelatedGamesButtonClick
-            )
-        }
     }
 }
 
