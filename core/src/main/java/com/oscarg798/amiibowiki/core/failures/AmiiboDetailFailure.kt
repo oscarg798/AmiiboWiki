@@ -16,5 +16,5 @@ sealed class AmiiboDetailFailure(override val message: String?) : Exception(mess
     data class AmiiboNotFoundByTail(val tail: String) :
         AmiiboDetailFailure("Amiibo with tail $tail not found")
 
-    object UnknowError : AmiiboDetailFailure("There was an error please try again later")
+    data class UnknowError(override val cause: Exception) : AmiiboDetailFailure("There was an error please try again later")
 }

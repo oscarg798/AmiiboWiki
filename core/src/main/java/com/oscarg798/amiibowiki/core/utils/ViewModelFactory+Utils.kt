@@ -12,20 +12,24 @@
 
 package com.oscarg798.amiibowiki.core.utils
 
+import android.os.Bundle
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.savedstate.SavedStateRegistryOwner
 
-fun <AssistedFactory : AssistedFactoryCreator<VM, Param>, Param, VM : ViewModel> provideFactory(
-    assistedFactory: AssistedFactory,
-    param: Param
-): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return assistedFactory.create(param) as T
+class SavedInstanceViewModelFactory<VM : ViewModel>(
+    val factoryCreator: (SavedStateHandle) -> VM,
+    owner: SavedStateRegistryOwner,
+    defaultArgs: Bundle? = null
+) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+
+    override fun <T : ViewModel?> create(
+        key: String,
+        modelClass: Class<T>,
+        handle: SavedStateHandle
+    ): T {
+        return factoryCreator(handle) as T
     }
-}
-
-interface AssistedFactoryCreator<VM : ViewModel, Param> {
-
-    fun create(params: Param): VM
 }

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application>
-        <activity android:name="com.oscarg798.amiibowiki.HiltTestActivity" />
         <activity
             android:name="com.oscarg798.amiibowiki.deeplink.DeepLinkHandlerActivity"
             tools:node="replace"

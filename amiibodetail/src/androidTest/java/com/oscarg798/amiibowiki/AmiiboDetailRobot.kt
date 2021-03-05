@@ -12,8 +12,24 @@
 
 package com.oscarg798.amiibowiki
 
-import androidx.appcompat.app.AppCompatActivity
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import com.oscarg798.amiibowiki.testutils.utils.TestRobot
 
-@AndroidEntryPoint
-class HiltTestActivity: AppCompatActivity()
+class AmiiboDetailRobot(private val composeTestRule: ComposeContentTestRule) :
+    TestRobot {
+
+    override fun isViewDisplayed() {
+        composeTestRule.onNode(hasText("Mario")).assertIsDisplayed()
+    }
+
+    fun isAmiiboDataDisplayed() {
+        composeTestRule.onNode(hasText("Mario")).assertIsDisplayed()
+        composeTestRule.onNode(hasText("Super Mario Bros")).assertIsDisplayed()
+        composeTestRule.onNode(hasText("Figure")).assertIsDisplayed()
+        composeTestRule.onNode(hasText("Related Games")).assertIsDisplayed()
+    }
+}
+
+private const val CHARACTER_VIEW_INDEX = 1

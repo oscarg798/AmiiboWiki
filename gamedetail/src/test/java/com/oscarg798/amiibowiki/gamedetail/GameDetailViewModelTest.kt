@@ -24,7 +24,7 @@ import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGameTrailerUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.spyk
@@ -34,10 +34,10 @@ import org.junit.Rule
 import org.junit.Test
 
 class GameDetailViewModelTest :
-    ViewModelTestRule.ViewModelCreator<GameDetailViewState, GameDetailViewModel> {
+    ViewModelTestRuleCompat.ViewModelCreator<GameDetailViewState, GameDetailViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRule<GameDetailViewState, GameDetailViewModel>(this)
+    val viewModelTestRule = ViewModelTestRuleCompat<GameDetailViewState, GameDetailViewModel>(this)
 
     private val gameDetailLogger = relaxedMockk<GameDetailLogger>()
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()

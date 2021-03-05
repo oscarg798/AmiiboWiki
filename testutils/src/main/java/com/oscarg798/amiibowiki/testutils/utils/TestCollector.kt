@@ -17,18 +17,21 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.plus
 import org.junit.Assert
 
 /**
  * Took from https://www.thuytrinh.dev/test-receiving-events-hot-flow-coroutines/
  */
 class TestCollector<T> {
+
     private val values = mutableListOf<T>()
 
-    fun test(scope: CoroutineScope, flow: Flow<T>): Job {
+    fun test(scope: CoroutineScope, flow: Flow<T>, job: Job? = null): Job {
+        val parentJob = job ?: Job()
         return flow.onEach {
             values.add(it)
-        }.launchIn(scope)
+        }.launchIn(scope + parentJob)
     }
 
     fun clear() {
@@ -46,6 +49,13 @@ class TestCollector<T> {
     infix fun wereValuesEmitted(_values: Collection<T>) {
         assert(values.containsAll(_values))
     }
+
+    fun wereValuesEmiited(_values: Collection<T>, comparator: Comparator<T>) {
+        values.forEachIndexed { index, t ->
+            Assert.assertEquals(0, comparator.compare(t, _values.elementAt(index)))
+        }
+    }
+
     infix fun valuesWereNotEmitted(_values: Collection<T>) {
         _values.forEach {
             valueWasNotEmitted(it)

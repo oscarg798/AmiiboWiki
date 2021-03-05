@@ -19,13 +19,15 @@ import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
-import com.oscarg798.amiibowiki.core.mvi.UIEffect as MVIUIEffect
+import com.oscarg798.amiibowiki.core.mvi.SideEffect as MVIUIEffect
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-abstract class AbstractViewModel<ViewState : MVIViewState, UIEffect : MVIUIEffect>(initialState: ViewState) :
+abstract class AbstractViewModel<ViewState : MVIViewState, UIEffect : MVIUIEffect, Wish : MVIWish>(
+    initialState: ViewState
+) :
     ViewModel() {
 
     protected abstract val coroutineContextProvider: CoroutineContextProvider
@@ -47,8 +49,11 @@ abstract class AbstractViewModel<ViewState : MVIViewState, UIEffect : MVIUIEffec
         }
     }
 
+    fun onWish(wish: Wish) {
+        processWish(wish)
+    }
 
-
+    abstract fun processWish(wish: Wish)
 }
 
 @Deprecated(message = "Deprecated", replaceWith = ReplaceWith("Please use AbstractViewModel"))

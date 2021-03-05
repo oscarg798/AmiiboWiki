@@ -16,6 +16,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,13 +31,61 @@ import androidx.constraintlayout.compose.Dimension
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboWikiTextAppearence
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
+import com.oscarg798.amiibowiki.core.spacingMedium
+import com.oscarg798.amiibowiki.core.spacingSmall
+
+@Composable
+internal fun DetailDescription(
+    amiibo: ViewAmiiboDetails,
+    relatedGamesSectionEnabled: Boolean,
+    onRelatedGamesButtonClick: () -> Unit
+) {
+    Row {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            backgroundColor = MaterialTheme.colors.surface,
+            elevation = spacingSmall,
+            shape = RoundedCornerShape(topStart = spacingMedium, topEnd = spacingMedium)
+        ) {
+            ConstraintLayout(
+                modifier = Modifier.padding(spacingMedium),
+                constraintSet = getConstraints()
+            ) {
+                DescriptionField(
+                    text = amiibo.name,
+                    textStyle = AmiiboWikiTextAppearence.h2,
+                    id = AMIIBO_NAME_ID
+                )
+                DescriptionField(
+                    text = amiibo.gameSeries,
+                    textStyle = AmiiboWikiTextAppearence.body1.merge(TextStyle(MaterialTheme.colors.background)),
+                    id = AMIIGO_GAME_SERIES_ID
+                )
+                DescriptionField(
+                    text = amiibo.type,
+                    textStyle = AmiiboWikiTextAppearence.body2,
+                    color = MaterialTheme.colors.onSurface,
+                    id = AMIIBO_TYPE_ID
+                )
+
+                if (relatedGamesSectionEnabled) {
+                    RelatedGamesButton(id = RELATED_GAMES_ID) {
+                        onRelatedGamesButtonClick()
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 private fun DescriptionField(
     text: String,
     paddingTop: Dp = 0.dp,
     textStyle: TextStyle? = null,
-    color: Color = Color.Black,
+    color: Color = MaterialTheme.colors.onBackground,
     id: String,
 ) {
 
@@ -54,50 +103,6 @@ private fun DescriptionField(
 
 }
 
-
-@Composable
-internal fun DetailDescription(
-    amiibo: ViewAmiiboDetails,
-    relatedGamesSectionEnabled: Boolean,
-    onRelatedGamesButtonClick: () -> Unit
-) {
-    Row() {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            elevation = 8.dp,
-            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-        ) {
-            ConstraintLayout(modifier = Modifier.padding(16.dp), constraintSet = getConstraints()) {
-                DescriptionField(
-                    text = amiibo.name,
-                    textStyle = AmiiboWikiTextAppearence.h2,
-                    id = AMIIBO_NAME_ID
-                )
-                DescriptionField(
-                    text = amiibo.gameSeries,
-                    textStyle = AmiiboWikiTextAppearence.body1,
-                    id = AMIIGO_GAME_SERIES_ID
-                )
-                DescriptionField(
-                    text = amiibo.type,
-                    textStyle = AmiiboWikiTextAppearence.body2,
-                    color = Color(0xff616161),
-                    id = AMIIBO_TYPE_ID
-                )
-
-                if (relatedGamesSectionEnabled) {
-                    RelatedGamesButton(id = RELATED_GAMES_ID) {
-                        onRelatedGamesButtonClick()
-                    }
-                }
-            }
-        }
-    }
-}
-
-
 @Composable
 private fun getConstraints() = ConstraintSet {
     val amiiboNameId = createRefFor(AMIIBO_NAME_ID)
@@ -108,28 +113,30 @@ private fun getConstraints() = ConstraintSet {
     constrain(amiiboNameId) {
         width = Dimension.wrapContent
         top.linkTo(parent.top)
-        linkTo(start = parent.start, end = parent.end, bias = 0f)
+        linkTo(start = parent.start, end = parent.end, bias = ALIGN_TO_START)
     }
 
     constrain(amiiboGameSeriesId) {
         width = Dimension.wrapContent
         top.linkTo(amiiboNameId.bottom)
-        linkTo(start = parent.start, end = parent.end, bias = 0f)
+        linkTo(start = parent.start, end = parent.end, bias = ALIGN_TO_START)
     }
 
     constrain(amiiboTypeId) {
         width = Dimension.wrapContent
         top.linkTo(amiiboGameSeriesId.bottom)
-        linkTo(start = parent.start, end = parent.end, bias = 0f)
+        linkTo(start = parent.start, end = parent.end, bias = ALIGN_TO_START)
     }
 
     constrain(relatedGamesId) {
         start.linkTo(parent.start)
         end.linkTo(parent.end)
-        linkTo(top = amiiboTypeId.bottom, bottom = parent.bottom, bias = 1f)
+        linkTo(top = amiiboTypeId.bottom, bottom = parent.bottom, bias = ALIGN_TO_BOTTOM)
     }
 }
 
+private const val ALIGN_TO_BOTTOM = 1F
+private const val ALIGN_TO_START = 0F
 private const val AMIIBO_NAME_ID = "gameName"
 private const val AMIIGO_GAME_SERIES_ID = "gameSeries"
 private const val AMIIBO_TYPE_ID = "amiiboType"

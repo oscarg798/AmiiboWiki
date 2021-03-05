@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.amiibodetail.mvi
 import com.oscarg798.amiibowiki.core.mvi.EffectWish
 import com.oscarg798.amiibowiki.core.mvi.Wish
 
-sealed class AmiiboDetailWish : EffectWish {
+internal sealed class AmiiboDetailWish : EffectWish {
 
     data class ExpandAmiiboImage(val image: String) : AmiiboDetailWish() {
         override fun equals(other: Any?): Boolean = other === this

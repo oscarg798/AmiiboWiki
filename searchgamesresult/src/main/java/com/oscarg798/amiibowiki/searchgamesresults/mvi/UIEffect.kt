@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -12,17 +12,11 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults.mvi
 
-import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
-import com.oscarg798.amiibowiki.core.models.GameSearchResult
-import com.oscarg798.amiibowiki.core.mvi.Result
+import com.oscarg798.amiibowiki.core.mvi.SideEffect
 
-sealed class SearchResultResult : Result {
+sealed class UIEffect : SideEffect {
 
-    object None : SearchResultResult()
-    object Loading : SearchResultResult()
-    data class GamesFound(val gamesSearchResult: Collection<GameSearchResult>) :
-        SearchResultResult()
-
-    data class ShowGameDetails(val gameId: Int) : SearchResultResult()
-    data class Error(val failure: SearchGameFailure) : SearchResultResult()
+    data class ShowGameDetails(val gameId: Int) : UIEffect() {
+        override fun equals(other: Any?): Boolean = false
+    }
 }

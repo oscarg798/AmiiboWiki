@@ -13,7 +13,7 @@
 package com.oscarg798.amiibowiki.amiibolist
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.oscarg798.amiibowiki.HiltTestActivity
+import com.oscarg798.amiibowiki.testutils.HiltTestActivity
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule

@@ -10,25 +10,26 @@
  *
  */
 
-package com.oscarg798.amiibowiki.detail
+package com.oscarg798.amiibowiki.searchgamesresults.composeui
 
-import com.oscarg798.amiibowiki.R
-import com.oscarg798.amiibowiki.testutils.isViewWithIdDisplayed
-import com.oscarg798.amiibowiki.testutils.isViewWithTextDisplayed
-import com.oscarg798.amiibowiki.testutils.utils.TestRobot
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.text.TextStyle
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboWikiTextAppearence
+import com.oscarg798.amiibowiki.core.spacingMedium
+import com.oscarg798.amiibowiki.searchgamesresults.titleId
 
-class AmiiboDetailRobot : TestRobot {
-
-    override fun isViewDisplayed() {
-        isViewWithIdDisplayed(R.id.ivImage)
-    }
-
-    fun isAmiiboDataDisplayed() {
-        isViewWithTextDisplayed("Mario")
-        isViewWithTextDisplayed("Super Mario Bros")
-        isViewWithTextDisplayed("Figure")
-        isViewWithTextDisplayed("Related Games")
-    }
+@Composable
+internal fun Title(isRelatedGamesSection: Boolean) {
+    Text(
+        "Related Games",
+        style = AmiiboWikiTextAppearence.h2.merge(TextStyle(color = MaterialTheme.colors.onBackground)),
+        modifier = Modifier
+            .layoutId(titleId)
+            .padding(spacingMedium)
+    )
 }
-
-private const val CHARACTER_VIEW_INDEX = 1

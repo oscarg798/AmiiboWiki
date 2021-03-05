@@ -10,14 +10,15 @@
  *
  */
 
-package com.oscarg798.amiibowiki.detail
+package com.oscarg798.amiibowiki
 
-import android.os.Bundle
-import com.oscarg798.amiibowiki.HiltTestActivity
-import com.oscarg798.amiibowiki.R
-import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailFragment
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.lifecycle.SavedStateHandle
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
+import com.oscarg798.amiibowiki.amiibodetail.composeui.Screen
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
+import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
-import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
 import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
@@ -26,23 +27,18 @@ import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
-import com.oscarg798.amiibowiki.di.AppModule
 import com.oscarg798.amiibowiki.network.di.NetworkModule
-import com.oscarg798.amiibowiki.testutils.BaseUITest
-import com.oscarg798.amiibowiki.testutils.COVER_RESPONSE
-import com.oscarg798.amiibowiki.testutils.GAME_COVER_SEARCH_RESPONSE
-import com.oscarg798.amiibowiki.testutils.GAME_SEARCH_RESPONSE
-import com.oscarg798.amiibowiki.testutils.extensions.createMockResponse
-import com.oscarg798.amiibowiki.testutils.extensions.launchFragmentInHiltContainer
+import com.oscarg798.amiibowiki.testutils.*
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
+import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import io.mockk.coEvery
 import io.mockk.every
 import javax.inject.Inject
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.RecordedRequest
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 @UninstallModules(
@@ -51,36 +47,47 @@ import org.junit.Test
     NetworkModule::class,
     LoggerModule::class,
     EnvirormentCheckerModule::class,
-    AppModule::class
 )
 @HiltAndroidTest
-class AmiiboDetailTest : BaseUITest(DISPATCHER) {
+internal class AmiiboDetailTest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @Inject
-    lateinit var amiiboDAO: AmiiboDAO
+    lateinit var factory: AmiiboDetailViewModel.Factory
 
     @Inject
     @MainFeatureFlagHandler
     lateinit var mainFeatureFlagHandler: FeatureFlagHandler
 
-    private val amiiboListRobot = AmiiboDetailRobot()
+    @Inject
+    lateinit var amiiboDAO: AmiiboDAO
 
-    override fun prepareTest() {
+    private lateinit var viewModel: AmiiboDetailViewModel
+    private val amiiboListRobot = AmiiboDetailRobot(composeTestRule)
+    private val stateHandler = relaxedMockk<SavedStateHandle>()
+
+    @Before
+    fun setup() {
+        hiltRule.inject()
         coEvery { amiiboDAO.getById(AMIIBO_TAIL) } answers { DB_AMIIBO }
-        every {
-            mainFeatureFlagHandler.isFeatureEnabled(AmiiboWikiFeatureFlag.ShowRelatedGames)
-        } answers { true }
+        viewModel = factory.create(AMIIBO_TAIL, stateHandler)
+        coEvery { stateHandler.get<AmiiboDetailViewState>("state") } answers { null }
+        every { mainFeatureFlagHandler.isFeatureEnabled(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { true }
 
-        launchFragmentInHiltContainer<AmiiboDetailFragment>(HiltTestActivity::class.java,
-            fragmentArgs = Bundle().apply {
-                putString(ARGUMENT_TAIL, AMIIBO_TAIL)
-            },
-            themeResId = R.style.AppTheme
-        )
+        composeTestRule.setContent {
+            Screen(viewModel, onImageClick = { }, onRelatedGamesButtonClick = { })
+        }
     }
 
     @Test
-    fun when_view_is_open_then_it_should_show_the_detail() {
+    fun when_show_amiibo_detail_wish_then_it_should_show_the_detail() {
+        viewModel.processWish(AmiiboDetailWish.ShowAmiiboDetail)
+
         amiiboListRobot.isViewDisplayed()
         amiiboListRobot.isAmiiboDataDisplayed()
     }
@@ -98,14 +105,3 @@ private val DB_AMIIBO = DBAmiibo(
     "Mario",
     DBAMiiboReleaseDate("19", "20", "21", "22")
 )
-
-private val DISPATCHER = object : Dispatcher() {
-    override fun dispatch(request: RecordedRequest): MockResponse {
-        return when {
-            request.path!!.contains("/search") -> createMockResponse(200, GAME_SEARCH_RESPONSE)
-            request.path!!.contains("/games") -> createMockResponse(200, GAME_COVER_SEARCH_RESPONSE)
-            request.path!!.contains("/covers") -> createMockResponse(200, COVER_RESPONSE)
-            else -> MockResponse().setResponseCode(500)
-        }
-    }
-}

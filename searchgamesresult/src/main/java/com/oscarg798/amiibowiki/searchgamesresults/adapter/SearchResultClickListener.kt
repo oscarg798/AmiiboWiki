@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.searchgamesresults.adapter
 import android.widget.ImageView
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 
-interface SearchResultClickListener {
+internal interface SearchResultClickListener {
 
     fun onResultClicked(
         gameSearchResult: ViewGameSearchResult,

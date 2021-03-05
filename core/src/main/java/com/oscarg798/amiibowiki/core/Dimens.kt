@@ -14,10 +14,15 @@ package com.oscarg798.amiibowiki.core
 
 import androidx.compose.ui.unit.dp
 
-val PADDING_SMALL = 8.dp
-val PADDING_MEDIUM = 16.dp
+val spacingExtraSmall = 4.dp
+val spacingSmall = 8.dp
+val spacingMedium = 16.dp
+val spacingLarge = 24.dp
 
-val CORNER_RADIUS_SMALL = 8.dp
+val cornerRadiusSmall = 8.dp
 val CORNER_RADIUS_MEDIUM = 16.dp
 
-val ELEVATION_SMALL = 8.dp
+val elevationExtraSmall = 4.dp
+val elevationSmall = 8.dp
+
+val matchConstraints = 0.dp

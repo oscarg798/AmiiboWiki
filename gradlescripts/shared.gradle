@@ -146,4 +146,21 @@ dependencies {
 
     testImplementation project(path: ':testutils')
     androidTestImplementation project(path: ':testutils')
+
+    implementation compose.liveDate
+    implementation compose.ui
+    implementation compose.tooling
+    implementation compose.foundation
+    implementation compose.material
+    implementation compose.icons
+    implementation compose.iconsExtended
+    implementation compose.animations
+    implementation compose.constraintLayout
+    implementation compose.compiler
+    implementation compose.activities
+    androidTestImplementation compose.test
+
+    implementation androidXlifecycle.savedState
+    implementation androidXlifecycle.core
+    implementation androidXlifecycle.livedataKtx
 }

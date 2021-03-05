@@ -12,8 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
@@ -21,29 +20,35 @@ import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.extensions.onException
+import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
-import com.oscarg798.amiibowiki.core.utils.AssistedFactoryCreator
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
-class AmiiboDetailViewModel @AssistedInject constructor(
+internal class AmiiboDetailViewModel @AssistedInject constructor(
     @Assisted private val tail: String,
+    @Assisted private val handle: SavedStateHandle,
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
     private val amiiboDetailLogger: AmiiboDetailLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<AmiiboDetailViewState, UIEffect>(AmiiboDetailViewState()) {
+) : AbstractViewModel<AmiiboDetailViewState, UIEffect, AmiiboDetailWish>(AmiiboDetailViewState()) {
 
-    fun onWish(wish: AmiiboDetailWish) {
+    init {
+        state.onEach {
+            handle.set(STATE_KEY, it)
+        }.launchIn(viewModelScope)
+    }
+
+    override fun processWish(wish: AmiiboDetailWish) {
         when (wish) {
             is AmiiboDetailWish.ExpandAmiiboImage -> _uiEffect.value =
                 UIEffect.ShowAmiiboImage(wish.image)
@@ -56,42 +61,71 @@ class AmiiboDetailViewModel @AssistedInject constructor(
     private fun onShowDetailsRequest() {
         viewModelScope.launch {
             updateState { it.copy(loading = true, error = null) }
-            getDetails()
-            shouldShowRelatedGamesSection()
+            getDetailsAsync()
+            shouldShowRelatedGamesSectionAsync()
         }
     }
 
-    private fun CoroutineScope.shouldShowRelatedGamesSection() {
-        async {
-            val relatedGamesEnabled =
-                withContext(coroutineContextProvider.backgroundDispatcher) {
-                    isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames)
-                }
-
+    private fun CoroutineScope.shouldShowRelatedGamesSectionAsync() = async {
+        runCatching {
+            withContext(coroutineContextProvider.backgroundDispatcher) {
+                isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames)
+            }
+        }.fold({ relatedGamesEnabled ->
             updateState {
                 it.copy(
-                    loading = false,
                     error = null,
                     relatedGamesSectionEnabled = relatedGamesEnabled
                 )
             }
-        }
+        }, { onError(it) })
     }
 
-    private fun CoroutineScope.getDetails() {
-        async {
-            val detail = withContext(coroutineContextProvider.backgroundDispatcher) {
-                getAmiiboDetailUseCase.execute(tail)
-            }
+
+    private fun CoroutineScope.getDetailsAsync() = async {
+        val savedState = handle.get<AmiiboDetailViewState>(STATE_KEY)
+
+        if (savedState?.amiibo != null) {
             updateState {
                 it.copy(
                     loading = false,
                     error = null,
-                    showingDetails = ViewAmiiboDetails(detail)
+                    amiibo = savedState.amiibo
                 )
             }
+            return@async
+        }
+
+        runCatching {
+            withContext(coroutineContextProvider.backgroundDispatcher) {
+                getAmiiboDetailUseCase.execute(tail)
+            }
+        }.fold({ amiibo -> onAmiiboFound(amiibo) }, { onError(it) })
+    }
+
+    private suspend fun onAmiiboFound(amiibo: Amiibo) {
+        trackViewShown(amiibo)
+
+        updateState {
+            it.copy(
+                loading = false,
+                error = null,
+                amiibo = ViewAmiiboDetails(amiibo)
+            )
         }
     }
+
+    private suspend fun onError(exception: Throwable) {
+        val error = when (exception) {
+            is AmiiboDetailFailure.AmiiboNotFoundByTail -> exception
+            is Exception -> AmiiboDetailFailure.UnknowError(exception)
+            else -> throw exception
+        }
+        updateState { state ->
+            state.copy(loading = false, error = error)
+        }
+    }
+
 
     private fun trackViewShown(amiibo: Amiibo) {
         amiiboDetailLogger.trackScreenShown(
@@ -106,11 +140,12 @@ class AmiiboDetailViewModel @AssistedInject constructor(
     }
 
     @AssistedFactory
-    interface Factory : AssistedFactoryCreator<AmiiboDetailViewModel, String> {
-        override fun create(params: String): AmiiboDetailViewModel
+    interface Factory {
+        fun create(params: String, stateHandle: SavedStateHandle): AmiiboDetailViewModel
     }
 }
 
+private const val STATE_KEY = "state"
 private const val TAIL_TRACKING_PROPERTY = "TAIL"
 private const val HEAD_TRACKING_PROPERTY = "HEAD"
 private const val TYPE_TRACKING_PROPERTY = "TYPE"

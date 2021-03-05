@@ -10,7 +10,7 @@ import org.junit.runners.model.Statement
 
 class NetworkIdlingResourceRule : TestRule {
 
-    private val resource: IdlingResource = OkHttp3IdlingResource.create(
+    val resource: IdlingResource = OkHttp3IdlingResource.create(
         "okhttp",
         TestNetworkModule.okHttpClient
     )

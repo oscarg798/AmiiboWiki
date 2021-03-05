@@ -14,21 +14,19 @@ package com.oscarg798.amiibowiki.amiibodetail.di
 
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLoggerImpl
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
-import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.android.scopes.FragmentScoped
+import dagger.hilt.components.SingletonComponent
 
-@InstallIn(FragmentComponent::class)
+@InstallIn(SingletonComponent::class)
 @Module
-object AmiiboDetailModule {
+internal object AmiiboDetailModule {
 
-    @FragmentScoped
     @Provides
     fun provideAmiiboDetailLogger(logger: Logger): AmiiboDetailLogger =
         AmiiboDetailLoggerImpl(logger)

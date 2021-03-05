@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,18 +10,18 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail.mvi
+package com.oscarg798.amiibowiki.testutils
 
-import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.mvi.Result
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-sealed class AmiiboDetailResult : Result {
-    object Loading : AmiiboDetailResult()
+@AndroidEntryPoint
+class HiltTestActivity : AppCompatActivity() {
 
-    data class ShowingRelatedGames(val amiiboId: String) : AmiiboDetailResult()
-    data class ImageExpanded(val url: String) : AmiiboDetailResult()
-    data class DetailFetched(val amiibo: Amiibo) :
-        AmiiboDetailResult()
-    data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(View(this))
+    }
 }
