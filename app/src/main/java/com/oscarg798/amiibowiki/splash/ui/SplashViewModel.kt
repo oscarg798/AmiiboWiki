@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.splash.ui
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.core.failures.GameAPIAuthenticationFailure
@@ -36,7 +36,7 @@ class SplashViewModel @Inject constructor(
     private val initializeApplicationUseCase: InitializeApplicationUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SplashWish, SplashResult, SplashViewState>(SplashViewState.IsIdling) {
+) : AbstractViewModelCompat<SplashWish, SplashResult, SplashViewState>(SplashViewState.IsIdling) {
 
     override fun onScreenShown() {
         splashLogger.trackScreenShown()

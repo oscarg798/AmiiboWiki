@@ -20,18 +20,18 @@ import javax.inject.Inject
 
 class SplashReducer @Inject constructor() : Reducer<SplashResult, SplashViewState> {
 
-    override suspend fun reduce(state: SplashViewState, from: SplashResult): SplashViewState =
-        when (from) {
+    override suspend fun reduce(state: SplashViewState, result: SplashResult): SplashViewState =
+        when (result) {
             is SplashResult.TypesFetched -> SplashViewState.NavigatingToFirstscreen
-            is SplashResult.Error -> if (from.error is OutdatedAppException) {
+            is SplashResult.Error -> if (result.error is OutdatedAppException) {
                 SplashViewState.Error(
-                    from.error
+                    result.error
                 )
             } else {
                 SplashViewState.Error(
                     AmiiboTypeFailure.FetchTypesFailure(
-                        from.error.message,
-                        from.error.cause as? Exception
+                        result.error.message,
+                        result.error.cause as? Exception
                     )
                 )
             }

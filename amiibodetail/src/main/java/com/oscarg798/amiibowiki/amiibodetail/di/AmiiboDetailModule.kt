@@ -14,7 +14,6 @@ package com.oscarg798.amiibowiki.amiibodetail.di
 
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLoggerImpl
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailReducer
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.core.mvi.Reducer
@@ -28,11 +27,6 @@ import dagger.hilt.android.scopes.FragmentScoped
 @InstallIn(FragmentComponent::class)
 @Module
 object AmiiboDetailModule {
-
-    @FragmentScoped
-    @Provides
-    fun provideAmiiboDetailReducer(amiiboDetailReducer: AmiiboDetailReducer): Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState> =
-        amiiboDetailReducer
 
     @FragmentScoped
     @Provides

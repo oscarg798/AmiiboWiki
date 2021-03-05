@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.navigation
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.navigation.mvi.DashboardResult
@@ -31,7 +31,7 @@ class DashboardViewModel @Inject constructor(
     private val usecase: UpdateCheckerUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards DashboardResult, @JvmSuppressWildcards DashboardViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<DashboardWish, DashboardResult, DashboardViewState>(DashboardViewState.Idling) {
+) : AbstractViewModelCompat<DashboardWish, DashboardResult, DashboardViewState>(DashboardViewState.Idling) {
 
     override suspend fun getResult(wish: DashboardWish): Flow<DashboardResult> = flow {
         val status = usecase.execute()

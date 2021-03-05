@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.nfcreader
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
@@ -35,7 +35,7 @@ class NFCReaderViewModel @Inject constructor(
     private val readTagUseCase: ReadTagUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<NFCReaderWish, NFCReaderResult,
+) : AbstractViewModelCompat<NFCReaderWish, NFCReaderResult,
     NFCReaderViewState>(NFCReaderViewState.Idling) {
 
     override suspend fun getResult(wish: NFCReaderWish): Flow<NFCReaderResult> {

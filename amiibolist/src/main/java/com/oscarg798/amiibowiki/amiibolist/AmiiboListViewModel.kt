@@ -20,7 +20,7 @@ import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.SearchAmiibosUseCase
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
@@ -47,7 +47,7 @@ class AmiiboListViewModel @Inject constructor(
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards AmiiboListResult, @JvmSuppressWildcards AmiiboListViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(
+) : AbstractViewModelCompat<AmiiboListWish, AmiiboListResult, AmiiboListViewState>(
     AmiiboListViewState.Idling
 ) {
     override fun onScreenShown() {

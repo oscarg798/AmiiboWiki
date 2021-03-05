@@ -21,26 +21,26 @@ class AmiiboListReducer @Inject constructor() : Reducer<AmiiboListResult, Amiibo
 
     override suspend fun reduce(
         state: AmiiboListViewState,
-        from: AmiiboListResult
-    ): AmiiboListViewState = when (from) {
+        result: AmiiboListResult
+    ): AmiiboListViewState = when (result) {
         AmiiboListResult.Loading -> AmiiboListViewState.Loading
         AmiiboListResult.FilterSelectionCancelled -> AmiiboListViewState.Idling
         is AmiiboListResult.AmiibosFetched -> AmiiboListViewState.ShowingAmiibos(
-            from.amiibos.map { amiibo ->
+            result.amiibos.map { amiibo ->
                 ViewAmiibo(amiibo)
             }
         )
         is AmiiboListResult.AmiibosFiltered -> AmiiboListViewState.ShowingAmiibos(
-            from.amiibos.map { amiibo ->
+            result.amiibos.map { amiibo ->
                 ViewAmiibo(amiibo)
             }
         )
         is AmiiboListResult.FiltersFetched -> AmiiboListViewState.ShowingFilters(
-            from.filters.map { amiiboType ->
+            result.filters.map { amiiboType ->
                 ViewAmiiboType(amiiboType)
             }
         )
-        is AmiiboListResult.ShowAmiiboDetail -> AmiiboListViewState.ShowingAmiiboDetails(from.amiiboTail)
-        is AmiiboListResult.Error -> AmiiboListViewState.Error(from.error)
+        is AmiiboListResult.ShowAmiiboDetail -> AmiiboListViewState.ShowingAmiiboDetails(result.amiiboTail)
+        is AmiiboListResult.Error -> AmiiboListViewState.Error(result.error)
     }
 }
