@@ -15,20 +15,27 @@ package com.oscarg798.amiibowiki.amiibodetail.mvi
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
+import javax.annotation.concurrent.Immutable
 
-data class ShowingAmiiboDetailsParams(
-    val amiiboDetails: ViewAmiiboDetails,
-    val isRelatedGamesSectionEnabled: Boolean
-)
+@Immutable
+data class AmiiboDetailViewState(
+    val loading: Boolean = false,
+    val showingDetails: ViewAmiiboDetails? = null,
+    val relatedGamesSectionEnabled: Boolean = false,
+    val showingImage: String? = null,
+    val showRelatedGames: String? = null,
+    val error: AmiiboDetailFailure? = null
+) : ViewState
 
-sealed class AmiiboDetailViewState : ViewState {
-
-    object Idling : AmiiboDetailViewState()
-    object Loading : AmiiboDetailViewState()
-    data class ShowingAmiiboDetails(val showingAmiiboDetailsParams: ShowingAmiiboDetailsParams) : AmiiboDetailViewState()
-    data class ShowingRelatedGames(val amiiboId: String) : AmiiboDetailViewState()
-    data class ShowingAmiiboImage(val imageUrl: String) : AmiiboDetailViewState() {
-        override fun equals(other: Any?): Boolean = this === other
+sealed class UIEffect : com.oscarg798.amiibowiki.core.mvi.UIEffect{
+    object Nothing : UIEffect()
+    data class ShowAmiiboImage(val url: String) : UIEffect() {
+        override fun equals(other: Any?): Boolean = false
     }
-    data class Error(val exception: AmiiboDetailFailure) : AmiiboDetailViewState()
+
+    data class ShowRelatedGames(val amiiboId: String) : UIEffect() {
+        override fun equals(other: Any?): Boolean = false
+    }
+
+
 }

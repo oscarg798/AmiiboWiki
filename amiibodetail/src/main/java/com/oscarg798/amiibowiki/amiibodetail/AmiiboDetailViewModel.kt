@@ -12,17 +12,17 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailResult
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
+import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.AssistedFactoryCreator
@@ -30,53 +30,68 @@ import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class AmiiboDetailViewModel @AssistedInject constructor(
     @Assisted private val tail: String,
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
     private val amiiboDetailLogger: AmiiboDetailLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
-    override val reducer: Reducer<@JvmSuppressWildcards AmiiboDetailResult, @JvmSuppressWildcards AmiiboDetailViewState>,
-    override val coroutineContextProvider: CoroutineContextProvider,
-) : AbstractViewModel<AmiiboDetailWish, AmiiboDetailResult, AmiiboDetailViewState>(
-    AmiiboDetailViewState.Idling
-) {
+    override val coroutineContextProvider: CoroutineContextProvider
+) : AbstractViewModel<AmiiboDetailViewState, UIEffect>(AmiiboDetailViewState()) {
 
-    val state2: LiveData<AmiiboDetailViewState> = state.asLiveData()
-
-    override suspend fun getResult(wish: AmiiboDetailWish): Flow<AmiiboDetailResult> = when (wish) {
-        is AmiiboDetailWish.ExpandAmiiboImage -> flowOf(AmiiboDetailResult.ImageExpanded(wish.image))
-        is AmiiboDetailWish.ShowAmiiboDetail -> getAmiiboDetail()
-        is AmiiboDetailWish.ShowRelatedGames -> flowOf(AmiiboDetailResult.ShowingRelatedGames(tail))
+    fun onWish(wish: AmiiboDetailWish) {
+        when (wish) {
+            is AmiiboDetailWish.ExpandAmiiboImage -> _uiEffect.value =
+                UIEffect.ShowAmiiboImage(wish.image)
+            is AmiiboDetailWish.ShowAmiiboDetail -> onShowDetailsRequest()
+            is AmiiboDetailWish.ShowRelatedGames -> _uiEffect.value =
+                UIEffect.ShowRelatedGames(tail)
+        }
     }
 
-    private suspend fun getAmiiboDetail(): Flow<AmiiboDetailResult> = flow {
-        emit(getAmiiboDetailUseCase.execute(tail))
-    }.flatMapConcat { amiibo ->
-        flow<AmiiboDetailResult> {
-            trackViewShown(amiibo)
-            emit(
-                AmiiboDetailResult.DetailFetched(
-                    amiibo,
+    private fun onShowDetailsRequest() {
+        viewModelScope.launch {
+            updateState { it.copy(loading = true, error = null) }
+            getDetails()
+            shouldShowRelatedGamesSection()
+        }
+    }
+
+    private fun CoroutineScope.shouldShowRelatedGamesSection() {
+        async {
+            val relatedGamesEnabled =
+                withContext(coroutineContextProvider.backgroundDispatcher) {
                     isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames)
+                }
+
+            updateState {
+                it.copy(
+                    loading = false,
+                    error = null,
+                    relatedGamesSectionEnabled = relatedGamesEnabled
                 )
-            )
+            }
         }
-    }.catch { cause ->
-        if (cause !is AmiiboDetailFailure.AmiiboNotFoundByTail) {
-            throw cause
+    }
+
+    private fun CoroutineScope.getDetails() {
+        async {
+            val detail = withContext(coroutineContextProvider.backgroundDispatcher) {
+                getAmiiboDetailUseCase.execute(tail)
+            }
+            updateState {
+                it.copy(
+                    loading = false,
+                    error = null,
+                    showingDetails = ViewAmiiboDetails(detail)
+                )
+            }
         }
-        emit(AmiiboDetailResult.Error(cause as AmiiboDetailFailure))
-    }.onStart {
-        emit(AmiiboDetailResult.Loading)
-    }.flowOn(coroutineContextProvider.backgroundDispatcher)
+    }
 
     private fun trackViewShown(amiibo: Amiibo) {
         amiiboDetailLogger.trackScreenShown(

@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.mvi.Reducer
@@ -44,7 +44,7 @@ class SearchGamesResultViewModel @Inject constructor(
     private val searchGamesLogger: SearchGamesResultLogger,
     override val reducer: Reducer<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SearchResultWish, SearchResultResult, SearchResultViewState>(
+) : AbstractViewModelCompat<SearchResultWish, SearchResultResult, SearchResultViewState>(
     SearchResultViewState.Idling
 ) {
     override suspend fun getResult(wish: SearchResultWish): Flow<SearchResultResult> = when {

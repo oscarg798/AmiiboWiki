@@ -14,20 +14,45 @@ package com.oscarg798.amiibowiki.core.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.oscarg798.amiibowiki.core.mvi.EffectWish
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
+import com.oscarg798.amiibowiki.core.mvi.UIEffect as MVIUIEffect
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
-abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState : MVIViewState>(
+abstract class AbstractViewModel<ViewState : MVIViewState, UIEffect : MVIUIEffect>(initialState: ViewState) :
+    ViewModel() {
+
+    protected abstract val coroutineContextProvider: CoroutineContextProvider
+    protected val stateMutex = Mutex()
+    protected val _state = MutableStateFlow<ViewState>(initialState)
+    protected val _uiEffect = MutableStateFlow<UIEffect?>(null)
+
+    val state: Flow<ViewState>
+        get() = _state
+
+    val uiEffect: Flow<UIEffect>
+        get() = _uiEffect.filterNotNull()
+
+    protected suspend fun updateState(
+        reducer: (state: ViewState) -> ViewState
+    ) {
+        stateMutex.withLock {
+            _state.value = reducer(_state.value)
+        }
+    }
+
+
+
+}
+
+@Deprecated(message = "Deprecated", replaceWith = ReplaceWith("Please use AbstractViewModel"))
+abstract class AbstractViewModelCompat<Wish : MVIWish, Result : MVIResult, ViewState : MVIViewState>(
     initialState: ViewState
 ) : ViewModel() {
 
@@ -37,6 +62,8 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
 
     protected val _state = MutableStateFlow<ViewState>(initialState)
 
+    protected val _uiEffect = MutableStateFlow<Wish?>(null)
+
     private val wishProcessor = MutableStateFlow<Wish?>(null)
 
     val state: Flow<ViewState>
@@ -45,12 +72,19 @@ abstract class AbstractViewModel<Wish : MVIWish, Result : MVIResult, ViewState :
     init {
         wishProcessor
             .filterNotNull()
+            .filterNot { it is EffectWish }
             .flatMapLatest {
                 getResult(it)
             }.scan(initialState) { state, result ->
                 reducer.reduce(state, result)
             }.onEach {
                 _state.emit(it)
+            }.launchIn(viewModelScope)
+
+        wishProcessor.filterNotNull()
+            .filter { it is EffectWish }
+            .onEach {
+                _uiEffect.value = it
             }.launchIn(viewModelScope)
     }
 

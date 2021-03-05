@@ -19,15 +19,15 @@ class NFCReducer @Inject constructor() : Reducer<NFCReaderResult, NFCReaderViewS
 
     override suspend fun reduce(
         state: NFCReaderViewState,
-        from: NFCReaderResult
+        result: NFCReaderResult
     ): NFCReaderViewState {
-        return when (from) {
+        return when (result) {
             is NFCReaderResult.Reading -> NFCReaderViewState.Loading
             is NFCReaderResult.AdapterReady -> NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterAvailable)
             is NFCReaderResult.AdapterDisabled,
             is NFCReaderResult.AdapterStoped -> NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped)
-            is NFCReaderResult.ReadSuccessful -> NFCReaderViewState.ShowingAmiibo(from.amiiboIdentifier)
-            is NFCReaderResult.Error -> NFCReaderViewState.Error(from.error)
+            is NFCReaderResult.ReadSuccessful -> NFCReaderViewState.ShowingAmiibo(result.amiiboIdentifier)
+            is NFCReaderResult.Error -> NFCReaderViewState.Error(result.error)
         }
     }
 }

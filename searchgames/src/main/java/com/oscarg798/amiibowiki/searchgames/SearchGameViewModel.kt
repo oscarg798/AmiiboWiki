@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.searchgames
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.searchgames.mvi.SearchGameWish
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.flowOf
 class SearchGameViewModel @Inject constructor(
     override val reducer: Reducer<@JvmSuppressWildcards SearchGamesResult, @JvmSuppressWildcards SearchGamesViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SearchGameWish, SearchGamesResult, SearchGamesViewState>(SearchGamesViewState.IsIdling) {
+) : AbstractViewModelCompat<SearchGameWish, SearchGamesResult, SearchGamesViewState>(SearchGamesViewState.IsIdling) {
 
     override suspend fun getResult(wish: SearchGameWish) =
         flowOf(SearchGamesResult.SearchGames((wish as SearchGameWish.Search).query))

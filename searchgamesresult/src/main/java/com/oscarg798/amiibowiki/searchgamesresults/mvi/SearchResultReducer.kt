@@ -21,16 +21,17 @@ class SearchResultReducer @Inject constructor() :
 
     override suspend fun reduce(
         state: SearchResultViewState,
-        from: SearchResultResult
-    ): SearchResultViewState = when (from) {
+        result: SearchResultResult
+    ): SearchResultViewState = when (result) {
         is SearchResultResult.None -> SearchResultViewState.Idling
         is SearchResultResult.Loading -> SearchResultViewState.Loading
         is SearchResultResult.GamesFound -> SearchResultViewState.ShowingGameResults(
-            from.gamesSearchResult.map {
+            result.gamesSearchResult.map {
                 ViewGameSearchResult(it)
             }
         )
-        is SearchResultResult.ShowGameDetails -> SearchResultViewState.ShowingGameDetails(ShowingGameDetailsParams(from.gameId))
-        is SearchResultResult.Error -> SearchResultViewState.Error(from.failure)
+        is SearchResultResult.ShowGameDetails -> SearchResultViewState.ShowingGameDetails(ShowingGameDetailsParams(
+            result.gameId))
+        is SearchResultResult.Error -> SearchResultViewState.Error(result.failure)
     }
 }

@@ -21,7 +21,7 @@ sealed class AmiiboDetailResult : Result {
 
     data class ShowingRelatedGames(val amiiboId: String) : AmiiboDetailResult()
     data class ImageExpanded(val url: String) : AmiiboDetailResult()
-    data class DetailFetched(val amiibo: Amiibo, val isRelatedGamesSectionEnabled: Boolean) :
+    data class DetailFetched(val amiibo: Amiibo) :
         AmiiboDetailResult()
     data class Error(val error: AmiiboDetailFailure) : AmiiboDetailResult()
 }

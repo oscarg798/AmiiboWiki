@@ -3,12 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../../layout/compose-model-1614627711518.xml" value="0.75" />
-        <entry key="../../../../layout/compose-model-1614681135879.xml" value="1.0" />
-        <entry key="../../../../layout/compose-model-1614684942825.xml" value="0.1" />
-        <entry key="../../../../layout/compose-model-1614695030667.xml" value="0.29180743243243246" />
-        <entry key="amiibodetail/src/main/res/layout/fragment_amiibo_detail.xml" value="0.3446557971014493" />
-        <entry key="core/src/main/res/font/rubik_medium.xml" value="0.15885416666666666" />
+        <entry key="../../../../layout/compose-model-1614950216240.xml" value="0.33" />
+        <entry key="../../../../layout/compose-model-1614950625153.xml" value="0.33" />
+        <entry key="../../../../layout/compose-model-1614952151383.xml" value="0.2905405405405405" />
+        <entry key="../../../../layout/compose-model-1614954516285.xml" value="0.28885135135135137" />
       </map>
     </option>
   </component>
