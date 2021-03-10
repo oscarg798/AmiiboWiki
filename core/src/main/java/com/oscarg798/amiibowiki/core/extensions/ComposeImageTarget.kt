@@ -15,7 +15,6 @@ package com.oscarg798.amiibowiki.core.extensions
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 
@@ -30,6 +29,6 @@ class ComposeImageTarget(val state: MutableState<LoadImageFromURLState>) : Targe
     }
 
     override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-        //DO_NOTHING
+        // DO_NOTHING
     }
 }

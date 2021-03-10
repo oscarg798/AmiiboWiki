@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -9,5 +9,28 @@
  *
  *
  */
-class ShellRunException(val exitCode: Int, override val message: String? = null) : Exception(message)
 
+package com.oscarg798.amiibowiki.amiibolist.ui
+
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.Composable
+import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+
+@Composable
+internal fun AmiiboListError(
+    state: AmiiboListViewState,
+    snackbarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope
+) {
+    coroutineScope.launch {
+        if (state.error != null) {
+            snackbarHostState.showSnackbar(
+                message = state.error.message!!,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+}

@@ -12,7 +12,11 @@
 
 package com.oscarg798.amiibowiki.core.ui
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,7 +49,8 @@ fun Shimmer(modifier: Modifier, colors: List<Color> = shaderColors) {
                     colorStops = listOf(ALPHA_TRANSPARENT, alpha, NO_ALPHA),
                     tileMode = TileMode.Mirror
                 )
-            ), size = size
+            ),
+            size = size
         )
     }
 }

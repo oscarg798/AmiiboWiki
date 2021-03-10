@@ -12,8 +12,10 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.composeui
 
-import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -30,7 +32,6 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboWikiTextAppearence
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.core.spacingMedium
 import com.oscarg798.amiibowiki.core.spacingSmall
 
@@ -100,7 +101,6 @@ private fun DescriptionField(
     } else {
         Text(text = text, style = TextStyle(color = color))
     }
-
 }
 
 @Composable

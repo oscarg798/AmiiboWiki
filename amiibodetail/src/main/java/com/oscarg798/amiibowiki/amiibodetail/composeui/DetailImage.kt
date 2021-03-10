@@ -12,22 +12,18 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.composeui
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
-import com.oscarg798.amiibowiki.core.commonui.LoadingImage
-import com.oscarg798.amiibowiki.core.extensions.LoadImageFromURLState
-import com.oscarg798.amiibowiki.core.extensions.loadImage
+import com.oscarg798.amiibowiki.core.commonui.ImageFromUrl
 import com.oscarg798.amiibowiki.core.spacingMedium
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 
 @Composable
 internal fun ImageDetail(url: String, onImageClick: (String) -> Unit) {
@@ -38,30 +34,16 @@ internal fun ImageDetail(url: String, onImageClick: (String) -> Unit) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        AmiiboImage(url, onImageClick)
+        ImageFromUrl(
+            url = url,
+            imageModifier = Modifier
+                .getAmiiboImageModifiers()
+                .clickable { onImageClick(url) },
+            loadingModifier = Modifier
+                .getAmiiboImageModifiers()
+        )
     }
 }
-
-@Composable
-private fun AmiiboImage(url: String, onImageClick: (String) -> Unit) {
-    val state by remember { loadImage(url) }
-
-    Row {
-        when (state) {
-            is LoadImageFromURLState.Error,
-            is LoadImageFromURLState.Loading -> LoadingImage(modifier = Modifier.getAmiiboImageModifiers())
-            is LoadImageFromURLState.Image -> Image(
-                bitmap = (state as LoadImageFromURLState.Image).image.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier
-                    .getAmiiboImageModifiers()
-                    .clickable { onImageClick(url) }
-
-            )
-        }
-    }
-}
-
 private fun Modifier.getAmiiboImageModifiers() = Modifier
     .fillMaxWidth()
     .fillMaxHeight()

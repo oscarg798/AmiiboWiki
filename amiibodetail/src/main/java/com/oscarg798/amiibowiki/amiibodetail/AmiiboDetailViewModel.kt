@@ -20,7 +20,6 @@ import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
-import com.oscarg798.amiibowiki.core.extensions.onException
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
@@ -30,8 +29,12 @@ import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal class AmiiboDetailViewModel @AssistedInject constructor(
     @Assisted private val tail: String,
@@ -50,11 +53,13 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
 
     override fun processWish(wish: AmiiboDetailWish) {
         when (wish) {
-            is AmiiboDetailWish.ExpandAmiiboImage -> _uiEffect.value =
-                UIEffect.ShowAmiiboImage(wish.image)
+            is AmiiboDetailWish.ExpandAmiiboImage ->
+                _uiEffect.value =
+                    UIEffect.ShowAmiiboImage(wish.image)
             is AmiiboDetailWish.ShowAmiiboDetail -> onShowDetailsRequest()
-            is AmiiboDetailWish.ShowRelatedGames -> _uiEffect.value =
-                UIEffect.ShowRelatedGames(tail)
+            is AmiiboDetailWish.ShowRelatedGames ->
+                _uiEffect.value =
+                    UIEffect.ShowRelatedGames(tail)
         }
     }
 
@@ -71,16 +76,18 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
             withContext(coroutineContextProvider.backgroundDispatcher) {
                 isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames)
             }
-        }.fold({ relatedGamesEnabled ->
-            updateState {
-                it.copy(
-                    error = null,
-                    relatedGamesSectionEnabled = relatedGamesEnabled
-                )
-            }
-        }, { onError(it) })
+        }.fold(
+            { relatedGamesEnabled ->
+                updateState {
+                    it.copy(
+                        error = null,
+                        relatedGamesSectionEnabled = relatedGamesEnabled
+                    )
+                }
+            },
+            { onError(it) }
+        )
     }
-
 
     private fun CoroutineScope.getDetailsAsync() = async {
         val savedState = handle.get<AmiiboDetailViewState>(STATE_KEY)
@@ -125,7 +132,6 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
             state.copy(loading = false, error = error)
         }
     }
-
 
     private fun trackViewShown(amiibo: Amiibo) {
         amiiboDetailLogger.trackScreenShown(

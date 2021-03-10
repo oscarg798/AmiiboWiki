@@ -19,8 +19,6 @@ import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
@@ -34,7 +32,7 @@ class GetAmiiboTypeUseCaseTest {
 
     @Before
     fun setup() {
-        coEvery { amiiboTypeRepository.getTypes() } answers { flowOf(AMIIBO_TYPES) }
+        coEvery { amiiboTypeRepository.getTypes() } answers { AMIIBO_TYPES }
         every { getDefaultAmiiboTypeUseCase.execute() }.answers { AmiiboType("3", "3") }
         usecase = GetAmiiboTypeUseCase(getDefaultAmiiboTypeUseCase, amiiboTypeRepository)
     }
@@ -42,14 +40,15 @@ class GetAmiiboTypeUseCaseTest {
     @Test
     fun `when is executed then it should return types with default value`() {
         val result = runBlocking {
-            usecase.execute().toList()
+            usecase.execute()
         }
 
-        1 shouldBeEqualTo result.size
+        2 shouldBeEqualTo result.size
+
         listOf(
             AmiiboType("1", "2"),
             AmiiboType("3", "3")
-        ) shouldBeEqualTo result[0]
+        ) shouldBeEqualTo result
     }
 }
 

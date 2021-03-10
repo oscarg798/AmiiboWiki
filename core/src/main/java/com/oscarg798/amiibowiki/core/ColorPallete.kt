@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.core
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
@@ -57,4 +56,3 @@ val darkColors = darkColors(
     onSurface = alto,
     onError = white
 )
-

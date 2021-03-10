@@ -13,4 +13,3 @@
 package com.oscarg798.amiibowiki.core.mvi
 
 interface ViewState
-

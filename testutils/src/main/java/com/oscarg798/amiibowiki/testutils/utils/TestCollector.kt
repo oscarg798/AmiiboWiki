@@ -50,7 +50,7 @@ class TestCollector<T> {
         assert(values.containsAll(_values))
     }
 
-    fun wereValuesEmiited(_values: Collection<T>, comparator: Comparator<T>) {
+    fun wereValuesEmitted(_values: Collection<T>, comparator: Comparator<T>) {
         values.forEachIndexed { index, t ->
             Assert.assertEquals(0, comparator.compare(t, _values.elementAt(index)))
         }
@@ -68,5 +68,7 @@ class TestCollector<T> {
 
     infix fun wasValueEmiited(value: T) = assert(values.contains(value))
 
-    infix fun hasSize(size: Int) = Assert.assertEquals(size, values.size)
+    infix fun hasSize(size: Int) {
+        Assert.assertEquals(size, values.size)
+    }
 }

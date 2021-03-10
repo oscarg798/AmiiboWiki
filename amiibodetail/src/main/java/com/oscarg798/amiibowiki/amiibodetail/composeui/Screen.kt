@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.amiibodetail.composeui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel

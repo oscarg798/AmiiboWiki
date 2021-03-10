@@ -17,14 +17,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.oscarg798.amiibowiki.core.*
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_AMIIBO_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION

@@ -17,11 +17,19 @@ import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.mvi.EffectWish
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.mvi.Result as MVIResult
+import com.oscarg798.amiibowiki.core.mvi.SideEffect as MVIUIEffect
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
-import com.oscarg798.amiibowiki.core.mvi.SideEffect as MVIUIEffect
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 

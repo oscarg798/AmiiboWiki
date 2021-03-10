@@ -18,5 +18,5 @@ sealed class LoadImageFromURLState {
 
     object Loading : LoadImageFromURLState()
     data class Image(val image: Bitmap) : LoadImageFromURLState()
-    data class Error(val error: Exception): LoadImageFromURLState()
+    data class Error(val error: Exception) : LoadImageFromURLState()
 }

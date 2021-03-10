@@ -121,18 +121,19 @@ internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<Am
     fun `given expand image wish when its processed then it should generate a side effect to show the image`() {
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(AMIIBO_IMAGE_URL))
 
-        viewModelTestTule.effectCollector.wereValuesEmiited(
+        viewModelTestTule.effectCollector.wereValuesEmitted(
             listOf(
                 UIEffect.ShowAmiiboImage(
                     AMIIBO_IMAGE_URL
                 )
-            ), object : Comparator<UIEffect> {
+            ),
+            object : Comparator<UIEffect> {
                 override fun compare(
                     o1: UIEffect,
                     o2: UIEffect
                 ): Int {
                     if (o1 !is UIEffect.ShowAmiiboImage || o2 !is UIEffect.ShowAmiiboImage) {
-                        throw   IllegalArgumentException("must provide ShowAmiiboImages")
+                        throw IllegalArgumentException("must provide ShowAmiiboImages")
                     }
 
                     return o1.url.compareTo(o2.url)
@@ -145,16 +146,17 @@ internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<Am
     fun `given show related games wish when its processed then it should generate a side effect to show them`() {
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
 
-        viewModelTestTule.effectCollector.wereValuesEmiited(
+        viewModelTestTule.effectCollector.wereValuesEmitted(
             listOf(
                 UIEffect.ShowRelatedGames(TAIL)
-            ), object : Comparator<UIEffect> {
+            ),
+            object : Comparator<UIEffect> {
                 override fun compare(
                     o1: UIEffect,
                     o2: UIEffect
                 ): Int {
                     if (o1 !is UIEffect.ShowRelatedGames || o2 !is UIEffect.ShowRelatedGames) {
-                        throw   IllegalArgumentException("must provide ShowRelatedGames")
+                        throw IllegalArgumentException("must provide ShowRelatedGames")
                     }
 
                     return o1.amiiboId.compareTo(o2.amiiboId)

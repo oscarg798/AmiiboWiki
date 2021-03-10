@@ -29,7 +29,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboWikiTextAppearence
-import com.oscarg798.amiibowiki.core.*
+import com.oscarg798.amiibowiki.core.cornerRadiusSmall
+import com.oscarg798.amiibowiki.core.elevationExtraSmall
+import com.oscarg798.amiibowiki.core.spacingExtraSmall
+import com.oscarg798.amiibowiki.core.spacingMedium
+import com.oscarg798.amiibowiki.core.spacingSmall
 import com.oscarg798.amiibowiki.searchgamesresults.gameAlternativeNameId
 import com.oscarg798.amiibowiki.searchgamesresults.gameImageId
 import com.oscarg798.amiibowiki.searchgamesresults.gameNameId

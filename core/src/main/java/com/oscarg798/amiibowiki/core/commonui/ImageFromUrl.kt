@@ -12,42 +12,41 @@
 
 package com.oscarg798.amiibowiki.core.commonui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
-import com.oscarg798.amiibowiki.core.R
-import com.oscarg798.amiibowiki.core.spacingMedium
-import com.oscarg798.amiibowiki.core.ui.Shimmer
+import androidx.compose.ui.graphics.asImageBitmap
+import com.oscarg798.amiibowiki.core.extensions.ComposeImageTarget
+import com.oscarg798.amiibowiki.core.extensions.LoadImageFromURLState
+import com.squareup.picasso.Picasso
 
+@SuppressLint("ModifierParameter")
 @Composable
-fun LoadingImage(modifier: Modifier) {
-    Box {
-        Box(contentAlignment = Alignment.TopCenter) {
-            Image(
-                alpha = IMAGE_ALPHA,
-                painter = painterResource(id = R.drawable.ic_placeholder_gray),
-                contentDescription = null,
-                modifier = modifier.padding(spacingMedium),
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground)
-            )
-        }
+fun ImageFromUrl(url: String, imageModifier: Modifier, loadingModifier: Modifier) {
+    val state by loadImage(url)
 
-        Box(contentAlignment = Alignment.TopCenter) {
-            Shimmer(
-                modifier = modifier
+    Row {
+        when (state) {
+            is LoadImageFromURLState.Error,
+            is LoadImageFromURLState.Loading -> LoadingImage(modifier = loadingModifier)
+            is LoadImageFromURLState.Image -> Image(
+                bitmap = (state as LoadImageFromURLState.Image).image.asImageBitmap(),
+                contentDescription = null,
+                modifier = imageModifier
             )
         }
     }
 }
 
-private const val SHADER_DURATION = 1000
-private const val ALPHA_TRANSPARENT = 0F
-private const val NO_ALPHA = 1F
-private const val IMAGE_ALPHA = 0.4F
+private fun loadImage(url: String): MutableState<LoadImageFromURLState> {
+    val state = mutableStateOf<LoadImageFromURLState>(LoadImageFromURLState.Loading)
+    val target = ComposeImageTarget(state)
+
+    Picasso.get().load(url).into(target)
+    return state
+}

@@ -24,5 +24,5 @@ class ComposeNetworkIdlingResource : androidx.compose.ui.test.IdlingResource {
     )
 
     override val isIdleNow: Boolean
-        get() = false
+        get() = resource.isIdleNow
 }

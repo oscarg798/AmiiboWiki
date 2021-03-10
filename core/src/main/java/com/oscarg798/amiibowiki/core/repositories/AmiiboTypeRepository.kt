@@ -13,10 +13,9 @@
 package com.oscarg798.amiibowiki.core.repositories
 
 import com.oscarg798.amiibowiki.core.models.AmiiboType
-import kotlinx.coroutines.flow.Flow
 
 interface AmiiboTypeRepository {
-    fun getTypes(): Flow<Collection<AmiiboType>>
+    suspend fun getTypes(): Collection<AmiiboType>
 
     suspend fun updateTypes(): Collection<AmiiboType>
 

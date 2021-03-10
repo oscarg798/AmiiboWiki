@@ -13,4 +13,4 @@
 package com.oscarg798.amiibowiki.core.mvi
 
 interface Wish
-interface EffectWish: Wish
+interface EffectWish : Wish

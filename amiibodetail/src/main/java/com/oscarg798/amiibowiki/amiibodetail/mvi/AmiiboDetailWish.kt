@@ -13,7 +13,6 @@
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.EffectWish
-import com.oscarg798.amiibowiki.core.mvi.Wish
 
 internal sealed class AmiiboDetailWish : EffectWish {
 

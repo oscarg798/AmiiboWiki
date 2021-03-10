@@ -12,37 +12,22 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.composeui
 
-import androidx.annotation.Px
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.DrawModifier
-import androidx.compose.ui.geometry.CornerRadius.Companion.Zero
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintSet
-import androidx.constraintlayout.compose.Dimension
-import androidx.core.graphics.toColorInt
-import com.oscarg798.amiibowiki.amiibodetail.R
 import com.oscarg798.amiibowiki.core.commonui.LoadingImage
-import com.oscarg798.amiibowiki.core.elevationSmall
 import com.oscarg798.amiibowiki.core.spacingMedium
 import com.oscarg798.amiibowiki.core.spacingSmall
 import com.oscarg798.amiibowiki.core.ui.Shimmer
@@ -86,5 +71,3 @@ internal fun Loading() {
 }
 
 private val DETAIL_SIZE = 50.dp
-
-

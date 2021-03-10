@@ -16,8 +16,8 @@ import android.os.Parcelable
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
-import kotlinx.parcelize.Parcelize
 import javax.annotation.concurrent.Immutable
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Immutable
@@ -29,5 +29,3 @@ internal data class AmiiboDetailViewState(
     val showRelatedGames: String? = null,
     val error: AmiiboDetailFailure? = null
 ) : ViewState, Parcelable
-
-

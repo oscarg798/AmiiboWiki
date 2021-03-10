@@ -37,7 +37,7 @@ class GameDetailViewModelTest :
     ViewModelTestRuleCompat.ViewModelCreator<GameDetailViewState, GameDetailViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRuleCompat<GameDetailViewState, GameDetailViewModel>(this)
+    val viewModelTestRule = ViewModelTestRuleCompat(this)
 
     private val gameDetailLogger = relaxedMockk<GameDetailLogger>()
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()
@@ -86,9 +86,17 @@ class GameDetailViewModelTest :
             GameDetailWish.PlayGameTrailer
         )
 
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
-            GameDetailViewState.Idling,
-            GameDetailViewState.ShowingGameTrailer("9")
+        viewModelTestRule.testCollector.wereValuesEmitted(
+            listOf(
+                GameDetailViewState.Idling,
+                GameDetailViewState.ShowingGameTrailer("9")
+            ),
+            { o1, o2 ->
+                when (o1) {
+                    is GameDetailViewState.ShowingGameTrailer -> if (o1.trailer == (o2 as GameDetailViewState.ShowingGameTrailer).trailer) 0 else 1
+                    else -> if (o1 === o2) 0 else 1
+                }
+            }
         )
 
         verify {
@@ -100,9 +108,17 @@ class GameDetailViewModelTest :
     fun `given a wish to expand cover image when wish is processed then it shoudl return the expanded image`() {
         viewModelTestRule.viewModel.onWish(GameDetailWish.ExpandImages(EXPAND_IMAGE_PARAMS))
 
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
-            GameDetailViewState.Idling,
-            GameDetailViewState.ShowingGameImages(EXPANDED_IMAGES)
+        viewModelTestRule.testCollector.wereValuesEmitted(
+            listOf(
+                GameDetailViewState.Idling,
+                GameDetailViewState.ShowingGameImages(EXPANDED_IMAGES)
+            ),
+            { o1, o2 ->
+                when (o1) {
+                    is GameDetailViewState.ShowingGameImages -> if (o1.images == (o2 as GameDetailViewState.ShowingGameImages).images) 0 else 1
+                    else -> if (o1 === o2) 0 else 1
+                }
+            }
         )
     }
 }
