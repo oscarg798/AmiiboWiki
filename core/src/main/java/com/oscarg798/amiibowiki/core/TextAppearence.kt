@@ -17,11 +17,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.oscarg798.amiibowiki.core.R
 import com.oscarg798.amiibowiki.core.darkColors
 import com.oscarg798.amiibowiki.core.lightColors
 import com.oscarg798.amiibowiki.core.rubik
@@ -43,7 +40,6 @@ private val Body1 =
 private val Body2 =
     TextStyle(fontWeight = FontWeight.Normal, fontSize = BODY_2_FONT_SIZE, fontFamily = rubik)
 
-
 val AmiiboWikiTextAppearence = Typography(h1 = H1, h2 = H2, h3 = H3, body1 = Body1, body2 = Body2)
 
 @Composable
@@ -53,5 +49,3 @@ fun ThemeContainer(content: @Composable () -> Unit) {
         colors = if (isSystemInDarkTheme()) darkColors else lightColors
     ) { content() }
 }
-
-

@@ -12,7 +12,7 @@
 package com.oscarg798.amiibowiki.settings
 
 import androidx.test.runner.AndroidJUnit4
-import com.oscarg798.amiibowiki.testutils.HiltTestActivity
+import com.oscarg798.amiibowiki.HiltTestActivity
 import com.oscarg798.amiibowiki.core.EnvirormentChecker
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
@@ -32,7 +32,6 @@ import io.mockk.every
 import javax.inject.Inject
 import org.junit.Test
 import org.junit.runner.RunWith
-
 
 @UninstallModules(
     PersistenceModule::class,

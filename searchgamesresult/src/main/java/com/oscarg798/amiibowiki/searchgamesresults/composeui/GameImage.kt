@@ -12,20 +12,20 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults.composeui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
-import com.oscarg798.amiibowiki.core.commonui.LoadingImage
-import com.oscarg798.amiibowiki.core.extensions.LoadImageFromURLState
-import com.oscarg798.amiibowiki.core.extensions.loadImage
+import com.oscarg798.amiibowiki.core.commonui.ImageFromUrl
 import com.oscarg798.amiibowiki.core.spacingSmall
 import com.oscarg798.amiibowiki.searchgamesresults.gameImageId
 
@@ -38,23 +38,12 @@ internal fun GameImage(url: String?) {
         return
     }
 
-    val state by remember { loadImage(url) }
-
     val imageModifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
 
     Column(containerModifier) {
-        when (state) {
-            is LoadImageFromURLState.Loading -> LoadingImage(
-                modifier = imageModifier
-            )
-            is LoadImageFromURLState.Image -> Image(
-                bitmap = (state as LoadImageFromURLState.Image).image.asImageBitmap(),
-                contentDescription = null,
-                modifier = imageModifier
-            )
-        }
+        ImageFromUrl(url = url, imageModifier = imageModifier, loadingModifier = imageModifier)
     }
 }
 

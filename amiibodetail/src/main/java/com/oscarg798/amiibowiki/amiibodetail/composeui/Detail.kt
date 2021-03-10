@@ -18,7 +18,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 
 @Composable
 internal fun Detail(

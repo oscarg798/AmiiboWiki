@@ -28,7 +28,6 @@ import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import com.oscarg798.amiibowiki.network.di.NetworkModule
-import com.oscarg798.amiibowiki.testutils.*
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import dagger.hilt.android.testing.HiltAndroidRule

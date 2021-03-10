@@ -12,13 +12,8 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="maven" />
-      <option name="name" value="maven" />
-      <option name="url" value="https://dl.bintray.com/oscarg798/lomeno/Lomeno/" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="maven2" />
-      <option name="name" value="maven2" />
+      <option name="id" value="maven3" />
+      <option name="name" value="maven3" />
       <option name="url" value="https://dl.bintray.com/Flagly/" />
     </remote-repository>
     <remote-repository>
@@ -27,19 +22,24 @@
       <option name="url" value="https://jcenter.bintray.com/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="maven3" />
-      <option name="name" value="maven3" />
-      <option name="url" value="https://jitpack.io" />
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://dl.google.com/dl/android/maven2/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="Google2" />
-      <option name="name" value="Google2" />
-      <option name="url" value="https://dl.google.com/dl/android/maven2/" />
+      <option name="id" value="maven2" />
+      <option name="name" value="maven2" />
+      <option name="url" value="https://dl.bintray.com/oscarg798/lomeno/Lomeno/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="MavenLocal" />
       <option name="name" value="MavenLocal" />
       <option name="url" value="file:$USER_HOME$/.m2/repository/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven4" />
+      <option name="name" value="maven4" />
+      <option name="url" value="https://jitpack.io" />
     </remote-repository>
   </component>
 </project>

@@ -20,7 +20,6 @@ import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 @Singleton
@@ -29,9 +28,9 @@ class AmiiboTypeRepositoryImpl @Inject constructor(
     private val amiiboTypeDAO: AmiiboTypeDAO
 ) : AmiiboTypeRepository {
 
-    override fun getTypes(): Flow<Collection<AmiiboType>> {
+    override suspend fun getTypes(): Collection<AmiiboType> {
         return amiiboTypeDAO.getTypes().map {
-            it.map { type -> type.toAmiiboType() }
+            it.toAmiiboType()
         }
     }
 

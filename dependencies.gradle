@@ -90,7 +90,7 @@ ext {
     scalars = "com.squareup.retrofit2:converter-scalars:2.9.0"
 
     //Testing
-    mockk_version = '1.10.4'
+    mockk_version = '1.10.6'
     mockito_core_version = '3.2.4'
     espresso_version = "3.0.2"
     robolectric_version = "4.3.1"

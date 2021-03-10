@@ -13,7 +13,13 @@
 package com.oscarg798.amiibowiki.searchgamesresults.composeui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,8 +32,12 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import com.oscarg798.amiibowiki.core.*
 import com.oscarg798.amiibowiki.core.commonui.LoadingImage
+import com.oscarg798.amiibowiki.core.cornerRadiusSmall
+import com.oscarg798.amiibowiki.core.elevationExtraSmall
+import com.oscarg798.amiibowiki.core.spacingExtraSmall
+import com.oscarg798.amiibowiki.core.spacingMedium
+import com.oscarg798.amiibowiki.core.spacingSmall
 import com.oscarg798.amiibowiki.core.ui.Shimmer
 import com.oscarg798.amiibowiki.searchgamesresults.gameAlternativeNameId
 import com.oscarg798.amiibowiki.searchgamesresults.gameImageId

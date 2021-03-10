@@ -18,9 +18,6 @@ import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.components.FragmentComponent
-import dagger.hilt.android.scopes.FragmentScoped
 import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)

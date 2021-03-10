@@ -14,27 +14,18 @@ package com.oscarg798.amiibowiki.amiibolist.di
 
 import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLoggerImpl
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListReducer
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListResult
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
-import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
 
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 @Module
 object AmiiboListModule {
 
-    @ViewModelScoped
+    @Reusable
     @Provides
     fun provideAmiiboListLogger(logger: Logger): AmiiboListLogger = AmiiboListLoggerImpl(logger)
-
-    @ViewModelScoped
-    @Provides
-    fun provideAmiiboListReducer(amiiboListReducer: AmiiboListReducer): Reducer<@JvmSuppressWildcards AmiiboListResult, @JvmSuppressWildcards AmiiboListViewState> =
-        amiiboListReducer
 }

@@ -12,18 +12,19 @@
 
 package com.oscarg798.amiibowiki.amiibolist.mvi
 
+import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiiboType
 import com.oscarg798.amiibowiki.core.mvi.ViewState
+import kotlinx.parcelize.Parcelize
 
-sealed class AmiiboListViewState : ViewState {
+@Parcelize
+@Immutable
+data class AmiiboListViewState(
+    val loading: Boolean = false,
+    val amiibos: List<ViewAmiibo>? = null,
+    val error: AmiiboListFailure? = null
+) : ViewState, Parcelable {
 
-    object Idling : AmiiboListViewState()
-    object Loading : AmiiboListViewState()
-    data class ShowingAmiibos(val amiibos: Collection<ViewAmiibo>) : AmiiboListViewState() {
-        override fun equals(other: Any?): Boolean = this === other
-    }
-    data class ShowingFilters(val filters: Collection<ViewAmiiboType>) : AmiiboListViewState()
-    data class ShowingAmiiboDetails(val amiiboId: String) : AmiiboListViewState()
-    data class Error(val error: AmiiboListFailure) : AmiiboListViewState()
+    override fun equals(other: Any?): Boolean = this === other
 }
