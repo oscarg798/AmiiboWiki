@@ -1,0 +1,22 @@
+test-job1:
+  stage: create local.properties
+  script:
+    - touch local.properties &&
+      echo googleApiKey=2 >> local.properties &&
+      echo keystorepath=/ >> local.properties &&
+      echo keystorePassword=dummy >> local.properties &&
+      echo gameAPIClientId=1 >> local.properties &&
+      echo firebaseProjectId=2 >> local.properties &&
+      echo keystoreAlias=3 >> local.properties &&
+      echo googleAccountServiceFile=/x.json >> local.properties &&
+      echo mixpanelToken=3 >> local.properties &&
+      echo gameAuthUrl=4 >> local.properties
+
+  stage: Create google services
+  script: 
+    - touch app/src/main/google-services.json && echo {{GOOGLE_SERVICES_JSON}} > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json 
+    
+  stage: build
+  script:
+    - ./gradlew build
+   
