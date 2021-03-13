@@ -50,8 +50,8 @@ before_script:
   # Not necessary, but just for surity
   - chmod +x ./gradlew
 
-test-job1:
-  stage: create local.properties
+job1:
+  stage: local.properties
   script:
     - touch local.properties &&
       echo googleApiKey=2 >> local.properties &&
@@ -66,8 +66,9 @@ test-job1:
 
   stage: Create google services
   script: 
-    - touch app/src/main/google-services.json && echo {{GOOGLE_SERVICES_JSON}} > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json 
+    - touch pp/src/main/google-services.json && echo {{GOOGLE_SERVICES_JSON}} > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json 
     
+job2: 
   stage: build
   script:
     - ./gradlew build
