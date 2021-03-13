@@ -17,7 +17,11 @@ variables:
   #        commandlinetools-os_type-ANDROID_SDK_TOOLS_latest.zip
   # when the script was last modified for latest compileSdkVersion, it was which is written down below
   ANDROID_SDK_TOOLS: "6514223"
-
+  
+stages:
+  - localProperties
+  - googleServices
+  
 # Packages installation before running script
 before_script:
   - apt-get --quiet update --yes
@@ -51,7 +55,7 @@ before_script:
   - chmod +x ./gradlew
 
 job1:
-  stage: local.properties
+  stage: localProperties
   script:
     - touch local.properties &&
       echo googleApiKey=2 >> local.properties &&
@@ -64,7 +68,7 @@ job1:
       echo mixpanelToken=3 >> local.properties &&
       echo gameAuthUrl=4 >> local.properties
 
-  stage: Create google services
+  stage: googleServices
   script: 
     - touch pp/src/main/google-services.json && echo {{GOOGLE_SERVICES_JSON}} > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json 
     
