@@ -21,6 +21,8 @@ variables:
 stages:
   - localProperties
   - googleServices
+  - lint 
+  - build
   
 # Packages installation before running script
 before_script:
@@ -72,8 +74,10 @@ job1:
   script: 
     - touch pp/src/main/google-services.json && echo {{GOOGLE_SERVICES_JSON}} > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json 
     
-job2: 
+job2:
+  stage: lint
+  script:
+    - ./gradlew ktlintCheck 
   stage: build
   script:
     - ./gradlew build
-   
