@@ -19,8 +19,6 @@ variables:
   ANDROID_SDK_TOOLS: "6514223"
   
 stages:
-  - localProperties
-  - googleServices
   - lint 
   - build
   
@@ -55,29 +53,12 @@ before_script:
 
   # Not necessary, but just for surity
   - chmod +x ./gradlew
+  - chmod +x createLocalProperties.sh
+
+  - ./createLocalProperties.sh
+  - touch app/src/main/google-services.json && echo {{GOOGLE_SERVICES_JSON}} > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json 
 
 job1:
-  stage: localProperties
-  script:
-    - touch local.properties &&
-      echo googleApiKey=2 >> local.properties &&
-      echo keystorepath=/ >> local.properties &&
-      echo keystorePassword=dummy >> local.properties &&
-      echo gameAPIClientId=1 >> local.properties &&
-      echo firebaseProjectId=2 >> local.properties &&
-      echo keystoreAlias=3 >> local.properties &&
-      echo googleAccountServiceFile=/x.json >> local.properties &&
-      echo mixpanelToken=3 >> local.properties &&
-      echo gameAuthUrl=4 >> local.properties
-
-  stage: googleServices
-  script: 
-    - touch app/src/main/google-services.json && echo {{GOOGLE_SERVICES_JSON}} > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json 
-    
-job2:
   stage: lint
   script:
     - ./gradlew ktlintCheck 
-  stage: build
-  script:
-    - ./gradlew build
