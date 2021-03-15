@@ -29,6 +29,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import io.mockk.coEvery
 import io.mockk.every
+import org.junit.Ignore
 import javax.inject.Inject
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,6 +64,7 @@ class SettingsTest : BaseUITest() {
         )
     }
 
+    @Ignore("ignoring as it should be in it's own module")
     @Test
     fun when_view_is_shown_then_it_should_include_user_interface_category_with_dark_mode_on_it() {
         settingsRobot.isViewDisplayed()
@@ -70,6 +72,7 @@ class SettingsTest : BaseUITest() {
         settingsRobot.isDevelopmentActivityDisplayed()
     }
 
+    @Ignore("ignoring as it should be in it's own module")
     @Test
     fun when_dark_mode_preference_is_clicked_then_it_should_show_a_dialog_to_select_mode() {
         settingsRobot.isViewDisplayed()
