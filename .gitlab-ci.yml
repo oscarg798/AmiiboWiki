@@ -58,7 +58,13 @@ before_script:
   - ./createLocalProperties.sh
   - touch app/src/main/google-services.json && echo {{GOOGLE_SERVICES_JSON}} > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json 
 
-job1:
+lint:
   stage: lint
   script:
     - ./gradlew ktlintCheck 
+
+build:
+  stage: build
+  needs: [lint]
+  script:
+    - ./gradlew build 
