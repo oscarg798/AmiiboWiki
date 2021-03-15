@@ -66,9 +66,6 @@ class DashboardActivityTest : BaseUITest(DISPATCHER)  {
     val intentTestRule: IntentsTestRule<DashboardActivity> =
         IntentsTestRule(DashboardActivity::class.java, true, true)
 
-    @Inject
-    @MainFeatureFlagHandler
-    lateinit var mainFeatureFlagHandler: FeatureFlagHandler
 
     @Inject
     lateinit var envirormentChecker: EnvirormentChecker

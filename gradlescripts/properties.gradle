@@ -30,7 +30,7 @@ ext {
     appTargetSdkVersion = 30
     appCompileSdkVersion = 30
     appVersionCode = getReleaseVersionCode()
-    appBuildToolsVersion = "30.0.0"
+    appBuildToolsVersion = "30.0.2"
     googleAPIKey = googleApiKey
     gameAPIAuthUrl= gameAuthUrl
     gameAPIClientId=gameAPIClientID
