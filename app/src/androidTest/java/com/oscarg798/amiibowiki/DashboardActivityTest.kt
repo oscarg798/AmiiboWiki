@@ -13,15 +13,11 @@
 package com.oscarg798.amiibowiki
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.oscarg798.amiibowiki.amiibolist.AmiiboListFragment
-import com.oscarg798.amiibowiki.amiibolist.R
 import com.oscarg798.amiibowiki.core.EnvirormentChecker
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
 import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
-import com.oscarg798.amiibowiki.core.di.qualifiers.MainFeatureFlagHandler
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
@@ -32,11 +28,11 @@ import com.oscarg798.amiibowiki.navigation.DashboardActivity
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.BaseUITest
 import com.oscarg798.amiibowiki.testutils.extensions.createMockResponse
-import com.oscarg798.flagly.featureflag.FeatureFlagHandler
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import io.mockk.coEvery
 import io.mockk.every
+import javax.inject.Inject
 import kotlinx.coroutines.flow.flowOf
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -44,8 +40,6 @@ import okhttp3.mockwebserver.RecordedRequest
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import javax.inject.Inject
 
 @UninstallModules(
     PersistenceModule::class,
@@ -66,7 +60,6 @@ class DashboardActivityTest : BaseUITest(DISPATCHER)  {
     val intentTestRule: IntentsTestRule<DashboardActivity> =
         IntentsTestRule(DashboardActivity::class.java, true, true)
 
-
     @Inject
     lateinit var envirormentChecker: EnvirormentChecker
 
@@ -75,6 +68,7 @@ class DashboardActivityTest : BaseUITest(DISPATCHER)  {
 
     @Inject
     lateinit var amiiboTypeDAO: AmiiboTypeDAO
+
 
     override fun prepareTest() {
         every { envirormentChecker.invoke() } answers { true }
@@ -87,11 +81,6 @@ class DashboardActivityTest : BaseUITest(DISPATCHER)  {
         dashboardTestRobot.isViewDisplayed()
     }
 
-    @Test
-    fun when_search_is_clicked_then_search_fragment_should_be_shown(){
-        dashboardTestRobot.isViewDisplayed()
-        dashboardTestRobot.openSearch()
-    }
 
     @Test
     fun when_settings_is_clicked_then_search_fragment_should_be_shown(){

@@ -27,9 +27,7 @@ class GetAmiiboFilteredUseCase @Inject constructor(
 ) {
 
     suspend fun execute(filter: AmiiboType): Collection<Amiibo> = when (filter) {
-        getDefaultAmiiboTypeUseCase.execute() ->
-            amiiboRepository.getAmiibosWithoutFilters()
-                .first()
+        getDefaultAmiiboTypeUseCase.execute() -> amiiboRepository.getAmiibosWithoutFilters().first()
         else -> filterAmiibos(filter.name)
     }
 

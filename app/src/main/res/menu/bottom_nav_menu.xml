@@ -19,7 +19,7 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/search_games_navigation"
+        android:id="@+id/search_navigation"
         android:icon="@drawable/ic_search"
         android:title="@string/search" />
 

@@ -16,16 +16,8 @@ import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 
-sealed class GameDetailViewState : ViewState {
-
-    object Idling : GameDetailViewState()
-    object Loading : GameDetailViewState()
-    data class ShowingGameImages(val images: Collection<String>) : GameDetailViewState() {
-        override fun equals(other: Any?): Boolean = other === this
-    }
-    data class ShowingGameDetails(val game: Game) : GameDetailViewState()
-    data class ShowingGameTrailer(val trailer: String) : GameDetailViewState() {
-        override fun equals(other: Any?): Boolean = other === this
-    }
-    data class Error(val error: GameDetailFailure) : GameDetailViewState()
-}
+data class GameDetailViewState(
+    val loading: Boolean = false,
+    val game: Game? = null,
+    val error: GameDetailFailure? = null
+) : ViewState

@@ -20,8 +20,7 @@
     <fragment
         android:id="@+id/amiiboDetailFragment"
         android:name="com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailFragment"
-        android:label="@string/app_name"
-        tools:layout="@layout/fragment_amiibo_detail">
+        android:label="@string/app_name">
 
         <action
             android:id="@+id/action_amiiboDetailFragment_to_searchResultFragment"
@@ -39,7 +38,6 @@
     <fragment
         android:id="@+id/searchResultFragment"
         android:name="com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment"
-        android:label="@string/app_name"
-        tools:layout="@layout/fragment_search_result" />
+        android:label="@string/app_name"/>
 
 </navigation>

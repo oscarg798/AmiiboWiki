@@ -17,4 +17,9 @@
     <string name="screenshots_label">Screenshots</string>
     <string name="rating_decimal_format">%.0f</string>
     <string name="artworks_label">Artworks</string>
+    <string name="expaind_icon_content_description">Expand</string>
+    <string name="collapse_content_description">Collapse</string>
+    <string name="cover_image_content_description">Game cover</string>
+    <string name="trailer_hint">Trailer</string>
+    <string name="trailer_content_description">Trailer</string>
 </resources>

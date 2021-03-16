@@ -22,13 +22,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.oscarg798.amiibowiki.amiibodetail.composeui.Screen
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
+import com.oscarg798.amiibowiki.amiibodetail.ui.Screen
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
-import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
 import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
+import com.oscarg798.amiibowiki.core.utils.bundle
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
@@ -55,6 +55,7 @@ internal class AmiiboDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         return ComposeView(requireContext()).apply {
             setContent {
                 Screen(
@@ -101,5 +102,3 @@ internal class AmiiboDetailFragment : Fragment() {
         )
     }
 }
-
-private const val NO_ELEVATION = 0f

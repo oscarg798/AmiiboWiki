@@ -47,7 +47,7 @@ class DashboardActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.amiibo_list_navigation, R.id.search_games_navigation, R.id.navigation_settings
+                R.id.amiibo_list_navigation, R.id.search_navigation, R.id.navigation_settings
             )
         )
 

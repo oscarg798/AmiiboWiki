@@ -14,18 +14,23 @@ package com.oscarg798.amiibowiki.core.extensions
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import androidx.compose.runtime.MutableState
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 
-class ComposeImageTarget(val state: MutableState<LoadImageFromURLState>) : Target {
+interface ImageCallbacks {
+
+    fun onLoaded(bitmap: Bitmap)
+
+    fun onFailure(error: Exception)
+}
+class ComposeImageTarget(private val imageCallbacks: ImageCallbacks) : Target {
 
     override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) {
-        state.value = LoadImageFromURLState.Image(bitmap)
+        imageCallbacks.onLoaded(bitmap)
     }
 
     override fun onBitmapFailed(error: Exception, errorDrawable: Drawable?) {
-        state.value = LoadImageFromURLState.Error(error)
+        imageCallbacks.onFailure(error)
     }
 
     override fun onPrepareLoad(placeHolderDrawable: Drawable?) {

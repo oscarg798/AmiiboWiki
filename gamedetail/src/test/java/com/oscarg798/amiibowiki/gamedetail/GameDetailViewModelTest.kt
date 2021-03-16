@@ -17,33 +17,31 @@ import com.oscarg798.amiibowiki.core.models.GameCategory
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailReducer
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
+import com.oscarg798.amiibowiki.gamedetail.mvi.UiEffect
 import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGameTrailerUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class GameDetailViewModelTest :
-    ViewModelTestRuleCompat.ViewModelCreator<GameDetailViewState, GameDetailViewModel> {
+internal class GameDetailViewModelTest :
+    ViewModelTestRule.ViewModelCreator<GameDetailViewState, GameDetailViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRuleCompat(this)
+    val viewModelTestRule = ViewModelTestRule(this)
 
     private val gameDetailLogger = relaxedMockk<GameDetailLogger>()
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()
     private val expandGameImagesUseCase = relaxedMockk<ExpandGameImagesUseCase>()
     private val getGameTrailerUseCase = relaxedMockk<GetGameTrailerUseCase>()
-    private val reducer = spyk(GameDetailReducer())
 
     @Before
     fun setup() {
@@ -57,7 +55,6 @@ class GameDetailViewModelTest :
         expandGameImagesUseCase,
         getGameTrailerUseCase,
         gameDetailLogger,
-        reducer,
         viewModelTestRule.coroutineContextProvider
     )
 
@@ -65,10 +62,10 @@ class GameDetailViewModelTest :
     fun `given a wish to show the game details when its processed then it should return the state with the details`() {
         viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail)
 
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
-            GameDetailViewState.Idling,
-            GameDetailViewState.Loading,
-            GameDetailViewState.ShowingGameDetails(GAME)
+        viewModelTestRule.stateCollector wereValuesEmitted listOf(
+            STATE,
+            STATE.copy(loading = true),
+            STATE.copy(game = GAME)
         )
 
         coVerify {
@@ -76,28 +73,22 @@ class GameDetailViewModelTest :
             gameDetailLogger.trackScreenShown(mapOf("GAME_ID" to GAME_ID.toString()))
         }
 
-        coVerify(exactly = 2) { reducer.reduce(any(), any()) }
+        coVerify { getGamesUseCase.execute(GAME_ID) }
     }
 
     @Test
     fun `given a wish to show the game trailer when its processed then it should return the state with the trailer id`() {
         coEvery { getGameTrailerUseCase.execute(GAME_ID) } answers { "9" }
+
         viewModelTestRule.viewModel.onWish(
             GameDetailWish.PlayGameTrailer
         )
 
-        viewModelTestRule.testCollector.wereValuesEmitted(
-            listOf(
-                GameDetailViewState.Idling,
-                GameDetailViewState.ShowingGameTrailer("9")
-            ),
-            { o1, o2 ->
-                when (o1) {
-                    is GameDetailViewState.ShowingGameTrailer -> if (o1.trailer == (o2 as GameDetailViewState.ShowingGameTrailer).trailer) 0 else 1
-                    else -> if (o1 === o2) 0 else 1
-                }
-            }
-        )
+        viewModelTestRule.effectCollector.wereValuesEmitted(
+            listOf(UiEffect.ShowingGameTrailer("9"))
+        ) { o1, o2 ->
+            (o1 as UiEffect.ShowingGameTrailer).trailer.compareTo((o2 as UiEffect.ShowingGameTrailer).trailer)
+        }
 
         verify {
             gameDetailLogger.trackTrailerClicked(mapOf("GAME_ID" to GAME_ID.toString()))
@@ -108,21 +99,23 @@ class GameDetailViewModelTest :
     fun `given a wish to expand cover image when wish is processed then it shoudl return the expanded image`() {
         viewModelTestRule.viewModel.onWish(GameDetailWish.ExpandImages(EXPAND_IMAGE_PARAMS))
 
-        viewModelTestRule.testCollector.wereValuesEmitted(
+        viewModelTestRule.effectCollector.wereValuesEmitted(
             listOf(
-                GameDetailViewState.Idling,
-                GameDetailViewState.ShowingGameImages(EXPANDED_IMAGES)
-            ),
-            { o1, o2 ->
-                when (o1) {
-                    is GameDetailViewState.ShowingGameImages -> if (o1.images == (o2 as GameDetailViewState.ShowingGameImages).images) 0 else 1
-                    else -> if (o1 === o2) 0 else 1
-                }
+                UiEffect.ShowingGameImages(EXPANDED_IMAGES)
+            )
+        ) { o1, o2 ->
+            require(o1 is UiEffect.ShowingGameImages)
+            require(o2 is UiEffect.ShowingGameImages)
+            if (o1.images == o2.images) {
+                0
+            } else {
+                1
             }
-        )
+        }
     }
 }
 
+private val STATE = GameDetailViewState()
 private val EXPANDED_IMAGES = listOf("expand_url")
 private val EXPAND_IMAGE_PARAMS =
     listOf(ExpandableImageParam("url", ExpandableImageType.Cover))

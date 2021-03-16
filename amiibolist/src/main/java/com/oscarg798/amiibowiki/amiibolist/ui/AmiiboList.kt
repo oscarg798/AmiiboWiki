@@ -17,19 +17,19 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
+import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 
 @ExperimentalFoundationApi
 @Composable
-internal fun AmiiboList(state: AmiiboListViewState, amiiboClickListener: AmiiboClickListener) {
+internal fun AmiiboList(state: AmiiboListViewState, amiiboClickListener: (ViewAmiibo) -> Unit) {
     if (state.loading || state.amiibos == null) return
 
-    LazyVerticalGrid(cells = GridCells.Fixed(GRID_COUNT)) {
+    LazyVerticalGrid(cells = GridCells.Fixed(GridCount)) {
         items(state.amiibos) { amiibo ->
-            Amiibo(amiibo = amiibo, amiiboClickListener = amiiboClickListener)
+            AmiiboCard(amiibo = amiibo, amiiboClickListener = amiiboClickListener)
         }
     }
 }
 
-internal const val GRID_COUNT = 2
+internal const val GridCount = 2

@@ -11,424 +11,89 @@
  */
 package com.oscarg798.amiibowiki.gamedetail
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.youtube.player.YouTubeStandalonePlayer
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
-import com.oscarg798.amiibowiki.core.di.entrypoints.GameDetailEntryPoint
-import com.oscarg798.amiibowiki.core.extensions.bundle
-import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
-import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
-import com.oscarg798.amiibowiki.core.models.AgeRating
-import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
 import com.oscarg798.amiibowiki.core.models.Config
-import com.oscarg798.amiibowiki.core.models.Game
-import com.oscarg798.amiibowiki.core.models.Rating
-import com.oscarg798.amiibowiki.gamedetail.adapter.GameImageResourceAdapter
-import com.oscarg798.amiibowiki.gamedetail.adapter.GameImageResourceClickListener
-import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding
-import com.oscarg798.amiibowiki.gamedetail.di.DaggerGameDetailComponent
-import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
-import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
+import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
+import com.oscarg798.amiibowiki.core.utils.bundle
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
-import dagger.hilt.android.EntryPointAccessors
+import com.oscarg798.amiibowiki.gamedetail.mvi.UiEffect
+import com.oscarg798.amiibowiki.gamedetail.ui.Screen
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 @DeepLink(GAME_DETAIL_DEEPLINK)
-class GameDetailActivity : AppCompatActivity() {
-
-    @Inject
-    lateinit var viewModel: GameDetailViewModel
+internal class GameDetailActivity : AppCompatActivity() {
 
     @Inject
     lateinit var config: Config
 
-    private lateinit var binding: ActivityGameDetailBinding
+    @Inject
+    lateinit var factory: GameDetailViewModel.Factory
+
+    private val gameId: Int by bundle(ARGUMENT_GAME_ID)
+
+    private val viewModel: GameDetailViewModel by viewModels {
+        SavedInstanceViewModelFactory(
+            {
+                factory.create(gameId)
+            },
+            this
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityGameDetailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        val gameId: Int by bundle(ARGUMENT_GAME_ID)
-        DaggerGameDetailComponent.factory()
-            .create(
-                gameId,
-                EntryPointAccessors.fromApplication(
-                    application,
-                    GameDetailEntryPoint::class.java
-                )
-            )
-            .inject(this)
-
-        setup()
-        setupViewModel()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun setup() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = getString(R.string.game_detail_title)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(getDrawable(R.drawable.ic_arrow_back))
-
-        if (isDarkModeOn()) {
-            return
-        }
-
-        binding.appBar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                changeGameTitleColorOnLightMode(verticalOffset < TOOLBAR_EXPANDED_OFFSET)
+        setContentView(
+            ComposeView(this).apply {
+                setContent {
+                    Screen(
+                        viewModel = viewModel,
+                        coroutineScope = lifecycleScope,
+                        onTrailerClicked = {
+                            viewModel.onWish(GameDetailWish.PlayGameTrailer)
+                        }
+                    ) {
+                        onBackPressed()
+                    }
+                }
             }
-        })
-    }
+        )
 
-    private fun isDarkModeOn() =
-        isAndroidQOrHigher() && AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        setupViewModel()
+        viewModel.onWish(GameDetailWish.ShowGameDetail)
+    }
 
     private fun setupViewModel() {
-
         lifecycleScope.launchWhenResumed {
-            viewModel.state.collect { state ->
-                when (state) {
-                    is GameDetailViewState.Loading -> showLoading()
-                    is GameDetailViewState.ShowingGameImages -> showExpandedImages(state.images)
-                    is GameDetailViewState.ShowingGameDetails -> showGameDetails(state.game)
-                    is GameDetailViewState.ShowingGameTrailer -> showGameTrailer(state)
-                    is GameDetailViewState.Error -> showError()
+            viewModel.uiEffect.collect {
+                when (it) {
+                    is UiEffect.ShowingGameImages -> showExpandedImages(it.images)
+                    is UiEffect.ShowingGameTrailer -> showGameTrailer(it.trailer)
                 }
             }
         }
-
-        merge(
-            flowOf(
-                GameDetailWish.ShowGameDetail
-            ),
-            getTrailerClickFlow()
-        ).onEach {
-            viewModel.onWish(it)
-        }.launchIn(lifecycleScope)
     }
 
-    private fun showGameTrailer(state: GameDetailViewState.ShowingGameTrailer) {
+    private fun showGameTrailer(trailer: String) {
         val intent = YouTubeStandalonePlayer.createVideoIntent(
             this,
             config.googleAPIKey,
-            state.trailer, START_TIME, true, true
+            trailer, START_TIME, true, true
         )
         startActivity(intent)
     }
-
-    private fun showError() {
-        hideLoading()
-        AlertDialog.Builder(this)
-            .setMessage(getString(R.string.error_getting_game))
-            .setPositiveButton(getString(R.string.error_dialog_positive_button)) { _, _ ->
-                finish()
-            }.setCancelable(false)
-            .show()
-    }
-
-    private fun showLoading() {
-        with(binding) {
-            shimmer.root.visibility = View.VISIBLE
-            toolbarImageSkeleton.visibility = View.VISIBLE
-
-            shimmer.shimmerContainerGameDetail.startShimmer()
-            toolbarImageSkeleton.startShimmer()
-
-            vpGameScreenshots.visibility = View.GONE
-            tvScreenshotsLabel.visibility = View.GONE
-            vpGameArtworks.visibility = View.GONE
-            tvArtworksLabel.visibility = View.GONE
-
-            toolbarImage.visibility = View.GONE
-            tvTrailer.visibility = View.GONE
-            gameDetailContent.visibility = View.GONE
-        }
-    }
-
-    private fun hideLoading() {
-        with(binding) {
-            shimmer.root.visibility = View.GONE
-            toolbarImageSkeleton.visibility = View.GONE
-
-            shimmer.shimmerContainerGameDetail.stopShimmer()
-            toolbarImageSkeleton.stopShimmer()
-
-            vpGameScreenshots.visibility = View.VISIBLE
-            tvScreenshotsLabel.visibility = View.VISIBLE
-            vpGameArtworks.visibility = View.VISIBLE
-            tvArtworksLabel.visibility = View.VISIBLE
-
-            tvTrailer.visibility = View.VISIBLE
-            toolbarImage.visibility = View.VISIBLE
-            gameDetailContent.visibility = View.VISIBLE
-        }
-    }
-
-    private fun getTrailerClickFlow() = callbackFlow<GameDetailWish> {
-        binding.tvTrailer.setOnClickListener { offer(GameDetailWish.PlayGameTrailer) }
-
-        awaitClose {
-            binding.tvTrailer.setOnClickListener {}
-        }
-    }
-
-    private fun showGameDetails(game: Game) {
-        hideLoading()
-        binding.tvGameName.text = game.name
-
-        game.showRating()
-        game.showAgeRating()
-        game.showSummary()
-        game.showCover()
-        game.showToolbarImage()
-        game.showGameTrailer()
-        game.showScreenshots()
-        game.showGameArtworks()
-    }
-
-    private fun changeGameTitleColorOnLightMode(isToolbarCollapsed: Boolean) {
-        val layout = binding.tvGameName.layout ?: return
-        val name = binding.tvGameName.text
-        val lineEnd = layout.getLineEnd(NAME_FIRST_LINE)
-        val spanableText = binding.tvGameName.text.substring(NAME_LINE_START, lineEnd)
-        val spanable = SpannableString(name)
-        spanable.setSpan(
-            ForegroundColorSpan(
-                ContextCompat.getColor(
-                    this@GameDetailActivity,
-                    getFirstLineColor(isToolbarCollapsed)
-                )
-            ),
-            NAME_LINE_START,
-            spanableText.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.tvGameName.setText(spanable, TextView.BufferType.SPANNABLE)
-    }
-
-    private fun getFirstLineColor(isToolbarCollapsed: Boolean): Int {
-        return if (isToolbarCollapsed) {
-            R.color.textColor
-        } else {
-            R.color.white
-        }
-    }
-
-    private fun Game.showGameTrailer() {
-        val visibility = if (videosId.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-
-        binding.tvTrailer.visibility = visibility
-    }
-
-    private fun Game.showRating() {
-        val visibility = if (rating == null) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-
-        val rating = rating ?: NO_RATING
-        binding.tvGameRating.text = String.format(getString(R.string.rating_decimal_format), rating)
-        binding.tvGameRating.visibility = visibility
-        binding.ivGameRating.visibility = visibility
-    }
-
-    private fun Game.showAgeRating() {
-        ageRating?.forEach { ageRaiting ->
-            when (ageRaiting.category) {
-                is AgeRatingCategory.PEGI -> setPEGI(ageRaiting)
-                is AgeRatingCategory.ESRB -> setERSB(ageRaiting)
-            }
-        }
-    }
-
-    private fun Game.showSummary() {
-        val visibility = if (summary == null) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-
-        binding.tvGameSummary.visibility = visibility
-        summary?.let {
-            binding.tvGameSummary.text = it
-        }
-    }
-
-    private fun Game.showCover() {
-        if (cover == null) {
-            binding.ivGameCover.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this@GameDetailActivity,
-                    R.drawable.ic_placeholder
-                )
-            )
-        } else {
-            with(binding.ivGameCover) {
-                val cover = cover ?: return
-                setImage(cover)
-                setOnClickListener {
-                    viewModel.onWish(
-                        GameDetailWish.ExpandImages(
-                            listOf(
-                                ExpandableImageParam(
-                                    cover,
-                                    ExpandableImageType.Cover
-                                )
-                            )
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    private fun Game.showToolbarImage() {
-        if (artworks != null) {
-            if (artworks!!.isNotEmpty()) {
-                binding.toolbarImage.setImage(artworks!!.first())
-            }
-        } else if (screenshots != null) {
-            if (screenshots!!.isNotEmpty()) {
-                binding.toolbarImage.setImage(screenshots!!.first())
-            }
-        }
-    }
-
-    private fun Game.showScreenshots() {
-        if (screenshots.isNullOrEmpty()) {
-            binding.vpGameScreenshots.visibility = View.GONE
-            binding.tvScreenshotsLabel.visibility = View.GONE
-            return
-        }
-
-        binding.vpGameScreenshots.visibility = View.VISIBLE
-        binding.tvScreenshotsLabel.visibility = View.VISIBLE
-
-        val screenshotsAdapter = GameImageResourceAdapter(object : GameImageResourceClickListener {
-            override fun onImageResourceClicked() {
-                viewModel.onWish(
-                    GameDetailWish.ExpandImages(
-                        screenshots!!.map {
-                            ExpandableImageParam(it, ExpandableImageType.Screenshot)
-                        }
-                    )
-                )
-            }
-        })
-
-        with(binding.vpGameScreenshots) {
-            adapter = screenshotsAdapter
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        }
-
-        screenshotsAdapter.submitList(screenshots!!.toList())
-    }
-
-    private fun Game.showGameArtworks() {
-        if (artworks.isNullOrEmpty()) {
-            binding.vpGameArtworks.visibility = View.GONE
-            binding.tvArtworksLabel.visibility = View.GONE
-            return
-        }
-
-        binding.vpGameArtworks.visibility = View.VISIBLE
-        binding.tvArtworksLabel.visibility = View.VISIBLE
-
-        val screenshotsAdapter = GameImageResourceAdapter(object : GameImageResourceClickListener {
-            override fun onImageResourceClicked() {
-                viewModel.onWish(
-                    GameDetailWish.ExpandImages(
-                        artworks!!.map {
-                            ExpandableImageParam(it, ExpandableImageType.Artwork)
-                        }
-                    )
-                )
-            }
-        })
-
-        with(binding.vpGameArtworks) {
-            adapter = screenshotsAdapter
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        }
-
-        screenshotsAdapter.submitList(artworks!!.toList())
-    }
-
-    private fun setPEGI(rating: AgeRating) {
-        binding.ivPegiRating.visibility = View.VISIBLE
-        binding.ivPegiRating.setImageDrawable(
-            getDrawable(
-                when (rating.rating) {
-                    is Rating.PEGI3 -> R.drawable.ic_pegi_3
-                    is Rating.PEGI7 -> R.drawable.ic_pegi_7
-                    is Rating.PEGI12 -> R.drawable.ic_pegi_12
-                    is Rating.PEGI16 -> R.drawable.ic_pegi_16
-                    else -> R.drawable.ic_pegi_18
-                }
-            )
-        )
-    }
-
-    private fun setERSB(rating: AgeRating) {
-        binding.ivEsrbRating.visibility = View.VISIBLE
-        binding.ivEsrbRating.setImageDrawable(
-            getDrawable(
-                when (rating.rating) {
-                    is Rating.ESRBEC -> R.drawable.ic_early_childhood
-                    is Rating.ESRB10 -> R.drawable.ic_esrb_everyone_10
-                    is Rating.ESRBTeen -> R.drawable.ic_esrb_teen
-                    is Rating.ESRBMature -> R.drawable.ic_esrb_mature
-                    is Rating.ESRBAdultsOnly -> R.drawable.ic_esrb_ao
-                    is Rating.ESRBEveryone -> R.drawable.ic_esrb_everyone_10
-                    else -> R.drawable.ic_esrb_rp
-                }
-            )
-        )
-    }
 }
 
-private const val NO_RATING = 0.0
-private const val TOOLBAR_EXPANDED_OFFSET = 0
-private const val NAME_FIRST_LINE = 0
-private const val NAME_LINE_START = 0
 private const val START_TIME = 0
-private const val DEFAULT_GAME_ID = 0

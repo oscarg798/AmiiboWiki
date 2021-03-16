@@ -30,7 +30,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.oscarg798.amiibowiki.amiibolist.databinding.FragmentAmiiboListBinding
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.mvi.UiEffect
 import com.oscarg798.amiibowiki.amiibolist.ui.Screen
@@ -67,8 +66,6 @@ class AmiiboListFragment :
     private var filterMenuItem: MenuItem? = null
     private var searchView: SearchView? = null
 
-    private lateinit var binding: FragmentAmiiboListBinding
-
     private val searchFlow = MutableStateFlow(EMPTY_SEARCH_QUERY)
 
     private val backPressedCallback = object : OnBackPressedCallback(true) {
@@ -95,7 +92,9 @@ class AmiiboListFragment :
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Screen(viewModel, lifecycleScope)
+                Screen(viewModel, lifecycleScope) { amiibo ->
+                    viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(amiibo))
+                }
             }
         }
     }

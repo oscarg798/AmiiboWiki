@@ -16,8 +16,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -27,38 +25,42 @@ import com.oscarg798.amiibowiki.core.constants.ARGUMENT_AMIIBO_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION
 import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
-import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
-import com.oscarg798.amiibowiki.searchgamesresults.adapter.SearchResultClickListener
-import com.oscarg798.amiibowiki.searchgamesresults.composeui.Screen
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
-import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.UIEffect
+import com.oscarg798.amiibowiki.searchgamesresults.ui.Screen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 
 @AndroidEntryPoint
-class SearchResultFragment : Fragment(), SearchResultClickListener {
+class SearchResultFragment : Fragment() {
 
     @Inject
     lateinit var factory: SearchGamesResultViewModel.Factory
 
+    private val searchFlow = MutableStateFlow(InitialQuery)
+
+    private val isShownAsGamesRelatedSection: Boolean by lazy(LazyThreadSafetyMode.NONE) {
+        if (arguments?.containsKey(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION) == true) {
+            requireArguments().getBoolean(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION)
+        } else {
+            false
+        }
+    }
+
     private val viewModel: SearchGamesResultViewModel by viewModels {
         SavedInstanceViewModelFactory(
             {
-                factory.create(it)
+                factory.create(isShownAsGamesRelatedSection, it)
             },
             this
         )
     }
-
-    private val isShownAsGamesRelatedSection: Boolean by bundle(
-        ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,10 +74,17 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val state by viewModel.state.collectAsState(SearchResultViewState())
-                Screen(state) {
-                    viewModel.onWish(SearchResultWish.ShowGameDetail(it.gameId))
-                }
+                Screen(
+                    viewModel,
+                    searchBox = !isShownAsGamesRelatedSection,
+                    currentQuery = searchFlow.value,
+                    onSearch = {
+                        searchFlow.value = it
+                    },
+                    onSearchResultClickListener = {
+                        viewModel.onWish(SearchResultWish.ShowGameDetail(it.gameId))
+                    }
+                )
             }
         }
     }
@@ -91,20 +100,24 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         }
     }
 
-    override fun onResultClicked(
-        gameSearchResult: ViewGameSearchResult,
-        coverImageView: ImageView
-    ) {
-        viewModel.onWish(SearchResultWish.ShowGameDetail(gameSearchResult.gameId))
-    }
-
     private fun setupViewModelInteractions() {
         lifecycleScope.launchWhenResumed {
             viewModel.uiEffect.collect {
                 when (it) {
                     is UIEffect.ShowGameDetails -> showGameDetails(it.gameId)
+                    is UIEffect.ObserveSearchResults -> observeSearchResults()
                 }
             }
+        }
+    }
+
+    private fun observeSearchResults() {
+        lifecycleScope.launchWhenResumed {
+            searchFlow
+                .debounce(SearchDelay)
+                .collect {
+                    search(GameSearchParam.StringQueryGameSearchParam(it))
+                }
         }
     }
 
@@ -118,11 +131,12 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
             Bundle().apply {
                 putInt(ARGUMENT_GAME_ID, gameId)
             }
+
         )
     }
 
     companion object {
-        fun newInstance(shownAsGameRelatedSection: Boolean = true) = SearchResultFragment().apply {
+        fun newInstance(shownAsGameRelatedSection: Boolean = false) = SearchResultFragment().apply {
             arguments = Bundle().apply {
                 putBoolean(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION, shownAsGameRelatedSection)
             }
@@ -130,11 +144,8 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     }
 }
 
-internal const val titleId = "titleId"
-internal const val gameImageId = "gameImageId"
-internal const val gameNameId = "gameNameTitleId"
-internal const val gameAlternativeNameId = "gameAlternativeNameId"
-internal const val resultsListId = "resultsListId"
-
-private const val ARGUMENT_CURRENT_SEARCH_RESULT_STATE = "ARGUMENT_CURRENT_SEARCH_RESULT_STATE"
-private const val SHIMMER_ELEMENTS_COUNT = 10
+internal const val GameImageId = "gameImageId"
+internal const val GameNameId = "gameNameTitleId"
+internal const val GameAlternativeNameId = "gameAlternativeNameId"
+private const val InitialQuery = ""
+private const val SearchDelay = 350L

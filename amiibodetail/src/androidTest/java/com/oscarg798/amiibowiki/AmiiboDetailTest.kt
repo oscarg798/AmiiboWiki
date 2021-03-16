@@ -15,9 +15,9 @@ package com.oscarg798.amiibowiki
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.lifecycle.SavedStateHandle
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
-import com.oscarg798.amiibowiki.amiibodetail.composeui.Screen
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
+import com.oscarg798.amiibowiki.amiibodetail.ui.Screen
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule

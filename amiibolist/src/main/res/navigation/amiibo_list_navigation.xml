@@ -19,8 +19,7 @@
     <fragment
         android:id="@+id/navigation_list"
         android:name="com.oscarg798.amiibowiki.amiibolist.AmiiboListFragment"
-        android:label="@string/amiibos_fragment_title"
-        tools:layout="@layout/fragment_amiibo_list">
+        android:label="@string/amiibos_fragment_title">
 
         <action
             android:id="@+id/action_navigation_list_to_navigation_amiibo_detail"

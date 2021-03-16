@@ -25,9 +25,6 @@ android{
     }
 
     buildFeatures {
-        // Enables Jetpack Compose for this module]
-//        viewBinding false
-//        dataBinding false
         compose true
     }
 
@@ -49,8 +46,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 }
 
 dependencies {
-
-
 
     implementation picasso
     implementation cardView
