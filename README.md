@@ -1,5 +1,7 @@
 # AmiiboWiki
 
+## Project is being migrated to compose, you will need last version of Android Studio [Artic Fox or Canary version](https://developer.android.com/studio/preview)
+
 ![Acceptance Tests Quality](https://github.com/oscarg798/AmiiboWiki/workflows/Acceptance%20Tests%20Quality/badge.svg)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
