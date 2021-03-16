@@ -19,12 +19,11 @@ import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import javax.annotation.concurrent.Immutable
 import kotlinx.parcelize.Parcelize
 
-data class ShowingGameDetailsParams(val gameId: Int)
-
 @Immutable
 @Parcelize
 data class SearchResultViewState(
     val isLoading: Boolean = false,
+    val idling: Boolean = true,
     val gamesResult: List<ViewGameSearchResult>? = null,
     val error: SearchGameFailure? = null
 ) : ViewState, Parcelable

@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
 import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
-import com.oscarg798.amiibowiki.core.extensions.bundle
+import com.oscarg798.amiibowiki.core.utils.bundle
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import dagger.hilt.android.testing.HiltAndroidTest

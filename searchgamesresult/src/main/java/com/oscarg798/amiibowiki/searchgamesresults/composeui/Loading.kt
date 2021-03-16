@@ -45,7 +45,7 @@ import com.oscarg798.amiibowiki.searchgamesresults.gameNameId
 
 @Composable
 internal fun Loading() {
-    Box(Modifier.background(MaterialTheme.colors.background)) {
+    Box(Modifier.background(MaterialTheme.colors.background).layoutId(loadingId)) {
         LazyColumn(
             Modifier.padding(
                 start = spacingMedium,
@@ -132,6 +132,3 @@ private fun getConstratins() = ConstraintSet {
 private val LOADING_TEXT_WIDTH = 150.dp
 private val LOADING_TEXT_HEIGHT = 30.dp
 private val LOADING_EXAMPLES = (1..10).toList()
-private const val BARRIER_ID = "barrier"
-private const val RELEATED_GAMES_RIGHT_DRAWABLE_ID = "btnReleatedGamesDrawable"
-private const val RELEATED_GAMES_TITLE_ID = "btnRelatedGamesTitle"

@@ -13,55 +13,91 @@
 package com.oscarg798.amiibowiki.searchgamesresults.composeui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.layoutId
+import androidx.constraintlayout.compose.ConstrainScope
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import com.oscarg798.amiibowiki.amiibodetail.ThemeContainer
-import com.oscarg798.amiibowiki.core.spacingMedium
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
-import com.oscarg798.amiibowiki.searchgamesresults.resultsListId
 
 @Composable
 internal fun Screen(
     state: SearchResultViewState,
-    onSearchResultClickListener: onSearchResultClickListener
+    searchBox: Boolean,
+    onSearchResultClickListener: onSearchResultClickListener,
+    currentQuery: String,
+    onSearch: (String) -> Unit
 ) {
+    val constrainSet = getConstraintSet(searchBox)
     ThemeContainer {
-        when {
-            state.isLoading -> Loading()
-            state.gamesResult != null ->
-                ConstraintLayout(
-                    constraintSet = getConstraintSet(),
-                    Modifier.background(MaterialTheme.colors.background)
-                ) {
-                    LazyColumn(
-                        Modifier
-                            .layoutId(resultsListId)
-                            .padding(
-                                start = spacingMedium,
-                                end = spacingMedium
-                            )
-                    ) {
-                        items(
-                            items = state.gamesResult.toList()
-                        ) { SearchResult(item = it, onSearchResultClickListener) }
-                    }
-                }
+        ConstraintLayout(
+            constraintSet = constrainSet,
+            Modifier.background(MaterialTheme.colors.background)
+        ) {
+            if (searchBox) {
+                SearchBox(currentQuery, onSearch)
+            }
+            when {
+                state.isLoading -> Loading()
+                state.idling -> EmptyState()
+                state.gamesResult != null -> GameResults(
+                    state.gamesResult,
+                    onSearchResultClickListener
+                )
+            }
         }
     }
 }
 
-private fun getConstraintSet() = ConstraintSet {
+private fun getConstraintSet(searchBox: Boolean) = ConstraintSet {
     val resultsListId = createRefFor(resultsListId)
+    val searchBoxId = createRefFor(searchBoxId)
+    val emptyStateId = createRefFor(emptyStateId)
+    val loadingId = createRefFor(loadingId)
 
-    constrain(resultsListId) {
+    constrain(searchBoxId) {
         top.linkTo(parent.top)
         linkTo(start = parent.start, end = parent.end)
     }
+
+    constrain(emptyStateId) {
+        getContentConstraints(searchBox, searchBoxId)
+    }
+
+    constrain(resultsListId) {
+        getContentConstraints(searchBox, searchBoxId)
+    }
+
+    constrain(loadingId) {
+        getContentConstraints(searchBox, searchBoxId)
+    }
 }
+
+private fun ConstrainScope.getContentConstraints(
+    searchBox: Boolean,
+    searchBoxId: ConstrainedLayoutReference
+) {
+    height = Dimension.fillToConstraints
+    getVerticalConstrainsBasedOnSearchBox(searchBox, searchBoxId)
+    linkTo(start = parent.start, end = parent.end)
+}
+
+private fun ConstrainScope.getVerticalConstrainsBasedOnSearchBox(
+    searchBox: Boolean,
+    searchBoxId: ConstrainedLayoutReference
+) {
+    if (searchBox) {
+        linkTo(top = searchBoxId.bottom, bottom = parent.bottom)
+    } else {
+        linkTo(top = parent.top, bottom = parent.bottom)
+    }
+}
+
+internal const val loadingId = "loadingId"
+internal const val searchBoxId = "searchBox"
+internal const val resultsListId = "resultsListId"
+internal const val emptyStateId = "emptyStateId"

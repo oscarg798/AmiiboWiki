@@ -39,9 +39,9 @@ abstract class AbstractViewModel<ViewState : MVIViewState, UIEffect : MVIUIEffec
     ViewModel() {
 
     protected abstract val coroutineContextProvider: CoroutineContextProvider
-    protected val stateMutex = Mutex()
-    protected val _state = MutableStateFlow<ViewState>(initialState)
+    protected val _state = MutableStateFlow(initialState)
     protected val _uiEffect = MutableStateFlow<UIEffect?>(null)
+    private val stateMutex = Mutex()
 
     val state: Flow<ViewState>
         get() = _state

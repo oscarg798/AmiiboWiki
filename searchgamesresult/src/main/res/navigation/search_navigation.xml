@@ -13,13 +13,13 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/search_games_navigation"
+    android:id="@+id/search_navigation"
     app:startDestination="@+id/search_games">
 
 
     <fragment
         android:id="@+id/search_games"
-        android:name="com.oscarg798.amiibowiki.searchgames.SearchGamesFragment"
-        android:label="@string/search_games_fragment_tile"
-        tools:layout="@layout/fragment_search_games" />
+        android:name="com.oscarg798.amiibowiki.searchgamesresults.SearchResultFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search_result" />
 </navigation>

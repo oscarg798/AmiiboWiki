@@ -25,6 +25,7 @@ import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.UIEffect
+import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGameResult
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByAmiiboUseCase
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByQueryUseCase
 import dagger.assisted.Assisted
@@ -40,6 +41,7 @@ import kotlinx.coroutines.withContext
 
 class SearchGamesResultViewModel @AssistedInject constructor(
     @Assisted private val handle: SavedStateHandle,
+    @Assisted private val shownAsRelatedGames: Boolean,
     private val searchGamesByAmiiboUseCase: SearchGamesByAmiiboUseCase,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val searchGamesByQueryUseCase: SearchGamesByQueryUseCase,
@@ -51,6 +53,10 @@ class SearchGamesResultViewModel @AssistedInject constructor(
         state.onEach {
             handle.set(STATE_KEY, it)
         }.launchIn(viewModelScope)
+
+        if (!shownAsRelatedGames) {
+            _uiEffect.value = UIEffect.ObserveSearchResults
+        }
     }
 
     override fun processWish(wish: SearchResultWish) {
@@ -80,27 +86,46 @@ class SearchGamesResultViewModel @AssistedInject constructor(
         }
     }
 
-    private fun searchByQuery(query: String) =
-        searchGamesByQueryUseCase.execute(query)
-            .onEach { results ->
-                updateState {
+    private fun searchByQuery(query: String) {
+        viewModelScope.launch {
+            val result = withContext(coroutineContextProvider.backgroundDispatcher) {
+                searchGamesByQueryUseCase.execute(query)
+            }
+
+            when (result) {
+                is SearchGameResult.Allowed -> subscribeToSearch(result)
+                is SearchGameResult.NotAllowed -> updateState {
                     it.copy(
-                        isLoading = false,
-                        error = null,
-                        gamesResult = results.map { searchResult ->
-                            ViewGameSearchResult(
-                                searchResult
-                            )
-                        }
+                        idling = true
                     )
                 }
             }
-            .onStart {
-                updateState { it.copy(isLoading = true, error = null) }
-            }.catch { cause ->
-                handleFailure(cause)
-            }.flowOn(coroutineContextProvider.backgroundDispatcher)
+        }
+    }
+
+    private fun subscribeToSearch(
+        result: SearchGameResult.Allowed
+    ) {
+        result.flow.onEach { results ->
+            updateState {
+                it.copy(
+                    isLoading = false,
+                    idling = false,
+                    error = null,
+                    gamesResult = results.map { searchResult ->
+                        ViewGameSearchResult(
+                            searchResult
+                        )
+                    }
+                )
+            }
+        }.onStart {
+            showLoading()
+        }.catch { cause ->
+            handleFailure(cause)
+        }.flowOn(coroutineContextProvider.backgroundDispatcher)
             .launchIn(viewModelScope)
+    }
 
     private fun searchByAmiiboId(amiiboId: String) {
         val savedState = handle.get<SearchResultViewState>(STATE_KEY)
@@ -124,11 +149,15 @@ class SearchGamesResultViewModel @AssistedInject constructor(
                 }
             }
             .onStart {
-                updateState { it.copy(isLoading = true, error = null) }
+                showLoading()
             }.catch { cause ->
                 handleFailure(cause)
             }.flowOn(coroutineContextProvider.backgroundDispatcher)
             .launchIn(viewModelScope)
+    }
+
+    private suspend fun showLoading() {
+        updateState { it.copy(isLoading = true, error = null, idling = false) }
     }
 
     private fun updateFromSavedState(savedState: SearchResultViewState) {
@@ -136,6 +165,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
             updateState {
                 it.copy(
                     isLoading = false,
+                    idling = false,
                     error = null,
                     gamesResult = savedState.gamesResult
                 )
@@ -150,7 +180,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
             throw cause
         }
 
-        updateState { it.copy(isLoading = false, error = cause) }
+        updateState { it.copy(isLoading = false, error = cause, idling = false) }
     }
 
     private fun trackSearchResultClick(gameId: Int) {
@@ -160,7 +190,10 @@ class SearchGamesResultViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
 
-        fun create(stateHandle: SavedStateHandle): SearchGamesResultViewModel
+        fun create(
+            shownAsRelatedGames: Boolean,
+            stateHandle: SavedStateHandle
+        ): SearchGamesResultViewModel
     }
 }
 

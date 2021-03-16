@@ -19,4 +19,8 @@ sealed class UIEffect : SideEffect {
     data class ShowGameDetails(val gameId: Int) : UIEffect() {
         override fun equals(other: Any?): Boolean = false
     }
+
+    object ObserveSearchResults : UIEffect() {
+        override fun equals(other: Any?): Boolean = false
+    }
 }

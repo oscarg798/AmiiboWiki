@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/app/src/androidTest/AndroidManifest.xml" />
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/compose-model-1615912833854.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1615913515325.xml" value="0.27874754779627914" />
+        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.2171875" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.2171875" />
+        <entry key="searchgames/src/main/res/layout/fragment_search_games.xml" value="0.3255208333333333" />
+        <entry key="searchgamesresult/src/main/res/layout/empty_state.xml" value="0.3686594202898551" />
+      </map>
+    </option>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

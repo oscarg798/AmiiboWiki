@@ -10,7 +10,7 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.extensions
+package com.oscarg798.amiibowiki.core.utils
 
 import android.app.Activity
 import android.os.Bundle

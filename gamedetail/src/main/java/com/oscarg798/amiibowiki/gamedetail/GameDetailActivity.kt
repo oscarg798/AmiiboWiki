@@ -31,7 +31,6 @@ import com.google.android.youtube.player.YouTubeStandalonePlayer
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.di.entrypoints.GameDetailEntryPoint
-import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.core.extensions.isAndroidQOrHigher
 import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
@@ -40,6 +39,7 @@ import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.Rating
+import com.oscarg798.amiibowiki.core.utils.bundle
 import com.oscarg798.amiibowiki.gamedetail.adapter.GameImageResourceAdapter
 import com.oscarg798.amiibowiki.gamedetail.adapter.GameImageResourceClickListener
 import com.oscarg798.amiibowiki.gamedetail.databinding.ActivityGameDetailBinding

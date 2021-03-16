@@ -16,7 +16,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -26,9 +25,9 @@ import com.oscarg798.amiibowiki.amiibodetail.composeui.Screen
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
-import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
 import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
+import com.oscarg798.amiibowiki.core.utils.bundle
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
