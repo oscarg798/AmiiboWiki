@@ -19,31 +19,31 @@ import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
 import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.first
 
 class GetAmiiboFilteredUseCase @Inject constructor(
     private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
     private val amiiboRepository: AmiiboRepository
 ) {
 
-    fun execute(filter: AmiiboType): Flow<Collection<Amiibo>> {
-        return if (filter == getDefaultAmiiboTypeUseCase.execute()) {
+    suspend fun execute(filter: AmiiboType): Collection<Amiibo> = when (filter) {
+        getDefaultAmiiboTypeUseCase.execute() ->
             amiiboRepository.getAmiibosWithoutFilters()
-        } else {
-            flow<Collection<Amiibo>> {
-                val result = amiiboRepository.getAmiibosFilteredByTypeName(filter.name)
-                emit(result)
-            }.catch { cause ->
-                if (cause !is FilterAmiiboFailure) {
-                    throw cause
-                }
+                .first()
+        else -> filterAmiibos(filter.name)
+    }
 
-                throw AmiiboListFailure.FilterError(
-                    cause.message ?: "Error filtering the amiibos is the data source"
-                )
+    private suspend fun filterAmiibos(filter: String): Collection<Amiibo> {
+        return runCatching {
+            amiiboRepository.getAmiibosFilteredByTypeName(filter)
+        }.getOrElse { cause ->
+            if (cause !is FilterAmiiboFailure) {
+                throw cause
             }
+
+            throw AmiiboListFailure.FilterError(
+                cause.message ?: "Error filtering the amiibos is the data source"
+            )
         }
     }
 }

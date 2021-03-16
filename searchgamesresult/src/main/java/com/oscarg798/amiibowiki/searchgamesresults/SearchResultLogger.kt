@@ -18,7 +18,7 @@ import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
 import com.oscarg798.amiibowiki.logger.events.RECYCLER_VIEW_ITEM_TYPE_NAME
 import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
 
-interface SearchResultLogger {
+internal interface SearchResultLogger {
 
     @LogSources([FIREBASE_LOG_SOURCE_NAME])
     @WidgetClicked(GAME_RESULT_CLICKED_NAME, RECYCLER_VIEW_ITEM_TYPE_NAME)

@@ -17,5 +17,5 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
 interface Reducer<in Result : MVIResult, ViewState : MVIViewState> {
 
-    suspend fun reduce(state: ViewState, from: Result): ViewState
+    suspend fun reduce(state: ViewState, result: Result): ViewState
 }

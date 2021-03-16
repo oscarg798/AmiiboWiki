@@ -12,8 +12,16 @@
 
 package com.oscarg798.amiibowiki
 
+import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HiltTestActivity: AppCompatActivity()
+class HiltTestActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(View(this))
+    }
+}

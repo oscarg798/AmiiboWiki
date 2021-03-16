@@ -20,12 +20,12 @@ import javax.inject.Inject
 class DashboardReducer @Inject constructor() : Reducer<DashboardResult, DashboardViewState> {
     override suspend fun reduce(
         state: DashboardViewState,
-        from: DashboardResult
-    ): DashboardViewState = when (from) {
-        is DashboardResult.UpdateStatusFound -> when (from.status) {
+        result: DashboardResult
+    ): DashboardViewState = when (result) {
+        is DashboardResult.UpdateStatusFound -> when (result.status) {
             UpdateStatus.AlreadyUpdated -> DashboardViewState.Idling
             is UpdateStatus.UpdateAvailable -> DashboardViewState.RequestingUpdate(
-                when (from.status) {
+                when (result.status) {
                     is UpdateStatus.UpdateAvailable.Immediate -> UpdateType.Immediate
                     else -> UpdateType.Flexible
                 }

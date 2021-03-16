@@ -19,9 +19,40 @@ android{
     packagingOptions {
         exclude 'META-INF/metadata.kotlin_module'
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.0.0-beta01'
+    }
+
+    buildFeatures {
+        // Enables Jetpack Compose for this module]
+//        viewBinding false
+//        dataBinding false
+        compose true
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+        useIR = true
+    }
+
+    composeOptions {
+        kotlinCompilerVersion "1.4.30"
+        kotlinCompilerExtensionVersion '1.0.0-beta01'
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
+
+
+
+    implementation picasso
     implementation cardView
     implementation shimmer
 

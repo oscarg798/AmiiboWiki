@@ -32,8 +32,7 @@ class CrashEventFunctionCreator : AbstractFunctionCreator<CrashEventDecorator>()
             getSourcesStatement(
                 methodDecorator.sources
             )
-        }))
-            """.trimIndent()
+        })) """.trimIndent()
 
     }
 

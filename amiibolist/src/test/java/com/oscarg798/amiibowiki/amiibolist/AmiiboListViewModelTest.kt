@@ -12,11 +12,12 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import androidx.lifecycle.SavedStateHandle
 import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListReducer
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
+import com.oscarg798.amiibowiki.amiibolist.mvi.UiEffect
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.SearchAmiibosUseCase
@@ -28,12 +29,14 @@ import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import org.amshove.kluent.any
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -46,27 +49,38 @@ class AmiiboListViewModelTest :
     private val searchAmiiboUseCase = relaxedMockk<SearchAmiibosUseCase>()
     private val amiiboListLogger = relaxedMockk<AmiiboListLogger>()
     private val isFeatureEnableUseCase = relaxedMockk<IsFeatureEnableUseCase>()
-    private val reducer = AmiiboListReducer()
+    private val handleState = relaxedMockk<SavedStateHandle>()
+
+    private val stateComparator = object : Comparator<AmiiboListViewState> {
+        override fun compare(o1: AmiiboListViewState, o2: AmiiboListViewState): Int {
+            return if (o1.loading == o2.loading && o1.amiibos == o2.amiibos && o1.error == o2.error) {
+                EQUAL
+            } else {
+                NO_EQUAL
+            }
+        }
+    }
 
     @get:Rule
-    val viewModelRule: ViewModelTestRule<AmiiboListViewState, AmiiboListViewModel> =
+    val viewModelRule: ViewModelTestRule<AmiiboListViewState, UiEffect, AmiiboListViewModel> =
         ViewModelTestRule(this)
 
     @Before
     fun setup() {
-        every { getAmiiboTypeUseCase.execute() } answers { flowOf(listOf(AMIIBO_TYPE)) }
-        every { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) } answers { flowOf(listOf(AMIIBO)) }
+        coEvery { handleState.get<AmiiboListViewState>(any()) } answers { null }
+        coEvery { getAmiiboTypeUseCase.execute() } answers { listOf(AMIIBO_TYPE) }
+        coEvery { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) } answers { listOf(AMIIBO) }
         every { getAmiibosUseCase.execute() } answers { flowOf(listOf(AMIIBO)) }
     }
 
     override fun create(): AmiiboListViewModel = AmiiboListViewModel(
+        handleState,
         getAmiibosUseCase,
         getAmiibosFilteredUseCase,
         getAmiiboTypeUseCase,
         searchAmiiboUseCase,
         amiiboListLogger,
         isFeatureEnableUseCase,
-        reducer,
         viewModelRule.coroutineContextProvider
     )
 
@@ -74,10 +88,13 @@ class AmiiboListViewModelTest :
     fun `given a wish to refresh amiibos then it should get the amiibos and return them in the state`() {
         viewModelRule.viewModel.onWish(AmiiboListWish.RefreshAmiibos)
 
-        viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState.Idling,
-            AmiiboListViewState.Loading,
-            AmiiboListViewState.ShowingAmiibos(listOf(AMIIBO).map { ViewAmiibo(it) })
+        viewModelRule.stateCollector.wereValuesEmitted(
+            listOf(
+                STATE,
+                STATE.copy(loading = true),
+                STATE.copy(loading = false, amiibos = listOf(AMIIBO).map { ViewAmiibo(it) })
+            ),
+            stateComparator
         )
 
         verify { getAmiibosUseCase.execute() }
@@ -85,17 +102,21 @@ class AmiiboListViewModelTest :
 
     @Test
     fun `given there is an AmiiboListFailure getting the amiibos when wish is processed then it should return the error in the state`() {
+        val error = AmiiboListFailure.UnknowError(NullPointerException())
         every { getAmiibosUseCase.execute() } answers {
             flow {
-                throw AmiiboListFailure.UnknowError
+                throw error
             }
         }
         viewModelRule.viewModel.onWish(AmiiboListWish.RefreshAmiibos)
 
-        viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState.Idling,
-            AmiiboListViewState.Loading,
-            AmiiboListViewState.Error(AmiiboListFailure.UnknowError)
+        viewModelRule.stateCollector.wereValuesEmitted(
+            listOf(
+                STATE,
+                STATE.copy(loading = true),
+                STATE.copy(loading = false, error = error)
+            ),
+            stateComparator
         )
 
         verify { getAmiibosUseCase.execute() }
@@ -105,13 +126,16 @@ class AmiiboListViewModelTest :
     fun `given a wish to filter the amiibos when wish is processed then it should return the filtered amiibos in the state`() {
         viewModelRule.viewModel.onWish(AmiiboListWish.FilterAmiibos(ViewAmiiboType("1", "2")))
 
-        viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState.Idling,
-            AmiiboListViewState.Loading,
-            AmiiboListViewState.ShowingAmiibos(listOf(AMIIBO).map { ViewAmiibo(it) })
+        viewModelRule.stateCollector.wereValuesEmitted(
+            listOf(
+                STATE,
+                STATE.copy(loading = true),
+                STATE.copy(loading = false, amiibos = listOf(AMIIBO).map { ViewAmiibo(it) })
+            ),
+            stateComparator
         )
 
-        verify {
+        coVerify {
             getAmiibosFilteredUseCase.execute(AMIIBO_TYPE)
             amiiboListLogger.trackFilterApplied(any())
         }
@@ -119,39 +143,66 @@ class AmiiboListViewModelTest :
 
     @Test
     fun `given an amiibo list failure filtering the amiibos when wish is processed then it should return the error in the state`() {
-        every { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) } answers { flow { throw AmiiboListFailure.UnknowError } }
+        val error = NullPointerException()
+        coEvery { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) } answers { throw error }
 
         viewModelRule.viewModel.onWish(AmiiboListWish.FilterAmiibos(ViewAmiiboType("1", "2")))
 
-        viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState.Idling,
-            AmiiboListViewState.Loading,
-            AmiiboListViewState.Error(AmiiboListFailure.UnknowError)
+        viewModelRule.stateCollector.wereValuesEmitted(
+            listOf(
+                STATE,
+                STATE.copy(loading = true),
+                STATE.copy(loading = false, error = AmiiboListFailure.UnknowError(error))
+            ),
+            stateComparator
         )
 
-        verify { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) }
+        coVerify { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) }
     }
 
-    @Ignore("We are not able to capture the erro inside the coroutine in the wish processor")
     @Test
     fun `given an error filtering the amiibos when wish is processed then it should return the error in the state`() {
-        every { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) } answers { flow { throw NullPointerException() } }
+        val cause = NullPointerException()
+        coEvery { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) } answers { throw cause }
 
         viewModelRule.viewModel.onWish(AmiiboListWish.FilterAmiibos(ViewAmiiboType("1", "2")))
 
-        verify { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) }
+        viewModelRule.stateCollector.wereValuesEmitted(
+            listOf(
+                STATE,
+                STATE.copy(loading = true),
+                STATE.copy(loading = false, error = AmiiboListFailure.UnknowError(cause))
+            ),
+            stateComparator
+        )
+
+        coVerify { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) }
     }
 
     @Test
     fun `given a wish to show the amiibos filters when wish is processed then types should be returned in the state`() {
         viewModelRule.viewModel.onWish(AmiiboListWish.ShowFilters)
 
-        viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState.Idling,
-            AmiiboListViewState.ShowingFilters(listOf(ViewAmiiboType("1", "2")))
+        viewModelRule.effectCollector.wereValuesEmitted(
+            listOf(
+                UiEffect.ShowFilters(listOf(ViewAmiiboType("1", "2")))
+            ),
+            object : Comparator<UiEffect> {
+                override fun compare(o1: UiEffect, o2: UiEffect): Int {
+                    if (o1 !is UiEffect.ShowFilters || o2 !is UiEffect.ShowFilters) {
+                        throw IllegalArgumentException("Only handle ShowFilters")
+                    }
+
+                    return if (o1.filters == o2.filters) {
+                        EQUAL
+                    } else {
+                        NO_EQUAL
+                    }
+                }
+            }
         )
 
-        verify {
+        coVerify {
             getAmiiboTypeUseCase.execute()
             amiiboListLogger.trackShownFiltersClicked()
         }
@@ -162,9 +213,23 @@ class AmiiboListViewModelTest :
         every { isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowAmiiboDetail) } answers { true }
         viewModelRule.viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(ViewAmiibo(AMIIBO)))
 
-        viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState.Idling,
-            AmiiboListViewState.ShowingAmiiboDetails("11")
+        viewModelRule.effectCollector.wereValuesEmitted(
+            listOf(
+                UiEffect.ShowAmiiboDetails("11")
+            ),
+            object : Comparator<UiEffect> {
+                override fun compare(o1: UiEffect, o2: UiEffect): Int {
+                    if (o1 !is UiEffect.ShowAmiiboDetails || o2 !is UiEffect.ShowAmiiboDetails) {
+                        throw IllegalArgumentException("Only handle ShowFilters")
+                    }
+
+                    return if (o1.amiiboId == o2.amiiboId) {
+                        EQUAL
+                    } else {
+                        NO_EQUAL
+                    }
+                }
+            }
         )
 
         verify {
@@ -174,12 +239,10 @@ class AmiiboListViewModelTest :
 
     @Test
     fun `given a wish to show the amiibo details  and ff off when wish is process then nothing should happen view should be idling`() {
-        every { isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowAmiiboDetail) } answers { true }
+        every { isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowAmiiboDetail) } answers { false }
         viewModelRule.viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(ViewAmiibo(AMIIBO)))
 
-        viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState.Idling
-        )
+        viewModelRule.effectCollector.hasSize(0)
 
         verify {
             amiiboListLogger.trackAmiiboClicked(any())
@@ -192,10 +255,13 @@ class AmiiboListViewModelTest :
 
         viewModelRule.viewModel.onWish(AmiiboListWish.Search(MOCK_QUERY))
 
-        viewModelRule.testCollector wereValuesEmitted listOf(
-            AmiiboListViewState.Idling,
-            AmiiboListViewState.Loading,
-            AmiiboListViewState.ShowingAmiibos(listOf(AMIIBO).map { ViewAmiibo(it) })
+        viewModelRule.stateCollector.wereValuesEmitted(
+            listOf(
+                STATE,
+                STATE.copy(loading = true),
+                STATE.copy(loading = false, amiibos = listOf(AMIIBO).map { ViewAmiibo(it) })
+            ),
+            stateComparator
         )
 
         verify {
@@ -204,6 +270,9 @@ class AmiiboListViewModelTest :
     }
 }
 
+private const val EQUAL = 0
+private const val NO_EQUAL = 1
+private val STATE = AmiiboListViewState()
 private const val MOCK_QUERY = "1"
 private val AMIIBO_TYPE = AmiiboType("1", "2")
 private val AMIIBO = Amiibo(

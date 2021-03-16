@@ -19,8 +19,8 @@ class SearchGamesReducer @Inject constructor() : Reducer<SearchGamesResult, Sear
 
     override suspend fun reduce(
         state: SearchGamesViewState,
-        from: SearchGamesResult
-    ): SearchGamesViewState = when (from) {
-        is SearchGamesResult.SearchGames -> SearchGamesViewState.SearchingGames(from.query)
+        result: SearchGamesResult
+    ): SearchGamesViewState = when (result) {
+        is SearchGamesResult.SearchGames -> SearchGamesViewState.SearchingGames(result.query)
     }
 }

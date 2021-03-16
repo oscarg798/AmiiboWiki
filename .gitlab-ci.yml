@@ -1,4 +1,4 @@
-image: openjdk:8-jdk
+image: openjdk:11-jdk
 
 
 variables:
@@ -9,7 +9,7 @@ variables:
 
   # ANDROID_BUILD_TOOLS is the version of the Android build tools you are using.
   # It should match buildToolsVersion.
-  ANDROID_BUILD_TOOLS: "30.0.0"
+  ANDROID_BUILD_TOOLS: "30.0.2"
 
   # It's what version of the command line tools we're going to download from the official site.
   # Official Site-> https://developer.android.com/studio/index.html
@@ -17,11 +17,7 @@ variables:
   #        commandlinetools-os_type-ANDROID_SDK_TOOLS_latest.zip
   # when the script was last modified for latest compileSdkVersion, it was which is written down below
   ANDROID_SDK_TOOLS: "6514223"
-  
-stages:
-  - lint 
-  - build
-  
+
 # Packages installation before running script
 before_script:
   - apt-get --quiet update --yes
@@ -56,15 +52,25 @@ before_script:
   - chmod +x createLocalProperties.sh
 
   - ./createLocalProperties.sh
-  - touch app/src/main/google-services.json && echo {{GOOGLE_SERVICES_JSON}} > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json 
+
+stages:
+  - lint
+  - unitTest
+  - uiTests
+
+.only_pr: &only_pr
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+      when: always
 
 lint:
+  <<: *only_pr
   stage: lint
   script:
-    - ./gradlew ktlintCheck 
+    -  ./gradlew assembleDevelopmentDebug
 
-build:
-  stage: build
+unitTest:
+  stage: unitTest
   needs: [lint]
   script:
-    - ./gradlew build 
+    - ./gradlew testDebugUnitTest

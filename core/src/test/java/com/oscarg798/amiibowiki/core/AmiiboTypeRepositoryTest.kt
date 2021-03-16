@@ -28,8 +28,6 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Before
@@ -50,7 +48,7 @@ class AmiiboTypeRepositoryTest {
             )
         }
         every { amiiboTypeDAO.insertType(DB_AMIIBO_TYPE[0]) } just Runs
-        every { amiiboTypeDAO.getTypes() } answers { flowOf(DB_AMIIBO_TYPE) }
+        coEvery { amiiboTypeDAO.getTypes() } answers { DB_AMIIBO_TYPE }
 
         repository = AmiiboTypeRepositoryImpl(
             amiiboTypeService,
@@ -61,11 +59,11 @@ class AmiiboTypeRepositoryTest {
     @Test
     fun `when get types invoke then it should return types as result`() {
         val result = runBlocking {
-            repository.getTypes().toList()
+            repository.getTypes()
         }
 
-        1 shouldBeEqualTo result.size
-        listOf(AmiiboType("1", "2")) shouldBeEqualTo result[0]
+        DB_AMIIBO_TYPE.size shouldBeEqualTo result.size
+        listOf(AmiiboType("1", "2")) shouldBeEqualTo result
     }
 
     @Test

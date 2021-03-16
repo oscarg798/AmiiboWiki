@@ -19,10 +19,10 @@ class SettingsReducer @Inject constructor() : Reducer<SettingsResult, SettingsVi
 
     override suspend fun reduce(
         state: SettingsViewState,
-        from: SettingsResult
-    ): SettingsViewState = when (from) {
+        result: SettingsResult
+    ): SettingsViewState = when (result) {
         is SettingsResult.Loading -> SettingsViewState.Loading
-        is SettingsResult.PreferencesCreated -> SettingsViewState.Preferences(from.preferences)
+        is SettingsResult.PreferencesCreated -> SettingsViewState.Preferences(result.preferences)
         is SettingsResult.DarkModeSelectionSaved -> SettingsViewState.ActivityShouldBeRecreated
         is SettingsResult.ShowDevelopmentActivity -> SettingsViewState.ShowingDevelopmentActivity
         is SettingsResult.ShowDarkModeDialog -> SettingsViewState.ShowingDarkModeDialog

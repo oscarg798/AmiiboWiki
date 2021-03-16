@@ -19,12 +19,12 @@ class GameDetailReducer @Inject constructor() : Reducer<GameDetailResult, GameDe
 
     override suspend fun reduce(
         state: GameDetailViewState,
-        from: GameDetailResult
-    ): GameDetailViewState = when (from) {
+        result: GameDetailResult
+    ): GameDetailViewState = when (result) {
         GameDetailResult.Loading -> GameDetailViewState.Loading
-        is GameDetailResult.GameTrailerFound -> GameDetailViewState.ShowingGameTrailer(from.trailerId)
-        is GameDetailResult.GameFetched -> GameDetailViewState.ShowingGameDetails(from.game)
-        is GameDetailResult.ImagesExpanded -> GameDetailViewState.ShowingGameImages(from.images)
-        is GameDetailResult.Error -> GameDetailViewState.Error(from.exception)
+        is GameDetailResult.GameTrailerFound -> GameDetailViewState.ShowingGameTrailer(result.trailerId)
+        is GameDetailResult.GameFetched -> GameDetailViewState.ShowingGameDetails(result.game)
+        is GameDetailResult.ImagesExpanded -> GameDetailViewState.ShowingGameImages(result.images)
+        is GameDetailResult.Error -> GameDetailViewState.Error(result.exception)
     }
 }

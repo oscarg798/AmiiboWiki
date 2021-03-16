@@ -16,28 +16,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
-import com.oscarg798.amiibowiki.amiibodetail.databinding.FragmentAmiiboDetailBinding
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
+import com.oscarg798.amiibowiki.amiibodetail.composeui.Screen
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
-import com.oscarg798.amiibowiki.amiibodetail.mvi.ShowingAmiiboDetailsParams
+import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.extensions.bundle
-import com.oscarg798.amiibowiki.core.extensions.setImage
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
-import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
-import com.oscarg798.amiibowiki.core.utils.provideFactory
+import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
-class AmiiboDetailFragment : Fragment() {
+internal class AmiiboDetailFragment : Fragment() {
 
     @Inject
     lateinit var factory: AmiiboDetailViewModel.Factory
@@ -45,25 +42,32 @@ class AmiiboDetailFragment : Fragment() {
     private val tail: String by bundle(ARGUMENT_TAIL)
 
     private val viewModel: AmiiboDetailViewModel by viewModels {
-        provideFactory(factory, tail)
+        SavedInstanceViewModelFactory(
+            factoryCreator = {
+                factory.create(tail, it)
+            },
+            owner = this
+        )
     }
-
-    private lateinit var binding: FragmentAmiiboDetailBinding
-
-    private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAmiiboDetailBinding.inflate(
-            LayoutInflater.from(requireContext()),
-            container,
-            false
-        )
-
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                Screen(
+                    viewModel,
+                    onRelatedGamesButtonClick = {
+                        viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
+                    },
+                    onImageClick = {
+                        viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(it))
+                    }
+                )
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,72 +83,22 @@ class AmiiboDetailFragment : Fragment() {
 
     private fun setupViewModelInteractions() {
         lifecycleScope.launchWhenResumed {
-            viewModel.state.collect {
-                when (it) {
-                    is AmiiboDetailViewState.Loading -> showLoading()
-                    is AmiiboDetailViewState.ShowingAmiiboDetails -> showDetail(it.showingAmiiboDetailsParams)
-                    is AmiiboDetailViewState.ShowingAmiiboImage -> showExpandedImages(listOf(it.imageUrl))
-                    is AmiiboDetailViewState.Error -> showError(it.exception)
-                    is AmiiboDetailViewState.ShowingRelatedGames -> showRelatedGames(it.amiiboId)
+            viewModel.uiEffect.collect { state ->
+                when (state) {
+                    is UIEffect.ShowAmiiboImage -> showExpandedImages(listOf(state.url))
+                    is UIEffect.ShowRelatedGames -> showRelatedGames(state.amiiboId)
                 }
-            }
-        }
-    }
-
-    private fun showError(amiiboDetailFailure: AmiiboDetailFailure) {
-        hideLoading()
-        Snackbar.make(
-            binding.clMain,
-            amiiboDetailFailure.message ?: getString(R.string.general_error),
-            Snackbar.LENGTH_LONG
-        ).show()
-    }
-
-    private fun showDetail(
-        showingAmiiboDetailsParams: ShowingAmiiboDetailsParams
-    ) {
-        hideLoading()
-        val viewAmiiboDetails = showingAmiiboDetailsParams.amiiboDetails
-
-        with(binding) {
-            ivImage.setImage(viewAmiiboDetails.imageUrl)
-            tvGameCharacter.setText(viewAmiiboDetails.character)
-            tvSerie.setText(viewAmiiboDetails.gameSeries)
-            tvType.setText(viewAmiiboDetails.type)
-
-            ivImage.setOnClickListener {
-                viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(viewAmiiboDetails.imageUrl))
-            }
-
-            btnRelatedGames.visibility =
-                if (showingAmiiboDetailsParams.isRelatedGamesSectionEnabled) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
-
-            binding.btnRelatedGames.setOnClickListener {
-                viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
             }
         }
     }
 
     private fun showRelatedGames(amiiboId: String) {
-        findNavController().navigate(AmiiboDetailFragmentDirections.actionAmiiboDetailFragmentToSearchResultFragment(amiiboId, true))
-    }
-
-    private fun showLoading() {
-        with(binding) {
-            shimmer.root.visibility = View.VISIBLE
-            shimmer.shimmerViewContainer.startShimmer()
-        }
-    }
-
-    private fun hideLoading() {
-        with(binding) {
-            shimmer.root.visibility = View.GONE
-            shimmer.shimmerViewContainer.stopShimmer()
-        }
+        findNavController().navigate(
+            AmiiboDetailFragmentDirections.actionAmiiboDetailFragmentToSearchResultFragment(
+                amiiboId,
+                true
+            )
+        )
     }
 }
 

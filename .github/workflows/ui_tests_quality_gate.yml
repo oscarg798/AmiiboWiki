@@ -2,24 +2,18 @@
 
 name: Acceptance Tests Quality
 
-# Controls when the action will run. 
 on:
   pull_request:
     branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  check:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    outputs:
+      job-status: ${{ job.status }}
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
       - name: Set up Cloud SDK
@@ -29,19 +23,46 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
 
       - name: Create local.properties
-        run:  touch local.properties &&
-          echo googleApiKey=2 >> local.properties &&
-          echo keystorepath=/ >> local.properties &&
-          echo keystorePassword=dummy >> local.properties &&
-          echo gameAPIClientId=1 >> local.properties &&
-          echo firebaseProjectId=2 >> local.properties &&
-          echo keystoreAlias=3 >> local.properties &&
-          echo googleAccountServiceFile=/x.json >> local.properties &&
-          echo mixpanelToken=3 >> local.properties &&
-          echo gameAuthUrl=4 >> local.properties
+        run:  |
+          chmod +x createLocalProperties.sh
+          ./createLocalProperties.sh
 
       - name: Create google-services.json
-        run:  touch app/src/main/google-services.json && echo "$GSJ" > app/src/main/google-services.json && cp app/src/main/google-services.json app/src/debug/google-services.json
+        run:  |
+          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
+          cp app/src/main/google-services.json app/src/debug/google-services.json
+        env:
+          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
+
+      - name: Lint
+        run: ./gradlew ktlintCheck
+
+      - name: Unit Tests
+        run: ./gradlew testDebugUnitTest
+
+  ui_test:
+    runs-on: ubuntu-latest
+    needs: check
+    outputs:
+      job-status: ${{ job.status }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: babyrecord-336ca
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Create local.properties
+        run: |
+          chmod +x createLocalProperties.sh
+          ./createLocalProperties.sh
+
+      - name: Create google-services.json
+        run: |
+          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
+          cp app/src/main/google-services.json app/src/debug/google-services.json
         env:
           GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
 
@@ -52,7 +73,7 @@ jobs:
         run: ./gradlew assembleAndroidTest
 
       - name: run test on testlab
-        run:  gcloud firebase test android run --device-ids=OnePlus6T --app app/build/outputs/apk/development/debug/app-development-debug.apk --test app/build/outputs/apk/androidTest/development/debug/app-development-debug-androidTest.apk --os-version-ids=28  --use-orchestrator
+        run: gcloud firebase test android run --device-ids=OnePlus6T --app app/build/outputs/apk/development/debug/app-development-debug.apk --test app/build/outputs/apk/androidTest/development/debug/app-development-debug-androidTest.apk --os-version-ids=28  --use-orchestrator
 
       - name: Discord success notification
         if: ${{ job.status == 'success' }}
@@ -64,6 +85,30 @@ jobs:
 
       - name: Discord failure notification
         if: ${{ job.status != 'success' }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Ui test failed :warning:'
+
+  notification:
+    runs-on: ubuntu-latest
+    needs:
+     - check
+     - ui_test
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Discord success notification
+        if: ${{ needs.check.outputs.job-status }} == 'success' && ${{ needs.ui_test.outputs.job.status }} == 'success'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Ui test ran successfully <3 :love: :smile:'
+
+      - name: Discord failure notification
+        if: ${{ needs.check.outputs.job-status }} != 'success' || ${{ needs.ui_test.outputs.job.status }} != 'success'
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master

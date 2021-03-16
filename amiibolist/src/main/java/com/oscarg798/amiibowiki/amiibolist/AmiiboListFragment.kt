@@ -23,20 +23,20 @@ import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.google.android.material.snackbar.Snackbar
-import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
-import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboListAdapter
 import com.oscarg798.amiibowiki.amiibolist.databinding.FragmentAmiiboListBinding
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
+import com.oscarg798.amiibowiki.amiibolist.mvi.UiEffect
+import com.oscarg798.amiibowiki.amiibolist.ui.Screen
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
+import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@ExperimentalFoundationApi
 @AndroidEntryPoint
 @DeepLink(AMIIBO_LIST_DEEPLINK)
 class AmiiboListFragment :
@@ -56,7 +57,12 @@ class AmiiboListFragment :
     @Inject
     lateinit var mixpanelLogger: MixpanelLogger
 
-    private val viewModel: AmiiboListViewModel by viewModels()
+    @Inject
+    lateinit var factory: AmiiboListViewModel.Factory
+
+    private val viewModel: AmiiboListViewModel by viewModels {
+        SavedInstanceViewModelFactory({ factory.create(it) }, this)
+    }
 
     private var filterMenuItem: MenuItem? = null
     private var searchView: SearchView? = null
@@ -87,18 +93,11 @@ class AmiiboListFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAmiiboListBinding.inflate(
-            LayoutInflater.from(requireContext()),
-            container,
-            false
-        )
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.setup()
-        viewModel.onScreenShown()
+        return ComposeView(requireContext()).apply {
+            setContent {
+                Screen(viewModel, lifecycleScope)
+            }
+        }
     }
 
     override fun onResume() {
@@ -162,79 +161,21 @@ class AmiiboListFragment :
         return super.onOptionsItemSelected(item)
     }
 
-    private fun FragmentAmiiboListBinding.setup() {
-        val context = requireContext()
-        with(srlMain) {
-            setColorSchemeColors(
-                context.getColor(R.color.cinnabar),
-                context.getColor(R.color.atlantis),
-                context.getColor(R.color.picton_blue),
-                context.getColor(R.color.viridian),
-                context.getColor(R.color.tulip_tree),
-                context.getColor(R.color.cerise)
-            )
-
-            setOnRefreshListener {
-                if (searchView?.isIconified == true) {
-                    viewModel.onWish(AmiiboListWish.RefreshAmiibos)
-                } else {
-                    isRefreshing = false
-                }
-            }
-        }
-
-        with(rvAmiiboList) {
-            setHasFixedSize(false)
-            layoutManager = GridLayoutManager(context, NUMBER_OF_COLUMNS)
-            adapter = AmiiboListAdapter(object : AmiiboClickListener {
-                override fun onClick(viewAmiibo: ViewAmiibo) {
-                    viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(viewAmiibo))
-                }
-            })
-        }
-    }
-
     private fun setupViewModelInteractions() {
         lifecycleScope.launchWhenResumed {
-            viewModel.state.collect { state ->
-                when (state) {
-                    AmiiboListViewState.Loading -> binding.showLoading()
-                    is AmiiboListViewState.ShowingAmiibos -> binding.showAmiibos(state.amiibos.toList())
-                    is AmiiboListViewState.ShowingFilters -> showFilters(state.filters.toList())
-                    is AmiiboListViewState.ShowingAmiiboDetails -> showAmiiboDetail(state.amiiboId)
-                    is AmiiboListViewState.Error -> binding.showErrors(state.error.message!!)
+            viewModel.uiEffect.collect { effect ->
+                when (effect) {
+                    is UiEffect.ShowAmiiboDetails -> showAmiiboDetail(effect.amiiboId)
+                    is UiEffect.ShowFilters -> showFilters(effect.filters.toList())
                 }
             }
         }
+
         searchFlow.debounce(SEARCH_DEBOUNCE)
             .filterNot { it.isEmpty() && it.length < MINUMUN_SEARCH_QUERY_LENGTH }
             .onEach {
                 viewModel.onWish(AmiiboListWish.Search(it))
             }.launchIn(lifecycleScope)
-    }
-
-    private fun onIdling() {
-        // DO_NOTHING
-    }
-
-    private fun FragmentAmiiboListBinding.showLoading() {
-        srlMain.isRefreshing = true
-        rvAmiiboList.isEnabled = false
-        filterMenuItem?.isEnabled = false
-
-        rvAmiiboList.visibility = View.GONE
-        listAnimation.shimmerLoadingView.visibility = View.VISIBLE
-        listAnimation.shimmerLoadingView.startShimmer()
-    }
-
-    private fun FragmentAmiiboListBinding.hideLoading() {
-        binding.rvAmiiboList.visibility = View.VISIBLE
-        binding.listAnimation.shimmerLoadingView.stopShimmer()
-        binding.listAnimation.shimmerLoadingView.visibility = View.GONE
-
-        filterMenuItem?.isEnabled = true
-        binding.rvAmiiboList.isEnabled = true
-        binding.srlMain.isRefreshing = false
     }
 
     private fun showFilters(filters: List<ViewAmiiboType>) {
@@ -249,25 +190,16 @@ class AmiiboListFragment :
             require(filter != null)
             viewModel.onWish(AmiiboListWish.FilterAmiibos(filter))
         }
-        builder.setOnCancelListener {
-            viewModel.onWish(AmiiboListWish.FilteringCancelled)
-        }
         builder.show()
-    }
-
-    private fun FragmentAmiiboListBinding.showAmiibos(amiibos: List<ViewAmiibo>) {
-        hideLoading()
-        (rvAmiiboList.adapter as AmiiboListAdapter).submitList(amiibos)
-    }
-
-    private fun FragmentAmiiboListBinding.showErrors(error: String) {
-        hideLoading()
-        Snackbar.make(srlMain, error, Snackbar.LENGTH_LONG).show()
     }
 
     private fun showAmiiboDetail(tail: String) {
         view?.findNavController()
-            ?.navigate(AmiiboListFragmentDirections.actionNavigationListToNavigationAmiiboDetail(tail))
+            ?.navigate(
+                AmiiboListFragmentDirections.actionNavigationListToNavigationAmiiboDetail(
+                    tail
+                )
+            )
     }
 }
 

@@ -16,22 +16,14 @@ import com.oscarg798.amiibowiki.core.models.AmiiboType
 import com.oscarg798.amiibowiki.core.repositories.AmiiboTypeRepository
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.map
 
 @Singleton
 class GetAmiiboTypeUseCase @Inject constructor(
     private val getDefaultAmiiboTypeUseCase: GetDefaultAmiiboTypeUseCase,
     private val amiiboTypeRepository: AmiiboTypeRepository
 ) {
-    fun execute(): Flow<List<AmiiboType>> {
-        return amiiboTypeRepository.getTypes().filterNot { it.isEmpty() }
-            .map {
-                arrayListOf<AmiiboType>().apply {
-                    addAll(it)
-                    add(getDefaultAmiiboTypeUseCase.execute())
-                }
-            }
+    suspend fun execute(): Collection<AmiiboType> {
+        val types = amiiboTypeRepository.getTypes()
+        return types + listOf(getDefaultAmiiboTypeUseCase.execute())
     }
 }

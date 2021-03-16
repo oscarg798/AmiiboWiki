@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.searchgamesresults.models
 
 import android.os.Parcelable
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ViewGameSearchResult(

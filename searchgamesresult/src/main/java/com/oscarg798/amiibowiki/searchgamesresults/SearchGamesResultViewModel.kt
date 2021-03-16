@@ -12,94 +12,157 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults
 
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
-import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLogger
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultResult
+import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.UIEffect
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByAmiiboUseCase
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByQueryUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-@HiltViewModel
-class SearchGamesResultViewModel @Inject constructor(
+class SearchGamesResultViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     private val searchGamesByAmiiboUseCase: SearchGamesByAmiiboUseCase,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val searchGamesByQueryUseCase: SearchGamesByQueryUseCase,
     private val searchGamesLogger: SearchGamesResultLogger,
-    override val reducer: Reducer<@JvmSuppressWildcards SearchResultResult, @JvmSuppressWildcards SearchResultViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SearchResultWish, SearchResultResult, SearchResultViewState>(
-    SearchResultViewState.Idling
-) {
-    override suspend fun getResult(wish: SearchResultWish): Flow<SearchResultResult> = when {
-        wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.AmiiboGameSearchParam -> {
-            getSearchGamesByAmiiboIdFlow(
-                wish.gameSearchGameQueryParam.amiiboId
-            )
-        }
-        wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.StringQueryGameSearchParam -> {
-            getSearchGamesByQueryFlow(wish.gameSearchGameQueryParam.query)
-        }
-        wish is SearchResultWish.ShowGameDetail -> getShowGamesFlow(wish)
-        else -> emptyFlow()
+) : AbstractViewModel<SearchResultViewState, UIEffect, SearchResultWish>(SearchResultViewState()) {
+
+    init {
+        state.onEach {
+            handle.set(STATE_KEY, it)
+        }.launchIn(viewModelScope)
     }
 
-    private fun getShowGamesFlow(wish: SearchResultWish.ShowGameDetail) = flow<SearchResultResult> {
-        trackSearchResultClick(wish.gameId)
-        if (isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowGameDetail)) {
-            emit(SearchResultResult.ShowGameDetails(wish.gameId))
-        } else {
-            emit(SearchResultResult.None)
+    override fun processWish(wish: SearchResultWish) {
+        when {
+            wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.AmiiboGameSearchParam -> searchByAmiiboId(
+                wish.gameSearchGameQueryParam.amiiboId
+            )
+
+            wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.StringQueryGameSearchParam -> searchByQuery(
+                wish.gameSearchGameQueryParam.query
+            )
+
+            wish is SearchResultWish.ShowGameDetail -> getShowGamesFlow(wish)
         }
-    }.flowOn(coroutineContextProvider.backgroundDispatcher)
+    }
 
-    private fun getSearchGamesByQueryFlow(query: String) =
-        searchGamesByQueryUseCase.execute(query).map {
-            SearchResultResult.GamesFound(it) as SearchResultResult
-        }.onStart {
-            emit(SearchResultResult.Loading)
-        }.catch { cause ->
-            handleFailure(cause)
-        }.flowOn(coroutineContextProvider.backgroundDispatcher)
+    private fun getShowGamesFlow(wish: SearchResultWish.ShowGameDetail) {
+        viewModelScope.launch {
+            trackSearchResultClick(wish.gameId)
+            val canBeShown = withContext(coroutineContextProvider.backgroundDispatcher) {
+                isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowGameDetail)
+            }
 
-    private suspend fun getSearchGamesByAmiiboIdFlow(amiiboId: String) =
-        searchGamesByAmiiboUseCase.execute(amiiboId).map {
-            SearchResultResult.GamesFound(it) as SearchResultResult
-        }.onStart {
-            emit(SearchResultResult.Loading)
-        }.catch { cause ->
-            handleFailure(cause)
-        }.flowOn(coroutineContextProvider.backgroundDispatcher)
+            if (canBeShown) {
+                _uiEffect.value = UIEffect.ShowGameDetails(wish.gameId)
+            }
+        }
+    }
 
-    private suspend fun FlowCollector<SearchResultResult>.handleFailure(
+    private fun searchByQuery(query: String) =
+        searchGamesByQueryUseCase.execute(query)
+            .onEach { results ->
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        error = null,
+                        gamesResult = results.map { searchResult ->
+                            ViewGameSearchResult(
+                                searchResult
+                            )
+                        }
+                    )
+                }
+            }
+            .onStart {
+                updateState { it.copy(isLoading = true, error = null) }
+            }.catch { cause ->
+                handleFailure(cause)
+            }.flowOn(coroutineContextProvider.backgroundDispatcher)
+            .launchIn(viewModelScope)
+
+    private fun searchByAmiiboId(amiiboId: String) {
+        val savedState = handle.get<SearchResultViewState>(STATE_KEY)
+        if (savedState?.gamesResult != null) {
+            updateFromSavedState(savedState)
+            return
+        }
+
+        searchGamesByAmiiboUseCase.execute(amiiboId)
+            .onEach { results ->
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        error = null,
+                        gamesResult = results.map { searchResult ->
+                            ViewGameSearchResult(
+                                searchResult
+                            )
+                        }
+                    )
+                }
+            }
+            .onStart {
+                updateState { it.copy(isLoading = true, error = null) }
+            }.catch { cause ->
+                handleFailure(cause)
+            }.flowOn(coroutineContextProvider.backgroundDispatcher)
+            .launchIn(viewModelScope)
+    }
+
+    private fun updateFromSavedState(savedState: SearchResultViewState) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    isLoading = false,
+                    error = null,
+                    gamesResult = savedState.gamesResult
+                )
+            }
+        }
+    }
+
+    private suspend fun handleFailure(
         cause: Throwable
     ) {
         if (cause !is SearchGameFailure) {
             throw cause
         }
 
-        emit(SearchResultResult.Error(cause))
+        updateState { it.copy(isLoading = false, error = cause) }
     }
 
     private fun trackSearchResultClick(gameId: Int) {
         searchGamesLogger.trackGameSearchResultClicked(mapOf(GAME_ID_KEY to gameId.toString()))
     }
+
+    @AssistedFactory
+    interface Factory {
+
+        fun create(stateHandle: SavedStateHandle): SearchGamesResultViewModel
+    }
 }
 
+private const val STATE_KEY = "state"
 private const val GAME_ID_KEY = "GAME_ID_KEY"

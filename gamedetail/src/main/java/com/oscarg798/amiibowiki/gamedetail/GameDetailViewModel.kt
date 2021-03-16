@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.gamedetail
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModel
+import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.mvi.Reducer
@@ -42,7 +42,7 @@ class GameDetailViewModel @Inject constructor(
     private val gameDetailLogger: GameDetailLogger,
     override val reducer: Reducer<@JvmSuppressWildcards GameDetailResult, @JvmSuppressWildcards GameDetailViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<GameDetailWish, GameDetailResult, GameDetailViewState>(
+) : AbstractViewModelCompat<GameDetailWish, GameDetailResult, GameDetailViewState>(
     GameDetailViewState.Idling
 ) {
 

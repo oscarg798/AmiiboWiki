@@ -54,7 +54,7 @@ class GetAmiiboFilteredUseCaseTest {
     @Test
     fun `given non default filter when is executed then it should return filtered amiibos`() {
         val result = runBlocking {
-            usecase.execute(FILTER).first()
+            usecase.execute(FILTER)
         }
 
         FILTERED_AMIIBOS shouldBeEqualTo result
@@ -65,7 +65,7 @@ class GetAmiiboFilteredUseCaseTest {
         coEvery { repository.getAmiibos() } answers { flowOf(NO_FILTERED_AMIIBOS) }
 
         val result = runBlocking {
-            usecase.execute(DEFAULT_FILTER).first()
+            usecase.execute(DEFAULT_FILTER)
         }
 
         NO_FILTERED_AMIIBOS shouldBeEqualTo result

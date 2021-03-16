@@ -12,14 +12,17 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
+import android.os.Parcelable
 import com.oscarg798.amiibowiki.core.models.Amiibo
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ViewAmiibo(
     val tail: String,
     val name: String,
     val serie: String,
     val image: String
-) {
+) : Parcelable {
 
     constructor(amiibo: Amiibo) : this(amiibo.tail, amiibo.name, amiibo.gameSeries, amiibo.image)
 }

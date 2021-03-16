@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.oscarg798.amiibowiki.searchgamesresults.databinding.GameRelatedItemBinding
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 
-class SearchResultAdapter(
+internal class SearchResultAdapter(
     private val gameResultRelatedClickListener: SearchResultClickListener
 ) : ListAdapter<ViewGameSearchResult, SearchResultViewHolder>(diff) {
 

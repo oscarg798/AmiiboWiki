@@ -12,23 +12,20 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
+import android.os.Parcelable
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState
+import javax.annotation.concurrent.Immutable
+import kotlinx.parcelize.Parcelize
 
-data class ShowingAmiiboDetailsParams(
-    val amiiboDetails: ViewAmiiboDetails,
-    val isRelatedGamesSectionEnabled: Boolean
-)
-
-sealed class AmiiboDetailViewState : ViewState {
-
-    object Idling : AmiiboDetailViewState()
-    object Loading : AmiiboDetailViewState()
-    data class ShowingAmiiboDetails(val showingAmiiboDetailsParams: ShowingAmiiboDetailsParams) : AmiiboDetailViewState()
-    data class ShowingRelatedGames(val amiiboId: String) : AmiiboDetailViewState()
-    data class ShowingAmiiboImage(val imageUrl: String) : AmiiboDetailViewState() {
-        override fun equals(other: Any?): Boolean = this === other
-    }
-    data class Error(val exception: AmiiboDetailFailure) : AmiiboDetailViewState()
-}
+@Parcelize
+@Immutable
+internal data class AmiiboDetailViewState(
+    val loading: Boolean = false,
+    val amiibo: ViewAmiiboDetails? = null,
+    val relatedGamesSectionEnabled: Boolean = false,
+    val showingImage: String? = null,
+    val showRelatedGames: String? = null,
+    val error: AmiiboDetailFailure? = null
+) : ViewState, Parcelable

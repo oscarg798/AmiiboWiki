@@ -14,7 +14,21 @@
 apply from: "../gradlescripts/shared.gradle"
 apply from: "../gradlescripts/hiltshared.gradle"
 
-android {
+android{
+    buildFeatures {
+        compose true
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+        useIR = true
+    }
+
+    composeOptions {
+        kotlinCompilerVersion "1.4.30"
+        kotlinCompilerExtensionVersion '1.0.0-beta01'
+    }
+
     packagingOptions {
         exclude 'META-INF/metadata.kotlin_module'
     }

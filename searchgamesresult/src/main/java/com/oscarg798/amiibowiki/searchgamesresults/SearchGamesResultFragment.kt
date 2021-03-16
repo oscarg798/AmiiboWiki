@@ -13,42 +13,52 @@
 package com.oscarg798.amiibowiki.searchgamesresults
 
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_AMIIBO_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_GAME_ID
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION
 import com.oscarg798.amiibowiki.core.constants.GAME_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.extensions.bundle
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
-import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
-import com.oscarg798.amiibowiki.searchgamesresults.adapter.SearchResultAdapter
+import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
 import com.oscarg798.amiibowiki.searchgamesresults.adapter.SearchResultClickListener
-import com.oscarg798.amiibowiki.searchgamesresults.databinding.FragmentSearchResultBinding
+import com.oscarg798.amiibowiki.searchgamesresults.composeui.Screen
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.UIEffect
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class SearchResultFragment : Fragment(), SearchResultClickListener {
 
-    private val viewModel: SearchGamesResultViewModel by viewModels()
+    @Inject
+    lateinit var factory: SearchGamesResultViewModel.Factory
 
-    private lateinit var binding: FragmentSearchResultBinding
+    private val viewModel: SearchGamesResultViewModel by viewModels {
+        SavedInstanceViewModelFactory(
+            {
+                factory.create(it)
+            },
+            this
+        )
+    }
 
-    private var gameSearchResultCoverImageView: ImageView? = null
-
-    private val isShownAsGamesRelatedSection: Boolean by bundle(ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION)
+    private val isShownAsGamesRelatedSection: Boolean by bundle(
+        ARGUMENT_SHOW_AS_RELATED_GAMES_SECTION
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +70,14 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val newContext = ContextThemeWrapper(requireActivity(), R.style.AppTheme_SearchGames)
-        val layoutInflater = inflater.cloneInContext(newContext)
-        binding = FragmentSearchResultBinding.inflate(layoutInflater)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                val state by viewModel.state.collectAsState(SearchResultViewState())
+                Screen(state) {
+                    viewModel.onWish(SearchResultWish.ShowGameDetail(it.gameId))
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,17 +86,6 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     }
 
     private fun setup() {
-        binding.tvTitle.visibility = if (isShownAsGamesRelatedSection) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-
-        with(binding.rvGamesRelated) {
-            layoutManager = LinearLayoutManager(context)
-            adapter = SearchResultAdapter(this@SearchResultFragment)
-        }
-
         arguments?.getString(ARGUMENT_AMIIBO_ID)?.let {
             search(GameSearchParam.AmiiboGameSearchParam(it))
         }
@@ -93,19 +96,13 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         coverImageView: ImageView
     ) {
         viewModel.onWish(SearchResultWish.ShowGameDetail(gameSearchResult.gameId))
-        this.gameSearchResultCoverImageView = coverImageView
     }
 
     private fun setupViewModelInteractions() {
         lifecycleScope.launchWhenResumed {
-            viewModel.state.collect { state ->
-                when (state) {
-                    SearchResultViewState.Loading -> showLoading()
-                    is SearchResultViewState.ShowingGameResults -> showGameResults(state.results)
-                    is SearchResultViewState.ShowingGameDetails -> showGameDetails(
-                        state.details.gameId
-                    )
-                    is SearchResultViewState.Error -> showError(state.error)
+            viewModel.uiEffect.collect {
+                when (it) {
+                    is UIEffect.ShowGameDetails -> showGameDetails(it.gameId)
                 }
             }
         }
@@ -116,56 +113,12 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
     }
 
     private fun showGameDetails(gameId: Int) {
-        hideError()
         startDeepLinkIntent(
             GAME_DETAIL_DEEPLINK,
-            gameSearchResultCoverImageView!!,
             Bundle().apply {
                 putInt(ARGUMENT_GAME_ID, gameId)
             }
         )
-    }
-
-    private fun showGameResults(gameResults: Collection<ViewGameSearchResult>) {
-        hideError()
-        hideLoading()
-        (binding.rvGamesRelated.adapter as SearchResultAdapter).submitList(gameResults.toList())
-        binding.lEmptyState.clEmptyState.visibility = if (gameResults.isEmpty()) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-    }
-
-    private fun showLoading() {
-        hideError()
-        binding.lEmptyState.clEmptyState.visibility = View.GONE
-
-        binding.rvGamesRelated.visibility = View.GONE
-        binding.searchResultAnimationList.gameResultShimmerLoadingView.visibility = View.VISIBLE
-        binding.searchResultAnimationList.gameResultShimmerLoadingView.startShimmer()
-    }
-
-    private fun showError(searchGameFailure: SearchGameFailure) {
-        hideLoading()
-        with(binding.tvError) {
-            text = when (searchGameFailure) {
-                is SearchGameFailure.DataSourceNotAvailable,
-                is SearchGameFailure.DateSourceError -> context.getString(R.string.data_not_available_error)
-                else -> context.getString(R.string.generic_error)
-            }
-        }
-        binding.tvError.visibility = View.VISIBLE
-    }
-
-    private fun hideError() {
-        binding.tvError.visibility = View.GONE
-    }
-
-    private fun hideLoading() {
-        binding.searchResultAnimationList.gameResultShimmerLoadingView.visibility = View.GONE
-        binding.searchResultAnimationList.gameResultShimmerLoadingView.stopShimmer()
-        binding.rvGamesRelated.visibility = View.VISIBLE
     }
 
     companion object {
@@ -176,6 +129,12 @@ class SearchResultFragment : Fragment(), SearchResultClickListener {
         }
     }
 }
+
+internal const val titleId = "titleId"
+internal const val gameImageId = "gameImageId"
+internal const val gameNameId = "gameNameTitleId"
+internal const val gameAlternativeNameId = "gameAlternativeNameId"
+internal const val resultsListId = "resultsListId"
 
 private const val ARGUMENT_CURRENT_SEARCH_RESULT_STATE = "ARGUMENT_CURRENT_SEARCH_RESULT_STATE"
 private const val SHIMMER_ELEMENTS_COUNT = 10
