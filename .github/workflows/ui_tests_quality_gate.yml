@@ -10,7 +10,7 @@ on:
 
 jobs:
   check:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       job-status: ${{ job.status }}
     steps:
@@ -41,7 +41,7 @@ jobs:
         run: ./gradlew testDebugUnitTest
 
   ui_test:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: check
     outputs:
       job-status: ${{ job.status }}
@@ -92,7 +92,7 @@ jobs:
           args: 'Ui test failed :warning:'
 
   notification:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs:
      - check
      - ui_test
