@@ -12,7 +12,10 @@
   -->
 
 <resources>
+    <string name="search_guideline">Search a game by name or character</string>
+    <string name="search_placeholder">Search</string>
     <string name="related_games_title">Related Games</string>
     <string name="generic_error">There was an error getting related game data please try again later</string>
     <string name="data_not_available_error">We are not able to display related games at this moment please try again later</string>
+    <string name="search_icon_content_description">Search</string>
 </resources>

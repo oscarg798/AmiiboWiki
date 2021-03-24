@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 Oscar David Gallon Rosero
  *
@@ -89,7 +90,8 @@ class AmiiboListTest {
 
         composeTestRule.registerIdlingResource(composeNetworkIdlingResource)
         composeTestRule.setContent {
-            Screen(viewModel = viewModel, coroutineScope = TestCoroutineScope())
+            Screen(viewModel = viewModel, coroutineScope = TestCoroutineScope()) {
+            }
         }
     }
 

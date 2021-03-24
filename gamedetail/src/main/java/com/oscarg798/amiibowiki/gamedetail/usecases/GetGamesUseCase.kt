@@ -15,13 +15,13 @@ package com.oscarg798.amiibowiki.gamedetail.usecases
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
-import com.oscarg798.amiibowiki.gamedetail.di.GameDetailScope
 import com.oscarg798.amiibowiki.gamedetail.models.COVER_SIZE
 import com.oscarg798.amiibowiki.gamedetail.models.ORIGINAL_IMAGE_SIZE
 import com.oscarg798.amiibowiki.gamedetail.models.SCREENSHOT_IMAGE_SIZE
+import dagger.Reusable
 import javax.inject.Inject
 
-@GameDetailScope
+@Reusable
 class GetGamesUseCase @Inject constructor(private val gameRepository: GameRepository) {
 
     private lateinit var cachedGame: Game

@@ -21,6 +21,11 @@ sealed class GameCategory(val categoryId: Int) {
     object Mod : GameCategory(MOD)
     object Episode : GameCategory(EPISODE)
     object Season : GameCategory(SEASON)
+    object Remake : GameCategory(REMAKE)
+    object Remaster : GameCategory(REMASTER)
+    object ExpandedGame : GameCategory(EXPANDED_GAME)
+    object Port : GameCategory(PORT)
+    object Fork : GameCategory(FORK)
 
     companion object {
 
@@ -33,7 +38,12 @@ sealed class GameCategory(val categoryId: Int) {
             MOD -> Mod
             EPISODE -> Episode
             SEASON -> Season
-            else -> throw IllegalArgumentException("Thre is no game category associated with id: $id")
+            REMAKE -> Remake
+            REMASTER -> Remaster
+            EXPANDED_GAME -> ExpandedGame
+            PORT -> Port
+            FORK -> Fork
+            else -> throw IllegalArgumentException("There is no game category associated with id: $id")
         }
     }
 }
@@ -46,3 +56,8 @@ const val STANDALONG_EXPANSION = 4
 const val MOD = 5
 const val EPISODE = 6
 const val SEASON = 7
+const val REMAKE = 8
+const val REMASTER = 9
+const val EXPANDED_GAME = 10
+const val PORT = 11
+const val FORK = 12

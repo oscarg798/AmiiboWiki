@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki
 
+
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -20,17 +21,11 @@ import com.oscarg798.amiibowiki.testutils.clickElementWithId
 import com.oscarg798.amiibowiki.testutils.idleresources.waitUntilViewIsDisplayed
 import com.oscarg798.amiibowiki.testutils.isViewWithTextDisplayed
 import com.oscarg798.amiibowiki.testutils.utils.TestRobot
-import org.junit.Test
 
-class DashboardTestRobot : TestRobot {
+class DashboardTestRobot() : TestRobot {
 
     override fun isViewDisplayed() {
         waitUntilViewIsDisplayed(ViewMatchers.withText("Amiibos"))
-    }
-
-    fun openSearch(){
-        clickElementWithId(R.id.search_games_navigation)
-        isViewWithTextDisplayed("Search Games")
     }
 
     fun openSettings(){

@@ -40,8 +40,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AmiiboListViewModelTest :
-    ViewModelTestRule.ViewModelCreator<AmiiboListViewState, AmiiboListViewModel> {
+class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListViewState, AmiiboListViewModel> {
 
     private val getAmiibosUseCase = relaxedMockk<GetAmiibosUseCase>()
     private val getAmiibosFilteredUseCase = relaxedMockk<GetAmiiboFilteredUseCase>()
@@ -51,15 +50,14 @@ class AmiiboListViewModelTest :
     private val isFeatureEnableUseCase = relaxedMockk<IsFeatureEnableUseCase>()
     private val handleState = relaxedMockk<SavedStateHandle>()
 
-    private val stateComparator = object : Comparator<AmiiboListViewState> {
-        override fun compare(o1: AmiiboListViewState, o2: AmiiboListViewState): Int {
-            return if (o1.loading == o2.loading && o1.amiibos == o2.amiibos && o1.error == o2.error) {
+    private val stateComparator =
+        Comparator<AmiiboListViewState> { o1, o2 ->
+            if (o1.loading == o2.loading && o1.amiibos == o2.amiibos && o1.error == o2.error) {
                 EQUAL
             } else {
                 NO_EQUAL
             }
         }
-    }
 
     @get:Rule
     val viewModelRule: ViewModelTestRule<AmiiboListViewState, UiEffect, AmiiboListViewModel> =

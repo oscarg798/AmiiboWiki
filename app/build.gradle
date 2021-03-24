@@ -192,7 +192,6 @@ dependencies {
     implementation project(path: ':network')
     implementation project(path: ':gamedetail')
     implementation project(path: ':settings')
-    implementation project(path: ':searchgames')
     implementation project(path: ':searchgamesresult')
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
@@ -229,11 +228,18 @@ dependencies {
 
     debugImplementation chucker.library
     releaseImplementation chucker.no_op
+    androidTestImplementation compose.test
 }
 
 releasePlugin {
     unitTestRequired = true
     buildTypes = ["debug", "release"]
     flavors = ["development", "alpha"]
-    firebaseToken = "1//03hozum1PUjaRCgYIARAAGAMSNwF-L9IrmwSraeT8l6Bi1wKpa1tkuQSIw0cOiOnzlh52DJIYBGo1HE4BDE_dhgDmj_Dryqiyy-k"
+    firebaseToken = firebaseAuthToken
+}
+
+tasks.register("feo2"){
+    doLast  {
+        print("FEOOO $firebaseAuthToken $googleAPIKey")
+    }
 }

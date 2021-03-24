@@ -12,11 +12,9 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults.usecase
 
-import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.repositories.GameRepository
 import com.oscarg798.amiibowiki.core.usecases.FillGameResultCoverUseCase
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class SearchGamesByQueryUseCase @Inject constructor(
@@ -24,15 +22,20 @@ class SearchGamesByQueryUseCase @Inject constructor(
     private val fillGameResultCoverUseCase: FillGameResultCoverUseCase
 ) {
 
-    fun execute(query: String): Flow<Collection<GameSearchResult>> {
-        return flow {
-            val results = gameRepository.searchGame(query)
-            emit(results)
+    fun execute(query: String): SearchGameResult {
+        return when (query) {
+            "" -> SearchGameResult.NotAllowed
+            else -> SearchGameResult.Allowed(
+                flow {
+                    val results = gameRepository.searchGame(query)
+                    emit(results)
 
-            if (results.isNotEmpty()) {
-                val resultsWithImages = fillGameResultCoverUseCase.execute(results)
-                emit(resultsWithImages)
-            }
+                    if (results.isNotEmpty()) {
+                        val resultsWithImages = fillGameResultCoverUseCase.execute(results)
+                        emit(resultsWithImages)
+                    }
+                }
+            )
         }
     }
 }

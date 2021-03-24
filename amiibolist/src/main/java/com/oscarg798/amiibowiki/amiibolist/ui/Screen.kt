@@ -20,57 +20,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.constraintlayout.compose.ConstraintSet
-import com.oscarg798.amiibowiki.amiibodetail.ThemeContainer
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewModel
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.amiibolist.adapter.AmiiboClickListener
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
+import com.oscarg798.amiibowiki.core.ui.ErrorSnackbar
+import com.oscarg798.amiibowiki.core.ui.ThemeContainer
 import kotlinx.coroutines.CoroutineScope
 
 @ExperimentalFoundationApi
 @Composable
-internal fun Screen(viewModel: AmiiboListViewModel, coroutineScope: CoroutineScope) {
-    val state by viewModel.state.collectAsState(AmiiboListViewState())
-
+internal fun Screen(
+    viewModel: AmiiboListViewModel,
+    coroutineScope: CoroutineScope,
+    amiiboClickListener: (ViewAmiibo) -> Unit,
+) {
+    val state by viewModel.state.collectAsState(initial = AmiiboListViewState())
     val snackbarHostState = remember { SnackbarHostState() }
 
     ThemeContainer {
         Scaffold(scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)) {
-            AmiiboListError(
-                state = state,
-                snackbarHostState = snackbarHostState,
-                coroutineScope = coroutineScope
-            )
-            AmiiboLoadingList(state = state)
-            AmiiboList(
-                state,
-                object : AmiiboClickListener {
-                    override fun onClick(viewAmiibo: ViewAmiibo) {
-                        viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(viewAmiibo))
-                    }
-                }
-            )
+            if (state.error != null) {
+                ErrorSnackbar(
+                    message = state.error?.message,
+                    snackbarHostState = snackbarHostState,
+                    coroutineScope = coroutineScope
+                )
+            }
+
+            when {
+                state.loading -> AmiiboListLoading(state = state)
+                !state.loading && state.amiibos != null -> AmiiboList(
+                    state, amiiboClickListener
+                )
+            }
         }
     }
 }
-
-private fun getConstraints() = ConstraintSet {
-
-    val contentId = createRefFor(CONTENT_ID)
-    val errorId = createRefFor(ERROR_ID)
-
-    constrain(contentId) {
-        linkTo(top = parent.top, bottom = errorId.bottom)
-        linkTo(start = parent.start, end = parent.end)
-    }
-
-    constrain(errorId) {
-        bottom.linkTo(parent.bottom)
-        linkTo(start = parent.start, end = parent.end)
-    }
-}
-
-private const val CONTENT_ID = "content"
-internal const val ERROR_ID = "error"

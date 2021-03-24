@@ -14,10 +14,10 @@ package com.oscarg798.amiibowiki.gamedetail.usecases
 
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.models.Id
-import com.oscarg798.amiibowiki.gamedetail.di.GameDetailScope
+import dagger.Reusable
 import javax.inject.Inject
 
-@GameDetailScope
+@Reusable
 class GetGameTrailerUseCase @Inject constructor(private val getGamesUseCase: GetGamesUseCase) {
 
     suspend fun execute(gameId: Id): String {

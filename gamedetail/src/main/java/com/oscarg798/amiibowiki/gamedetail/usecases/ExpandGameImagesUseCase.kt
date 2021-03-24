@@ -12,11 +12,11 @@
 
 package com.oscarg798.amiibowiki.gamedetail.usecases
 
-import com.oscarg798.amiibowiki.gamedetail.di.GameDetailScope
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
+import dagger.Reusable
 import javax.inject.Inject
 
-@GameDetailScope
+@Reusable
 class ExpandGameImagesUseCase @Inject constructor() {
 
     fun execute(params: Collection<ExpandableImageParam>): Collection<String> {
