@@ -1,6 +1,6 @@
 # Workflow for prs
 
-name: Pull request quality gate
+name: Commit request quality gate
 
 on:
   push:
