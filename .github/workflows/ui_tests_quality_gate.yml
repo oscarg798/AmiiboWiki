@@ -43,7 +43,7 @@ jobs:
      - unit_test
     steps:
       - name: Discord success notification
-        if: ${{ needs.check.outputs.status }} == 0 && ${{ needs.unit_test.outputs.status }} == 0
+        if: ${{ needs.check.outputs.status == 0 && needs.unit_test.outputs.status == 0  }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
@@ -51,7 +51,7 @@ jobs:
           args: 'Ui test ran successfully <3 :love: :smile: status= ${{ needs.check.outputs.status }} ${{ needs.unit_test.outputs.status }}'
 
       - name: Discord failure notification
-        if: ${{ needs.check.outputs.status }} != 0 || ${{ needs.unit_test.outputs.status }} != 0
+        if: ${{ needs.check.outputs.status  != 0 || needs.unit_test.outputs.status != 0 }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
