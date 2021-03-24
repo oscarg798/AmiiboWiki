@@ -72,13 +72,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Discord success notification
-        if: ${{ needs.check.outputs.status == 0 &&  needs.unit_test.outputs.status == 0 }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'PR quality gate ran successfully <3 :love :smile'
+      - name: Expose git commit data
+        uses: rlespinasse/git-commit-data-action@v1.x
 
       - name: Discord failure notification
         if: ${{ needs.check.outputs.status != 0 ||  needs.unit_test.outputs.status != 0 }}
@@ -86,4 +81,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'PR quality gate failed :warning: :boom:'
+          args: 'Last commit to branch ${{ github.head_ref }} from ${{ env.GIT_COMMIT_COMMITTER_NAME }} - ${{ env.GIT_COMMIT_COMMITTER_EMAIL }} broke the build :warning: :boom:'
