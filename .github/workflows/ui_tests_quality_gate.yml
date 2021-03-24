@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Acceptance Tests Quality
 
 on:
@@ -11,104 +9,38 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    outputs:
-      job-status: ${{ job.status }}
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          project_id: babyrecord-336ca
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Create local.properties
-        run:  |
-          chmod +x createLocalProperties.sh
-          ./createLocalProperties.sh
-
-      - name: Create google-services.json
-        run:  |
-          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
-          cp app/src/main/google-services.json app/src/debug/google-services.json
-        env:
-          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
-
-      - name: Lint
-        run: ./gradlew ktlintCheck
-
-      - name: Unit Tests
-        run: ./gradlew testDebugUnitTest
-
-  ui_test:
+      - name: x
+        run: echo "hello"
+ 
+  unit_test:
     runs-on: ubuntu-latest
     needs: check
-    outputs:
-      job-status: ${{ job.status }}
     steps:
       - uses: actions/checkout@v2
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          project_id: babyrecord-336ca
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Create local.properties
-        run: |
-          chmod +x createLocalProperties.sh
-          ./createLocalProperties.sh
-
-      - name: Create google-services.json
-        run: |
-          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
-          cp app/src/main/google-services.json app/src/debug/google-services.json
-        env:
-          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
-
-      - name: build debug apk
-        run: ./gradlew assembleDevelopmentDebug
-
-      - name: build android tests apk
-        run: ./gradlew assembleAndroidTest
-
-      - name: run test on testlab
-        run: gcloud firebase test android run --device-ids=OnePlus6T --app app/build/outputs/apk/development/debug/app-development-debug.apk --test app/build/outputs/apk/androidTest/development/debug/app-development-debug-androidTest.apk --os-version-ids=28  --use-orchestrator
-
-      - name: Discord success notification
-        if: ${{ job.status == 'success' }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'Ui test ran successfully <3 :love: :smile:'
-
-      - name: Discord failure notification
-        if: ${{ job.status != 'success' }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'Ui test failed :warning:'
+      - name: x2
+        run: echo "chao"
 
   notification:
     runs-on: ubuntu-latest
     needs:
      - check
-     - ui_test
+     - unit_test
     steps:
       - uses: actions/checkout@v2
 
       - name: Discord success notification
-        if: ${{ needs.check.outputs.job-status }} == 'success' && ${{ needs.ui_test.outputs.job.status }} == 'success'
+        if: ${{ jobs.check.status }} == 'success' && ${{ jobs.unit_test.status }} == 'success'
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'Ui test ran successfully <3 :love: :smile:'
+          args: 'Ui test ran successfully <3 :love: :smile: status= ${{ jobs.check.status }}'
 
       - name: Discord failure notification
-        if: ${{ needs.check.outputs.job-status }} != 'success' || ${{ needs.ui_test.outputs.job.status }} != 'success'
+        if: ${{ jobs.check.status }} != 'success' || ${{ jobs.unit_test.status }} != 'success'
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
