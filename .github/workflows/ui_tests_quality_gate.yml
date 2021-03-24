@@ -32,15 +32,15 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Discord success notification
-        if: ${{ jobs.check.status }} == 'success' && ${{ jobs.unit_test.status }} == 'success'
+        if: ${{ needs.check.status }} == 'success' && ${{ needs.unit_test.status }} == 'success'
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'Ui test ran successfully <3 :love: :smile: status= ${{ jobs.check.status }}'
+          args: 'Ui test ran successfully <3 :love: :smile: status= ${{ needs.check.status }}'
 
       - name: Discord failure notification
-        if: ${{ jobs.check.status }} != 'success' || ${{ jobs.unit_test.status }} != 'success'
+        if: ${{ needs.check.status }} != 'success' || ${{ needs.unit_test.status }} != 'success'
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
