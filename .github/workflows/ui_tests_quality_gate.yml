@@ -1,3 +1,5 @@
+# This workflow will run on every Pull Request 
+
 name: Acceptance Tests Quality
 
 on:
@@ -14,22 +16,105 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: x
-        run: echo "hello"
-      - name: set output
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: babyrecord-336ca
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Create local.properties
+        run:  |
+          chmod +x createLocalProperties.sh
+          ./createLocalProperties.sh
+
+      - name: Create google-services.json
+        run:  |
+          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
+          cp app/src/main/google-services.json app/src/debug/google-services.json
+        env:
+          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
+
+      - name: Lint
+        run: ./gradlew ktlintCheck
+
+      - name: Assemble
+        run: ./gradlew assembleDevelopmentDebug --stacktrace
+      
+      - name: Set output
         id: set_output
         if: ${{ always() }}
         run: echo ::set-output name=status::$?
  
   unit_test:
     runs-on: ubuntu-latest
+    needs: check
     outputs:
       status: ${{ steps.set_output.outputs.status }}
-    needs: check
+
     steps:
       - uses: actions/checkout@v2
-      - name: x2
-        run: echo "chao"
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: babyrecord-336ca
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Create local.properties
+        run:  |
+          chmod +x createLocalProperties.sh
+          ./createLocalProperties.sh
+
+      - name: Create google-services.json
+        run:  |
+          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
+          cp app/src/main/google-services.json app/src/debug/google-services.json
+        env:
+          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
+
+      - name: Unit Tests
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: set output
+        id: set_output
+        if: ${{ always() }}
+        run: echo ::set-output name=status::$?
+
+  ui_test:
+    runs-on: ubuntu-latest
+    needs: unit_test
+    outputs:
+      status: ${{ steps.set_output.outputs.status }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: babyrecord-336ca
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Create local.properties
+        run: |
+          chmod +x createLocalProperties.sh
+          ./createLocalProperties.sh
+
+      - name: Create google-services.json
+        run: |
+          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
+          cp app/src/main/google-services.json app/src/debug/google-services.json
+        env:
+          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
+
+      - name: build debug apk
+        run: ./gradlew assembleDevelopmentDebug
+
+      - name: build android tests apk
+        run: ./gradlew assembleAndroidTest
+
+      - name: run test on testlab
+        run: gcloud firebase test android run --device-ids=OnePlus6T --app app/build/outputs/apk/development/debug/app-development-debug.apk --test app/build/outputs/apk/androidTest/development/debug/app-development-debug-androidTest.apk --os-version-ids=28  --use-orchestrator
+
       - name: set output
         id: set_output
         if: ${{ always() }}
@@ -41,19 +126,22 @@ jobs:
     needs:
      - check
      - unit_test
+     - ui_test
     steps:
+      - uses: actions/checkout@v2
+
       - name: Discord success notification
-        if: ${{ needs.check.outputs.status == 0 && needs.unit_test.outputs.status == 0  }}
+        if: ${{ needs.check.outputs.status == 0 &&  needs.unit_test.outputs.status == 0 && needs.ui_test.outputs.status == 0 }} 
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'Ui test ran successfully <3 :love: :smile: status= ${{ needs.check.outputs.status }} ${{ needs.unit_test.outputs.status }}'
+          args: 'PR quality gate ran successfully <3 :love :smile'
 
       - name: Discord failure notification
-        if: ${{ needs.check.outputs.status  != 0 || needs.unit_test.outputs.status != 0 }}
+        if: ${{ needs.check.outputs.status != 0 ||  needs.unit_test.outputs.status != 0 || needs.ui_test.outputs.status != 0 }} 
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'Ui test failed :warning:'
+          args: 'PR quality gate failed :warning: :boom:'
