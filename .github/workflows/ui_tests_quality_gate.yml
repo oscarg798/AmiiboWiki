@@ -10,30 +10,28 @@ jobs:
   check:
     runs-on: ubuntu-latest
     outputs:
-      status: 
-        description: "The status of the job"
-        value: ${{ job.status }}
+      status: ${{ steps.set_output.outputs.status }}
     steps:
       - uses: actions/checkout@v2
 
       - name: x
         run: echo "hello"
       - name: set output
+        id: set_output
         if: ${{ always() }}
         run: echo ::set-output name=status::$?
  
   unit_test:
     runs-on: ubuntu-latest
     outputs:
-      status: 
-        description: "The status of the job"
-        value: ${{ job.status }}
+      status: ${{ steps.set_output.outputs.status }}
     needs: check
     steps:
       - uses: actions/checkout@v2
       - name: x2
         run: echo "chao"
       - name: set output
+        id: set_output
         if: ${{ always() }}
         run: echo ::set-output name=status::$?
 
