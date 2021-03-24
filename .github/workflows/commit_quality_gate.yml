@@ -1,0 +1,89 @@
+# Workflow for prs
+
+name: Pull request quality gate
+
+on:
+  push:
+    branches:
+      - '*'
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.set_output.outputs.status }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create local.properties
+        run: |
+          chmod +x createLocalProperties.sh
+          ./createLocalProperties.sh
+
+      - name: Create google-services.json
+        run: |
+          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
+          cp app/src/main/google-services.json app/src/debug/google-services.json
+        env:
+          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
+
+      - name: Lint
+        run: ./gradlew ktlintCheck
+
+      - name: Set output
+        id: set_output
+        if: ${{ always() }}
+        run: echo ::set-output name=status::$?
+
+  unit_test:
+    runs-on: ubuntu-latest
+    needs: check
+    outputs:
+      status: ${{ steps.set_output.outputs.status }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create local.properties
+        run:  |
+          chmod +x createLocalProperties.sh
+          ./createLocalProperties.sh
+
+      - name: Create google-services.json
+        run:  |
+          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
+          cp app/src/main/google-services.json app/src/debug/google-services.json
+        env:
+          GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
+
+      - name: Unit Tests
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: set output
+        id: set_output
+        if: ${{ always() }}
+        run: echo ::set-output name=status::$?
+
+  notification:
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs:
+      - check
+      - unit_test
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Discord success notification
+        if: ${{ needs.check.outputs.status == 0 &&  needs.unit_test.outputs.status == 0 }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'PR quality gate ran successfully <3 :love :smile'
+
+      - name: Discord failure notification
+        if: ${{ needs.check.outputs.status != 0 ||  needs.unit_test.outputs.status != 0 }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'PR quality gate failed :warning: :boom:'
