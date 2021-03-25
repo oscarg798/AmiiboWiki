@@ -16,9 +16,7 @@ import com.oscarg798.amiibowiki.core.mvi.ViewState
 
 import kotlin.Exception
 
-sealed class SplashViewState() : ViewState {
-
-    object IsIdling: SplashViewState()
-    object NavigatingToFirstscreen: SplashViewState()
-    data class Error(val exception: Exception): SplashViewState()
-}
+internal  data class SplashViewState(
+    val loading: Boolean = true,
+    val error: Exception? = null
+) : ViewState

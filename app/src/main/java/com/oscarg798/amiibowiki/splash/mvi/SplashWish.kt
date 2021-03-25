@@ -14,6 +14,6 @@ package com.oscarg798.amiibowiki.splash.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.Wish
 
-sealed class SplashWish : Wish {
+internal sealed class SplashWish : Wish {
     object GetTypes : SplashWish()
 }

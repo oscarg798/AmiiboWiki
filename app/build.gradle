@@ -61,6 +61,9 @@ android {
             minifyEnabled true
             consumerProguardFiles 'proguard-rules.pro'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            firebaseCrashlytics {
+                mappingFileUploadEnabled true
+            }
         }
 
         debug{
@@ -101,6 +104,7 @@ android {
     kotlinOptions {
         freeCompilerArgs = ["-Xallow-result-return-type", "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi", "-Xopt-in=kotlinx.coroutines.FlowPreview", "-Xopt-in=kotlin.contracts.ExperimentalContracts"]
         jvmTarget = "1.8"
+        useIR = true
     }
 
     testOptions {
@@ -113,6 +117,12 @@ android {
     buildFeatures {
         viewBinding true
         dataBinding false
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerVersion "1.4.31"
+        kotlinCompilerExtensionVersion '1.0.0-beta03'
     }
 
     packagingOptions {
@@ -163,7 +173,7 @@ dependencies {
     implementation lifecycleExtensions
     implementation lifecycle
 
-    implementation lottie
+    implementation lottie.compose
 
     implementation flagly
 
@@ -175,7 +185,7 @@ dependencies {
     implementation fragmentNavigationKtx
     implementation navigationUiKtx
 
-    implementation crashly
+    implementation firebase.crashlytics
     implementation(lomeno)
 
     implementation preference
@@ -194,6 +204,19 @@ dependencies {
     implementation project(path: ':settings')
     implementation project(path: ':searchgamesresult')
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+    implementation compose.liveData
+    implementation compose.ui
+    implementation compose.tooling
+    implementation compose.foundation
+    implementation compose.material
+    implementation compose.icons
+    implementation compose.iconsExtended
+    implementation compose.animations
+    implementation compose.constraintLayout
+    implementation compose.compiler
+    implementation compose.activities
+    androidTestImplementation compose.test
 
     kapt project(':loggerprocessor')
 
@@ -236,10 +259,4 @@ releasePlugin {
     buildTypes = ["debug", "release"]
     flavors = ["development", "alpha"]
     firebaseToken = firebaseAuthToken
-}
-
-tasks.register("feo2"){
-    doLast  {
-        print("FEOOO $firebaseAuthToken $googleAPIKey")
-    }
 }

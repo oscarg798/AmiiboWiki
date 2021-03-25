@@ -123,13 +123,20 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
     }
 
     private suspend fun onError(exception: Throwable) {
-        val error = when (exception) {
-            is AmiiboDetailFailure.AmiiboNotFoundByTail -> exception
-            is Exception -> AmiiboDetailFailure.UnknowError(exception)
-            else -> throw exception
+        if (exception !is Exception) {
+            throw exception
         }
+
+        amiiboDetailLogger.onDetailCrash(exception)
+
         updateState { state ->
-            state.copy(loading = false, error = error)
+            state.copy(
+                loading = false,
+                error = when (exception) {
+                    is AmiiboDetailFailure.AmiiboNotFoundByTail -> exception
+                    else -> AmiiboDetailFailure.UnknowError(exception)
+                }
+            )
         }
     }
 

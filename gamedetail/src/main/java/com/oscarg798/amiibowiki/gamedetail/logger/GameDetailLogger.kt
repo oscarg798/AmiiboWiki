@@ -12,11 +12,13 @@
 
 package com.oscarg798.amiibowiki.gamedetail.logger
 
+import com.oscarg798.amiibowiki.logger.annotations.AppCrashed
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
 import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
 import com.oscarg798.amiibowiki.logger.events.BUTTON_TYPE_NAME
+import java.lang.Exception
 
 @LoggerDecorator
 interface GameDetailLogger {
@@ -26,6 +28,9 @@ interface GameDetailLogger {
 
     @WidgetClicked(GAME_TRAILER_CLICKED_EVENT_NAME, BUTTON_TYPE_NAME)
     fun trackTrailerClicked(@LogEventProperties properties: Map<String, String>)
+
+    @AppCrashed
+    fun logCrash(@LogEventProperties exception: Exception)
 }
 
 private const val GAME_TRAILER_CLICKED_EVENT_NAME = "GAME_TRAILER_CLICKED"

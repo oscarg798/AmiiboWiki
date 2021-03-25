@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Oscar David Gallon Rosero
+ * Copyright 2021 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,20 +10,19 @@
  *
  */
 
-package com.oscarg798.amiibowiki.gamedetail.mvi
+package com.oscarg798.amiibowiki.splash
 
-import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
-import com.oscarg798.amiibowiki.core.models.Game
-import com.oscarg798.amiibowiki.core.mvi.Result
+import com.oscarg798.amiibowiki.logger.annotations.LogSources
+import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
+import com.oscarg798.amiibowiki.logger.annotations.ScreenShown
+import com.oscarg798.amiibowiki.logger.sources.FIREBASE_LOG_SOURCE_NAME
 
-sealed class GameDetailResult : Result {
-    object Loading : GameDetailResult()
-    data class GameTrailerFound(val trailerId: String) : GameDetailResult() {
-        override fun equals(other: Any?): Boolean = this === other
-    }
-    data class GameFetched(val game: Game) : GameDetailResult()
-    data class ImagesExpanded(val images: Collection<String>) : GameDetailResult() {
-        override fun equals(other: Any?): Boolean = this === other
-    }
-    data class Error(val exception: GameDetailFailure) : GameDetailResult()
+@LoggerDecorator
+interface SplashLogger {
+
+    @LogSources([FIREBASE_LOG_SOURCE_NAME])
+    @ScreenShown(SCREEN_NAME)
+    fun trackScreenShown()
 }
+
+private const val SCREEN_NAME = "SPLASH_SCREEN"

@@ -16,7 +16,7 @@ import android.nfc.NfcAdapter
 import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
-import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException
+import com.oscarg798.amiibowiki.nfcreader.errors.UnknownReadError
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepositoryImpl
 import com.oscarg798.amiibowiki.nfcreader.utils.ArrayCloner
 import com.oscarg798.amiibowiki.nfcreader.utils.ByteWrapper
@@ -67,8 +67,8 @@ class NFCReaderRepositoryTest {
         }
     }
 
-    @Test(expected = WrongPageFormatException::class)
-    fun `given a tag without pages when it want to be readed then it should throw WrongPageFormatException`() {
+    @Test(expected = UnknownReadError::class)
+    fun `given a tag without pages when it want to be readed then it should throw UnknownReadError`() {
         every { tagTech.readPages(any()) } answers { null }
         val result = repository.getamiiboIdentifierFromTag(tag)
         result shouldBeEqualTo AMIIBO_IDENTIFIER
@@ -80,7 +80,7 @@ class NFCReaderRepositoryTest {
         }
     }
 
-    @Test(expected = Exception::class)
+    @Test(expected = UnknownReadError::class)
     fun `when there is an exception reading a tag  then it should throw UnknownReadError`() {
         every { tagTech.readPages(any()) } answers { throw Exception() }
         val result = repository.getamiiboIdentifierFromTag(tag)
@@ -93,8 +93,8 @@ class NFCReaderRepositoryTest {
         }
     }
 
-    @Test(expected = RuntimeException::class)
-    fun `when there is an RuntimeException reading a tag  then it should throw the IOException`() {
+    @Test(expected = UnknownReadError::class)
+    fun `when there is an RuntimeException reading a tag  then it should throw the UnknownReadError`() {
         every { tagTech.readPages(any()) } answers { throw RuntimeException() }
         val result = repository.getamiiboIdentifierFromTag(tag)
         result shouldBeEqualTo AMIIBO_IDENTIFIER
@@ -106,8 +106,8 @@ class NFCReaderRepositoryTest {
         }
     }
 
-    @Test(expected = InvalidTagDataException::class)
-    fun `when there is an InvalidTagDataException reading a tag  then it should throw the InvalidTagDataException`() {
+    @Test(expected = UnknownReadError::class)
+    fun `when there is an InvalidTagDataException reading a tag  then it should throw the UnknownReadError`() {
         every { tagTech.readPages(any()) } answers { throw InvalidTagDataException() }
         val result = repository.getamiiboIdentifierFromTag(tag)
         result shouldBeEqualTo AMIIBO_IDENTIFIER

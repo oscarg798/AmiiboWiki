@@ -15,12 +15,14 @@ package com.oscarg798.amiibowiki.nfcreader
 import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
+import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLogger
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReducer
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -35,15 +37,15 @@ import org.junit.Test
 
 @InternalCoroutinesApi
 
-class NFCReaderViewModelTest :
-    ViewModelTestRuleCompat.ViewModelCreator<NFCReaderViewState, NFCReaderViewModel> {
+class NFCReaderViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<NFCReaderViewState, NFCReaderViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRuleCompat<NFCReaderViewState, NFCReaderViewModel>(this)
+    val viewModelTestRule = ViewModelTestRuleCompat(this)
 
     private val validateAdapterAvailabilityUseCase = mockk<ValidateAdapterAvailabilityUseCase>()
     private val readTagUseCase = mockk<ReadTagUseCase>()
     private val tag = mockk<Tag>()
+    private val logger = relaxedMockk<NFCReaderLogger>()
     private val reducer = spyk(NFCReducer())
 
     @Before
@@ -56,6 +58,7 @@ class NFCReaderViewModelTest :
         validateAdapterAvailabilityUseCase,
         readTagUseCase,
         reducer,
+        logger,
         viewModelTestRule.coroutineContextProvider
     )
 

@@ -12,16 +12,21 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults.logger
 
+import com.oscarg798.amiibowiki.logger.annotations.AppCrashed
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.WidgetClicked
 import com.oscarg798.amiibowiki.logger.events.RECYCLER_VIEW_ITEM_TYPE_NAME
+import java.lang.Exception
 
 @LoggerDecorator
 interface SearchGamesResultLogger {
 
     @WidgetClicked(GAME_RESULT_CLICKED_NAME, RECYCLER_VIEW_ITEM_TYPE_NAME)
     fun trackGameSearchResultClicked(@LogEventProperties properties: Map<String, String>)
+
+    @AppCrashed
+    fun logCrash(@LogEventProperties exception: Exception)
 }
 
 private const val GAME_RESULT_CLICKED_NAME = "GAME_RESULT_ITEM"

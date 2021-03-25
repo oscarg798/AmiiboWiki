@@ -27,4 +27,11 @@ data class AmiiboListViewState(
 ) : ViewState, Parcelable {
 
     override fun equals(other: Any?): Boolean = this === other
+
+    override fun hashCode(): Int {
+        var result = loading.hashCode()
+        result = 31 * result + (amiibos?.hashCode() ?: 0)
+        result = 31 * result + (error?.hashCode() ?: 0)
+        return result
+    }
 }

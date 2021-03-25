@@ -36,6 +36,7 @@ class AmiiboWikiApplication : Application(), FeatureHandleResourceProvider {
     @RemoteFeatureFlagHandler
     lateinit var remoteFeatureFlagProvider: FeatureFlagHandler
 
+
     override fun getFeatureFlagProvider(): FeatureFlagProvider =
         featureFlagHandler as FeatureFlagProvider
 

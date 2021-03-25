@@ -14,10 +14,12 @@ package com.oscarg798.amiibowiki.core.di.modules
 
 import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.oscarg798.amiibowiki.core.logger.CrashLogger
 import com.oscarg798.amiibowiki.core.logger.FirebaseLogger
 import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.logger.requestprocessor.DefaultRequestProcessor
+import com.oscarg798.amiibowiki.logger.sources.CrashlyticsSource
 import com.oscarg798.amiibowiki.logger.sources.FirebaseSource
 import com.oscarg798.amiibowiki.logger.sources.MixPanelSource
 import com.oscarg798.amiibowiki.network.di.qualifiers.NetworkTrackerInterceptor
@@ -52,12 +54,17 @@ object LoggerModule {
 
     @Singleton
     @Provides
-    fun provideLogger(firebaseLogger: FirebaseLogger, mixpanelLogger: MixpanelLogger): Logger =
+    fun provideLogger(
+        firebaseLogger: FirebaseLogger,
+        mixpanelLogger: MixpanelLogger,
+        crashLogger: CrashLogger
+    ): Logger =
         Lomeno(
             mapOf(
                 FirebaseSource to setOf(firebaseLogger),
                 NetworkLogSource to setOf(firebaseLogger, mixpanelLogger),
-                MixPanelSource to setOf(mixpanelLogger)
+                MixPanelSource to setOf(mixpanelLogger),
+                CrashlyticsSource to setOf(crashLogger)
             )
         )
 

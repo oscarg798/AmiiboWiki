@@ -19,8 +19,6 @@ sealed class NFCReaderFailure(
     override val cause: Exception? = null
 ) : Failure.Recoverable(message, cause) {
 
-    object AdapterNotFound : NFCReaderFailure("NFC adapter not found in device")
-    object AdapterDisabled : NFCReaderFailure("NFC Adapter is disabled")
     class TagNotSupported(cause: Exception) : NFCReaderFailure("Tag not supported", cause)
     class Unknow(cause: Exception) : NFCReaderFailure(cause.message, cause)
 }

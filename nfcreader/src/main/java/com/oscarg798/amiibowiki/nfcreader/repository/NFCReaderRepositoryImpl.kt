@@ -22,7 +22,6 @@ import com.oscarg798.amiibowiki.nfcreader.errors.WrongPageFormatException
 import com.oscarg798.amiibowiki.nfcreader.utils.ArrayCloner
 import com.oscarg798.amiibowiki.nfcreader.utils.ByteWrapper
 import com.oscarg798.amiibowiki.nfcreader.utils.TagTech
-import java.io.IOException
 import javax.inject.Inject
 import kotlin.experimental.and
 
@@ -45,10 +44,6 @@ class NFCReaderRepositoryImpl @Inject constructor(
             )
         }.getOrTransform {
             closeTagTech()
-
-            if (it !is IOException || it is InvalidTagDataException || it is WrongPageFormatException) {
-                throw it
-            }
 
             throw UnknownReadError(it)
         }

@@ -27,8 +27,7 @@ jobs:
 
       - name: Create google-services.json
         run:  |
-          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
-          cp app/src/main/google-services.json app/src/debug/google-services.json
+          touch app/google-services.json && echo "$GSJ" >> app/google-services.json
         env:
           GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
 
@@ -41,7 +40,7 @@ jobs:
       - name: Set output
         id: set_output
         if: ${{ always() }}
-        run: echo ::set-output name=status::$?
+        run: echo ::set-output name=status::${{ job.status }}
  
   unit_test:
     runs-on: ubuntu-latest
@@ -59,18 +58,17 @@ jobs:
 
       - name: Create google-services.json
         run:  |
-          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
-          cp app/src/main/google-services.json app/src/debug/google-services.json
+          touch app/google-services.json && echo "$GSJ" >> app/google-services.json
         env:
           GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
 
       - name: Unit Tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: ./gradlew test --stacktrace
 
       - name: set output
         id: set_output
         if: ${{ always() }}
-        run: echo ::set-output name=status::$?
+        run: echo ::set-output name=status::${{ job.status }}
 
   ui_test:
     runs-on: ubuntu-latest
@@ -93,8 +91,7 @@ jobs:
 
       - name: Create google-services.json
         run: |
-          touch app/src/main/google-services.json && echo "$GSJ" >> app/src/main/google-services.json
-          cp app/src/main/google-services.json app/src/debug/google-services.json
+          touch app/google-services.json && echo "$GSJ" >> app/google-services.json
         env:
           GSJ: ${{secrets.GOOGLE_SERVICES_JSON}}
 
@@ -110,7 +107,7 @@ jobs:
       - name: set output
         id: set_output
         if: ${{ always() }}
-        run: echo ::set-output name=status::$?
+        run: echo ::set-output name=status::${{ job.status }}
 
   notification:
     runs-on: ubuntu-latest
@@ -121,7 +118,7 @@ jobs:
      - ui_test
     steps:
       - name: Discord success notification
-        if: ${{ needs.check.outputs.status == 0 &&  needs.unit_test.outputs.status == 0 && needs.ui_test.outputs.status == 0 }} 
+        if: ${{ needs.ui_test.outputs.status == 'success' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
@@ -129,7 +126,7 @@ jobs:
           args: 'PR quality gate ran successfully <3 :love :smile'
 
       - name: Discord failure notification
-        if: ${{ needs.check.outputs.status != 0 ||  needs.unit_test.outputs.status != 0 || needs.ui_test.outputs.status != 0 }} 
+        if: ${{ needs.ui_test.outputs.status != 'success' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master

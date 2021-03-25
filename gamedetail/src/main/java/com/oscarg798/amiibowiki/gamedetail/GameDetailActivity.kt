@@ -12,9 +12,10 @@
 package com.oscarg798.amiibowiki.gamedetail
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.google.android.youtube.player.YouTubeStandalonePlayer
@@ -54,22 +55,18 @@ internal class GameDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(
-            ComposeView(this).apply {
-                setContent {
-                    Screen(
-                        viewModel = viewModel,
-                        coroutineScope = lifecycleScope,
-                        onTrailerClicked = {
-                            viewModel.onWish(GameDetailWish.PlayGameTrailer)
-                        }
-                    ) {
-                        onBackPressed()
-                    }
+        ViewTreeLifecycleOwner.set(window.decorView, this)
+        setContent {
+            Screen(
+                viewModel = viewModel,
+                coroutineScope = lifecycleScope,
+                onTrailerClicked = {
+                    viewModel.onWish(GameDetailWish.PlayGameTrailer)
                 }
+            ) {
+                onBackPressed()
             }
-        )
+        }
 
         setupViewModel()
         viewModel.onWish(GameDetailWish.ShowGameDetail)

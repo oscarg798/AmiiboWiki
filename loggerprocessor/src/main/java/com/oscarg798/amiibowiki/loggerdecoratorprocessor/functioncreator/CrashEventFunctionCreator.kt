@@ -13,16 +13,10 @@
 package com.oscarg798.amiibowiki.loggerdecoratorprocessor.functioncreator
 
 import com.oscarg798.amiibowiki.logger.events.CrashEvent
-import com.oscarg798.amiibowiki.logger.events.RegularLogEvent
-import com.oscarg798.amiibowiki.logger.sources.CrashlytcisSource
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.CrashEventDecorator
 import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.MethodDecorator
-import com.oscarg798.amiibowiki.loggerdecoratorprocessor.builder.RegularEventDecorator
-import com.oscarg798.lomeno.event.LogEvent
-import com.oscarg798.lomeno.event.LogSource
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 class CrashEventFunctionCreator : AbstractFunctionCreator<CrashEventDecorator>() {
 

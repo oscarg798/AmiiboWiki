@@ -13,9 +13,11 @@
 package com.oscarg798.amiibowiki.nfcreader
 
 import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
+import com.oscarg798.amiibowiki.core.failures.GameAPIAuthenticationFailure
 import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
+import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLogger
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
@@ -34,6 +36,7 @@ class NFCReaderViewModel @Inject constructor(
     private val validateAdapterAvailabilityUseCase: ValidateAdapterAvailabilityUseCase,
     private val readTagUseCase: ReadTagUseCase,
     override val reducer: Reducer<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewState>,
+    private val logger: NFCReaderLogger,
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModelCompat<NFCReaderWish, NFCReaderResult,
     NFCReaderViewState>(NFCReaderViewState.Idling) {
@@ -60,11 +63,24 @@ class NFCReaderViewModel @Inject constructor(
         val result = readTagUseCase.execute(wish.tag)
         emit(NFCReaderResult.ReadSuccessful(result) as NFCReaderResult)
     }.catch { cause ->
-        if (cause !is NFCReaderFailure) {
+
+        if (cause !is NFCReaderFailure && cause !is GameAPIAuthenticationFailure) {
             throw cause
         }
 
-        emit(NFCReaderResult.Error(cause))
+        logger.logException(cause as Exception)
+
+        emit(
+            when (cause) {
+                is NFCReaderFailure -> NFCReaderResult.Error(cause)
+                is GameAPIAuthenticationFailure -> NFCReaderResult.Error(
+                    NFCReaderFailure.Unknow(
+                        cause
+                    )
+                )
+                else -> throw cause
+            }
+        )
     }.onStart {
         emit(NFCReaderResult.Reading)
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
