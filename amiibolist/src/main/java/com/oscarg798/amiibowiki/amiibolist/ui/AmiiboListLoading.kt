@@ -36,10 +36,6 @@ import com.oscarg798.amiibowiki.core.ui.Shimmer
 @ExperimentalFoundationApi
 @Composable
 internal fun AmiiboListLoading(state: AmiiboListViewState) {
-    if (!state.loading) {
-        return
-    }
-
     LazyVerticalGrid(cells = GridCells.Fixed(GridCount)) {
         items(DemoList) {
             Card(

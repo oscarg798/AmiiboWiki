@@ -179,7 +179,7 @@ class AmiiboListFragment :
     }
 
     private fun showFilters(filters: List<ViewAmiiboType>) {
-        val adapter = ArrayAdapter<ViewAmiiboType>(
+        val adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.select_dialog_singlechoice,
             filters
@@ -206,5 +206,3 @@ class AmiiboListFragment :
 private const val MINUMUN_SEARCH_QUERY_LENGTH = 3
 private const val SEARCH_DEBOUNCE = 500L
 private const val EMPTY_SEARCH_QUERY = ""
-private const val SKELETON_ANIMATION_EXAMPLES_COUNT = 10
-private const val NUMBER_OF_COLUMNS = 2

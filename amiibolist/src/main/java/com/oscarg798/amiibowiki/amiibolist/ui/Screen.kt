@@ -50,7 +50,8 @@ internal fun Screen(
             when {
                 state.loading -> AmiiboListLoading(state = state)
                 !state.loading && state.amiibos != null -> AmiiboList(
-                    state, amiiboClickListener
+                    state.amiibos!!,
+                    amiiboClickListener
                 )
             }
         }
