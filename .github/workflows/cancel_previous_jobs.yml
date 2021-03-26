@@ -1,12 +1,16 @@
 name: Cleanup Duplicate Branches and PRs  
 on:
   schedule:
-    - cron:  '*/15 * * * *'
+    - cron:  '*/10 * * * *'
 jobs:    
   cancel-runs:
     runs-on: ubuntu-latest
     steps:
       - uses: n1hility/cancel-previous-runs@v2
         with: 
-          token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: my-heavy-workflow.yml
+          token: ${{ secrets.TOKEN }}
+          workflow: ui_tests_quality_gate.yml
+      - uses: n1hility/cancel-previous-runs@v2
+        with: 
+          token: ${{ secrets.TOKEN }}
+          workflow: commit_quality_gate.yml
