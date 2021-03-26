@@ -15,11 +15,7 @@ package com.oscarg798.amiibowiki.settings.mvi
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 
-sealed class SettingsViewState() : ViewState {
-    object Idling : SettingsViewState()
-    object Loading : SettingsViewState()
-    data class Preferences(val preferences: Collection<PreferenceBuilder>) : SettingsViewState()
-    object ShowingDevelopmentActivity : SettingsViewState()
-    object ActivityShouldBeRecreated : SettingsViewState()
-    object ShowingDarkModeDialog : SettingsViewState()
-}
+data class SettingsViewState(
+    val loading: Boolean = false,
+    val preferences: Collection<PreferenceBuilder>? = null
+) : ViewState

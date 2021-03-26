@@ -107,5 +107,4 @@ internal class NFCReaderViewModelTest :
 
 private const val EQUALS = 0
 private const val DIFFERENT = 0
-private val AMIIBO_IDENTIFIER =
-    AmiiboIdentifier("1", "2")
+private val AMIIBO_IDENTIFIER = AmiiboIdentifier("1", "2")

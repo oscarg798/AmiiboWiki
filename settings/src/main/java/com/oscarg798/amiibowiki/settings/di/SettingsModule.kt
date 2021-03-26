@@ -18,7 +18,6 @@ import com.oscarg798.amiibowiki.settings.featurepoint.DevelopmentActivityFeature
 import com.oscarg798.amiibowiki.settings.featurepoint.MaxNumberOfResultInSearchFeatureFactory
 import com.oscarg798.amiibowiki.settings.featurepoint.PreferenceFeaturePoint
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.amiibowiki.settings.mvi.SettingsReducer
 import com.oscarg798.amiibowiki.settings.mvi.SettingsResult
 import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.repositories.SettingsRepository
@@ -53,9 +52,4 @@ object SettingsModule {
     @Provides
     fun provideSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository =
         settingsRepositoryImpl
-
-    @ViewModelScoped
-    @Provides
-    fun provideSettingsReducer(settingsReducer: SettingsReducer): Reducer<@JvmSuppressWildcards SettingsResult, SettingsViewState> =
-        settingsReducer
 }

@@ -10,23 +10,8 @@
  *
  */
 
-package com.oscarg798.amiibowiki.navigation.di
+package com.oscarg798.amiibowiki.navigation.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardReducer
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardResult
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardViewState
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import com.oscarg798.amiibowiki.core.mvi.Wish
 
-@InstallIn(ViewModelComponent::class)
-@Module
-class NavigationModule {
-
-    @Provides
-    @ViewModelScoped
-    fun provideReducer(reducer: DashboardReducer): Reducer<DashboardResult, DashboardViewState> =  reducer
-}
+object CheckUpdatesWish : Wish
