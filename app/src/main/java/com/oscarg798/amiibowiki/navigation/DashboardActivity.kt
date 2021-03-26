@@ -23,6 +23,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.oscarg798.amiibowiki.R
+import com.oscarg798.amiibowiki.core.extensions.setViewTreeObserver
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.navigation.mvi.DashboardViewState
 import com.oscarg798.amiibowiki.navigation.mvi.DashboardWish
@@ -37,10 +38,11 @@ class DashboardActivity : AppCompatActivity() {
     private val viewModel: DashboardViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        verifyNightMode()
         super.onCreate(savedInstanceState)
+        verifyNightMode()
+        setViewTreeObserver()
+
         setContentView(R.layout.activity_dashboard)
-        ViewTreeLifecycleOwner.set(window.decorView, this)
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 

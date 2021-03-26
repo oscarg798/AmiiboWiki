@@ -23,7 +23,7 @@ import dagger.Component
         NFCReaderModule::class
     ]
 )
-interface NFCReaderComponent {
+internal interface NFCReaderComponent {
 
     @Component.Factory
     interface Factory {

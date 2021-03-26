@@ -1,4 +1,4 @@
-package com.oscarg798.amiibowiki.splash.ui
+package com.oscarg798.amiibowiki.nfcreader.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,25 +13,36 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import com.oscarg798.amiibowiki.core.ui.Dimensions
+import com.oscarg798.amiibowiki.core.R
 import com.oscarg798.amiibowiki.core.ui.ErrorSnackbar
 import com.oscarg798.amiibowiki.core.ui.LoadingAnimation
 import com.oscarg798.amiibowiki.core.ui.ThemeContainer
-import com.oscarg798.amiibowiki.splash.SplashViewModel
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
+import com.oscarg798.amiibowiki.nfcreader.NFCReaderViewModel
+import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-internal fun SplashScreen(viewModel: SplashViewModel, coroutineScope: CoroutineScope) {
+internal fun NFCReaderScreen(
+    viewModel: NFCReaderViewModel, coroutineScope: CoroutineScope,
+    onErrorDismissed: () -> Unit
+) {
+
     ThemeContainer {
-        val state by viewModel.state.collectAsState(initial = SplashViewState())
+        val state by viewModel.state.collectAsState(initial = NFCReaderViewState())
         val snackbarHostState = remember { SnackbarHostState() }
 
         Scaffold(scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)) {
             ConstraintLayout(
-                constraintSet = getConstraints(),
+                constraintSet = ConstraintSet {
+                    val animationId = createRefFor(AnimationId)
+                    constrain(animationId) {
+                        linkTo(top = parent.top, bottom = parent.bottom)
+                        linkTo(start = parent.start, end = parent.end)
+                    }
+                },
                 modifier = Modifier
                     .background(MaterialTheme.colors.background)
                     .fillMaxWidth()
@@ -39,33 +50,21 @@ internal fun SplashScreen(viewModel: SplashViewModel, coroutineScope: CoroutineS
             ) {
                 if (state.error != null) {
                     ErrorSnackbar(
-                        message = state.error?.message,
+                        message = state.error?.message ?: stringResource(R.string.generic_error),
                         snackbarHostState = snackbarHostState,
                         coroutineScope = coroutineScope
-                    )
+                    ) {
+                        onErrorDismissed()
+                    }
                 }
-                LoadingAnimation(Modifier.layoutId(AnimationId))
-                AppTitle()
+
+                LoadingAnimation(
+                    modifier = Modifier.layoutId(AnimationId),
+                    playing = state.error == null
+                )
             }
         }
     }
 }
 
-@Composable
-private fun getConstraints() = ConstraintSet {
-    val animationId = createRefFor(AnimationId)
-    val titleId = createRefFor(TitleId)
-
-    constrain(animationId) {
-        linkTo(top = parent.top, bottom = parent.bottom)
-        linkTo(start = parent.start, end = parent.end)
-    }
-
-    constrain(titleId) {
-        bottom.linkTo(parent.bottom, margin = Dimensions.Spacing.Medium)
-        linkTo(start = parent.start, end = parent.end)
-    }
-}
-
-internal const val AnimationId = "AnimationId"
-internal const val TitleId = "TitleId"
+private const val AnimationId = "AnimationId"

@@ -11,30 +11,27 @@
  */
 
 package com.oscarg798.amiibowiki.nfcreader
-
-import android.app.PendingIntent
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.di.entrypoints.NFCReaderEntryPoint
+import com.oscarg798.amiibowiki.core.extensions.setViewTreeObserver
 import com.oscarg798.amiibowiki.core.extensions.startDeepLinkIntent
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
-import com.oscarg798.amiibowiki.nfcreader.databinding.ActivityNFCReaderBinding
 import com.oscarg798.amiibowiki.nfcreader.di.DaggerNFCReaderComponent
-import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
+import com.oscarg798.amiibowiki.nfcreader.mvi.ReadTagWish
+import com.oscarg798.amiibowiki.nfcreader.ui.NFCReaderScreen
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 
-class NFCReaderActivity : AppCompatActivity() {
+internal class NFCReaderActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: NFCReaderViewModel
@@ -42,14 +39,24 @@ class NFCReaderActivity : AppCompatActivity() {
     @Inject
     lateinit var nfcAdapter: NfcAdapter
 
-    private lateinit var binding: ActivityNFCReaderBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         verifyNightMode()
-        binding = ActivityNFCReaderBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setViewTreeObserver()
 
+        inject()
+
+        setContent {
+            NFCReaderScreen(viewModel = viewModel, coroutineScope = lifecycleScope) {
+                finish()
+            }
+        }
+
+        setup()
+        handleIntent(intent)
+    }
+
+    private fun inject() {
         DaggerNFCReaderComponent.factory()
             .create(
                 EntryPointAccessors.fromApplication(
@@ -58,22 +65,12 @@ class NFCReaderActivity : AppCompatActivity() {
                 )
             )
             .inject(this)
-
-        setup()
-        handleIntent(intent)
     }
 
     private fun setup() {
         lifecycleScope.launchWhenResumed {
-            viewModel.state.collect { state ->
-                when (state) {
-                    is NFCReaderViewState.ShowingAmiibo -> showAmiibo(state.amiiboIdentifier)
-                    is NFCReaderViewState.AdapterStatusFound -> when (state.status) {
-                        NFCReaderViewState.AdapterStatus.AdapterAvailable -> setupForegroundDispatch()
-                        NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped -> stopForegroundDispatch()
-                    }
-                    is NFCReaderViewState.Error -> showErrorMessage(state.error)
-                }
+            viewModel.uiEffect.collect { effect ->
+                showAmiibo(effect.amiiboIdentifier)
             }
         }
     }
@@ -84,7 +81,7 @@ class NFCReaderActivity : AppCompatActivity() {
     }
 
     private fun handleIntent(intent: Intent) {
-        viewModel.onWish(NFCReaderWish.Read(intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)!!))
+        viewModel.onWish(ReadTagWish(intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)!!))
     }
 
     private fun showAmiibo(amiiboIdentifier: AmiiboIdentifier) {
@@ -95,50 +92,4 @@ class NFCReaderActivity : AppCompatActivity() {
             }
         )
     }
-
-    override fun onStart() {
-        super.onStart()
-        // viewModel.onWish(NFCReaderWish.ValidateAdapterAvailability)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        // viewModel.onWish(NFCReaderWish.StopAdapter)
-    }
-
-    private fun setupForegroundDispatch() {
-        nfcAdapter.enableForegroundDispatch(
-            this,
-            PendingIntent.getActivity(
-                this, 0,
-                Intent(
-                    this,
-                    javaClass
-                ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
-                0
-            ),
-            null, null
-        )
-    }
-
-    private fun stopForegroundDispatch() {
-        nfcAdapter.disableForegroundDispatch(this)
-    }
-
-    private fun showErrorMessage(nfcReaderFailure: NFCReaderFailure) {
-
-        Snackbar.make(
-            binding.tvInstruccions,
-            when (nfcReaderFailure) {
-                is NFCReaderFailure.TagNotSupported -> getString(R.string.tag_not_supported_error_message)
-                else -> getString(R.string.default_error)
-            },
-            Snackbar.LENGTH_LONG
-        ).show()
-    }
 }
-
-private const val TAG_FILE_SIZE = 532
-private const val PAGE_SIZE = 4
-private const val BULK_READ_PAGE_COUNT = 4
-private const val MIME_TEXT_PLAIN = "text/plain"

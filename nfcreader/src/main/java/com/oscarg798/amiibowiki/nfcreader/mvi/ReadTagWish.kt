@@ -15,9 +15,4 @@ package com.oscarg798.amiibowiki.nfcreader.mvi
 import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.mvi.Wish
 
-sealed class NFCReaderWish : Wish {
-
-    object ValidateAdapterAvailability : NFCReaderWish()
-    data class Read(val tag: Tag) : NFCReaderWish()
-    object StopAdapter : NFCReaderWish()
-}
+data class ReadTagWish(val tag: Tag) : Wish
