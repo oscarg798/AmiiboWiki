@@ -14,7 +14,6 @@ package com.oscarg798.amiibowiki.amiibodetail
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewTreeLifecycleOwner
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailDeeplinkBinding
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK

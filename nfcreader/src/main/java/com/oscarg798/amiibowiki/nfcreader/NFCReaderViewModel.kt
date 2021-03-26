@@ -42,26 +42,30 @@ internal class NFCReaderViewModel @Inject constructor(
                 withContext(coroutineContextProvider.backgroundDispatcher) {
                     readTagUseCase.execute(wish.tag)
                 }
-            }.fold({ amiiboIdentifier ->
-                updateState { it.copy(loading = false, error = null) }
-                _uiEffect.value = ShowAmiiboDetailsUiEffect(amiiboIdentifier)
-            }, { cause ->
-                if (cause !is Exception) {
-                    throw cause
-                }
-                logger.logException(cause)
+            }.fold(
+                { amiiboIdentifier ->
+                    updateState { it.copy(loading = false, error = null) }
+                    _uiEffect.value = ShowAmiiboDetailsUiEffect(amiiboIdentifier)
+                },
+                { cause ->
+                    if (cause !is Exception) {
+                        throw cause
+                    }
+                    logger.logException(cause)
 
-                updateState {
-                    it.copy(
-                        loading = false, error = when (cause) {
-                            is NFCReaderFailure -> cause
-                            else -> NFCReaderFailure.Unknow(
-                                cause
-                            )
-                        }
-                    )
+                    updateState {
+                        it.copy(
+                            loading = false,
+                            error = when (cause) {
+                                is NFCReaderFailure -> cause
+                                else -> NFCReaderFailure.Unknow(
+                                    cause
+                                )
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }
     }
 }

@@ -29,7 +29,6 @@ import com.oscarg798.amiibowiki.core.utils.TextChangeListenerAdapter
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.amiibowiki.settings.mvi.UiEffect
 import com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity
@@ -38,9 +37,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -79,9 +77,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         lifecycleScope.launchWhenResumed {
             viewModel.uiEffect.collect { uiEffect ->
                 when (uiEffect) {
-                    UiEffect.RecreateActivity -> recreateActivity()
-                    UiEffect.ShowingDarkModeDialog -> showDarkModeDialog()
-                    UiEffect.ShowingDevelopmentActivity -> navigateToDevelopmentActivity()
+                    is UiEffect.RecreateActivity -> recreateActivity()
+                    is UiEffect.ShowingDarkModeDialog -> showDarkModeDialog()
+                    is UiEffect.ShowingDevelopmentActivity -> navigateToDevelopmentActivity()
                 }
             }
         }
@@ -90,8 +88,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun recreateActivity() {
-        startActivity(requireActivity().intent)
-        requireActivity().finish()
+        requireContext().packageManager
+            .getLaunchIntentForPackage(requireContext().packageName)?.let { intent ->
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            requireActivity().finish()
+        }
     }
 
     private fun navigateToDevelopmentActivity() {
@@ -124,10 +127,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupPreferencesClickListener(viewModel: SettingsViewModel) {
-        merge(getDarkModePreferenceClick(), getDevelopmentActivityClick())
-            .onEach {
-                viewModel.onWish(it)
-            }.launchIn(lifecycleScope)
+        lifecycleScope.launch {
+            merge(getDarkModePreferenceClick(), getDevelopmentActivityClick())
+                .collect {
+                    viewModel.onWish(it)
+                }
+        }
     }
 
     private fun getDarkModePreferenceClick(): Flow<SettingsWish> = callbackFlow {

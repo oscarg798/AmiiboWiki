@@ -26,7 +26,8 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 internal fun NFCReaderScreen(
-    viewModel: NFCReaderViewModel, coroutineScope: CoroutineScope,
+    viewModel: NFCReaderViewModel,
+    coroutineScope: CoroutineScope,
     onErrorDismissed: () -> Unit
 ) {
 

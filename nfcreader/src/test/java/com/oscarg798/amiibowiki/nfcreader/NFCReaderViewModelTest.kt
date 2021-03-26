@@ -77,7 +77,6 @@ internal class NFCReaderViewModelTest :
             } else {
                 DIFFERENT
             }
-
         }
 
         coVerify {

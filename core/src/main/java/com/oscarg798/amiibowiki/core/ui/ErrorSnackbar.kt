@@ -22,7 +22,7 @@ fun ErrorSnackbar(
             duration = SnackbarDuration.Short
         )
 
-        if(state == SnackbarResult.Dismissed){
+        if (state == SnackbarResult.Dismissed) {
             onDismiss()
         }
     }
