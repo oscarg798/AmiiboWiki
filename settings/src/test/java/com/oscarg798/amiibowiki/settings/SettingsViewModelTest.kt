@@ -15,32 +15,30 @@ package com.oscarg798.amiibowiki.settings
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.amiibowiki.settings.mvi.SettingsReducer
 import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
+import com.oscarg798.amiibowiki.settings.mvi.UiEffect
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.spyk
 import org.junit.Rule
 import org.junit.Test
 
-class SettingsViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SettingsViewState, SettingsViewModel> {
+class SettingsViewModelTest :
+    ViewModelTestRule.ViewModelCreator<SettingsViewState, SettingsViewModel> {
 
     @get: Rule
-    val viewModelTestTule = ViewModelTestRuleCompat<SettingsViewState, SettingsViewModel>(this)
+    val viewModelTestTule = ViewModelTestRule(this)
 
     private val featurePoint = relaxedMockk<SuspendFeaturePoint<PreferenceBuilder, Unit>>()
     private val saveDarkModeSelectionUseCase = relaxedMockk<SaveDarkModeSelectionUseCase>()
-    private val reducer = spyk(SettingsReducer())
 
     override fun create(): SettingsViewModel = SettingsViewModel(
         saveDarkModeSelectionUseCase,
         featurePoint,
-        reducer,
         viewModelTestTule.coroutineContextProvider
     )
 
@@ -48,18 +46,21 @@ class SettingsViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SettingsV
     fun `given create preference wish when wish is processed then it should emit two states`() {
         coEvery { featurePoint.createFeatures(Unit) } answers { PREFERENCES.toList() }
 
+        val initialState = SettingsViewState()
         viewModelTestTule.viewModel.onWish(SettingsWish.CreatePreferences)
 
-        viewModelTestTule.testCollector wasValueEmiited SettingsViewState.Idling
+        viewModelTestTule.stateCollector wasValueEmiited initialState
 
-        viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewState.Idling,
-            SettingsViewState.Loading,
-            SettingsViewState.Preferences(PREFERENCES.toList())
+        viewModelTestTule.stateCollector wereValuesEmitted listOf(
+            initialState,
+            initialState.copy(loading = true),
+            initialState.copy(
+                loading = false, preferences = (PREFERENCES.toList())
+            )
         )
 
-        coVerify(exactly = 2) {
-            reducer.reduce(any(), any())
+        coVerify(exactly = 1) {
+            featurePoint.createFeatures(Unit)
         }
     }
 
@@ -67,27 +68,37 @@ class SettingsViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SettingsV
     fun `given dark mode preference clicked when wish is processed then it should emit an state to show the dark mode dialog`() {
         viewModelTestTule.viewModel.onWish(SettingsWish.PreferenceClicked(DARK_MODE_PREFERENCE_KEY))
 
-        viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewState.Idling,
-            SettingsViewState.ShowingDarkModeDialog
-        )
-
-        coVerify(exactly = 1) {
-            reducer.reduce(any(), any())
+        viewModelTestTule.effectCollector.wereValuesEmitted(
+            listOf(
+                UiEffect.ShowingDarkModeDialog
+            )
+        ) { o1, o2 ->
+            if (o1 is UiEffect.ShowingDarkModeDialog && o2 is UiEffect.ShowingDarkModeDialog) {
+                EQUALS
+            } else {
+                DIFFERENT
+            }
         }
     }
 
     @Test
     fun `given  development activity preference clicked when wish is processed then it should emit an state to show development activity`() {
-        viewModelTestTule.viewModel.onWish(SettingsWish.PreferenceClicked(DEVELOPMENT_ACTIVITY_PREFERENCE_KEY))
-
-        viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewState.Idling,
-            SettingsViewState.ShowingDevelopmentActivity
+        viewModelTestTule.viewModel.onWish(
+            SettingsWish.PreferenceClicked(
+                DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
+            )
         )
 
-        coVerify(exactly = 1) {
-            reducer.reduce(any(), any())
+        viewModelTestTule.effectCollector.wereValuesEmitted(
+            listOf(
+                UiEffect.ShowingDevelopmentActivity
+            )
+        ) { o1, o2 ->
+            if (o1 is UiEffect.ShowingDevelopmentActivity && o2 is UiEffect.ShowingDevelopmentActivity) {
+                EQUALS
+            } else {
+                DIFFERENT
+            }
         }
     }
 
@@ -95,18 +106,29 @@ class SettingsViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SettingsV
     fun `given dark mode options was selected when wish is processed then it should emit the state should be idling`() {
         viewModelTestTule.viewModel.onWish(SettingsWish.DarkModeOptionSelected("1"))
 
-        viewModelTestTule.testCollector wereValuesEmitted listOf(
-            SettingsViewState.Idling,
-            SettingsViewState.Loading,
-            SettingsViewState.Idling
+        val initialState = SettingsViewState()
+        viewModelTestTule.stateCollector wereValuesEmitted listOf(
+            initialState,
+            initialState.copy(loading = true),
+            initialState
         )
 
-        coVerify(exactly = 2) {
-            reducer.reduce(any(), any())
+        viewModelTestTule.effectCollector.wereValuesEmitted(
+            listOf(
+                UiEffect.RecreateActivity
+            )
+        ) { o1, o2 ->
+            if (o1 is UiEffect.RecreateActivity && o2 is UiEffect.RecreateActivity) {
+                EQUALS
+            } else {
+                DIFFERENT
+            }
         }
     }
 }
 
+private const val DIFFERENT = 1
+private const val EQUALS = 0
 private val PREFERENCES = setOf(
     PreferenceBuilder.Clickable("1", "2"),
     PreferenceBuilder.Clickable("1", "2")

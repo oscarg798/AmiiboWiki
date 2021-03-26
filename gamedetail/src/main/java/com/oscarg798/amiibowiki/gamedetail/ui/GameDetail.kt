@@ -13,7 +13,7 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.oscarg798.amiibowiki.core.models.AgeRatingCategory
 import com.oscarg798.amiibowiki.core.models.Game
-import com.oscarg798.amiibowiki.core.ui.AmiiboWikiNavigationIcon
+import com.oscarg798.amiibowiki.core.ui.AmiiboWikiBackNavigationIcon
 import com.oscarg798.amiibowiki.core.ui.Dimensions
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 
@@ -38,7 +38,7 @@ fun GameDetail(
     ) {
 
         GameHeaderImage(game)
-        AmiiboWikiNavigationIcon(Modifier.layoutId(BackButtonId)) { onBackButtonPressed() }
+        AmiiboWikiBackNavigationIcon(Modifier.layoutId(BackButtonId)) { onBackButtonPressed() }
         GameCover(game, onImageClick)
         GameTitle(game)
 

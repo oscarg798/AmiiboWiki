@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.splash.di
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.splash.SplashLogger
 import com.oscarg798.amiibowiki.splash.SplashLoggerImpl
 import com.oscarg798.lomeno.logger.Logger

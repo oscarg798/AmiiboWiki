@@ -18,15 +18,12 @@ import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 
 @ExperimentalFoundationApi
 @Composable
-internal fun AmiiboList(state: AmiiboListViewState, amiiboClickListener: (ViewAmiibo) -> Unit) {
-    if (state.loading || state.amiibos == null) return
-
+internal fun AmiiboList(amiibos: List<ViewAmiibo>, amiiboClickListener: (ViewAmiibo) -> Unit) {
     LazyVerticalGrid(cells = GridCells.Fixed(GridCount)) {
-        items(state.amiibos) { amiibo ->
+        items(amiibos.toList()) { amiibo ->
             AmiiboCard(amiibo = amiibo, amiiboClickListener = amiiboClickListener)
         }
     }

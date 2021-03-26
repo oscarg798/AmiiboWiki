@@ -19,9 +19,15 @@ sealed class UiEffect : SideEffect {
 
     data class ShowFilters(val filters: Collection<ViewAmiiboType>) : UiEffect() {
         override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int {
+            return filters.hashCode()
+        }
     }
 
     data class ShowAmiiboDetails(val amiiboId: String) : UiEffect() {
         override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int {
+            return amiiboId.hashCode()
+        }
     }
 }

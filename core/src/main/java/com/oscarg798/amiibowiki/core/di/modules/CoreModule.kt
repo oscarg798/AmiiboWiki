@@ -68,8 +68,7 @@ object CoreModule {
 
     @Singleton
     @Provides
-    fun provideAmiiboRepository(amiiboRepositoryImpl: AmiiboRepositoryImpl): AmiiboRepository =
-        amiiboRepositoryImpl
+    fun provideAmiiboRepository(amiiboRepositoryImpl: AmiiboRepositoryImpl): AmiiboRepository = amiiboRepositoryImpl
 
     @Singleton
     @Provides

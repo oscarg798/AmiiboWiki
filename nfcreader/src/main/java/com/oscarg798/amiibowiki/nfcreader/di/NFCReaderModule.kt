@@ -14,11 +14,8 @@ package com.oscarg798.amiibowiki.nfcreader.di
 
 import android.content.Context
 import android.nfc.NfcAdapter
-import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLogger
 import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLoggerImpl
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepositoryImpl
 import com.oscarg798.amiibowiki.nfcreader.utils.AmiiboArrayCloner
