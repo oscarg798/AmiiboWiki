@@ -10,58 +10,53 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.ui
+package com.oscarg798.amiibowiki.splash
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
+import androidx.lifecycle.viewModelScope
+import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
-import com.oscarg798.amiibowiki.core.failures.GameAPIAuthenticationFailure
-import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
-import com.oscarg798.amiibowiki.splash.mvi.SplashResult
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
+import com.oscarg798.amiibowiki.splash.mvi.UiEffect
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(
+internal class SplashViewModel @Inject constructor(
     private val splashLogger: SplashLogger,
     private val initializeApplicationUseCase: InitializeApplicationUseCase,
-    override val reducer: Reducer<@JvmSuppressWildcards SplashResult, @JvmSuppressWildcards SplashViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModelCompat<SplashWish, SplashResult, SplashViewState>(SplashViewState.IsIdling) {
+) : AbstractViewModel<SplashViewState, UiEffect, SplashWish>(SplashViewState()) {
 
-    override fun onScreenShown() {
+    override fun processWish(wish: SplashWish) {
+        fetchTypes()
+    }
+
+    private fun fetchTypes() {
+        onScreenShown()
+        initializeApplicationUseCase.execute()
+            .onEach {
+                _uiEffect.value = UiEffect.Navigate
+            }
+            .catch { cause ->
+                if (cause !is Exception) {
+                    throw cause
+                }
+
+                updateState { state ->
+                    state.copy(loading = false, error = cause)
+                }
+            }.flowOn(coroutineContextProvider.backgroundDispatcher)
+            .launchIn(viewModelScope)
+    }
+
+    private fun onScreenShown() {
         splashLogger.trackScreenShown()
     }
-
-    override suspend fun getResult(wish: SplashWish): Flow<SplashResult> = fetchTypes()
-
-    private fun fetchTypes(): Flow<SplashResult> {
-        return initializeApplicationUseCase.execute().map {
-            SplashResult.TypesFetched as SplashResult
-        }.catch { cause ->
-            when (cause) {
-                is OutdatedAppException,
-                is AmiiboTypeFailure,
-                is GameAPIAuthenticationFailure -> emit(SplashResult.Error(cause as Exception))
-                else -> throw cause
-            }
-        }.flowOn(coroutineContextProvider.backgroundDispatcher)
-    }
-
-
-    private fun callToUnitFlow(call: suspend () -> Any) = flow<Unit> {
-        call.invoke()
-        emit(Unit)
-    }
-
 }
 

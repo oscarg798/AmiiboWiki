@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.di
 import android.content.Context
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.oscarg798.amiibowiki.BuildConfig
 import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.models.Config

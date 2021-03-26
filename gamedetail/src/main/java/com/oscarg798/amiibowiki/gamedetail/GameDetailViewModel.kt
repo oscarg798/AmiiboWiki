@@ -79,6 +79,8 @@ internal class GameDetailViewModel @AssistedInject constructor(
         if (cause !is GameDetailFailure) {
             throw cause
         }
+
+        gameDetailLogger.logCrash(cause)
         updateState { it.copy(loading = false, error = cause) }
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
         .launchIn(viewModelScope)

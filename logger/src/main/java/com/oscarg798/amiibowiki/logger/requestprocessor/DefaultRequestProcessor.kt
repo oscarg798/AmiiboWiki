@@ -17,6 +17,7 @@ import com.oscarg798.lomeno.interceptor.requestprocessor.RequestProcessor
 import okhttp3.Request
 import retrofit2.Invocation
 
+
 class DefaultRequestProcessor : RequestProcessor {
 
     override fun getTrackingEvent(request: Request): String? {

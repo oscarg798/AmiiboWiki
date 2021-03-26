@@ -14,25 +14,6 @@
 apply from: "../gradlescripts/shared.gradle"
 apply from: "../gradlescripts/hiltshared.gradle"
 
-android{
-    buildFeatures {
-        compose true
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-        useIR = true
-    }
-
-    composeOptions {
-        kotlinCompilerVersion "1.4.30"
-        kotlinCompilerExtensionVersion '1.0.0-beta01'
-    }
-
-    packagingOptions {
-        exclude 'META-INF/metadata.kotlin_module'
-    }
-}
 dependencies {
     implementation project(path: ':amiibodetail')
     implementation project(path: ':core')

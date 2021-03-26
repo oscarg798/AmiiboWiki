@@ -143,7 +143,6 @@ ext {
     skeleton = "com.ethanhua:skeleton:$skeleton_version"
     shimmerLayout = "io.supercharge:shimmerlayout:$shimmer_layout_version"
     customComponents = "co.condorlabs.customcomponents:CustomComponents:$emerald_android_version"
-    lottie = "com.airbnb.android:lottie:$lottie_version"
     tapTarget = "uk.co.samuelwall:material-tap-target-prompt:$tap_target_version"
     sectionedRecyclerViewAdapter = "io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:$section_recycler_view_adapter_version"
 
@@ -210,12 +209,10 @@ ext {
     firebaseVersion = '18.0.0'
     firebaseAnalytics = "com.google.firebase:firebase-analytics:$firebaseVersion"
     firebaseConfig = 'com.google.firebase:firebase-config:19.1.4'
-    crashlyticsVersion = '17.3.0'
-    crashly = "com.google.firebase:firebase-crashlytics:$crashlyticsVersion"
 
     espressoIntentsVersion = '3.3.0'
     espressoIntents = "androidx.test.espresso:espresso-intents:$espressoIntentsVersion"
-    lifeCycleVersion = '2.3.0-rc01'
+    lifeCycleVersion = '2.3.0'
     lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion"
     viewModelScope = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha06"
 
@@ -251,6 +248,7 @@ ext {
 
 def firebase = [:]
 firebase.boom = "com.google.firebase:firebase-bom:26.4.0"
+firebase.crashlytics = "com.google.firebase:firebase-crashlytics:17.4.0"
 ext.firebase = firebase
 
 def hilt = [:]
@@ -278,22 +276,27 @@ googlePlay.coreKtx = "com.google.android.play:core-ktx:1.8.1"
 ext.googlePlay = googlePlay
 
 def compose = [:]
-compose.liveDate = "androidx.compose.runtime:runtime-livedata:1.0.0-beta01"
-compose.ui = "androidx.compose.ui:ui:1.0.0-beta01"
-compose.tooling = "androidx.compose.ui:ui-tooling:1.0.0-beta01"
-compose.foundation = "androidx.compose.foundation:foundation:1.0.0-beta01"
-compose.material = "androidx.compose.material:material:1.0.0-beta01"
-compose.icons = "androidx.compose.material:material-icons-core:1.0.0-beta01"
-compose.iconsExtended = "androidx.compose.material:material-icons-extended:1.0.0-beta01"
-compose.animations = "androidx.compose.animation:animation:1.0.0-beta01"
-compose.constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha03"
-compose.compiler = "androidx.compose:compose-compiler:1.0.0-alpha03"
-compose.activities = "androidx.activity:activity-compose:1.3.0-alpha03"
-compose.test = "androidx.compose.ui:ui-test-junit4:1.0.0-beta01"
+compose.liveData = "androidx.compose.runtime:runtime-livedata:1.0.0-beta03"
+compose.ui = "androidx.compose.ui:ui:1.0.0-beta03"
+compose.tooling = "androidx.compose.ui:ui-tooling:1.0.0-beta03"
+compose.foundation = "androidx.compose.foundation:foundation:1.0.0-beta03"
+compose.material = "androidx.compose.material:material:1.0.0-beta03"
+compose.icons = "androidx.compose.material:material-icons-core:1.0.0-beta03"
+compose.iconsExtended = "androidx.compose.material:material-icons-extended:1.0.0-beta03"
+compose.animations = "androidx.compose.animation:animation:1.0.0-beta03"
+compose.constraintLayout = "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha05"
+compose.compiler = "androidx.compose.compiler:compiler:1.0.0-beta03"
+compose.activities = "androidx.activity:activity-compose:1.3.0-alpha04"
+compose.test = "androidx.compose.ui:ui-test-junit4:1.0.0-beta03"
 ext.compose = compose
 
 def androidXlifecycle = [:]
 androidXlifecycle.savedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0"
-androidXlifecycle.core =  "androidx.lifecycle:lifecycle-livedata-core-ktx:2.3.0"
-androidXlifecycle.livedataKtx =  "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
+androidXlifecycle.core = "androidx.lifecycle:lifecycle-livedata-core-ktx:2.3.0"
+androidXlifecycle.livedataKtx = "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
 ext.androidXlifecycle = androidXlifecycle
+
+def lottie = [:]
+lottie.main = "com.airbnb.android:lottie:$lottie_version"
+lottie.compose = "com.airbnb.android:lottie-compose:1.0.0-alpha07-SNAPSHOT"
+ext.lottie = lottie

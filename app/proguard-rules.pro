@@ -39,3 +39,6 @@
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
 
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception 
+

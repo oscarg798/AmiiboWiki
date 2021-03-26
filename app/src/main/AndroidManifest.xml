@@ -17,7 +17,7 @@
             android:name=".navigation.DashboardActivity"
             android:label="@string/title_activity_dashboard"></activity>
         <activity
-            android:name="com.oscarg798.amiibowiki.splash.ui.SplashActivity"
+            android:name="com.oscarg798.amiibowiki.splash.SplashActivity"
             android:noHistory="true"
             android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>

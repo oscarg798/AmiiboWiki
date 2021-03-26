@@ -90,6 +90,7 @@ class AmiiboListFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         return ComposeView(requireContext()).apply {
             setContent {
                 Screen(viewModel, lifecycleScope) { amiibo ->

@@ -184,6 +184,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
             throw cause
         }
 
+        searchGamesLogger.logCrash(cause)
         updateState { it.copy(isLoading = false, error = cause, idling = false) }
     }
 

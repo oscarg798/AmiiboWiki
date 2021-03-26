@@ -18,7 +18,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_medium"
     android:background="?appBackgroundColor"
-    tools:context=".splash.ui.SplashActivity">
+    tools:context=".splash.SplashActivity">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animationView"
@@ -33,10 +33,11 @@
         app:lottie_rawRes="@raw/tetris_anim" />
 
     <TextView
+        style="@style/Styles.AmiiboWiki.Default"
         android:layout_width="@dimen/match_constraint"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
-        style="@style/Styles.AmiiboWiki.Default"
         android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AmiiboWiki.Title.L"
         app:layout_constraintBottom_toBottomOf="parent"

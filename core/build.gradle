@@ -11,32 +11,6 @@
  */
 apply from: "../gradlescripts/shared.gradle"
 
-android {
-
-    packagingOptions {
-        exclude 'META-INF/metadata.kotlin_module'
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.0.0-beta01'
-    }
-
-    buildFeatures {
-        compose true
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-        useIR = true
-    }
-
-    composeOptions {
-        kotlinCompilerVersion "1.4.30"
-        kotlinCompilerExtensionVersion '1.0.0-beta01'
-    }
-
-}
-
 dependencies {
 
     implementation daggerHilt.viewModel
@@ -47,6 +21,7 @@ dependencies {
 
     implementation mixpanel
 
+    implementation firebase.crashlytics
     implementation firebaseAnalytics
     implementation firebaseRemoteConfig
     implementation zoomImageViewer
@@ -54,23 +29,9 @@ dependencies {
     implementation roomRuntime
     implementation roomCompiler
     implementation roomKTX
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.21"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.31"
     implementation flagly
     implementation preference
 
     testImplementation roomTesting
-
-    implementation 'androidx.compose.ui:ui:1.0.0-beta01'
-    // Tooling support (Previews, etc.)
-    implementation 'androidx.compose:compose-compiler:1.0.0-alpha03'
-    implementation 'androidx.compose.ui:ui-tooling:1.0.0-beta01'
-    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation 'androidx.compose.foundation:foundation:1.0.0-beta01'
-    // Material Design
-    implementation 'androidx.compose.material:material:1.0.0-beta01'
-    // Material design icons
-    implementation 'androidx.compose.material:material-icons-core:1.0.0-beta01'
-    implementation 'androidx.compose.material:material-icons-extended:1.0.0-beta01'
-    // Integration with activities
-    implementation 'androidx.activity:activity-compose:1.3.0-alpha03'
 }

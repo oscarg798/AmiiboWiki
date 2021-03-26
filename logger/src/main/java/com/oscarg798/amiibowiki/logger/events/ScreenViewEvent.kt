@@ -19,7 +19,7 @@ import com.oscarg798.lomeno.event.LogSource
 
 class ScreenViewEvent(
     screenName: String,
-    private val sources: Set<LogSource> = setOf<LogSource>(FirebaseSource, MixPanelSource),
+    private val sources: Set<LogSource> = setOf(FirebaseSource, MixPanelSource),
     private val extraProperties: Map<String, String>? = null
 ) : LogEvent {
 
@@ -33,8 +33,7 @@ class ScreenViewEvent(
         }
     }
 
-    override fun isSourceSupported(logSource: LogSource): Boolean =
-        sources.contains(FirebaseSource)
+    override fun isSourceSupported(logSource: LogSource): Boolean = sources.contains(logSource)
 }
 
 private const val SCREEN_NAME_EVENT_NAME = "SCREEN_NAME"

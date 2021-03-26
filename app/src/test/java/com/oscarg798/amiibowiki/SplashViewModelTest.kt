@@ -13,21 +13,17 @@
 package com.oscarg798.amiibowiki
 
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
-import com.oscarg798.amiibowiki.core.models.AmiiboType
-import com.oscarg798.amiibowiki.splash.ui.SplashLogger
-import com.oscarg798.amiibowiki.splash.ui.SplashViewModel
-import com.oscarg798.amiibowiki.splash.mvi.SplashReducer
-import com.oscarg798.amiibowiki.splash.mvi.SplashResult
+import com.oscarg798.amiibowiki.splash.SplashLogger
+import com.oscarg798.amiibowiki.splash.SplashViewModel
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
+import com.oscarg798.amiibowiki.splash.mvi.UiEffect
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.spyk
-import io.mockk.verify
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
@@ -35,14 +31,13 @@ import org.junit.Rule
 import org.junit.Test
 
 
-class SplashViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SplashViewState, SplashViewModel> {
+internal class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewState, SplashViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRuleCompat<SplashViewState, SplashViewModel>(this)
+    val viewModelTestRule = ViewModelTestRule(this)
 
     private val logger = relaxedMockk<SplashLogger>()
     private val initializaApplicationUseCase = mockk<InitializeApplicationUseCase>()
-    private val reducer = spyk(SplashReducer())
 
     @Before
     fun setup() {
@@ -52,7 +47,6 @@ class SplashViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SplashViewS
     override fun create(): SplashViewModel = SplashViewModel(
         logger,
         initializaApplicationUseCase,
-        reducer,
         viewModelTestRule.coroutineContextProvider
     )
 
@@ -60,15 +54,16 @@ class SplashViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SplashViewS
     fun `given a wish to get the types when events are proccess then state value should be loading and then fetch success`() {
         viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
-        val initState = SplashViewState.IsIdling
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
-            initState,
-            SplashViewState.NavigatingToFirstscreen
+        val initState = SplashViewState()
+        viewModelTestRule.stateCollector wereValuesEmitted listOf(
+            initState
         )
+
+        viewModelTestRule.effectCollector wereValuesEmitted listOf(UiEffect.Navigate)
 
         coVerify {
             initializaApplicationUseCase.execute()
-            reducer.reduce(initState, SplashResult.TypesFetched)
+            logger.trackScreenShown()
         }
     }
 
@@ -79,25 +74,14 @@ class SplashViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<SplashViewS
 
         viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
-        val initState = SplashViewState.IsIdling
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
+        val initState = SplashViewState()
+        viewModelTestRule.stateCollector wereValuesEmitted listOf(
             initState,
-            SplashViewState.Error(error)
+            initState.copy(loading = false, error = error)
         )
 
         coVerify {
             initializaApplicationUseCase.execute()
         }
     }
-
-    @Test
-    fun `when view is shown then it should track the event`() {
-        viewModelTestRule.viewModel.onScreenShown()
-
-        verify {
-            logger.trackScreenShown()
-        }
-    }
 }
-
-private val TYPES = listOf(AmiiboType("1", "2"))

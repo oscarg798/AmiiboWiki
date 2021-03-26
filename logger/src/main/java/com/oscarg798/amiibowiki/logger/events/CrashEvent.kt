@@ -12,9 +12,7 @@
 
 package com.oscarg798.amiibowiki.logger.events
 
-import com.oscarg798.amiibowiki.logger.sources.CrashlytcisSource
-import com.oscarg798.amiibowiki.logger.sources.FirebaseSource
-import com.oscarg798.amiibowiki.logger.sources.MixPanelSource
+import com.oscarg798.amiibowiki.logger.sources.CrashlyticsSource
 import com.oscarg798.lomeno.event.LogEvent
 import com.oscarg798.lomeno.event.LogSource
 
@@ -24,8 +22,8 @@ class CrashEvent(
     val exception: Exception
 ) : LogEvent {
 
-    override val properties: Map<String, String> = mutableMapOf<String, String>()
-    override fun isSourceSupported(logSource: LogSource): Boolean = logSource is CrashlytcisSource
+    override val properties: Map<String, String> = mutableMapOf()
+    override fun isSourceSupported(logSource: LogSource): Boolean = logSource is CrashlyticsSource
 }
 
 private const val CRASH_EVENT_NAME = "CRASH"

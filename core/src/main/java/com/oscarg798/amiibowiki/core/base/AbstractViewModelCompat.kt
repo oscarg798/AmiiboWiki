@@ -23,7 +23,6 @@ import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -50,7 +49,7 @@ abstract class AbstractViewModel<ViewState : MVIViewState, UIEffect : MVIUIEffec
         get() = _uiEffect.filterNotNull()
 
     protected suspend fun updateState(
-        reducer: (state: ViewState) -> ViewState
+        reducer: (ViewState) -> ViewState
     ) {
         stateMutex.withLock {
             _state.value = reducer(_state.value)
@@ -73,9 +72,7 @@ abstract class AbstractViewModelCompat<Wish : MVIWish, Result : MVIResult, ViewS
 
     protected abstract val coroutineContextProvider: CoroutineContextProvider
 
-    protected val _state = MutableStateFlow<ViewState>(initialState)
-
-    protected val _uiEffect = MutableStateFlow<Wish?>(null)
+    protected val _state = MutableStateFlow(initialState)
 
     private val wishProcessor = MutableStateFlow<Wish?>(null)
 
@@ -92,12 +89,6 @@ abstract class AbstractViewModelCompat<Wish : MVIWish, Result : MVIResult, ViewS
                 reducer.reduce(state, result)
             }.onEach {
                 _state.emit(it)
-            }.launchIn(viewModelScope)
-
-        wishProcessor.filterNotNull()
-            .filter { it is EffectWish }
-            .onEach {
-                _uiEffect.value = it
             }.launchIn(viewModelScope)
     }
 

@@ -10,21 +10,27 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.ui
+package com.oscarg798.amiibowiki.splash
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.R
+import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailDeepLinkActivity
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding
 import com.oscarg798.amiibowiki.navigation.DashboardActivity
 import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
+import com.oscarg798.amiibowiki.splash.mvi.UiEffect
+import com.oscarg798.amiibowiki.splash.ui.SplashScreen
 import com.oscarg798.amiibowiki.updatechecker.UpdateType
 import com.oscarg798.amiibowiki.updatechecker.requestUpdate
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,49 +43,30 @@ class SplashActivity : AppCompatActivity() {
 
     private val viewModel: SplashViewModel by viewModels()
 
-    private lateinit var binding: ActivitySplashBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        ViewTreeLifecycleOwner.set(window.decorView, this)
         setTheme(R.style.AppTheme_NoActionBar)
-        verifyNightMode()
         super.onCreate(savedInstanceState)
-        binding = ActivitySplashBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContent {
+            SplashScreen(viewModel = viewModel, coroutineScope = lifecycleScope)
+        }
         setup()
     }
 
     private fun setup() {
         lifecycleScope.launchWhenResumed {
-            viewModel.onScreenShown()
-
-            viewModel.state.collect { state ->
-                when (state) {
-                    is SplashViewState.NavigatingToFirstscreen -> startActivity(
+            viewModel.uiEffect.collect { uiEffect ->
+                if (uiEffect is UiEffect.Navigate) {
+                    startActivity(
                         Intent(
                             this@SplashActivity,
                             DashboardActivity::class.java
                         )
                     )
-                    is SplashViewState.Error -> showError(state)
                 }
             }
         }
 
         viewModel.onWish(SplashWish.GetTypes)
-    }
-
-    private fun showError(error: SplashViewState.Error) {
-        when (error.exception) {
-            is OutdatedAppException -> requestUpdate(UpdateType.Immediate)
-            else -> showFetchError()
-        }
-    }
-
-    private fun showFetchError() {
-        Snackbar.make(
-            binding.clMain,
-            getString(R.string.fetch_types_error),
-            Snackbar.LENGTH_INDEFINITE
-        ).show()
     }
 }

@@ -150,23 +150,26 @@ class AmiiboListViewModel @AssistedInject constructor(
     }
 
     private suspend fun onAmiibosFound(amiibos: Collection<Amiibo>) {
-
         updateState { state ->
             state.copy(loading = false, amiibos = amiibos.map { ViewAmiibo(it) }, error = null)
         }
     }
 
     private suspend fun handleFailure(failure: Throwable) {
-        failure.printStackTrace()
+        if (failure !is Exception) {
+            throw failure
+        }
+
+        amiiboListLogger.logCrash(failure)
+
         when (failure) {
             is AmiiboListFailure -> updateState { it.copy(loading = false, error = failure) }
-            is Exception -> updateState {
+            else -> updateState {
                 it.copy(
                     loading = false,
                     error = AmiiboListFailure.UnknowError(failure)
                 )
             }
-            else -> throw failure
         }
     }
 

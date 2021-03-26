@@ -14,8 +14,8 @@ package com.oscarg798.amiibowiki.navigation
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -26,11 +26,9 @@ import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.navigation.mvi.DashboardViewState
 import com.oscarg798.amiibowiki.navigation.mvi.DashboardWish
-import com.oscarg798.amiibowiki.updatechecker.UpdateType
 import com.oscarg798.amiibowiki.updatechecker.requestUpdate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -42,6 +40,8 @@ class DashboardActivity : AppCompatActivity() {
         verifyNightMode()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
+        ViewTreeLifecycleOwner.set(window.decorView, this)
+
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment)

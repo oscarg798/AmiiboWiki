@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibolist.logger
 
+import com.oscarg798.amiibowiki.logger.annotations.AppCrashed
 import com.oscarg798.amiibowiki.logger.annotations.LogEventProperties
 import com.oscarg798.amiibowiki.logger.annotations.LoggerDecorator
 import com.oscarg798.amiibowiki.logger.annotations.RegularEvent
@@ -34,6 +35,9 @@ interface AmiiboListLogger {
 
     @WidgetClicked(AMIIBO_ITEM_CLICK_WIDGET_NAME, RECYCLER_VIEW_ITEM_TYPE_NAME)
     fun trackAmiiboClicked(@LogEventProperties properties: Map<String, String>)
+
+    @AppCrashed
+    fun logCrash(@LogEventProperties crash: Exception)
 }
 
 private const val FILTER_APPLIED_EVENT_VALUE = "AMIIBO_FILTER_APPLIED"

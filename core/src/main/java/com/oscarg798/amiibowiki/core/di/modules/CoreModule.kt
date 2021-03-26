@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.core.di.modules
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.oscarg798.amiibowiki.core.di.qualifiers.DatabaseName
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.network.services.AmiiboTypeService
@@ -93,4 +94,8 @@ object CoreModule {
     @Singleton
     @Provides
     fun provideGameAuthRepository(gameAuthRepositoryImpl: GameAuthRepositoryImpl): GameAuthRepository = gameAuthRepositoryImpl
+
+    @Provides
+    @Singleton
+    fun provideCrashlytics(): FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 }

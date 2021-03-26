@@ -16,7 +16,6 @@ play {
     track = "internal"
     serviceAccountCredentials = file(googleAccountServiceFile)
     defaultToAppBundles = true
-    updatePriority = 5
 
 }
 
