@@ -14,12 +14,8 @@ package com.oscarg798.amiibowiki.nfcreader.di
 
 import android.content.Context
 import android.nfc.NfcAdapter
-import com.oscarg798.amiibowiki.core.mvi.Reducer
 import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLogger
 import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLoggerImpl
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReducer
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepositoryImpl
 import com.oscarg798.amiibowiki.nfcreader.utils.AmiiboArrayCloner
@@ -55,10 +51,6 @@ object NFCReaderModule {
     @NFCReaderScope
     @Provides
     fun provideNFCReaderRepository(nfcReaderRepositoryImpl: NFCReaderRepositoryImpl): NFCReaderRepository = nfcReaderRepositoryImpl
-
-    @NFCReaderScope
-    @Provides
-    fun provideNFCReaderReducer(nfcReaderReducer: NFCReducer): Reducer<@JvmSuppressWildcards NFCReaderResult, @JvmSuppressWildcards NFCReaderViewState> = nfcReaderReducer
 
     @NFCReaderScope
     @Provides

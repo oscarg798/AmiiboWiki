@@ -26,8 +26,21 @@
         <item name="android:statusBarColor">@color/status_bar_color</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:scrollbars">none</item>
-
     </style>
+
+    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/secondaryTextColor</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
@@ -52,6 +65,7 @@
     <style name="Styles.AmiiboWiki.Secondary">
         <item name="android:textColor">?TextColorSecondary</item>
     </style>
+
     <style name="Styles.AmiiboWiki.Buttons">
         <item name="android:textColor">@color/white</item>
     </style>

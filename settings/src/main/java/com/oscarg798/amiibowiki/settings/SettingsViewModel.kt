@@ -12,56 +12,68 @@
 
 package com.oscarg798.amiibowiki.settings
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import androidx.lifecycle.viewModelScope
+import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.amiibowiki.settings.mvi.SettingsResult
 import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
+import com.oscarg798.amiibowiki.settings.mvi.UiEffect
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
 import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val saveDarkModeSelectionUseCase: SaveDarkModeSelectionUseCase,
     private val featurePoint: SuspendFeaturePoint<@JvmSuppressWildcards PreferenceBuilder, @JvmSuppressWildcards Unit>,
-    override val reducer: Reducer<@JvmSuppressWildcards SettingsResult, @JvmSuppressWildcards SettingsViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModelCompat<SettingsWish, SettingsResult, SettingsViewState>(SettingsViewState.Idling) {
+) : AbstractViewModel<SettingsViewState, UiEffect, SettingsWish>(SettingsViewState()) {
 
-    override suspend fun getResult(wish: SettingsWish): Flow<SettingsResult> = when (wish) {
-        is SettingsWish.CreatePreferences -> getCreatePreferenceResult()
-        is SettingsWish.PreferenceClicked -> getPreferenceClickedResult(wish)
-        is SettingsWish.DarkModeOptionSelected -> getSaveDarkModeSelection(wish)
+    override fun processWish(wish: SettingsWish) {
+        when (wish) {
+            is SettingsWish.CreatePreferences -> createPreferences()
+            is SettingsWish.PreferenceClicked -> onPreferenceClicked(wish)
+            is SettingsWish.DarkModeOptionSelected -> saveDarkMode(wish)
+        }
     }
 
-    private fun getSaveDarkModeSelection(wish: SettingsWish.DarkModeOptionSelected) =
-        flow<SettingsResult> {
-            saveDarkModeSelectionUseCase.execute(wish.option)
-            emit(SettingsResult.DarkModeSelectionSaved(wish.option))
-        }.onStart {
-            emit(SettingsResult.Loading)
-        }.flowOn(coroutineContextProvider.backgroundDispatcher)
+    private fun saveDarkMode(wish: SettingsWish.DarkModeOptionSelected) {
+        viewModelScope.launch {
+            updateState { it.copy(loading = true) }
+            runCatching {
+                withContext(coroutineContextProvider.backgroundDispatcher) {
+                    saveDarkModeSelectionUseCase.execute(wish.option)
+                }
+            }.onSuccess {
+                _uiEffect.value = UiEffect.RecreateActivity
+                updateState { it.copy(loading = false) }
+            }
+        }
+    }
 
-    private fun getPreferenceClickedResult(wish: SettingsWish.PreferenceClicked) = flowOf(
+    private fun onPreferenceClicked(wish: SettingsWish.PreferenceClicked) = flowOf(
         when (wish.preferenceKey) {
-            DARK_MODE_PREFERENCE_KEY -> SettingsResult.ShowDarkModeDialog
-            else -> SettingsResult.ShowDevelopmentActivity
+            DARK_MODE_PREFERENCE_KEY -> _uiEffect.value = UiEffect.ShowingDarkModeDialog
+            else -> _uiEffect.value = UiEffect.ShowingDevelopmentActivity
         }
     )
 
-    private fun getCreatePreferenceResult() = flow {
-        emit(SettingsResult.PreferencesCreated(featurePoint.createFeatures(Unit)) as SettingsResult)
-    }.onStart {
-        emit(SettingsResult.Loading)
-    }.flowOn(coroutineContextProvider.backgroundDispatcher)
+    private fun createPreferences() {
+        viewModelScope.launch {
+            updateState { it.copy(loading = true) }
+            runCatching {
+                withContext(coroutineContextProvider.backgroundDispatcher) {
+                    featurePoint.createFeatures(Unit)
+                }
+            }.onSuccess { preferences ->
+                updateState { it.copy(loading = false, preferences = preferences) }
+            }
+        }
+    }
 }

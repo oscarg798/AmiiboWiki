@@ -15,7 +15,4 @@ package com.oscarg798.amiibowiki.navigation.mvi
 import com.oscarg798.amiibowiki.core.mvi.ViewState
 import com.oscarg798.amiibowiki.updatechecker.UpdateType
 
-sealed class DashboardViewState : ViewState {
-    object Idling : DashboardViewState()
-    data class RequestingUpdate(val type: UpdateType) : DashboardViewState()
-}
+object DashboardViewState : ViewState

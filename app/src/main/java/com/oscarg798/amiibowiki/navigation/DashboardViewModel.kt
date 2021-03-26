@@ -12,31 +12,41 @@
 
 package com.oscarg798.amiibowiki.navigation
 
-import com.oscarg798.amiibowiki.core.base.AbstractViewModelCompat
-import com.oscarg798.amiibowiki.core.mvi.Reducer
+import androidx.lifecycle.viewModelScope
+import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardResult
+import com.oscarg798.amiibowiki.navigation.mvi.CheckUpdatesWish
 import com.oscarg798.amiibowiki.navigation.mvi.DashboardViewState
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardWish
+import com.oscarg798.amiibowiki.navigation.mvi.RequestUpdateSideEffect
 import com.oscarg798.amiibowiki.updatechecker.UpdateCheckerUseCase
+import com.oscarg798.amiibowiki.updatechecker.UpdateType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(
+internal class DashboardViewModel @Inject constructor(
     private val usecase: UpdateCheckerUseCase,
-    override val reducer: Reducer<@JvmSuppressWildcards DashboardResult, @JvmSuppressWildcards DashboardViewState>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModelCompat<DashboardWish, DashboardResult, DashboardViewState>(DashboardViewState.Idling) {
+) : AbstractViewModel<DashboardViewState, RequestUpdateSideEffect, CheckUpdatesWish>(DashboardViewState) {
 
-    override suspend fun getResult(wish: DashboardWish): Flow<DashboardResult> = flow {
-        val status = usecase.execute()
-        emit(status)
-    }.map {
-        DashboardResult.UpdateStatusFound(it)
-    }.flowOn(coroutineContextProvider.backgroundDispatcher)
+    override fun processWish(wish: CheckUpdatesWish) {
+        viewModelScope.launch {
+            runCatching {
+                withContext(coroutineContextProvider.backgroundDispatcher) {
+                    usecase.execute()
+                }
+            }.onSuccess { status ->
+                if (status is UpdateStatus.UpdateAvailable) {
+                    _uiEffect.value = RequestUpdateSideEffect(
+                        when (status) {
+                            is UpdateStatus.UpdateAvailable.Immediate -> UpdateType.Immediate
+                            else -> UpdateType.Flexible
+                        }
+                    )
+                }
+            }
+        }
+    }
 }

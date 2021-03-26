@@ -24,7 +24,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailDeepLinkActivity
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
-import com.oscarg798.amiibowiki.databinding.ActivitySplashBinding
 import com.oscarg798.amiibowiki.navigation.DashboardActivity
 import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
 import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
@@ -44,9 +43,10 @@ class SplashActivity : AppCompatActivity() {
     private val viewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewTreeLifecycleOwner.set(window.decorView, this)
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
+        verifyNightMode(finishOnChange = false)
+        ViewTreeLifecycleOwner.set(window.decorView, this)
         setContent {
             SplashScreen(viewModel = viewModel, coroutineScope = lifecycleScope)
         }

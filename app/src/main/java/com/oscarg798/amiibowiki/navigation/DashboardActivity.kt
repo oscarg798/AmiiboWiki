@@ -15,7 +15,6 @@ package com.oscarg798.amiibowiki.navigation
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -23,9 +22,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.oscarg798.amiibowiki.R
+import com.oscarg798.amiibowiki.core.extensions.setViewTreeObserver
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
+import com.oscarg798.amiibowiki.navigation.mvi.CheckUpdatesWish
 import com.oscarg798.amiibowiki.navigation.mvi.DashboardViewState
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardWish
 import com.oscarg798.amiibowiki.updatechecker.requestUpdate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -37,10 +37,11 @@ class DashboardActivity : AppCompatActivity() {
     private val viewModel: DashboardViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        verifyNightMode()
         super.onCreate(savedInstanceState)
+        verifyNightMode()
+        setViewTreeObserver()
+
         setContentView(R.layout.activity_dashboard)
-        ViewTreeLifecycleOwner.set(window.decorView, this)
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
@@ -53,21 +54,19 @@ class DashboardActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        observeViewModelState()
+        observeViewModelEffect()
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.onWish(DashboardWish.CheckUpdates)
+        viewModel.onWish(CheckUpdatesWish)
     }
 
 
-    private fun observeViewModelState() {
+    private fun observeViewModelEffect() {
         lifecycleScope.launchWhenResumed {
-            viewModel.state.collect { state ->
-                when (state) {
-                    is DashboardViewState.RequestingUpdate -> requestUpdate(state.type)
-                }
+            viewModel.uiEffect.collect { effect ->
+                requestUpdate(effect.type)
             }
         }
     }

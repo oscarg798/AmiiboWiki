@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.oscarg798.amiibowiki.amiibodetail.databinding.ActivityAmiiboDetailDeeplinkBinding
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_DETAIL_DEEPLINK
+import com.oscarg798.amiibowiki.core.extensions.setViewTreeObserver
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,6 +26,9 @@ class AmiiboDetailDeepLinkActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setViewTreeObserver()
+
         setContentView(ActivityAmiiboDetailDeeplinkBinding.inflate(layoutInflater).root)
         supportFragmentManager.beginTransaction().replace(
             R.id.flMain,

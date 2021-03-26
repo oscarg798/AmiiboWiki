@@ -16,20 +16,15 @@ import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLogger
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderResult
 import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderWish
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReducer
+import com.oscarg798.amiibowiki.nfcreader.mvi.ReadTagWish
+import com.oscarg798.amiibowiki.nfcreader.mvi.ShowAmiiboDetailsUiEffect
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
-import com.oscarg798.amiibowiki.nfcreader.usecase.ValidateAdapterAvailabilityUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
-import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRuleCompat
+import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.spyk
-import io.mockk.verify
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -37,99 +32,55 @@ import org.junit.Test
 
 @InternalCoroutinesApi
 
-class NFCReaderViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<NFCReaderViewState, NFCReaderViewModel> {
+internal class NFCReaderViewModelTest :
+    ViewModelTestRule.ViewModelCreator<NFCReaderViewState, NFCReaderViewModel> {
 
     @get: Rule
-    val viewModelTestRule = ViewModelTestRuleCompat(this)
+    val viewModelTestRule = ViewModelTestRule(this)
 
-    private val validateAdapterAvailabilityUseCase = mockk<ValidateAdapterAvailabilityUseCase>()
     private val readTagUseCase = mockk<ReadTagUseCase>()
     private val tag = mockk<Tag>()
     private val logger = relaxedMockk<NFCReaderLogger>()
-    private val reducer = spyk(NFCReducer())
 
     @Before
     fun setup() {
-        every { validateAdapterAvailabilityUseCase.execute() } answers { true }
         coEvery { readTagUseCase.execute(tag) } answers { AMIIBO_IDENTIFIER }
     }
 
     override fun create(): NFCReaderViewModel = NFCReaderViewModel(
-        validateAdapterAvailabilityUseCase,
         readTagUseCase,
-        reducer,
         logger,
         viewModelTestRule.coroutineContextProvider
     )
 
     @Test
-    fun `given validate adapter availability wish and nfc adapter is enabled when wish is process then is should return the status will be reflect this`() {
-        viewModelTestRule.viewModel.onWish(NFCReaderWish.ValidateAdapterAvailability)
-
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewState.Idling,
-            NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterAvailable)
-        )
-
-        verify {
-            validateAdapterAvailabilityUseCase.execute()
-        }
-        coVerify(exactly = 1) {
-            reducer.reduce(
-                NFCReaderViewState.Idling,
-                NFCReaderResult.AdapterReady
-            )
-        }
-    }
-
-    @Test
-    fun `given validate adapter availability wish and nfc adapter is disabled when wish is process then is should return the status will be reflect this`() {
-        every { validateAdapterAvailabilityUseCase.execute() } answers { false }
-        viewModelTestRule.viewModel.onWish(NFCReaderWish.ValidateAdapterAvailability)
-
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewState.Idling,
-            NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped)
-        )
-
-        coVerify {
-            validateAdapterAvailabilityUseCase.execute()
-            reducer.reduce(
-                NFCReaderViewState.Idling,
-                NFCReaderResult.AdapterDisabled
-            )
-        }
-    }
-
-    @Test
-    fun `given stop adapter wish when wish is process then it should return the state that reflect this in the adapter status`() {
-        viewModelTestRule.viewModel.onWish(NFCReaderWish.StopAdapter)
-
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewState.Idling,
-            NFCReaderViewState.AdapterStatusFound(NFCReaderViewState.AdapterStatus.AdapterReadyToBeStoped)
-        )
-
-        coVerify {
-            reducer.reduce(
-                NFCReaderViewState.Idling,
-                NFCReaderResult.AdapterStoped
-            )
-        }
-    }
-
-    @Test
     fun `given read tag wish when wish is process then it should return the amiibo identifier in status NFCReaderResult_ReadSuccessful`() {
-        viewModelTestRule.viewModel.onWish(NFCReaderWish.Read(tag))
+        viewModelTestRule.viewModel.onWish(ReadTagWish(tag))
 
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewState.Idling,
-            NFCReaderViewState.Loading,
-            NFCReaderViewState.ShowingAmiibo(AMIIBO_IDENTIFIER)
+        val initialState = NFCReaderViewState()
+
+        viewModelTestRule.stateCollector wereValuesEmitted listOf(
+            initialState,
+            initialState.copy(loading = true),
+            initialState
         )
 
-        coVerify(exactly = 2) {
-            reducer.reduce(any(), any())
+        viewModelTestRule.effectCollector.wereValuesEmitted(
+            listOf(
+                ShowAmiiboDetailsUiEffect(
+                    AMIIBO_IDENTIFIER
+                )
+            )
+        ) { o1, o2 ->
+            if (o1.amiiboIdentifier == o2.amiiboIdentifier) {
+                EQUALS
+            } else {
+                DIFFERENT
+            }
+        }
+
+        coVerify {
+            readTagUseCase.execute(tag)
         }
     }
 
@@ -137,19 +88,22 @@ class NFCReaderViewModelTest : ViewModelTestRuleCompat.ViewModelCreator<NFCReade
     fun `given read tag wish when wish is process and there is an NFCReader Failure then  it should return it in status as error`() {
         val error = NFCReaderFailure.TagNotSupported(Exception())
         coEvery { readTagUseCase.execute(tag) } answers { throw error }
-        viewModelTestRule.viewModel.onWish(NFCReaderWish.Read(tag))
+        viewModelTestRule.viewModel.onWish(ReadTagWish(tag))
 
-        viewModelTestRule.testCollector wereValuesEmitted listOf(
-            NFCReaderViewState.Idling,
-            NFCReaderViewState.Loading,
-            NFCReaderViewState.Error(error)
+        val initialState = NFCReaderViewState()
+        viewModelTestRule.stateCollector wereValuesEmitted listOf(
+            initialState,
+            initialState.copy(loading = true),
+            initialState.copy(loading = false, error = error)
         )
 
-        coVerify(exactly = 2) {
-            reducer.reduce(any(), any())
+        coVerify {
+            readTagUseCase.execute(tag)
+            logger.logException(error)
         }
     }
 }
 
-private val AMIIBO_IDENTIFIER =
-    AmiiboIdentifier("1", "2")
+private const val EQUALS = 0
+private const val DIFFERENT = 0
+private val AMIIBO_IDENTIFIER = AmiiboIdentifier("1", "2")

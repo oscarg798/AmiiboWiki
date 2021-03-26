@@ -29,17 +29,16 @@ import com.oscarg798.amiibowiki.core.utils.TextChangeListenerAdapter
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
+import com.oscarg798.amiibowiki.settings.mvi.UiEffect
 import com.oscarg798.flagly.developeroptions.FeatureFlagHandlerActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -63,25 +62,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun setupViewModel() {
         lifecycleScope.launchWhenResumed {
             viewModel.state.collect { state ->
-                when (state) {
-                    is SettingsViewState.Preferences -> {
+                when {
+                    state.preferences != null -> {
                         /**
                          * Preferences must exists before setting click listener
                          */
                         setupPreferencesClickListener(viewModel)
                         addPreferences(state.preferences)
                     }
-                    SettingsViewState.ShowingDevelopmentActivity -> startActivity(
-                        Intent(
-                            requireContext(),
-                            FeatureFlagHandlerActivity::class.java
-                        )
-                    )
-                    SettingsViewState.ActivityShouldBeRecreated -> {
-                        startActivity(requireActivity().intent)
-                        requireActivity().finish()
-                    }
-                    SettingsViewState.ShowingDarkModeDialog -> showDarkModeDialog()
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.uiEffect.collect { uiEffect ->
+                when (uiEffect) {
+                    is UiEffect.RecreateActivity -> recreateActivity()
+                    is UiEffect.ShowingDarkModeDialog -> showDarkModeDialog()
+                    is UiEffect.ShowingDevelopmentActivity -> navigateToDevelopmentActivity()
                 }
             }
         }
@@ -89,11 +87,30 @@ class SettingsFragment : PreferenceFragmentCompat() {
         viewModel.onWish(SettingsWish.CreatePreferences)
     }
 
+    private fun recreateActivity() {
+        requireContext().packageManager
+            .getLaunchIntentForPackage(requireContext().packageName)?.let { intent ->
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            requireActivity().finish()
+        }
+    }
+
+    private fun navigateToDevelopmentActivity() {
+        startActivity(
+            Intent(
+                requireContext(),
+                FeatureFlagHandlerActivity::class.java
+            )
+        )
+    }
+
     private fun showDarkModeDialog() {
-        val adapter = ArrayAdapter<String>(
+        val adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.select_dialog_singlechoice,
-            listOf<String>(
+            listOf(
                 getString(R.string.system_default_dark_mode_option),
                 getString(R.string.ligth_dark_mode_option),
                 getString(R.string.dark_mode_option)
@@ -110,10 +127,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupPreferencesClickListener(viewModel: SettingsViewModel) {
-        merge(getDarkModePreferenceClick(), getDevelopmentActivityClick())
-            .onEach {
-                viewModel.onWish(it)
-            }.launchIn(lifecycleScope)
+        lifecycleScope.launch {
+            merge(getDarkModePreferenceClick(), getDevelopmentActivityClick())
+                .collect {
+                    viewModel.onWish(it)
+                }
+        }
     }
 
     private fun getDarkModePreferenceClick(): Flow<SettingsWish> = callbackFlow {

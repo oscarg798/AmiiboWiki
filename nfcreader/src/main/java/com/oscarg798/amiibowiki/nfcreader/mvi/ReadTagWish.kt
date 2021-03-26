@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Oscar David Gallon Rosero
+ * Copyright 2020 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,23 +10,9 @@
  *
  */
 
-package com.oscarg798.amiibowiki.navigation.di
+package com.oscarg798.amiibowiki.nfcreader.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.Reducer
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardReducer
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardResult
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardViewState
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import android.nfc.Tag
+import com.oscarg798.amiibowiki.core.mvi.Wish
 
-@InstallIn(ViewModelComponent::class)
-@Module
-class NavigationModule {
-
-    @Provides
-    @ViewModelScoped
-    fun provideReducer(reducer: DashboardReducer): Reducer<DashboardResult, DashboardViewState> =  reducer
-}
+data class ReadTagWish(val tag: Tag) : Wish

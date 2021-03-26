@@ -33,5 +33,7 @@ dependencies {
     implementation flagly
     implementation preference
 
+    implementation lottie.compose
+
     testImplementation roomTesting
 }

@@ -18,9 +18,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityOptionsCompat
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import com.oscarg798.amiibowiki.core.R
 import com.oscarg798.amiibowiki.core.constants.DARK_MODE_SELECTION_KEY
 import com.oscarg798.amiibowiki.core.constants.PREFERENCE_NAME
@@ -98,7 +100,14 @@ private fun createDeepLinkIntent(deepLink: DeepLink): Intent {
     return intent
 }
 
-fun AppCompatActivity.verifyNightMode() {
+/**
+ * We let the user decide if night mode should be turned on/off without following
+ * the device config. Here we check the user preferences and if the activity was
+ *  opened with the wrong config we finish it as the system might recreated it.
+ *  The system will not recreate the activity in all the cases for example
+ *  when it's the started activity so we pass a flag to control it.
+ */
+fun AppCompatActivity.verifyNightMode(finishOnChange: Boolean = true) {
     if (!isAndroidQOrHigher()) {
         return
     }
@@ -112,6 +121,19 @@ fun AppCompatActivity.verifyNightMode() {
     }
 
     AppCompatDelegate.setDefaultNightMode(userSelectedNigthMode)
+
+    if (finishOnChange) {
+        finish()
+    }
+}
+
+/**
+ * On Compose beta03 the app crashes
+ * if you donot set the lifecycle observer dunno why
+ * but this is a workaround
+ */
+fun AppCompatActivity.setViewTreeObserver() {
+    ViewTreeLifecycleOwner.set(window.decorView, this)
 }
 
 private fun AppCompatActivity.getNightMode(nigthMode: String?) = when (nigthMode) {
@@ -121,4 +143,5 @@ private fun AppCompatActivity.getNightMode(nigthMode: String?) = when (nigthMode
     else -> AppCompatDelegate.MODE_NIGHT_YES
 }
 
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
 fun isAndroidQOrHigher() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
