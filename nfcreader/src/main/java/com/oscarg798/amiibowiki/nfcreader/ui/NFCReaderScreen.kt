@@ -21,7 +21,7 @@ import com.oscarg798.amiibowiki.core.ui.ErrorSnackbar
 import com.oscarg798.amiibowiki.core.ui.LoadingAnimation
 import com.oscarg798.amiibowiki.core.ui.ThemeContainer
 import com.oscarg798.amiibowiki.nfcreader.NFCReaderViewModel
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
+import com.oscarg798.amiibowiki.nfcreader.mvi.ViewState
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -32,7 +32,7 @@ internal fun NFCReaderScreen(
 ) {
 
     ThemeContainer {
-        val state by viewModel.state.collectAsState(initial = NFCReaderViewState())
+        val state by viewModel.state.collectAsState(initial = ViewState())
         val snackbarHostState = remember { SnackbarHostState() }
 
         Scaffold(scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)) {

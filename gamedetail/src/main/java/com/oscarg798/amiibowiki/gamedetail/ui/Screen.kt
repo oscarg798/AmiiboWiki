@@ -10,8 +10,8 @@ import androidx.compose.runtime.remember
 import com.oscarg798.amiibowiki.core.ui.ErrorSnackbar
 import com.oscarg798.amiibowiki.core.ui.ThemeContainer
 import com.oscarg798.amiibowiki.gamedetail.GameDetailViewModel
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
+import com.oscarg798.amiibowiki.gamedetail.mvi.ViewState
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -22,7 +22,7 @@ internal fun Screen(
     onBackPressed: () -> Unit
 ) {
 
-    val state by viewModel.state.collectAsState(initial = GameDetailViewState())
+    val state by viewModel.state.collectAsState(initial = ViewState())
     val snackbarHostState = remember { SnackbarHostState() }
 
     ThemeContainer {

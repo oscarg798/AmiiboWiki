@@ -16,9 +16,9 @@ import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLogger
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.ReadTagWish
 import com.oscarg798.amiibowiki.nfcreader.mvi.ShowAmiiboDetailsUiEffect
+import com.oscarg798.amiibowiki.nfcreader.mvi.ViewState
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
@@ -33,7 +33,7 @@ import org.junit.Test
 @InternalCoroutinesApi
 
 internal class NFCReaderViewModelTest :
-    ViewModelTestRule.ViewModelCreator<NFCReaderViewState, NFCReaderViewModel> {
+    ViewModelTestRule.ViewModelCreator<ViewState, NFCReaderViewModel> {
 
     @get: Rule
     val viewModelTestRule = ViewModelTestRule(this)
@@ -57,10 +57,9 @@ internal class NFCReaderViewModelTest :
     fun `given read tag wish when wish is process then it should return the amiibo identifier in status NFCReaderResult_ReadSuccessful`() {
         viewModelTestRule.viewModel.onWish(ReadTagWish(tag))
 
-        val initialState = NFCReaderViewState()
+        val initialState = ViewState()
 
         viewModelTestRule.stateCollector wereValuesEmitted listOf(
-            initialState,
             initialState.copy(loading = true),
             initialState
         )
@@ -90,9 +89,8 @@ internal class NFCReaderViewModelTest :
         coEvery { readTagUseCase.execute(tag) } answers { throw error }
         viewModelTestRule.viewModel.onWish(ReadTagWish(tag))
 
-        val initialState = NFCReaderViewState()
+        val initialState = ViewState()
         viewModelTestRule.stateCollector wereValuesEmitted listOf(
-            initialState,
             initialState.copy(loading = true),
             initialState.copy(loading = false, error = error)
         )

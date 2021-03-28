@@ -17,23 +17,22 @@ import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.amiibowiki.settings.mvi.UiEffect
+import com.oscarg798.amiibowiki.settings.mvi.ViewState
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
 import com.oscarg798.flagly.featurepoint.SuspendFeaturePoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
+internal class SettingsViewModel @Inject constructor(
     private val saveDarkModeSelectionUseCase: SaveDarkModeSelectionUseCase,
     private val featurePoint: SuspendFeaturePoint<@JvmSuppressWildcards PreferenceBuilder, @JvmSuppressWildcards Unit>,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SettingsViewState, UiEffect, SettingsWish>(SettingsViewState()) {
+) : AbstractViewModel<ViewState, UiEffect, SettingsWish>(ViewState()) {
 
     override fun processWish(wish: SettingsWish) {
         when (wish) {
@@ -51,18 +50,18 @@ class SettingsViewModel @Inject constructor(
                     saveDarkModeSelectionUseCase.execute(wish.option)
                 }
             }.onSuccess {
-                _uiEffect.value = UiEffect.RecreateActivity
+                _uiEffect.tryEmit(UiEffect.RecreateActivity)
                 updateState { it.copy(loading = false) }
             }
         }
     }
 
-    private fun onPreferenceClicked(wish: SettingsWish.PreferenceClicked) = flowOf(
+    private fun onPreferenceClicked(wish: SettingsWish.PreferenceClicked) {
         when (wish.preferenceKey) {
-            DARK_MODE_PREFERENCE_KEY -> _uiEffect.value = UiEffect.ShowingDarkModeDialog
-            else -> _uiEffect.value = UiEffect.ShowingDevelopmentActivity
+            DARK_MODE_PREFERENCE_KEY -> _uiEffect.tryEmit(UiEffect.ShowingDarkModeDialog)
+            else -> _uiEffect.tryEmit(UiEffect.ShowingDevelopmentActivity)
         }
-    )
+    }
 
     private fun createPreferences() {
         viewModelScope.launch {

@@ -22,9 +22,9 @@ import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLogger
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.UIEffect
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.ViewState
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGameResult
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByAmiiboUseCase
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByQueryUseCase
@@ -47,7 +47,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
     private val searchGamesByQueryUseCase: SearchGamesByQueryUseCase,
     private val searchGamesLogger: SearchGamesResultLogger,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SearchResultViewState, UIEffect, SearchResultWish>(SearchResultViewState()) {
+) : AbstractViewModel<ViewState, UIEffect, SearchResultWish>(ViewState()) {
 
     init {
         state.onEach {
@@ -55,7 +55,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
         }.launchIn(viewModelScope)
 
         if (!shownAsRelatedGames) {
-            _uiEffect.value = UIEffect.ObserveSearchResults
+            _uiEffect.tryEmit(UIEffect.ObserveSearchResults)
         }
     }
 
@@ -81,7 +81,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
             }
 
             if (canBeShown) {
-                _uiEffect.value = UIEffect.ShowGameDetails(wish.gameId)
+                _uiEffect.tryEmit(UIEffect.ShowGameDetails(wish.gameId))
             }
         }
     }
@@ -131,7 +131,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
     }
 
     private fun searchByAmiiboId(amiiboId: String) {
-        val savedState = handle.get<SearchResultViewState>(STATE_KEY)
+        val savedState = handle.get<ViewState>(STATE_KEY)
 
         if (savedState?.gamesResult != null) {
             updateFromSavedState(savedState)
@@ -164,7 +164,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
         updateState { it.copy(isLoading = true, error = null, idling = false) }
     }
 
-    private fun updateFromSavedState(savedState: SearchResultViewState) {
+    private fun updateFromSavedState(savedState: ViewState) {
         viewModelScope.launch {
             updateState {
                 it.copy(

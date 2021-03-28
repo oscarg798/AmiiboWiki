@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.onEach
 @ExperimentalFoundationApi
 @AndroidEntryPoint
 @DeepLink(AMIIBO_LIST_DEEPLINK)
-class AmiiboListFragment :
+internal class AmiiboListFragment :
     Fragment(),
     SearchView.OnQueryTextListener,
     MenuItem.OnActionExpandListener {

@@ -10,28 +10,22 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.mvi
+package com.oscarg798.amiibowiki.amiibodetail.mvi
 
 import android.os.Parcelable
-import androidx.compose.runtime.Immutable
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
+import javax.annotation.concurrent.Immutable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Immutable
-data class AmiiboListViewState(
+internal data class ViewState(
     val loading: Boolean = false,
-    val amiibos: List<ViewAmiibo>? = null,
-    val error: AmiiboListFailure? = null
-) : ViewState, Parcelable {
-
-    override fun equals(other: Any?): Boolean = this === other
-
-    override fun hashCode(): Int {
-        var result = loading.hashCode()
-        result = 31 * result + (amiibos?.hashCode() ?: 0)
-        result = 31 * result + (error?.hashCode() ?: 0)
-        return result
-    }
-}
+    val amiibo: ViewAmiiboDetails? = null,
+    val relatedGamesSectionEnabled: Boolean = false,
+    val showingImage: String? = null,
+    val showRelatedGames: String? = null,
+    val error: AmiiboDetailFailure? = null
+) : MVIViewState, Parcelable

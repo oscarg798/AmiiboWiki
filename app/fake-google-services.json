@@ -1,0 +1,187 @@
+{
+  "project_info": {
+    "project_number": "496542573882",
+    "firebase_url": "https://fakeapp.firebaseio.com",
+    "project_id": "fake-fake",
+    "storage_bucket": "fake-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "Fake",
+        "android_client_info": {
+          "package_name": "co.com.babyrecord"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "Fake",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.com.babyrecord",
+            "certificate_hash": "Fake"
+          }
+        },
+        {
+          "client_id": "Fake",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "Fakish"
+        },
+        {
+          "current_key": "Faking"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "Fake.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "Fake",
+        "android_client_info": {
+          "package_name": "co.com.babyrecord.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "Fake.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "Fake"
+        },
+        {
+          "current_key": "Fakish"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "Fake.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "Fake",
+        "android_client_info": {
+          "package_name": "com.oscarg798.amiibowiki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "Fake.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.oscarg798.amiibowiki",
+            "certificate_hash": "fake"
+          }
+        },
+        {
+          "client_id": "Fake.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "Fake"
+        },
+        {
+          "current_key": "Fakeish"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "Fake.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "Fake",
+        "android_client_info": {
+          "package_name": "com.oscarg798.amiibowiki.alpha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "Fake.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "Fake"
+        },
+        {
+          "current_key": "Fakeish"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "Fake.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "Fake",
+        "android_client_info": {
+          "package_name": "com.oscarg798.amiibowiki.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "Fake.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "Fake"
+        },
+        {
+          "current_key": "Fakeish"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "Fake.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

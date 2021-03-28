@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.navigation.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.ViewState
-import com.oscarg798.amiibowiki.updatechecker.UpdateType
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
-object DashboardViewState : ViewState
+object ViewState : MVIViewState

@@ -22,7 +22,7 @@ import com.oscarg798.amiibowiki.core.ui.Dimensions
 import com.oscarg798.amiibowiki.searchgamesresults.R
 
 @Composable
-fun EmptyState() {
+fun IdlingState() {
     ConstraintLayout(
         constraintSet = getConstraintSet(),
         modifier = Modifier
@@ -32,42 +32,40 @@ fun EmptyState() {
     ) {
         Image(
             modifier = Modifier
-                .layoutId(EmptyStateIconId)
+                .layoutId(IdlingIcon)
                 .size(EmptyStateSize),
-            painter = painterResource(id = R.drawable.ic_no_results),
+            painter = painterResource(id = R.drawable.ic_game_pad),
             contentDescription = stringResource(
-                R.string.empty_state_icon_content_description
+                R.string.idling_state_icon_content_description
             )
         )
 
         Text(
-            text = stringResource(R.string.empty_state_text),
+            text = stringResource(id = R.string.search_guideline),
+            modifier = Modifier.layoutId(IdlingTextId).padding(Dimensions.Spacing.Medium),
             textAlign = TextAlign.Center,
-            modifier = Modifier.layoutId(EmptyStateTextId).padding(Dimensions.Spacing.Medium),
             style = MaterialTheme.typography.body2.merge(TextStyle(MaterialTheme.colors.onBackground))
         )
     }
 }
 
 private fun getConstraintSet() = ConstraintSet {
-    val emptyStateTextId = createRefFor(EmptyStateTextId)
-    val emptyStateIconId = createRefFor(EmptyStateIconId)
+    val idlingTextId = createRefFor(IdlingTextId)
+    val idlingIconId = createRefFor(IdlingIcon)
 
-    constrain(emptyStateIconId) {
+    constrain(idlingIconId) {
         width = Dimension.fillToConstraints
         linkTo(top = parent.top, bottom = parent.bottom, bias = 0.4f)
         linkTo(start = parent.start, end = parent.end)
     }
 
-    constrain(emptyStateTextId) {
+    constrain(idlingTextId) {
         width = Dimension.wrapContent
-        top.linkTo(emptyStateIconId.bottom)
-        linkTo(
-            start = parent.start, end = parent.end
-        )
+        top.linkTo(idlingIconId.bottom)
+        linkTo(start = parent.start, end = parent.end)
     }
 }
 
-private const val EmptyStateTextId = "emptyStateTextId"
-private const val EmptyStateIconId = "emptyStateIconId"
+private const val IdlingTextId = "idlingTextId"
+private const val IdlingIcon = "IdlingIconId"
 private val EmptyStateSize = 100.dp

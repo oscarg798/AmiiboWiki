@@ -15,9 +15,9 @@ package com.oscarg798.amiibowiki.settings
 import com.oscarg798.amiibowiki.settings.featurepoint.DARK_MODE_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.featurepoint.DEVELOPMENT_ACTIVITY_PREFERENCE_KEY
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
-import com.oscarg798.amiibowiki.settings.mvi.SettingsViewState
 import com.oscarg798.amiibowiki.settings.mvi.SettingsWish
 import com.oscarg798.amiibowiki.settings.mvi.UiEffect
+import com.oscarg798.amiibowiki.settings.mvi.ViewState
 import com.oscarg798.amiibowiki.settings.usecases.SaveDarkModeSelectionUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
@@ -27,8 +27,8 @@ import io.mockk.coVerify
 import org.junit.Rule
 import org.junit.Test
 
-class SettingsViewModelTest :
-    ViewModelTestRule.ViewModelCreator<SettingsViewState, SettingsViewModel> {
+internal class SettingsViewModelTest :
+    ViewModelTestRule.ViewModelCreator<ViewState, SettingsViewModel> {
 
     @get: Rule
     val viewModelTestTule = ViewModelTestRule(this)
@@ -46,13 +46,10 @@ class SettingsViewModelTest :
     fun `given create preference wish when wish is processed then it should emit two states`() {
         coEvery { featurePoint.createFeatures(Unit) } answers { PREFERENCES.toList() }
 
-        val initialState = SettingsViewState()
+        val initialState = ViewState()
         viewModelTestTule.viewModel.onWish(SettingsWish.CreatePreferences)
 
-        viewModelTestTule.stateCollector wasValueEmiited initialState
-
         viewModelTestTule.stateCollector wereValuesEmitted listOf(
-            initialState,
             initialState.copy(loading = true),
             initialState.copy(
                 loading = false, preferences = (PREFERENCES.toList())
@@ -72,13 +69,7 @@ class SettingsViewModelTest :
             listOf(
                 UiEffect.ShowingDarkModeDialog
             )
-        ) { o1, o2 ->
-            if (o1 is UiEffect.ShowingDarkModeDialog && o2 is UiEffect.ShowingDarkModeDialog) {
-                EQUALS
-            } else {
-                DIFFERENT
-            }
-        }
+        )
     }
 
     @Test
@@ -93,20 +84,14 @@ class SettingsViewModelTest :
             listOf(
                 UiEffect.ShowingDevelopmentActivity
             )
-        ) { o1, o2 ->
-            if (o1 is UiEffect.ShowingDevelopmentActivity && o2 is UiEffect.ShowingDevelopmentActivity) {
-                EQUALS
-            } else {
-                DIFFERENT
-            }
-        }
+        )
     }
 
     @Test
     fun `given dark mode options was selected when wish is processed then it should emit the state should be idling`() {
         viewModelTestTule.viewModel.onWish(SettingsWish.DarkModeOptionSelected("1"))
 
-        val initialState = SettingsViewState()
+        val initialState = ViewState()
         viewModelTestTule.stateCollector wereValuesEmitted listOf(
             initialState,
             initialState.copy(loading = true),
@@ -117,18 +102,10 @@ class SettingsViewModelTest :
             listOf(
                 UiEffect.RecreateActivity
             )
-        ) { o1, o2 ->
-            if (o1 is UiEffect.RecreateActivity && o2 is UiEffect.RecreateActivity) {
-                EQUALS
-            } else {
-                DIFFERENT
-            }
-        }
+        )
     }
 }
 
-private const val DIFFERENT = 1
-private const val EQUALS = 0
 private val PREFERENCES = setOf(
     PreferenceBuilder.Clickable("1", "2"),
     PreferenceBuilder.Clickable("1", "2")

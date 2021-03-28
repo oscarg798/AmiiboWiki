@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki
 import com.oscarg798.amiibowiki.core.failures.AmiiboTypeFailure
 import com.oscarg798.amiibowiki.splash.SplashLogger
 import com.oscarg798.amiibowiki.splash.SplashViewModel
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
+import com.oscarg798.amiibowiki.splash.mvi.ViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.mvi.UiEffect
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
@@ -31,7 +31,7 @@ import org.junit.Rule
 import org.junit.Test
 
 
-internal class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashViewState, SplashViewModel> {
+internal class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<ViewState, SplashViewModel> {
 
     @get: Rule
     val viewModelTestRule = ViewModelTestRule(this)
@@ -54,11 +54,6 @@ internal class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashVi
     fun `given a wish to get the types when events are proccess then state value should be loading and then fetch success`() {
         viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
-        val initState = SplashViewState()
-        viewModelTestRule.stateCollector wereValuesEmitted listOf(
-            initState
-        )
-
         viewModelTestRule.effectCollector wereValuesEmitted listOf(UiEffect.Navigate)
 
         coVerify {
@@ -74,7 +69,7 @@ internal class SplashViewModelTest : ViewModelTestRule.ViewModelCreator<SplashVi
 
         viewModelTestRule.viewModel.onWish(SplashWish.GetTypes)
 
-        val initState = SplashViewState()
+        val initState = ViewState()
         viewModelTestRule.stateCollector wereValuesEmitted listOf(
             initState,
             initState.copy(loading = false, error = error)

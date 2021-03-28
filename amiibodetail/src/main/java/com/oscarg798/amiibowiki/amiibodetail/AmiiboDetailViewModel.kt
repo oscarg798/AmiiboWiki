@@ -16,9 +16,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
-import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
+import com.oscarg798.amiibowiki.amiibodetail.mvi.UiEffect
+import com.oscarg798.amiibowiki.amiibodetail.mvi.ViewState
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
@@ -43,7 +43,7 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
     private val amiiboDetailLogger: AmiiboDetailLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<AmiiboDetailViewState, UIEffect, AmiiboDetailWish>(AmiiboDetailViewState()) {
+) : AbstractViewModel<ViewState, UiEffect, AmiiboDetailWish>(ViewState()) {
 
     init {
         state.onEach {
@@ -54,12 +54,11 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
     override fun processWish(wish: AmiiboDetailWish) {
         when (wish) {
             is AmiiboDetailWish.ExpandAmiiboImage ->
-                _uiEffect.value =
-                    UIEffect.ShowAmiiboImage(wish.image)
+                _uiEffect.tryEmit(UiEffect.ShowAmiiboImage(wish.image))
+
             is AmiiboDetailWish.ShowAmiiboDetail -> onShowDetailsRequest()
             is AmiiboDetailWish.ShowRelatedGames ->
-                _uiEffect.value =
-                    UIEffect.ShowRelatedGames(tail)
+                _uiEffect.tryEmit(UiEffect.ShowRelatedGames(tail))
         }
     }
 
@@ -90,7 +89,7 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
     }
 
     private fun CoroutineScope.getDetailsAsync() = async {
-        val savedState = handle.get<AmiiboDetailViewState>(STATE_KEY)
+        val savedState = handle.get<ViewState>(STATE_KEY)
 
         if (savedState?.amiibo != null) {
             updateState {

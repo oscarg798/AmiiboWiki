@@ -22,7 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewModel
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
+import com.oscarg798.amiibowiki.amiibolist.mvi.ViewState
 import com.oscarg798.amiibowiki.core.ui.ErrorSnackbar
 import com.oscarg798.amiibowiki.core.ui.ThemeContainer
 import kotlinx.coroutines.CoroutineScope
@@ -34,7 +34,7 @@ internal fun Screen(
     coroutineScope: CoroutineScope,
     amiiboClickListener: (ViewAmiibo) -> Unit,
 ) {
-    val state by viewModel.state.collectAsState(initial = AmiiboListViewState())
+    val state by viewModel.state.collectAsState(initial = ViewState())
     val snackbarHostState = remember { SnackbarHostState() }
 
     ThemeContainer {
@@ -48,7 +48,7 @@ internal fun Screen(
             }
 
             when {
-                state.loading -> AmiiboListLoading(state = state)
+                state.loading -> AmiiboListLoading()
                 !state.loading && state.amiibos != null -> AmiiboList(
                     state.amiibos!!,
                     amiiboClickListener

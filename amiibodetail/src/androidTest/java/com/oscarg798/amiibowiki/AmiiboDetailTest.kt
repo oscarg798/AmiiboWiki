@@ -15,8 +15,8 @@ package com.oscarg798.amiibowiki
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.lifecycle.SavedStateHandle
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
+import com.oscarg798.amiibowiki.amiibodetail.mvi.ViewState
 import com.oscarg798.amiibowiki.amiibodetail.ui.Screen
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
@@ -75,7 +75,7 @@ internal class AmiiboDetailTest {
         hiltRule.inject()
         coEvery { amiiboDAO.getById(AMIIBO_TAIL) } answers { DB_AMIIBO }
         viewModel = factory.create(AMIIBO_TAIL, stateHandler)
-        coEvery { stateHandler.get<AmiiboDetailViewState>("state") } answers { null }
+        coEvery { stateHandler.get<ViewState>("state") } answers { null }
         every { mainFeatureFlagHandler.isFeatureEnabled(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { true }
 
         composeTestRule.setContent {

@@ -8,26 +8,23 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import com.oscarg798.amiibowiki.searchgamesresults.R
 
 @Composable
 internal fun SearchBox(
-    currentQuery: String,
-    onSearch: (String) -> Unit
+    query: TextFieldValue,
+    onSearch: (TextFieldValue) -> Unit
 ) {
-    val query = remember { mutableStateOf(currentQuery) }
-
     TextField(
-        value = query.value,
-        maxLines = 1,
+        value = query,
+        maxLines = SearchBoxMaxLines,
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
         colors = TextFieldDefaults.textFieldColors(
             focusedLabelColor = MaterialTheme.colors.secondary,
@@ -36,10 +33,7 @@ internal fun SearchBox(
             backgroundColor = MaterialTheme.colors.surface,
             textColor = MaterialTheme.colors.onSurface
         ),
-        onValueChange = { value ->
-            query.value = value
-            onSearch(value)
-        },
+        onValueChange = onSearch,
         modifier = Modifier
             .fillMaxWidth()
             .layoutId(SearchBoxId),
@@ -48,9 +42,12 @@ internal fun SearchBox(
         },
         leadingIcon = {
             Image(
-                painterResource(id = R.drawable.ic_search), contentDescription = stringResource(R.string.search_icon_content_description),
+                painterResource(id = R.drawable.ic_search),
+                contentDescription = stringResource(R.string.search_icon_content_description),
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground)
             )
         }
     )
 }
+
+private const val SearchBoxMaxLines = 1

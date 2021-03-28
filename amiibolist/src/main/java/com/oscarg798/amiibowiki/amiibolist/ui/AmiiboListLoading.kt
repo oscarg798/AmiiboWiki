@@ -28,14 +28,13 @@ import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.core.ui.Dimensions
 import com.oscarg798.amiibowiki.core.ui.LoadingImage
 import com.oscarg798.amiibowiki.core.ui.Shimmer
 
 @ExperimentalFoundationApi
 @Composable
-internal fun AmiiboListLoading(state: AmiiboListViewState) {
+internal fun AmiiboListLoading() {
     LazyVerticalGrid(cells = GridCells.Fixed(GridCount)) {
         items(DemoList) {
             Card(
@@ -70,7 +69,10 @@ internal fun AmiiboListLoading(state: AmiiboListViewState) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
-                            .padding(top = Dimensions.Spacing.Medium, bottom = Dimensions.Spacing.Medium)
+                            .padding(
+                                top = Dimensions.Spacing.Medium,
+                                bottom = Dimensions.Spacing.Medium
+                            )
                             .fillMaxWidth()
                     ) {
                         Shimmer(

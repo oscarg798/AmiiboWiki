@@ -6,7 +6,7 @@ import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLogger
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.ViewState
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.UIEffect
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGameResult
@@ -23,10 +23,10 @@ import org.junit.Rule
 import org.junit.Test
 
 class SearchGamesResultViewModelTest :
-    ViewModelTestRule.ViewModelCreator<SearchResultViewState, SearchGamesResultViewModel> {
+    ViewModelTestRule.ViewModelCreator<ViewState, SearchGamesResultViewModel> {
 
     @get:Rule
-    val viewModelRule: ViewModelTestRule<SearchResultViewState, UIEffect, SearchGamesResultViewModel> =
+    val viewModelRule: ViewModelTestRule<ViewState, UIEffect, SearchGamesResultViewModel> =
         ViewModelTestRule(this)
 
     private val handle = relaxedMockk<SavedStateHandle>()
@@ -41,7 +41,7 @@ class SearchGamesResultViewModelTest :
 
     @Before
     fun setup() {
-        every { handle.get<SearchResultViewState>(any()) } answers { null }
+        every { handle.get<ViewState>(any()) } answers { null }
     }
 
     override fun create(): SearchGamesResultViewModel = SearchGamesResultViewModel(
@@ -68,7 +68,6 @@ class SearchGamesResultViewModelTest :
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(
                     isLoading = true,
                     idling = false
@@ -86,7 +85,7 @@ class SearchGamesResultViewModelTest :
 
     @Test
     fun `given an amiibo id search to result saved when process wish invoke then it should  search the amiibos`() {
-        every { handle.get<SearchResultViewState>(any()) } answers {
+        every { handle.get<ViewState>(any()) } answers {
             STATE.copy(
                 gamesResult = listOf(
                     ViewGameSearchResult(RESULT)
@@ -104,7 +103,6 @@ class SearchGamesResultViewModelTest :
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(
                     isLoading = false,
                     idling = false,
@@ -115,7 +113,7 @@ class SearchGamesResultViewModelTest :
 
         verify {
             searchGamesByAmiiboUseCase wasNot Called
-            handle.get<SearchResultViewState>(any())
+            handle.get<ViewState>(any())
         }
     }
 
@@ -139,7 +137,6 @@ class SearchGamesResultViewModelTest :
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(
                     isLoading = true,
                     idling = false
@@ -173,7 +170,6 @@ class SearchGamesResultViewModelTest :
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(
                     isLoading = true,
                     idling = false
@@ -187,6 +183,6 @@ class SearchGamesResultViewModelTest :
 }
 
 private const val QUERY = "1"
-private val STATE = SearchResultViewState()
+private val STATE = ViewState()
 private const val AMIIBO_ID = "1"
 private val RESULT = GameSearchResult(1, "Mario", "Mario", 3)

@@ -16,10 +16,6 @@ import com.oscarg798.amiibowiki.core.mvi.Wish
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 
 sealed class SearchResultWish : Wish {
-
-    object Idle : SearchResultWish()
     data class SearchGames(val gameSearchGameQueryParam: GameSearchParam) : SearchResultWish()
-    data class ShowGameDetail(val gameId: Int) : SearchResultWish() {
-        override fun equals(other: Any?): Boolean = other === this
-    }
+    data class ShowGameDetail(val gameId: Int) : SearchResultWish()
 }

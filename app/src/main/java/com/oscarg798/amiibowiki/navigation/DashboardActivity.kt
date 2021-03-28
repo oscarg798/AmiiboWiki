@@ -25,7 +25,6 @@ import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.extensions.setViewTreeObserver
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.navigation.mvi.CheckUpdatesWish
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardViewState
 import com.oscarg798.amiibowiki.updatechecker.requestUpdate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect

@@ -17,9 +17,9 @@ import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLogger
-import com.oscarg798.amiibowiki.nfcreader.mvi.NFCReaderViewState
 import com.oscarg798.amiibowiki.nfcreader.mvi.ReadTagWish
 import com.oscarg798.amiibowiki.nfcreader.mvi.ShowAmiiboDetailsUiEffect
+import com.oscarg798.amiibowiki.nfcreader.mvi.ViewState
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ internal class NFCReaderViewModel @Inject constructor(
     private val readTagUseCase: ReadTagUseCase,
     private val logger: NFCReaderLogger,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<NFCReaderViewState, ShowAmiiboDetailsUiEffect, ReadTagWish>(NFCReaderViewState()) {
+) : AbstractViewModel<ViewState, ShowAmiiboDetailsUiEffect, ReadTagWish>(ViewState()) {
 
     override fun processWish(wish: ReadTagWish) {
         readTag(wish)
@@ -45,7 +45,7 @@ internal class NFCReaderViewModel @Inject constructor(
             }.fold(
                 { amiiboIdentifier ->
                     updateState { it.copy(loading = false, error = null) }
-                    _uiEffect.value = ShowAmiiboDetailsUiEffect(amiiboIdentifier)
+                    _uiEffect.emit(ShowAmiiboDetailsUiEffect(amiiboIdentifier))
                 },
                 { cause ->
                     if (cause !is Exception) {

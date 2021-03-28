@@ -10,14 +10,13 @@
  *
  */
 
-package com.oscarg798.amiibowiki.gamedetail.mvi
+package com.oscarg798.amiibowiki.splash.mvi
 
-import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
-import com.oscarg798.amiibowiki.core.models.Game
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
-data class GameDetailViewState(
-    val loading: Boolean = false,
-    val game: Game? = null,
-    val error: GameDetailFailure? = null
-) : ViewState
+import kotlin.Exception
+
+internal  data class ViewState(
+    val loading: Boolean = true,
+    val error: Exception? = null
+) : MVIViewState

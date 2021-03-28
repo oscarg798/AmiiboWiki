@@ -3,32 +3,17 @@
 In order to setup the project please follow the next steps 
 
 ## Google-Services.json
+We provide a fake implementation of `google-service.json` file, but you can provide your own. 
 
-Create a Firebase Project, then add the  package name of the project as an Android App. Notice that you need to include the package name for all the build types, each package name is added as a separate app in the same firebase project.
+Create a Firebase Project, then add the  package name of the project as an Android App. 
+Notice that you need to include the package name for all the flavours, each package name is added as a separate app in the same firebase project
+or you can remove the ones you do not want to use from `app.gradle`
+
 
 ## Android Studio Version
 
-Currently we are using Android Studio Version 4.2
-
-Then classpatch is using version `4.2.0-alpha08` is you do not want to use this version use `4.0.1`
-Also distribution url  for 4.2 is `gradle-6.6-rc-6-bin` but if you do not want change it in `gradle-wrapper.properties`
-
-* Release
-```kotlin
-com.oscarg798.amiibowiki
-```
-
-* Debug
-```kotlin
-com.oscarg798.amiibowiki.debug
-```
-
-* Alpha
-```kotlin
-com.oscarg798.amiibowiki.alpha
-```
-
-Enable crashlytics for the Firebase Project, then download the `google-services.json` file and paste it inside the project in the `app` module.
+Currently we are using Android Studio Version [Artic Fox or Canary version](https://developer.android.com/studio/preview) this because
+is the version supporting [Compose](https://developer.android.com/jetpack/compose)
 
 ## Remote Config
 
@@ -38,18 +23,15 @@ The project use remote config as Feature Flag provider, you will need to create 
 show_related_games
 amiibo_detail
 show_game_detail
+update_flexible
+update_immediate
 ```
 
 ## Local Properties File
 
-The project use a `local.properties` file to setup a Google API Key for **YouTube* Player** and an API Key for the Game API https://api.igdb.com/.
+Run `chmod +x ./createLocalProperties.sh && ./createLocalProperties.sh`
 
-Also the build type `Alpha` creates a minified signed build, and in order to make it work the file `signing.gradle` needs a specification
-of a **KeyStore Path**, **KeyStore Alias**, and the **Password** to access to it
-
-We use mixpanel to track some user events, create a project and paste the token as `mixpanelToken`
-
-Create/Edit this file in the **root** of the project, it should look like 
+This will create the file for you, it should look like 
 
 ```
 sdk.dir=<YourAndroidSDKPath>
@@ -58,7 +40,17 @@ keystoreAlias=<Your Keystore Alias>
 keystorepath=<Keystore path>
 googleApiKey=<Google API Key>
 mixpanelToken=<Mixpanel API Key>
+gameAPIClientId=<Twitch API Key>
+googleAccountServiceFile=<Path to a google account service file>
+gameAuthUrl=https://us-central1-babyrecord-336ca.cloudfunctions.net/
+firebaseToken = <Firebase cli token to publish to firebase distribution>
 ```
+you will need to provide the following API keys
+
+* [IGDB developer API Key](https://api-docs.igdb.com/#about) -> `gameAPIClientId`
+* [MixPanel Token](https://mixpanel.com/) -> mixpanelToken
+* [Youtube/google console api key](https://developers.google.com/youtube/registering_an_application) -> googleApiKey
+
 ### Help 
 
 1. Create a keystore key https://developer.android.com/studio/publish/app-signing
@@ -74,25 +66,5 @@ for authentication purposes in the PlayStore. So you can ignore this step commen
 ```groovy
 apply from: '../gradlescripts/release.gradle'
 ```
-
-## CiTask.Gradle.kts
-
-In order to run some tasks on the CI we have create the file `citask.gradle`, it uses some properties that should be
-in the `local.properties` file. To make the app work comment/remove  the following line from  the `build.gradle` file in the `app` module
-
-```
-apply from: '../gradlescripts/citask.gradle.kts'
-```
-
-If you do not want to comment this file and you one to use those tasks add the following properties to `local.properties`
-
-```
-firebaseProjectId=[Firebase Project ID]
-firebaseToken=[Firebase Auth Token]
-```
-
-Where `firebaseProjectId` is the firebase project id that you created on firebase, and  `firebaseToken` is the firebase token
-from the `firebase cli` tool. https://firebase.google.com/docs/cli
-
 
 ## You are done!!

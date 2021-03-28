@@ -13,11 +13,11 @@
 package com.oscarg798.amiibowiki.amiibolist
 
 import androidx.lifecycle.SavedStateHandle
+import com.oscarg798.amiibowiki.amiibolist.exceptions.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLogger
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.mvi.UiEffect
+import com.oscarg798.amiibowiki.amiibolist.mvi.ViewState
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.SearchAmiibosUseCase
@@ -35,12 +35,11 @@ import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import org.amshove.kluent.any
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListViewState, AmiiboListViewModel> {
+internal class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<ViewState, AmiiboListViewModel> {
 
     private val getAmiibosUseCase = relaxedMockk<GetAmiibosUseCase>()
     private val getAmiibosFilteredUseCase = relaxedMockk<GetAmiiboFilteredUseCase>()
@@ -50,22 +49,13 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
     private val isFeatureEnableUseCase = relaxedMockk<IsFeatureEnableUseCase>()
     private val handleState = relaxedMockk<SavedStateHandle>()
 
-    private val stateComparator =
-        Comparator<AmiiboListViewState> { o1, o2 ->
-            if (o1.loading == o2.loading && o1.amiibos == o2.amiibos && o1.error == o2.error) {
-                EQUAL
-            } else {
-                NO_EQUAL
-            }
-        }
-
     @get:Rule
-    val viewModelRule: ViewModelTestRule<AmiiboListViewState, UiEffect, AmiiboListViewModel> =
+    val viewModelRule: ViewModelTestRule<ViewState, UiEffect, AmiiboListViewModel> =
         ViewModelTestRule(this)
 
     @Before
     fun setup() {
-        coEvery { handleState.get<AmiiboListViewState>(any()) } answers { null }
+        coEvery { handleState.get<ViewState>(any()) } answers { null }
         coEvery { getAmiiboTypeUseCase.execute() } answers { listOf(AMIIBO_TYPE) }
         coEvery { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) } answers { listOf(AMIIBO) }
         every { getAmiibosUseCase.execute() } answers { flowOf(listOf(AMIIBO)) }
@@ -88,11 +78,9 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(loading = true),
                 STATE.copy(loading = false, amiibos = listOf(AMIIBO).map { ViewAmiibo(it) })
-            ),
-            stateComparator
+            )
         )
 
         verify { getAmiibosUseCase.execute() }
@@ -110,11 +98,9 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(loading = true),
                 STATE.copy(loading = false, error = error)
-            ),
-            stateComparator
+            )
         )
 
         verify { getAmiibosUseCase.execute() }
@@ -126,11 +112,9 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(loading = true),
                 STATE.copy(loading = false, amiibos = listOf(AMIIBO).map { ViewAmiibo(it) })
-            ),
-            stateComparator
+            )
         )
 
         coVerify {
@@ -148,11 +132,9 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(loading = true),
                 STATE.copy(loading = false, error = AmiiboListFailure.UnknowError(error))
-            ),
-            stateComparator
+            )
         )
 
         coVerify { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) }
@@ -167,11 +149,9 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(loading = true),
                 STATE.copy(loading = false, error = AmiiboListFailure.UnknowError(cause))
-            ),
-            stateComparator
+            )
         )
 
         coVerify { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) }
@@ -184,20 +164,7 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
         viewModelRule.effectCollector.wereValuesEmitted(
             listOf(
                 UiEffect.ShowFilters(listOf(ViewAmiiboType("1", "2")))
-            ),
-            object : Comparator<UiEffect> {
-                override fun compare(o1: UiEffect, o2: UiEffect): Int {
-                    if (o1 !is UiEffect.ShowFilters || o2 !is UiEffect.ShowFilters) {
-                        throw IllegalArgumentException("Only handle ShowFilters")
-                    }
-
-                    return if (o1.filters == o2.filters) {
-                        EQUAL
-                    } else {
-                        NO_EQUAL
-                    }
-                }
-            }
+            )
         )
 
         coVerify {
@@ -214,20 +181,7 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
         viewModelRule.effectCollector.wereValuesEmitted(
             listOf(
                 UiEffect.ShowAmiiboDetails("11")
-            ),
-            object : Comparator<UiEffect> {
-                override fun compare(o1: UiEffect, o2: UiEffect): Int {
-                    if (o1 !is UiEffect.ShowAmiiboDetails || o2 !is UiEffect.ShowAmiiboDetails) {
-                        throw IllegalArgumentException("Only handle ShowFilters")
-                    }
-
-                    return if (o1.amiiboId == o2.amiiboId) {
-                        EQUAL
-                    } else {
-                        NO_EQUAL
-                    }
-                }
-            }
+            )
         )
 
         verify {
@@ -255,11 +209,9 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
 
         viewModelRule.stateCollector.wereValuesEmitted(
             listOf(
-                STATE,
                 STATE.copy(loading = true),
                 STATE.copy(loading = false, amiibos = listOf(AMIIBO).map { ViewAmiibo(it) })
-            ),
-            stateComparator
+            )
         )
 
         verify {
@@ -270,7 +222,7 @@ class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboListVie
 
 private const val EQUAL = 0
 private const val NO_EQUAL = 1
-private val STATE = AmiiboListViewState()
+private val STATE = ViewState()
 private const val MOCK_QUERY = "1"
 private val AMIIBO_TYPE = AmiiboType("1", "2")
 private val AMIIBO = Amiibo(

@@ -32,12 +32,15 @@ import com.oscarg798.amiibowiki.core.ui.Dimensions
 import com.oscarg798.amiibowiki.core.ui.ImageFromUrl
 
 @Composable
-internal fun AmiiboCard(amiibo: ViewAmiibo, amiiboClickListener: (ViewAmiibo) -> Unit) {
+internal fun AmiiboCard(
+    viewAmiibo: ViewAmiibo,
+    amiiboClickListener: (ViewAmiibo) -> Unit
+) {
     Card(
         elevation = Dimensions.Elevation.Small,
         shape = RoundedCornerShape(Dimensions.CornerRadius.Small),
         modifier = Modifier
-            .clickable { amiiboClickListener(amiibo) }
+            .clickable { amiiboClickListener(viewAmiibo) }
             .padding(Dimensions.Spacing.Small)
     ) {
         Column(Modifier.padding(Dimensions.Spacing.Medium)) {
@@ -46,7 +49,7 @@ internal fun AmiiboCard(amiibo: ViewAmiibo, amiiboClickListener: (ViewAmiibo) ->
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    amiibo.serie,
+                    viewAmiibo.serie,
                     style = MaterialTheme.typography.body2.merge(TextStyle(MaterialTheme.colors.onSurface)),
                     maxLines = 1
                 )
@@ -59,7 +62,7 @@ internal fun AmiiboCard(amiibo: ViewAmiibo, amiiboClickListener: (ViewAmiibo) ->
                     .fillMaxWidth()
             ) {
                 ImageFromUrl(
-                    amiibo.image,
+                    viewAmiibo.image,
                     Modifier.getAmiiboImageModifiers(),
                     Modifier.getAmiiboImageModifiers()
                 )
@@ -72,7 +75,7 @@ internal fun AmiiboCard(amiibo: ViewAmiibo, amiiboClickListener: (ViewAmiibo) ->
                     .fillMaxWidth()
             ) {
                 Text(
-                    amiibo.name,
+                    viewAmiibo.name,
                     style = MaterialTheme.typography.body1.merge(TextStyle(MaterialTheme.colors.onBackground)),
                     maxLines = 1
                 )

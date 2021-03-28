@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
+import com.oscarg798.amiibowiki.amiibolist.exceptions.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.core.failures.GetAmiibosFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo

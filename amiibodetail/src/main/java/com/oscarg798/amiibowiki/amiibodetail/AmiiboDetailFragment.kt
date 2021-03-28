@@ -16,14 +16,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
-import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
+import com.oscarg798.amiibowiki.amiibodetail.mvi.UiEffect
 import com.oscarg798.amiibowiki.amiibodetail.ui.Screen
 import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
 import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
@@ -86,8 +85,8 @@ internal class AmiiboDetailFragment : Fragment() {
         lifecycleScope.launchWhenResumed {
             viewModel.uiEffect.collect { state ->
                 when (state) {
-                    is UIEffect.ShowAmiiboImage -> showExpandedImages(listOf(state.url))
-                    is UIEffect.ShowRelatedGames -> showRelatedGames(state.amiiboId)
+                    is UiEffect.ShowAmiiboImage -> showExpandedImages(listOf(state.url))
+                    is UiEffect.ShowRelatedGames -> showRelatedGames(state.amiiboId)
                 }
             }
         }

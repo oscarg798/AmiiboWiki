@@ -10,11 +10,20 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibolist.mvi
+package com.oscarg798.amiibowiki.searchgamesresults.mvi
 
-sealed class AmiiboListFailure(override val message: String?) : Exception(message) {
+import android.os.Parcelable
+import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
+import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
+import javax.annotation.concurrent.Immutable
+import kotlinx.parcelize.Parcelize
 
-    class FilterError(message: String) : AmiiboListFailure(message)
-    class FetchError(message: String) : AmiiboListFailure(message)
-    data class UnknowError(override val cause: Exception) : AmiiboListFailure("There was an error please try again later")
-}
+@Immutable
+@Parcelize
+data class ViewState(
+    val isLoading: Boolean = false,
+    val idling: Boolean = true,
+    val gamesResult: List<ViewGameSearchResult>? = null,
+    val error: SearchGameFailure? = null
+) : MVIViewState, Parcelable
