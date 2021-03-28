@@ -14,11 +14,11 @@ package com.oscarg798.amiibowiki.amiibolist
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.oscarg798.amiibowiki.amiibolist.exceptions.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLogger
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.mvi.UiEffect
+import com.oscarg798.amiibowiki.amiibolist.mvi.ViewState
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
 import com.oscarg798.amiibowiki.amiibolist.usecases.SearchAmiibosUseCase
@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AmiiboListViewModel @AssistedInject constructor(
+internal class AmiiboListViewModel @AssistedInject constructor(
     @Assisted private val stateHandle: SavedStateHandle,
     private val getAmiibosUseCase: GetAmiibosUseCase,
     private val getAmiiboFilteredUseCase: GetAmiiboFilteredUseCase,
@@ -49,7 +49,7 @@ class AmiiboListViewModel @AssistedInject constructor(
     private val amiiboListLogger: AmiiboListLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<AmiiboListViewState, UiEffect, AmiiboListWish>(AmiiboListViewState()) {
+) : AbstractViewModel<ViewState, UiEffect, AmiiboListWish>(ViewState()) {
 
     init {
         _state.onEach {
@@ -86,7 +86,7 @@ class AmiiboListViewModel @AssistedInject constructor(
                 }
             }.fold(
                 { amiiboTypes ->
-                    _uiEffect.value = UiEffect.ShowFilters(amiiboTypes.map { ViewAmiiboType(it) })
+                    _uiEffect.emit(UiEffect.ShowFilters(amiiboTypes.map { ViewAmiiboType(it) }))
                 },
                 { handleFailure(it) }
             )
@@ -106,7 +106,7 @@ class AmiiboListViewModel @AssistedInject constructor(
     }
 
     private fun fetchAmiibos(isRefreshing: Boolean) {
-        val state = stateHandle.get<AmiiboListViewState>(STATE_KEY)
+        val state = stateHandle.get<ViewState>(STATE_KEY)
 
         if (!isRefreshing && state?.amiibos != null) {
             viewModelScope.launch { updateState { it.copy(amiibos = state.amiibos) } }
@@ -145,7 +145,7 @@ class AmiiboListViewModel @AssistedInject constructor(
     private fun showDetail(amiibo: ViewAmiibo) {
         trackShowDetailsAmiiboWish(amiibo)
         if (isFeatureEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowAmiiboDetail)) {
-            _uiEffect.value = UiEffect.ShowAmiiboDetails(amiibo.tail)
+            _uiEffect.tryEmit(UiEffect.ShowAmiiboDetails(amiibo.tail))
         }
     }
 

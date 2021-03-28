@@ -16,8 +16,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.lifecycle.SavedStateHandle
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListViewState
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
+import com.oscarg798.amiibowiki.amiibolist.mvi.ViewState
 import com.oscarg798.amiibowiki.amiibolist.ui.Screen
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
@@ -58,7 +58,7 @@ import org.junit.runner.RunWith
 )
 @HiltAndroidTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-class AmiiboListTest {
+internal class AmiiboListTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -83,7 +83,7 @@ class AmiiboListTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        coEvery { stateHandler.get<AmiiboListViewState>(any()) } answers { null }
+        coEvery { stateHandler.get<ViewState>(any()) } answers { null }
         every { amiiboDAO.getAmiibos() } answers { flowOf(listOf(DB_AMIIBO)) }
 
         viewModel = factory.create(stateHandler)

@@ -77,9 +77,8 @@ class SearchResultFragment : Fragment() {
                 Screen(
                     viewModel,
                     searchBox = !isShownAsGamesRelatedSection,
-                    currentQuery = searchFlow.value,
                     onSearch = {
-                        searchFlow.value = it
+                        searchFlow.value = it.text
                     },
                     onSearchResultClickListener = {
                         viewModel.onWish(SearchResultWish.ShowGameDetail(it.gameId))

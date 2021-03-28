@@ -15,17 +15,15 @@ package com.oscarg798.amiibowiki.amiibodetail
 import androidx.lifecycle.SavedStateHandle
 import com.oscarg798.amiibowiki.amiibodetail.logger.AmiiboDetailLogger
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
-import com.oscarg798.amiibowiki.amiibodetail.mvi.UIEffect
+import com.oscarg798.amiibowiki.amiibodetail.mvi.UiEffect
+import com.oscarg798.amiibowiki.amiibodetail.mvi.ViewState
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import io.mockk.coEvery
@@ -37,11 +35,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<AmiiboDetailViewState, AmiiboDetailViewModel> {
+internal class AmiiboDetailViewModelTest :
+    ViewModelTestRule.ViewModelCreator<ViewState, AmiiboDetailViewModel> {
 
     @get: Rule
     val viewModelTestTule =
-        ViewModelTestRule<AmiiboDetailViewState, UIEffect, AmiiboDetailViewModel>(this)
+        ViewModelTestRule(this)
 
     private val logger = relaxedMockk<AmiiboDetailLogger>()
     private val getAmiiboDetailUseCase = mockk<GetAmiiboDetailUseCase>()
@@ -50,7 +49,7 @@ internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<Am
 
     @Before
     fun setup() {
-        coEvery { savedStateHandle.get<SearchResultViewState>(any()) } answers { null }
+        coEvery { savedStateHandle.get<ViewState>(any()) } answers { null }
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } answers { AMIIBO }
         every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { false }
         every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowGameDetail) } answers { false }
@@ -70,10 +69,9 @@ internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<Am
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
         viewModelTestTule.stateCollector wereValuesEmitted listOf(
-            STATE,
             STATE.copy(loading = true),
             STATE.copy(amiibo = VIEW_AMIIBO_DETAIL),
-            STATE.copy(relatedGamesSectionEnabled = false)
+            STATE.copy(relatedGamesSectionEnabled = false, amiibo = VIEW_AMIIBO_DETAIL)
         )
 
         coVerify {
@@ -87,7 +85,6 @@ internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<Am
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
         viewModelTestTule.stateCollector wereValuesEmitted listOf(
-            STATE,
             STATE.copy(loading = true),
             STATE.copy(amiibo = VIEW_AMIIBO_DETAIL),
             STATE.copy(relatedGamesSectionEnabled = true, amiibo = VIEW_AMIIBO_DETAIL)
@@ -107,7 +104,6 @@ internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<Am
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
 
         viewModelTestTule.stateCollector wereValuesEmitted listOf(
-            STATE,
             STATE.copy(loading = true),
             STATE.copy(error = AmiiboDetailFailure.AmiiboNotFoundByTail(TAIL)),
         )
@@ -123,22 +119,10 @@ internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<Am
 
         viewModelTestTule.effectCollector.wereValuesEmitted(
             listOf(
-                UIEffect.ShowAmiiboImage(
+                UiEffect.ShowAmiiboImage(
                     AMIIBO_IMAGE_URL
                 )
-            ),
-            object : Comparator<UIEffect> {
-                override fun compare(
-                    o1: UIEffect,
-                    o2: UIEffect
-                ): Int {
-                    if (o1 !is UIEffect.ShowAmiiboImage || o2 !is UIEffect.ShowAmiiboImage) {
-                        throw IllegalArgumentException("must provide ShowAmiiboImages")
-                    }
-
-                    return o1.url.compareTo(o2.url)
-                }
-            }
+            )
         )
     }
 
@@ -148,20 +132,8 @@ internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<Am
 
         viewModelTestTule.effectCollector.wereValuesEmitted(
             listOf(
-                UIEffect.ShowRelatedGames(TAIL)
-            ),
-            object : Comparator<UIEffect> {
-                override fun compare(
-                    o1: UIEffect,
-                    o2: UIEffect
-                ): Int {
-                    if (o1 !is UIEffect.ShowRelatedGames || o2 !is UIEffect.ShowRelatedGames) {
-                        throw IllegalArgumentException("must provide ShowRelatedGames")
-                    }
-
-                    return o1.amiiboId.compareTo(o2.amiiboId)
-                }
-            }
+                UiEffect.ShowRelatedGames(TAIL)
+            )
         )
     }
 
@@ -201,7 +173,7 @@ internal class AmiiboDetailViewModelTest : ViewModelTestRule.ViewModelCreator<Am
     }
 }
 
-private val STATE = AmiiboDetailViewState()
+private val STATE = ViewState()
 private const val AMIIBO_IMAGE_URL = "5"
 private const val GAME_ID = 4
 private const val GAME_SERIES = "22"
@@ -210,7 +182,6 @@ private const val HEAD_TRACKING_PROPERTY = "HEAD"
 private const val TYPE_TRACKING_PROPERTY = "TYPE"
 private const val NAME_TRACKING_PROPERTY = "NAME"
 private const val GAME_SERIES_TRACKING_PROPERTY = "GAME_SERIES"
-private val GAME_SEARCH_RESULTS = listOf(GameSearchResult(1, "2", "3", GAME_ID))
 private val AMIIBO = Amiibo(
     amiiboSeries = "1",
     character = "2",

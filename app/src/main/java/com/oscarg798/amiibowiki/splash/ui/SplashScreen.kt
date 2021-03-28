@@ -20,13 +20,16 @@ import com.oscarg798.amiibowiki.core.ui.ErrorSnackbar
 import com.oscarg798.amiibowiki.core.ui.LoadingAnimation
 import com.oscarg798.amiibowiki.core.ui.ThemeContainer
 import com.oscarg798.amiibowiki.splash.SplashViewModel
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
+import com.oscarg798.amiibowiki.splash.mvi.ViewState
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-internal fun SplashScreen(viewModel: SplashViewModel, coroutineScope: CoroutineScope) {
+internal fun SplashScreen(
+    viewModel: SplashViewModel,
+    coroutineScope: CoroutineScope
+) {
     ThemeContainer {
-        val state by viewModel.state.collectAsState(initial = SplashViewState())
+        val state by viewModel.state.collectAsState(initial = ViewState())
         val snackbarHostState = remember { SnackbarHostState() }
 
         Scaffold(scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)) {

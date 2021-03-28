@@ -10,22 +10,12 @@
  *
  */
 
-package com.oscarg798.amiibowiki.nfcreader.mvi
+package com.oscarg798.amiibowiki.settings.mvi
 
-import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
-import com.oscarg798.amiibowiki.core.mvi.Result
-import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
+import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 
-sealed class NFCReaderResult : Result {
-
-    object Reading : NFCReaderResult()
-    object AdapterReady : NFCReaderResult()
-    object AdapterDisabled : NFCReaderResult()
-    object AdapterStoped : NFCReaderResult()
-
-    data class ReadSuccessful(
-        val amiiboIdentifier: AmiiboIdentifier
-    ) : NFCReaderResult()
-
-    data class Error(val error: NFCReaderFailure) : NFCReaderResult()
-}
+internal data class ViewState(
+    val loading: Boolean = false,
+    val preferences: Collection<PreferenceBuilder>? = null
+) : MVIViewState

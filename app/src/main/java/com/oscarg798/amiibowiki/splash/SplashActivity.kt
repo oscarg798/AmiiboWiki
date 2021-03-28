@@ -17,25 +17,16 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
 import com.oscarg798.amiibowiki.R
-import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailDeepLinkActivity
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
 import com.oscarg798.amiibowiki.navigation.DashboardActivity
-import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.mvi.UiEffect
 import com.oscarg798.amiibowiki.splash.ui.SplashScreen
-import com.oscarg798.amiibowiki.updatechecker.UpdateType
-import com.oscarg798.amiibowiki.updatechecker.requestUpdate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {

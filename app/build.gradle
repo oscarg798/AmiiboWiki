@@ -10,6 +10,7 @@
  *
  *
  */
+import java.nio.file.Files
 
 plugins {
     id 'com.android.application'
@@ -31,6 +32,7 @@ apply from: "../gradlescripts/hiltshared.gradle"
 configurations {
     compileDebugClasspath
 }
+
 android {
 
     compileSdkVersion appCompileSdkVersion
@@ -259,4 +261,12 @@ releasePlugin {
     buildTypes = ["debug", "release"]
     flavors = ["development", "alpha"]
     firebaseToken = firebaseAuthToken
+}
+
+def googleServices = file("google-services.json")
+
+if (!googleServices.exists()) {
+    // If there isn't a google-services.json available, we'll copy our fake version to the
+    // google-services.json
+    Files.copy(file("fake-google-services.json").toPath(), googleServices.toPath())
 }

@@ -16,7 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.navigation.mvi.CheckUpdatesWish
-import com.oscarg798.amiibowiki.navigation.mvi.DashboardViewState
+import com.oscarg798.amiibowiki.navigation.mvi.ViewState
 import com.oscarg798.amiibowiki.navigation.mvi.RequestUpdateSideEffect
 import com.oscarg798.amiibowiki.updatechecker.UpdateCheckerUseCase
 import com.oscarg798.amiibowiki.updatechecker.UpdateType
@@ -29,7 +29,7 @@ import kotlinx.coroutines.withContext
 internal class DashboardViewModel @Inject constructor(
     private val usecase: UpdateCheckerUseCase,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<DashboardViewState, RequestUpdateSideEffect, CheckUpdatesWish>(DashboardViewState) {
+) : AbstractViewModel<ViewState, RequestUpdateSideEffect, CheckUpdatesWish>(ViewState) {
 
     override fun processWish(wish: CheckUpdatesWish) {
         viewModelScope.launch {
@@ -39,12 +39,12 @@ internal class DashboardViewModel @Inject constructor(
                 }
             }.onSuccess { status ->
                 if (status is UpdateStatus.UpdateAvailable) {
-                    _uiEffect.value = RequestUpdateSideEffect(
+                    _uiEffect.emit( RequestUpdateSideEffect(
                         when (status) {
                             is UpdateStatus.UpdateAvailable.Immediate -> UpdateType.Immediate
                             else -> UpdateType.Flexible
                         }
-                    )
+                    ))
                 }
             }
         }

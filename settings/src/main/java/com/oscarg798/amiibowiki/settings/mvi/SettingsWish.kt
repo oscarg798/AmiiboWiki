@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki.settings.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.Wish
 
-sealed class SettingsWish : Wish {
+internal sealed class SettingsWish : Wish {
 
     object CreatePreferences : SettingsWish()
     data class PreferenceClicked(val preferenceKey: String) : SettingsWish()

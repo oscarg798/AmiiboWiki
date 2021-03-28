@@ -15,4 +15,4 @@ package com.oscarg798.amiibowiki.nfcreader.mvi
 import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.mvi.Wish
 
-data class ReadTagWish(val tag: Tag) : Wish
+internal data class ReadTagWish(val tag: Tag) : Wish

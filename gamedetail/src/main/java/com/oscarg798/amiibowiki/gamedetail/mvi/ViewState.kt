@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Oscar David Gallon Rosero
+ * Copyright 2020 Oscar David Gallon Rosero
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -10,16 +10,14 @@
  *
  */
 
-package com.oscarg798.amiibowiki.amiibodetail.mvi
+package com.oscarg798.amiibowiki.gamedetail.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.SideEffect
+import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
+import com.oscarg798.amiibowiki.core.models.Game
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
-internal sealed class UIEffect : SideEffect {
-    data class ShowAmiiboImage(val url: String) : UIEffect() {
-        override fun equals(other: Any?): Boolean = false
-    }
-
-    data class ShowRelatedGames(val amiiboId: String) : UIEffect() {
-        override fun equals(other: Any?): Boolean = false
-    }
-}
+internal data class ViewState(
+    val loading: Boolean = false,
+    val game: Game? = null,
+    val error: GameDetailFailure? = null
+) : MVIViewState

@@ -15,7 +15,7 @@ package com.oscarg798.amiibowiki.splash
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import com.oscarg798.amiibowiki.splash.mvi.SplashViewState
+import com.oscarg798.amiibowiki.splash.mvi.ViewState
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.mvi.UiEffect
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
@@ -25,13 +25,14 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 
 @HiltViewModel
 internal class SplashViewModel @Inject constructor(
     private val splashLogger: SplashLogger,
     private val initializeApplicationUseCase: InitializeApplicationUseCase,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<SplashViewState, UiEffect, SplashWish>(SplashViewState()) {
+) : AbstractViewModel<ViewState, UiEffect, SplashWish>(ViewState()) {
 
     override fun processWish(wish: SplashWish) {
         fetchTypes()
@@ -41,7 +42,7 @@ internal class SplashViewModel @Inject constructor(
         onScreenShown()
         initializeApplicationUseCase.execute()
             .onEach {
-                _uiEffect.value = UiEffect.Navigate
+                _uiEffect.tryEmit(UiEffect.Navigate)
             }
             .catch { cause ->
                 if (cause !is Exception) {
@@ -51,7 +52,10 @@ internal class SplashViewModel @Inject constructor(
                 updateState { state ->
                     state.copy(loading = false, error = cause)
                 }
-            }.flowOn(coroutineContextProvider.backgroundDispatcher)
+            }.onStart {
+                updateState { it.copy(loading = true) }
+            }
+            .flowOn(coroutineContextProvider.backgroundDispatcher)
             .launchIn(viewModelScope)
     }
 

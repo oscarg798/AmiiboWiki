@@ -21,15 +21,15 @@ import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 
 @Composable
 internal fun Detail(
-    amiibo: ViewAmiiboDetails,
+    viewAmiiboDetails: ViewAmiiboDetails,
     relatedGamesSectionEnabled: Boolean,
     onImageClick: (String) -> Unit,
     onRelatedGamesButtonClick: () -> Unit
 ) {
     Column(Modifier.background(MaterialTheme.colors.background)) {
-        AmiiboImage(amiibo.imageUrl, onImageClick)
+        AmiiboImage(viewAmiiboDetails.imageUrl, onImageClick)
         AmiiboDetailDescription(
-            amiibo,
+            viewAmiiboDetails,
             relatedGamesSectionEnabled,
             onRelatedGamesButtonClick
         )

@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailViewState
+import com.oscarg798.amiibowiki.amiibodetail.mvi.ViewState
 import com.oscarg798.amiibowiki.core.ui.ThemeContainer
 
 @Composable
@@ -25,13 +25,13 @@ internal fun Screen(
     onImageClick: (String) -> Unit,
     onRelatedGamesButtonClick: () -> Unit
 ) {
-    val state by viewModel.state.collectAsState(initial = AmiiboDetailViewState())
+    val state by viewModel.state.collectAsState(initial = ViewState())
 
     ThemeContainer {
         when {
             state.loading -> AmiiboDetailLoading()
             state.amiibo != null -> Detail(
-                amiibo = state.amiibo!!,
+                viewAmiiboDetails = state.amiibo!!,
                 relatedGamesSectionEnabled = state.relatedGamesSectionEnabled,
                 onImageClick = onImageClick,
                 onRelatedGamesButtonClick = onRelatedGamesButtonClick

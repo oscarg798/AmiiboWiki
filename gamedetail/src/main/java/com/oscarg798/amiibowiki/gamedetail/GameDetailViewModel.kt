@@ -19,9 +19,9 @@ import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import com.oscarg798.amiibowiki.gamedetail.mvi.UiEffect
+import com.oscarg798.amiibowiki.gamedetail.mvi.ViewState
 import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGameTrailerUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
@@ -42,7 +42,7 @@ internal class GameDetailViewModel @AssistedInject constructor(
     private val getGameTrailerUseCase: GetGameTrailerUseCase,
     private val gameDetailLogger: GameDetailLogger,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<GameDetailViewState, UiEffect, GameDetailWish>(GameDetailViewState()) {
+) : AbstractViewModel<ViewState, UiEffect, GameDetailWish>(ViewState()) {
 
     override fun processWish(wish: GameDetailWish) {
         when (wish) {
@@ -56,7 +56,7 @@ internal class GameDetailViewModel @AssistedInject constructor(
         val expandedImages = expandGameImagesUseCase.execute(expandableImageParam)
         emit(expandedImages)
     }.onEach { images ->
-        _uiEffect.value = UiEffect.ShowingGameImages(images)
+        _uiEffect.emit(UiEffect.ShowingGameImages(images))
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
         .launchIn(viewModelScope)
 
@@ -64,7 +64,7 @@ internal class GameDetailViewModel @AssistedInject constructor(
         trackTrailerClick(gameId)
         emit(getGameTrailerUseCase.execute(gameId))
     }.onEach {
-        _uiEffect.value = UiEffect.ShowingGameTrailer(it)
+        _uiEffect.emit(UiEffect.ShowingGameTrailer(it))
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
         .launchIn(viewModelScope)
 

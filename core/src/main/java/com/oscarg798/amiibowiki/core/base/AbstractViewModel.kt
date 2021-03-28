@@ -17,20 +17,23 @@ import com.oscarg798.amiibowiki.core.mvi.SideEffect as MVIUIEffect
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.core.mvi.Wish as MVIWish
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 abstract class AbstractViewModel<ViewState : MVIViewState, UIEffect : MVIUIEffect, Wish : MVIWish>(
-    initialState: ViewState
+    private val initialState: ViewState
 ) :
     ViewModel() {
 
     protected abstract val coroutineContextProvider: CoroutineContextProvider
-    protected val _state = MutableStateFlow(initialState)
-    protected val _uiEffect = MutableStateFlow<UIEffect?>(null)
+    protected val _state =
+        MutableSharedFlow<ViewState>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    protected val _uiEffect =
+        MutableSharedFlow<UIEffect?>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     private val stateMutex = Mutex()
 
     val state: Flow<ViewState>
@@ -43,7 +46,7 @@ abstract class AbstractViewModel<ViewState : MVIViewState, UIEffect : MVIUIEffec
         reducer: (ViewState) -> ViewState
     ) {
         stateMutex.withLock {
-            _state.value = reducer(_state.value)
+            _state.emit(reducer(_state.replayCache.firstOrNull() ?: initialState))
         }
     }
 

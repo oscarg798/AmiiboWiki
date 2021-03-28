@@ -17,9 +17,9 @@ import com.oscarg798.amiibowiki.core.models.GameCategory
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageParam
 import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
-import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailViewState
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import com.oscarg798.amiibowiki.gamedetail.mvi.UiEffect
+import com.oscarg798.amiibowiki.gamedetail.mvi.ViewState
 import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGameTrailerUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
@@ -33,7 +33,7 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class GameDetailViewModelTest :
-    ViewModelTestRule.ViewModelCreator<GameDetailViewState, GameDetailViewModel> {
+    ViewModelTestRule.ViewModelCreator<ViewState, GameDetailViewModel> {
 
     @get: Rule
     val viewModelTestRule = ViewModelTestRule(this)
@@ -63,7 +63,6 @@ internal class GameDetailViewModelTest :
         viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail)
 
         viewModelTestRule.stateCollector wereValuesEmitted listOf(
-            STATE,
             STATE.copy(loading = true),
             STATE.copy(game = GAME)
         )
@@ -86,9 +85,7 @@ internal class GameDetailViewModelTest :
 
         viewModelTestRule.effectCollector.wereValuesEmitted(
             listOf(UiEffect.ShowingGameTrailer("9"))
-        ) { o1, o2 ->
-            (o1 as UiEffect.ShowingGameTrailer).trailer.compareTo((o2 as UiEffect.ShowingGameTrailer).trailer)
-        }
+        )
 
         verify {
             gameDetailLogger.trackTrailerClicked(mapOf("GAME_ID" to GAME_ID.toString()))
@@ -103,19 +100,11 @@ internal class GameDetailViewModelTest :
             listOf(
                 UiEffect.ShowingGameImages(EXPANDED_IMAGES)
             )
-        ) { o1, o2 ->
-            require(o1 is UiEffect.ShowingGameImages)
-            require(o2 is UiEffect.ShowingGameImages)
-            if (o1.images == o2.images) {
-                0
-            } else {
-                1
-            }
-        }
+        )
     }
 }
 
-private val STATE = GameDetailViewState()
+private val STATE = ViewState()
 private val EXPANDED_IMAGES = listOf("expand_url")
 private val EXPAND_IMAGE_PARAMS =
     listOf(ExpandableImageParam("url", ExpandableImageType.Cover))

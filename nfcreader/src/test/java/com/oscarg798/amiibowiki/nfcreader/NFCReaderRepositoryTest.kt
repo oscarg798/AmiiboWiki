@@ -12,7 +12,6 @@
 
 package com.oscarg798.amiibowiki.nfcreader
 
-import android.nfc.NfcAdapter
 import android.nfc.Tag
 import com.oscarg798.amiibowiki.core.models.AmiiboIdentifier
 import com.oscarg798.amiibowiki.nfcreader.errors.InvalidTagDataException
@@ -31,8 +30,6 @@ import org.junit.Test
 
 class NFCReaderRepositoryTest {
 
-    private val nfcAdapter =
-        relaxedMockk<NfcAdapter>()
     private val tagTech =
         relaxedMockk<TagTech>()
     private val arrayCloner =
@@ -52,7 +49,7 @@ class NFCReaderRepositoryTest {
         every { byteWrapper.wrap(any()) } answers { byteBuffer }
         every { byteBuffer.long } answers { LONG }
 
-        repository = NFCReaderRepositoryImpl(nfcAdapter, tagTech, arrayCloner, byteWrapper)
+        repository = NFCReaderRepositoryImpl(tagTech, arrayCloner, byteWrapper)
     }
 
     @Test

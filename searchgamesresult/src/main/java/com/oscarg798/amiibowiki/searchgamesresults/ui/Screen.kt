@@ -17,7 +17,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -25,30 +29,38 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.oscarg798.amiibowiki.core.ui.ThemeContainer
 import com.oscarg798.amiibowiki.searchgamesresults.SearchGamesResultViewModel
-import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultViewState
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.ViewState
 
 @Composable
 internal fun Screen(
     viewModel: SearchGamesResultViewModel,
     searchBox: Boolean,
     onSearchResultClickListener: onSearchResultClickListener,
-    currentQuery: String,
-    onSearch: (String) -> Unit
+    onSearch: (TextFieldValue) -> Unit
 ) {
-    val state by viewModel.state.collectAsState(initial = SearchResultViewState())
+    val state by viewModel.state.collectAsState(initial = ViewState())
+    var searchState by remember { mutableStateOf(TextFieldValue()) }
     val constrainSet = getConstraintSet(searchBox)
+
     ThemeContainer {
         ConstraintLayout(
             constraintSet = constrainSet,
             Modifier.background(MaterialTheme.colors.background)
         ) {
             if (searchBox) {
-                SearchBox(currentQuery, onSearch)
+                SearchBox(
+                    query = searchState,
+                    onSearch = {
+                        searchState = it
+                        onSearch(it)
+                    }
+                )
             }
             when {
                 state.isLoading -> GameResultsLoading()
-                state.idling -> EmptyState()
-                state.gamesResult != null -> GameResults(
+                state.idling -> IdlingState()
+                state.gamesResult != null && state.gamesResult!!.isEmpty() -> EmptyState()
+                state.gamesResult != null && state.gamesResult!!.isNotEmpty() -> GameResults(
                     state.gamesResult!!,
                     onSearchResultClickListener
                 )

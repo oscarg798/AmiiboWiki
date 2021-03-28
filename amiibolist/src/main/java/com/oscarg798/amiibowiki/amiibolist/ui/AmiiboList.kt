@@ -21,10 +21,13 @@ import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 
 @ExperimentalFoundationApi
 @Composable
-internal fun AmiiboList(amiibos: List<ViewAmiibo>, amiiboClickListener: (ViewAmiibo) -> Unit) {
+internal fun AmiiboList(
+    viewAmiibo: List<ViewAmiibo>,
+    amiiboClickListener: (ViewAmiibo) -> Unit
+) {
     LazyVerticalGrid(cells = GridCells.Fixed(GridCount)) {
-        items(amiibos.toList()) { amiibo ->
-            AmiiboCard(amiibo = amiibo, amiiboClickListener = amiiboClickListener)
+        items(viewAmiibo.toList()) { amiibo ->
+            AmiiboCard(viewAmiibo = amiibo, amiiboClickListener = amiiboClickListener)
         }
     }
 }

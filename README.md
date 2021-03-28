@@ -1,10 +1,7 @@
 # AmiiboWiki
 
-## Project is being migrated to compose, you will need Android Studio lastest version [Artic Fox or Canary version](https://developer.android.com/studio/preview)
-
 ![Acceptance Tests Quality](https://github.com/oscarg798/AmiiboWiki/workflows/Acceptance%20Tests%20Quality/badge.svg)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
-
 
 </br>
 
@@ -12,13 +9,14 @@
 
 <a href='https://play.google.com/store/apps/details?id=com.oscarg798.amiibowiki&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' height="100" src='https://play.google.com/intl/en-419/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
-Application to read and watch the Amiibo data, find games you would like to play and much more.  It has a feature to read the nfc tag associated with it and watch the detail of the scanned Amiibo.
+Application to read and watch the Amiibo data, find games you would like to play and much more.
+It has a feature to read the nfc tag associated with it and watch the detail of the scanned Amiibo.
 
-<img src="./demo.gif"  width="200" height="400"/>
+It's being migrated to jetpack Compose.
 
 ## Setup
 
-In order to setup the project and be able to run it please follow [Our Setup Guide](./SETUP.md)
+In order to run the project please follow [Our Setup Guide](./SETUP.md)
 
 ## Features
 
@@ -28,7 +26,7 @@ In order to setup the project and be able to run it please follow [Our Setup Gui
 * Amiibo Related Games
 * Game Details and Trailer
 * Scan Amiibos
-* Offline support
+* Offline mode
 
 ### Architecture
 
@@ -40,20 +38,15 @@ as they should not be aware of the repositories impl that will be in an upper la
 
 ## Built With
 
-* [Dagger 2.*](https://github.com/google/dagger)
+* Kotlin
+* [Compose](https://developer.android.com/jetpack/compose)
 * [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
 * [Navigation Component] (https://developer.android.com/guide/navigation)
 * [Retrofit](https://github.com/square/retrofit)
 * [Airbnb DeepLink dispatcher](https://github.com/airbnb/DeepLinkDispatch)
-* [ShimmerLayout] (https://github.com/team-supercharge/ShimmerLayout) it's deprecated but it works also is just an UI detail ...
-* [Facebook Shimmer](https://github.com/facebook/shimmer-android)
 * [Lottie](https://lottiefiles.com/)
 * Espresso
 * [Mockk](https://mockk.io/)
-
-## Gradle Tasks 
-
-[Read](./TASKS.md)
 
 ## License & Acknowledgments
 

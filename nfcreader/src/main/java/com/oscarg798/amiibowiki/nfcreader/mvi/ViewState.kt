@@ -10,16 +10,12 @@
  *
  */
 
-package com.oscarg798.amiibowiki.settings.mvi
+package com.oscarg798.amiibowiki.nfcreader.mvi
 
-import com.oscarg798.amiibowiki.core.mvi.Result
-import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
+import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 
-sealed class SettingsResult : Result {
-
-    object Loading : SettingsResult()
-    data class DarkModeSelectionSaved(val optionSelected: String) : SettingsResult()
-    data class PreferencesCreated(val preferences: Collection<PreferenceBuilder>) : SettingsResult()
-    object ShowDevelopmentActivity : SettingsResult()
-    object ShowDarkModeDialog : SettingsResult()
-}
+internal data class ViewState(
+    val loading: Boolean = false,
+    val error: NFCReaderFailure? = null
+) : MVIViewState

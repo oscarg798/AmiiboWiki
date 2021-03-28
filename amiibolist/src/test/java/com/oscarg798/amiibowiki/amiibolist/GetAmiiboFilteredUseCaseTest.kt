@@ -12,7 +12,7 @@
 
 package com.oscarg798.amiibowiki.amiibolist
 
-import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListFailure
+import com.oscarg798.amiibowiki.amiibolist.exceptions.AmiiboListFailure
 import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
 import com.oscarg798.amiibowiki.core.failures.FilterAmiiboFailure
 import com.oscarg798.amiibowiki.core.models.Amiibo
@@ -23,7 +23,6 @@ import com.oscarg798.amiibowiki.core.usecases.GetDefaultAmiiboTypeUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldBeEqualTo

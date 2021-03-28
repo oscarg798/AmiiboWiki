@@ -10,13 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.splash.mvi
+package com.oscarg798.amiibowiki.amiibolist.exceptions
 
-import com.oscarg798.amiibowiki.core.mvi.ViewState
+sealed class AmiiboListFailure(override val message: String?) : Exception(message) {
 
-import kotlin.Exception
-
-internal  data class SplashViewState(
-    val loading: Boolean = true,
-    val error: Exception? = null
-) : ViewState
+    class FilterError(message: String) : AmiiboListFailure(message)
+    class FetchError(message: String) : AmiiboListFailure(message)
+    data class UnknowError(override val cause: Exception) : AmiiboListFailure("There was an error please try again later")
+}

@@ -36,7 +36,7 @@ import com.oscarg798.amiibowiki.core.ui.Dimensions
 
 @Composable
 internal fun AmiiboDetailDescription(
-    amiibo: ViewAmiiboDetails,
+    viewAmiiboDetails: ViewAmiiboDetails,
     relatedGamesSectionEnabled: Boolean,
     onRelatedGamesButtonClick: () -> Unit
 ) {
@@ -54,17 +54,17 @@ internal fun AmiiboDetailDescription(
                 constraintSet = getConstraints()
             ) {
                 DescriptionField(
-                    text = amiibo.name,
+                    text = viewAmiiboDetails.name,
                     textStyle = AmiiboWikiTextAppearence.h2,
                     id = AmiiboNameId
                 )
                 DescriptionField(
-                    text = amiibo.gameSeries,
+                    text = viewAmiiboDetails.gameSeries,
                     textStyle = AmiiboWikiTextAppearence.body1.merge(TextStyle(MaterialTheme.colors.background)),
                     id = AmiiboGameSeriesId
                 )
                 DescriptionField(
-                    text = amiibo.type,
+                    text = viewAmiiboDetails.type,
                     textStyle = AmiiboWikiTextAppearence.body2,
                     color = MaterialTheme.colors.onSurface,
                     id = AmiiboTypeId
