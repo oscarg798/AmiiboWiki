@@ -12,7 +12,7 @@
 Application to read and watch the Amiibo data, find games you would like to play and much more.
 It has a feature to read the nfc tag associated with it and watch the detail of the scanned Amiibo.
 
-It's being migrated to jetpack Compose.
+<img src="./demo.gif"  width="200" height="400"/>
 
 ## Setup
 
