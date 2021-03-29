@@ -18,14 +18,14 @@ import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 @Module
 object GameDetailModule {
 
-    @Singleton
+    @ViewModelScoped
     @Provides
     fun provideGameDetailLogger(logger: Logger): GameDetailLogger = GameDetailLoggerImpl(logger)
 }

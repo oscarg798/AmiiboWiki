@@ -26,16 +26,13 @@ import androidx.appcompat.widget.SearchView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.mvi.UiEffect
-import com.oscarg798.amiibowiki.amiibolist.ui.Screen
 import com.oscarg798.amiibowiki.core.constants.AMIIBO_LIST_DEEPLINK
 import com.oscarg798.amiibowiki.core.logger.MixpanelLogger
-import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,12 +53,7 @@ internal class AmiiboListFragment :
     @Inject
     lateinit var mixpanelLogger: MixpanelLogger
 
-    @Inject
-    lateinit var factory: AmiiboListViewModel.Factory
-
-    private val viewModel: AmiiboListViewModel by viewModels {
-        SavedInstanceViewModelFactory({ factory.create(it) }, this)
-    }
+    private lateinit var viewModel: AmiiboListViewModel
 
     private var filterMenuItem: MenuItem? = null
     private var searchView: SearchView? = null
@@ -82,7 +74,6 @@ internal class AmiiboListFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        setupViewModelInteractions()
     }
 
     override fun onCreateView(
@@ -93,16 +84,14 @@ internal class AmiiboListFragment :
 
         return ComposeView(requireContext()).apply {
             setContent {
-                Screen(viewModel, lifecycleScope) { amiibo ->
-                    viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(amiibo))
-                }
+//                viewModel = hiltNavGraphViewModel()
+//                AmiiboListScreen(viewModel, lifecycleScope) { amiibo ->
+//                    viewModel.onWish(AmiiboListWish.ShowAmiiboDetail(amiibo))
+//                }
+//                setupViewModelInteractions()
+//                viewModel.onWish(AmiiboListWish.GetAmiibos)
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.onWish(AmiiboListWish.GetAmiibos)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

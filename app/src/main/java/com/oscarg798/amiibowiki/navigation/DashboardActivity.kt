@@ -13,23 +13,47 @@
 package com.oscarg798.amiibowiki.navigation
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.KEY_ROUTE
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.oscarg798.amiibowiki.R
+import com.oscarg798.amiibowiki.amiibodetail.ui.AmiiboDetailScreen
+import com.oscarg798.amiibowiki.amiibolist.ui.AmiiboListScreen
 import com.oscarg798.amiibowiki.core.extensions.setViewTreeObserver
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
+import com.oscarg798.amiibowiki.core.ui.Screen
+import com.oscarg798.amiibowiki.core.ui.ThemeContainer
 import com.oscarg798.amiibowiki.navigation.mvi.CheckUpdatesWish
+import com.oscarg798.amiibowiki.navigation.ui.DashboardScreen
 import com.oscarg798.amiibowiki.updatechecker.requestUpdate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @AndroidEntryPoint
 class DashboardActivity : AppCompatActivity() {
 
@@ -40,20 +64,9 @@ class DashboardActivity : AppCompatActivity() {
         verifyNightMode()
         setViewTreeObserver()
 
-        setContentView(R.layout.activity_dashboard)
-
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
-
-        val navController = findNavController(R.id.nav_host_fragment)
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.amiibo_list_navigation, R.id.search_navigation, R.id.navigation_settings
-            )
-        )
-
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-        observeViewModelEffect()
+        setContent {
+            DashboardScreen()
+        }
     }
 
     override fun onResume() {
@@ -69,6 +82,13 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }
+
+
+
+
+
+
+
+
+

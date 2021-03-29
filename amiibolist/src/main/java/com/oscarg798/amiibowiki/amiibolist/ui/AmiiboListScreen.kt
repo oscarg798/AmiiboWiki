@@ -13,47 +13,49 @@
 package com.oscarg798.amiibowiki.amiibolist.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewModel
-import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.mvi.ViewState
 import com.oscarg798.amiibowiki.core.ui.ErrorSnackbar
-import com.oscarg798.amiibowiki.core.ui.ThemeContainer
+import com.oscarg798.amiibowiki.core.ui.Screen
+import com.oscarg798.amiibowiki.core.utils.requireCurrentBackStackEntryArguments
 import kotlinx.coroutines.CoroutineScope
 
 @ExperimentalFoundationApi
 @Composable
-internal fun Screen(
-    viewModel: AmiiboListViewModel,
+fun AmiiboListScreen(
+    navController: NavController,
+    snackbarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope,
-    amiiboClickListener: (ViewAmiibo) -> Unit,
 ) {
+    val viewModel: AmiiboListViewModel = hiltNavGraphViewModel()
     val state by viewModel.state.collectAsState(initial = ViewState())
-    val snackbarHostState = remember { SnackbarHostState() }
 
-    ThemeContainer {
-        Scaffold(scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState)) {
-            if (state.error != null) {
-                ErrorSnackbar(
-                    message = state.error?.message,
-                    snackbarHostState = snackbarHostState,
-                    coroutineScope = coroutineScope
-                )
-            }
+    if (state.error != null) {
+        ErrorSnackbar(
+            message = state.error?.message,
+            snackbarHostState = snackbarHostState,
+            coroutineScope = coroutineScope
+        )
+    }
 
-            when {
-                state.loading -> AmiiboListLoading()
-                !state.loading && state.amiibos != null -> AmiiboList(
-                    state.amiibos!!,
-                    amiiboClickListener
+    when {
+        state.loading -> AmiiboListLoading()
+        !state.loading && state.amiibos != null ->
+            AmiiboList(
+                state.amiibos!!
+            ) { amiibo ->
+                navController.requireCurrentBackStackEntryArguments().putString(
+                    Screen.Detail.AmiiboIdArgument,
+                    amiibo.tail
                 )
+                navController.navigate(Screen.Detail.route)
             }
-        }
     }
 }

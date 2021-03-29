@@ -26,9 +26,8 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.launchIn
@@ -36,14 +35,16 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class AmiiboDetailViewModel @AssistedInject constructor(
-    @Assisted private val tail: String,
-    @Assisted private val handle: SavedStateHandle,
+@HiltViewModel
+internal class AmiiboDetailViewModel @Inject constructor(
+    private val handle: SavedStateHandle,
     private val getAmiiboDetailUseCase: GetAmiiboDetailUseCase,
     private val amiiboDetailLogger: AmiiboDetailLogger,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<ViewState, UiEffect, AmiiboDetailWish>(ViewState()) {
+
+    private lateinit var tail: String
 
     init {
         state.onEach {
@@ -56,16 +57,18 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
             is AmiiboDetailWish.ExpandAmiiboImage ->
                 _uiEffect.tryEmit(UiEffect.ShowAmiiboImage(wish.image))
 
-            is AmiiboDetailWish.ShowAmiiboDetail -> onShowDetailsRequest()
-            is AmiiboDetailWish.ShowRelatedGames ->
+            is AmiiboDetailWish.ShowAmiiboDetail -> onShowDetailsRequest(wish.tail)
+            is AmiiboDetailWish.ShowRelatedGames -> {
                 _uiEffect.tryEmit(UiEffect.ShowRelatedGames(tail))
+            }
         }
     }
 
-    private fun onShowDetailsRequest() {
+    private fun onShowDetailsRequest(tail: String) {
+        this.tail = tail
         viewModelScope.launch {
             updateState { it.copy(loading = true, error = null) }
-            getDetailsAsync()
+            getDetailsAsync(tail)
             shouldShowRelatedGamesSectionAsync()
         }
     }
@@ -88,7 +91,7 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
         )
     }
 
-    private fun CoroutineScope.getDetailsAsync() = async {
+    private fun CoroutineScope.getDetailsAsync(tail: String) = async {
         val savedState = handle.get<ViewState>(STATE_KEY)
 
         if (savedState?.amiibo != null) {
@@ -150,11 +153,11 @@ internal class AmiiboDetailViewModel @AssistedInject constructor(
             )
         )
     }
-
-    @AssistedFactory
-    interface Factory {
-        fun create(params: String, stateHandle: SavedStateHandle): AmiiboDetailViewModel
-    }
+//
+//    @AssistedFactory
+//    interface Factory {
+//        fun create(params: String): AmiiboDetailViewModel
+//    }
 }
 
 private const val STATE_KEY = "state"

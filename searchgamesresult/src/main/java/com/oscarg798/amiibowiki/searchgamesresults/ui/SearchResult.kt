@@ -51,7 +51,7 @@ internal fun SearchResult(
         elevation = Dimensions.Elevation.ExtraSmall,
         shape = RoundedCornerShape(Dimensions.CornerRadius.Small)
     ) {
-        ConstraintLayout(constraintSet = getConstratins()) {
+        ConstraintLayout(constraintSet = getConstraints()) {
             GameImage(url = item.cover)
             Text(
                 text = item.gameName,
@@ -80,7 +80,7 @@ internal fun SearchResult(
     }
 }
 
-private fun getConstratins() = ConstraintSet {
+private fun getConstraints() = ConstraintSet {
     val gameImageId = createRefFor(GameImageId)
     val gameNameId = createRefFor(GameNameId)
     val gameAlternativeNameId = createRefFor(GameAlternativeNameId)
@@ -97,8 +97,8 @@ private fun getConstratins() = ConstraintSet {
             start = gameImageId.end,
             end = parent.end,
             bias = 0f,
-            startMargin = Dimensions.Spacing.ExtraSmall,
-            endMargin = Dimensions.Spacing.Medium
+            startMargin = Dimensions.Spacing.Small,
+            endMargin = Dimensions.Spacing.Small
         )
     }
 

@@ -14,6 +14,7 @@ apply from: "../gradlescripts/shared.gradle"
 dependencies {
 
     implementation daggerHilt.viewModel
+    implementation 'androidx.navigation:navigation-runtime:2.3.4'
     kapt daggerHilt.compiler
 
     implementation picasso

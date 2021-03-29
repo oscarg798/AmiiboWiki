@@ -28,10 +28,11 @@ import com.oscarg798.amiibowiki.searchgamesresults.mvi.ViewState
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGameResult
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByAmiiboUseCase
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByQueryUseCase
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -39,9 +40,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SearchGamesResultViewModel @AssistedInject constructor(
-    @Assisted private val handle: SavedStateHandle,
-    @Assisted private val shownAsRelatedGames: Boolean,
+@HiltViewModel
+class SearchGamesResultViewModel @Inject constructor(
+    private val handle: SavedStateHandle,
     private val searchGamesByAmiiboUseCase: SearchGamesByAmiiboUseCase,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val searchGamesByQueryUseCase: SearchGamesByQueryUseCase,
@@ -49,14 +50,17 @@ class SearchGamesResultViewModel @AssistedInject constructor(
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<ViewState, UIEffect, SearchResultWish>(ViewState()) {
 
+    private val searchFlow = MutableStateFlow(InitialSearchQuery)
+
     init {
         state.onEach {
             handle.set(STATE_KEY, it)
         }.launchIn(viewModelScope)
 
-        if (!shownAsRelatedGames) {
-            _uiEffect.tryEmit(UIEffect.ObserveSearchResults)
-        }
+        searchFlow.debounce(SearchDelay)
+            .onEach {
+                search(it)
+            }.launchIn(viewModelScope)
     }
 
     override fun processWish(wish: SearchResultWish) {
@@ -70,6 +74,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
             )
 
             wish is SearchResultWish.ShowGameDetail -> getShowGamesFlow(wish)
+            wish is SearchResultWish.ObserveSearchResult -> _uiEffect.tryEmit(UIEffect.ObserveSearchResults)
         }
     }
 
@@ -86,7 +91,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
         }
     }
 
-    private fun searchByQuery(query: String) {
+    private fun search(query: String) {
         viewModelScope.launch {
             showLoading()
 
@@ -95,7 +100,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
             }
 
             when (result) {
-                is SearchGameResult.Allowed -> subscribeToSearch(result)
+                is SearchGameResult.Allowed -> subscribeToSearchUpdates(result)
                 is SearchGameResult.NotAllowed -> updateState {
                     it.copy(
                         idling = true,
@@ -106,7 +111,11 @@ class SearchGamesResultViewModel @AssistedInject constructor(
         }
     }
 
-    private fun subscribeToSearch(
+    private fun searchByQuery(query: String) {
+        searchFlow.value = query
+    }
+
+    private fun subscribeToSearchUpdates(
         result: SearchGameResult.Allowed
     ) {
         result.flow.onEach { results ->
@@ -192,15 +201,17 @@ class SearchGamesResultViewModel @AssistedInject constructor(
         searchGamesLogger.trackGameSearchResultClicked(mapOf(GAME_ID_KEY to gameId.toString()))
     }
 
-    @AssistedFactory
-    interface Factory {
-
-        fun create(
-            shownAsRelatedGames: Boolean,
-            stateHandle: SavedStateHandle
-        ): SearchGamesResultViewModel
-    }
+//    @AssistedFactory
+//    interface Factory {
+//
+//        fun create(
+//            shownAsRelatedGames: Boolean,
+//            stateHandle: SavedStateHandle
+//        ): SearchGamesResultViewModel
+//    }
 }
 
 private const val STATE_KEY = "state"
 private const val GAME_ID_KEY = "GAME_ID_KEY"
+private const val SearchDelay = 350L
+private const val InitialSearchQuery = ""

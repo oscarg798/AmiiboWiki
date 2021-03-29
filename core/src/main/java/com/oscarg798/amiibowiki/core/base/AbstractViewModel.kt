@@ -33,7 +33,7 @@ abstract class AbstractViewModel<ViewState : MVIViewState, UIEffect : MVIUIEffec
     protected val _state =
         MutableSharedFlow<ViewState>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     protected val _uiEffect =
-        MutableSharedFlow<UIEffect?>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        MutableSharedFlow<UIEffect>(extraBufferCapacity = 1)
     private val stateMutex = Mutex()
 
     val state: Flow<ViewState>

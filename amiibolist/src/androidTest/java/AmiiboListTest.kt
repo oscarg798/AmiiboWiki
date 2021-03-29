@@ -18,7 +18,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.mvi.ViewState
-import com.oscarg798.amiibowiki.amiibolist.ui.Screen
+import com.oscarg798.amiibowiki.amiibolist.ui.AmiiboListScreen
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
@@ -90,7 +90,7 @@ internal class AmiiboListTest {
 
         composeTestRule.registerIdlingResource(composeNetworkIdlingResource)
         composeTestRule.setContent {
-            Screen(viewModel = viewModel, coroutineScope = TestCoroutineScope()) {
+            AmiiboListScreen(viewModel = viewModel, coroutineScope = TestCoroutineScope()) {
             }
         }
     }

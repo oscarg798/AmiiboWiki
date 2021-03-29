@@ -14,6 +14,7 @@ package com.oscarg798.amiibowiki.amiibodetail.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,7 +27,11 @@ internal fun Detail(
     onImageClick: (String) -> Unit,
     onRelatedGamesButtonClick: () -> Unit
 ) {
-    Column(Modifier.background(MaterialTheme.colors.background)) {
+    Column(
+        Modifier
+            .background(MaterialTheme.colors.background)
+            .fillMaxSize()
+    ) {
         AmiiboImage(viewAmiiboDetails.imageUrl, onImageClick)
         AmiiboDetailDescription(
             viewAmiiboDetails,

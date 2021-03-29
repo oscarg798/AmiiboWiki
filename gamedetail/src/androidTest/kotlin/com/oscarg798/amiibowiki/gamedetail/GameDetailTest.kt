@@ -11,7 +11,6 @@ package com.oscarg798.amiibowiki.gamedetail/*
  */
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.lifecycle.SavedStateHandle
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
@@ -21,9 +20,8 @@ import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAgeRating
 import com.oscarg798.amiibowiki.core.persistence.models.DBGame
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
-import com.oscarg798.amiibowiki.gamedetail.ui.Screen
+import com.oscarg798.amiibowiki.gamedetail.ui.GameDetailScreen
 import com.oscarg798.amiibowiki.network.di.NetworkModule
-import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.MockWebServerTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -89,7 +87,7 @@ internal class GameDetailTest {
         viewModel = factory.create(GAME_ID)
 
         composeTestRule.setContent {
-            Screen(
+            GameDetailScreen(
                 viewModel = viewModel,
                 coroutineScope = TestCoroutineScope(),
                 onTrailerClicked = trailerClickListener,

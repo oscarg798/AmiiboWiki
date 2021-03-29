@@ -13,8 +13,10 @@
 package com.oscarg798.amiibowiki.searchgamesresults.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,46 +29,69 @@ import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import com.oscarg798.amiibowiki.core.ui.ThemeContainer
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
+import com.oscarg798.amiibowiki.core.ui.Screen
+import com.oscarg798.amiibowiki.core.utils.requireCurrentBackStackEntryArguments
+import com.oscarg798.amiibowiki.core.utils.requirePreviousBackStackEntryArguments
 import com.oscarg798.amiibowiki.searchgamesresults.SearchGamesResultViewModel
+import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
+import com.oscarg798.amiibowiki.searchgamesresults.mvi.UIEffect
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.ViewState
+import kotlinx.coroutines.flow.collect
 
 @Composable
-internal fun Screen(
-    viewModel: SearchGamesResultViewModel,
-    searchBox: Boolean,
-    onSearchResultClickListener: onSearchResultClickListener,
-    onSearch: (TextFieldValue) -> Unit
+fun SearchGamesScreen(
+    navController: NavController,
+    searchBox: Boolean = true
 ) {
+    val viewModel: SearchGamesResultViewModel = hiltNavGraphViewModel()
     val state by viewModel.state.collectAsState(initial = ViewState())
     var searchState by remember { mutableStateOf(TextFieldValue()) }
-    val constrainSet = getConstraintSet(searchBox)
 
-    ThemeContainer {
-        ConstraintLayout(
-            constraintSet = constrainSet,
-            Modifier.background(MaterialTheme.colors.background)
-        ) {
-            if (searchBox) {
-                SearchBox(
-                    query = searchState,
-                    onSearch = {
-                        searchState = it
-                        onSearch(it)
-                    }
-                )
-            }
-            when {
-                state.isLoading -> GameResultsLoading()
-                state.idling -> IdlingState()
-                state.gamesResult != null && state.gamesResult!!.isEmpty() -> EmptyState()
-                state.gamesResult != null && state.gamesResult!!.isNotEmpty() -> GameResults(
-                    state.gamesResult!!,
-                    onSearchResultClickListener
-                )
-            }
+    val searchBoxEnabled = navController.requirePreviousBackStackEntryArguments()
+        .getBoolean(Screen.SearchGames.ShowSearchBoxArgument, searchBox)
+
+    navController.requirePreviousBackStackEntryArguments()
+        .getString(Screen.SearchGames.AmiiboIdArgument)?.let { amiiboId ->
+        search(viewModel, GameSearchParam.AmiiboGameSearchParam(amiiboId))
+    }
+
+    ConstraintLayout(
+        constraintSet = getConstraintSet(searchBoxEnabled),
+        modifier = Modifier
+            .background(MaterialTheme.colors.background)
+            .fillMaxSize()
+    ) {
+        if (searchBoxEnabled) {
+            SearchBox(
+                query = searchState,
+                onSearch = {
+                    searchState = it
+                    search(viewModel, GameSearchParam.StringQueryGameSearchParam(it.text))
+                }
+            )
+        }
+
+        when {
+            state.isLoading -> GameResultsLoading()
+            state.idling -> IdlingState()
+            state.gamesResult != null && state.gamesResult!!.isEmpty() -> EmptyState()
+            state.gamesResult != null && state.gamesResult!!.isNotEmpty() ->
+                GameResults(
+                    state.gamesResult!!
+                ) { gameResult ->
+                    viewModel.onWish(SearchResultWish.ShowGameDetail(gameResult.gameId))
+                }
         }
     }
+
+    ObserveUiEffects(
+        viewModel = viewModel,
+        navigationController = navController
+    )
 }
 
 private fun getConstraintSet(searchBox: Boolean) = ConstraintSet {
@@ -111,6 +136,28 @@ private fun ConstrainScope.getVerticalConstrainsBasedOnSearchBox(
     } else {
         linkTo(top = parent.top, bottom = parent.bottom)
     }
+}
+
+@Composable
+private fun ObserveUiEffects(
+    viewModel: SearchGamesResultViewModel,
+    navigationController: NavController
+) {
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.uiEffect.collect { uiEffect ->
+            when (uiEffect) {
+                is UIEffect.ShowGameDetails -> {
+                    navigationController.requireCurrentBackStackEntryArguments()
+                        .putInt(Screen.GameDetail.GameIdArgument, uiEffect.gameId)
+                    navigationController.navigate(Screen.GameDetail.route)
+                }
+            }
+        }
+    }
+}
+
+fun search(viewModel: SearchGamesResultViewModel, gameSearchGameQueryParam: GameSearchParam) {
+    viewModel.onWish(SearchResultWish.SearchGames(gameSearchGameQueryParam))
 }
 
 internal const val LoadingId = "loadingId"

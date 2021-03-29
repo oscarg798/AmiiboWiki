@@ -17,7 +17,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ViewState
-import com.oscarg798.amiibowiki.amiibodetail.ui.Screen
+import com.oscarg798.amiibowiki.amiibodetail.ui.AmiiboDetailScreen
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
@@ -79,7 +79,7 @@ internal class AmiiboDetailTest {
         every { mainFeatureFlagHandler.isFeatureEnabled(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { true }
 
         composeTestRule.setContent {
-            Screen(viewModel, onImageClick = { }, onRelatedGamesButtonClick = { })
+            AmiiboDetailScreen(viewModel, onImageClick = { }, onRelatedGamesButtonClick = { })
         }
     }
 

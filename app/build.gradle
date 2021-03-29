@@ -104,7 +104,11 @@ android {
     }
 
     kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type", "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi", "-Xopt-in=kotlinx.coroutines.FlowPreview", "-Xopt-in=kotlin.contracts.ExperimentalContracts"]
+        freeCompilerArgs = ["-Xallow-result-return-type",
+                            "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                            "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                            "-Xopt-in=kotlinx.coroutines.FlowPreview",
+                            "-Xopt-in=kotlin.contracts.ExperimentalContracts"]
         jvmTarget = "1.8"
         useIR = true
     }
@@ -153,12 +157,14 @@ dependencies {
     implementation activityx
 
     implementation airbnb
+    implementation 'androidx.navigation:navigation-runtime:2.3.4'
     kapt airbnbProcessor
 
     implementation facebookShimmer
 
     //Dagger
     implementation dagger
+    implementation daggerHilt.compose
     kapt daggerCompiler
     implementation daggerHilt.android
 
@@ -182,10 +188,11 @@ dependencies {
     implementation platform(firebase.boom)
     implementation firebaseAnalytics
 
-    implementation fragmentNavigation
-    implementation navigationUi
-    implementation fragmentNavigationKtx
-    implementation navigationUiKtx
+    implementation navigationComponent.fragment
+    implementation navigationComponent.ui
+    implementation navigationComponent.fragmentKtx
+    implementation navigationComponent.uiKtx
+    implementation navigationComponent.compose
 
     implementation firebase.crashlytics
     implementation(lomeno)

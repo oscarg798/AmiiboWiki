@@ -28,9 +28,8 @@ import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -40,8 +39,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class AmiiboListViewModel @AssistedInject constructor(
-    @Assisted private val stateHandle: SavedStateHandle,
+@HiltViewModel
+internal class AmiiboListViewModel @Inject constructor(
+    private val stateHandle: SavedStateHandle,
     private val getAmiibosUseCase: GetAmiibosUseCase,
     private val getAmiiboFilteredUseCase: GetAmiiboFilteredUseCase,
     private val getAmiiboTypeUseCase: GetAmiiboTypeUseCase,
@@ -55,6 +55,7 @@ internal class AmiiboListViewModel @AssistedInject constructor(
         _state.onEach {
             stateHandle.set(STATE_KEY, it)
         }.launchIn(viewModelScope)
+        processWish(AmiiboListWish.GetAmiibos)
     }
 
     override fun processWish(wish: AmiiboListWish) {
@@ -171,12 +172,6 @@ internal class AmiiboListViewModel @AssistedInject constructor(
                 )
             }
         }
-    }
-
-    @AssistedFactory
-    interface Factory {
-
-        fun create(savedStateHandle: SavedStateHandle): AmiiboListViewModel
     }
 }
 

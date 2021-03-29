@@ -12,92 +12,75 @@
 
 package com.oscarg798.amiibowiki.amiibodetail
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
-import com.oscarg798.amiibowiki.amiibodetail.mvi.UiEffect
-import com.oscarg798.amiibowiki.amiibodetail.ui.Screen
-import com.oscarg798.amiibowiki.core.constants.ARGUMENT_TAIL
-import com.oscarg798.amiibowiki.core.extensions.showExpandedImages
-import com.oscarg798.amiibowiki.core.utils.SavedInstanceViewModelFactory
-import com.oscarg798.amiibowiki.core.utils.bundle
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 internal class AmiiboDetailFragment : Fragment() {
 
-    @Inject
-    lateinit var factory: AmiiboDetailViewModel.Factory
-
-    private val tail: String by bundle(ARGUMENT_TAIL)
-
-    private val viewModel: AmiiboDetailViewModel by viewModels {
-        SavedInstanceViewModelFactory(
-            factoryCreator = {
-                factory.create(tail, it)
-            },
-            owner = this
-        )
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
-        return ComposeView(requireContext()).apply {
-            setContent {
-                Screen(
-                    viewModel,
-                    onRelatedGamesButtonClick = {
-                        viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
-                    },
-                    onImageClick = {
-                        viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(it))
-                    }
-                )
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(false)
-        setupViewModelInteractions()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
-    }
-
-    private fun setupViewModelInteractions() {
-        lifecycleScope.launchWhenResumed {
-            viewModel.uiEffect.collect { state ->
-                when (state) {
-                    is UiEffect.ShowAmiiboImage -> showExpandedImages(listOf(state.url))
-                    is UiEffect.ShowRelatedGames -> showRelatedGames(state.amiiboId)
-                }
-            }
-        }
-    }
-
-    private fun showRelatedGames(amiiboId: String) {
-        findNavController().navigate(
-            AmiiboDetailFragmentDirections.actionAmiiboDetailFragmentToSearchResultFragment(
-                amiiboId,
-                true
-            )
-        )
-    }
+//    @Inject
+//    lateinit var factory: AmiiboDetailViewModel.Factory
+//
+//    private val tail: String by bundle(ARGUMENT_TAIL)
+//
+//    private val viewModel: AmiiboDetailViewModel by viewModels {
+//        SavedInstanceViewModelFactory(
+//            factoryCreator = {
+//                factory.create(tail)
+//            },
+//            owner = this
+//        )
+//    }
+//
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View {
+//
+//        return ComposeView(requireContext()).apply {
+//            setContent {
+// //                AmiiboDetailScreen(
+// //                    viewModel,
+// //                    onRelatedGamesButtonClick = {
+// //                        viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
+// //                    },
+// //                    onImageClick = {
+// //                        viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(it))
+// //                    }
+// //                )
+//            }
+//        }
+//    }
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setHasOptionsMenu(false)
+//        setupViewModelInteractions()
+//    }
+//
+//    override fun onResume() {
+//        super.onResume()
+//        //viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
+//    }
+//
+//    private fun setupViewModelInteractions() {
+//        lifecycleScope.launchWhenResumed {
+//            viewModel.uiEffect.collect { state ->
+//                when (state) {
+//                    is UiEffect.ShowAmiiboImage -> showExpandedImages(listOf(state.url))
+//                    is UiEffect.ShowRelatedGames -> showRelatedGames(state.amiiboId)
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun showRelatedGames(amiiboId: String) {
+//        findNavController().navigate(
+//            AmiiboDetailFragmentDirections.actionAmiiboDetailFragmentToSearchResultFragment(
+//                amiiboId,
+//                true
+//            )
+//        )
+//    }
 }
