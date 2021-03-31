@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.gamedetail
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
+import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
@@ -40,6 +41,7 @@ internal class GameDetailViewModel @Inject constructor(
     private val expandGameImagesUseCase: ExpandGameImagesUseCase,
     private val getGameTrailerUseCase: GetGameTrailerUseCase,
     private val gameDetailLogger: GameDetailLogger,
+    private val config: Config,
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<ViewState, UiEffect, GameDetailWish>(ViewState()) {
 
@@ -53,7 +55,7 @@ internal class GameDetailViewModel @Inject constructor(
         }
     }
 
-    private fun expandImages(expandableImageParam: Collection<ExpandableImageParam>) = flow {
+    private fun expandImages(expandableImageParam: ExpandableImageParam) = flow {
         val expandedImages = expandGameImagesUseCase.execute(expandableImageParam)
         emit(expandedImages)
     }.onEach { images ->
@@ -65,7 +67,7 @@ internal class GameDetailViewModel @Inject constructor(
         trackTrailerClick(gameId)
         emit(getGameTrailerUseCase.execute(gameId))
     }.onEach {
-        _uiEffect.emit(UiEffect.ShowingGameTrailer(it))
+        _uiEffect.emit(UiEffect.ShowingGameTrailer(it, config.googleAPIKey))
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
         .launchIn(viewModelScope)
 
@@ -102,12 +104,6 @@ internal class GameDetailViewModel @Inject constructor(
     private fun trackTrailerClick(gameId: Id) {
         gameDetailLogger.trackTrailerClicked(mapOf(GAME_ID_PROPERTY_NAME to gameId.toString()))
     }
-
-//    @AssistedFactory
-//    interface Factory {
-//
-//        fun create(gameId: Id): GameDetailViewModel
-//    }
 }
 
 private const val GAME_ID_PROPERTY_NAME = "GAME_ID"

@@ -25,7 +25,7 @@ internal fun ImageGallery(
     layoutId: String,
     title: String,
     images: List<String>,
-    onImageClick: () -> Unit
+    onImageClick: (String) -> Unit
 ) {
 
     Column(
@@ -48,7 +48,7 @@ internal fun ImageGallery(
                     imageModifier = Modifier
                         .imageSize()
                         .clickable {
-                            onImageClick()
+                            onImageClick(image)
                         },
                     loadingModifier = Modifier.imageSize()
                 )

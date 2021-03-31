@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.updatechecker
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.ContextThemeWrapper
@@ -20,7 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.oscarg798.amiibowiki.R
 
 internal fun AppCompatActivity.requestUpdate(updateType: UpdateType) {
-    val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogTheme)).setMessage(getString(R.string.update_available))
+    val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogTheme))
+        .setMessage(getString(R.string.update_available))
         .setCancelable(updateType is UpdateType.Flexible)
         .setPositiveButton(getString(R.string.update_dialog_positive_button)) { _, _ ->
             openPlayStore()
@@ -35,7 +37,7 @@ internal fun AppCompatActivity.requestUpdate(updateType: UpdateType) {
     builder.show()
 }
 
-private fun AppCompatActivity.openPlayStore() {
+internal fun Context.openPlayStore() {
     startActivity(
         Intent(
             Intent.ACTION_VIEW,

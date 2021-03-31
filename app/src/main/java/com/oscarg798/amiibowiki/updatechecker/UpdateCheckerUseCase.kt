@@ -14,19 +14,9 @@ package com.oscarg798.amiibowiki.updatechecker
 
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
-import com.oscarg798.amiibowiki.navigation.UpdateStatus
+import com.oscarg798.amiibowiki.dashboard.UpdateStatus
 import dagger.hilt.android.scopes.ViewModelScoped
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import org.jetbrains.annotations.Contract
 import javax.inject.Inject
-import kotlin.contracts.contract
 
 @ViewModelScoped
 class UpdateCheckerUseCase @Inject constructor(private val isFeatureEnableUseCase: IsFeatureEnableUseCase) {

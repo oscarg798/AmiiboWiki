@@ -24,7 +24,7 @@ import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiiboType
 import com.oscarg798.amiibowiki.di.AppModule
-import com.oscarg798.amiibowiki.navigation.DashboardActivity
+import com.oscarg798.amiibowiki.dashboard.DashboardActivity
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.BaseUITest
 import com.oscarg798.amiibowiki.testutils.extensions.createMockResponse

@@ -14,7 +14,7 @@ package com.oscarg798.amiibowiki
 
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
-import com.oscarg798.amiibowiki.navigation.UpdateStatus
+import com.oscarg798.amiibowiki.dashboard.UpdateStatus
 import com.oscarg798.amiibowiki.updatechecker.UpdateCheckerUseCase
 import io.mockk.every
 import io.mockk.mockk

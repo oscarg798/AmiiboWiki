@@ -13,12 +13,6 @@
 apply from: '../gradlescripts/shared.gradle'
 apply from: "../gradlescripts/hiltshared.gradle"
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
 dependencies {
 
     implementation picasso
@@ -27,7 +21,6 @@ dependencies {
 
     implementation project(path: ':core')
     implementation project(path: ':network')
-    implementation project(path: ':searchgamesresult')
 
     androidTestImplementation fragmentTesting
 }

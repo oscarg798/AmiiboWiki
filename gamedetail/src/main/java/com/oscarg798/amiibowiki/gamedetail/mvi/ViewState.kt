@@ -12,10 +12,12 @@
 
 package com.oscarg798.amiibowiki.gamedetail.mvi
 
+import androidx.compose.runtime.Stable
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
+@Stable
 internal data class ViewState(
     val loading: Boolean = false,
     val game: Game? = null,

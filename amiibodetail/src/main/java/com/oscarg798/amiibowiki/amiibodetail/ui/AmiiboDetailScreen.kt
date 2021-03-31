@@ -12,32 +12,27 @@
 
 package com.oscarg798.amiibowiki.amiibodetail.ui
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.oscarg798.amiibowiki.amiibodetail.AmiiboDetailViewModel
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.UiEffect
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ViewState
-import com.oscarg798.amiibowiki.core.failures.ArgumentNotFoundException
-import com.oscarg798.amiibowiki.core.ui.Screen
-import com.oscarg798.amiibowiki.core.utils.requireCurrentBackStackEntryArguments
-import com.oscarg798.amiibowiki.core.utils.requirePreviousBackStackEntryArguments
+import com.oscarg798.amiibowiki.core.ui.Router
+import com.oscarg798.amiibowiki.core.ui.ScreenConfigurator
 
 @Composable
-fun AmiiboDetailScreen(
-    navController: NavController
+internal fun AmiiboDetailScreen(
+    viewModel: AmiiboDetailViewModel,
+    amiiboId: String,
+    navController: NavController,
+    screenConfigurator: ScreenConfigurator
 ) {
-    val viewModel: AmiiboDetailViewModel = hiltNavGraphViewModel()
     val state by viewModel.state.collectAsState(initial = ViewState())
-
-    val amiiboId =
-        navController.requirePreviousBackStackEntryArguments()
-            .getString(Screen.Detail.AmiiboIdArgument)
-            ?: throw ArgumentNotFoundException(Screen.Detail.AmiiboIdArgument)
 
     viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail(amiiboId))
 
@@ -46,8 +41,9 @@ fun AmiiboDetailScreen(
         state.amiibo != null -> Detail(
             viewAmiiboDetails = state.amiibo!!,
             relatedGamesSectionEnabled = state.relatedGamesSectionEnabled,
-            onImageClick = {
-                // TODO: Show image composable
+            screenConfigurator = screenConfigurator,
+            onImageClick = { image ->
+                viewModel.onWish(AmiiboDetailWish.ExpandAmiiboImage(image))
             },
             onRelatedGamesButtonClick = {
                 viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
@@ -56,7 +52,6 @@ fun AmiiboDetailScreen(
     }
 
     ObserveUiEffects(
-        amiiboId = amiiboId,
         navController = navController,
         viewModel = viewModel
     )
@@ -64,21 +59,36 @@ fun AmiiboDetailScreen(
 
 @Composable
 private fun ObserveUiEffects(
-    amiiboId: String,
     navController: NavController,
     viewModel: AmiiboDetailViewModel
 ) {
     val uiEffect by viewModel.uiEffect.collectAsState(initial = null)
     when (uiEffect) {
         is UiEffect.ShowAmiiboImage -> {
-            // TODO: Show image composable
+            expandImage(navController, (uiEffect as UiEffect.ShowAmiiboImage).url)
         }
         is UiEffect.ShowRelatedGames -> {
-            navController.requireCurrentBackStackEntryArguments()
-                .putString(Screen.SearchGames.AmiiboIdArgument, amiiboId)
-            navController.requireCurrentBackStackEntryArguments()
-                .putBoolean(Screen.SearchGames.ShowSearchBoxArgument, false)
-            navController.navigate(Screen.SearchGames.RelatedGamesRoute)
+            Router.RelatedGames.navigate(
+                navController = navController,
+                arguments = Bundle().apply {
+                    putString(
+                        Router.RelatedGames.AmiiboIdArgument,
+                        (uiEffect as UiEffect.ShowRelatedGames).amiiboId
+                    )
+                }
+            )
         }
     }
+}
+
+private fun expandImage(navController: NavController, image: String) {
+    Router.ImageGallery.navigate(
+        navController = navController,
+        arguments = Bundle().apply {
+            putString(
+                Router.ImageGallery.ImageArgument,
+                image
+            )
+        }
+    )
 }

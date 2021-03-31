@@ -22,7 +22,7 @@ import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
 @Composable
 internal fun GameCover(
     game: Game,
-    onImageClick: (Collection<ExpandableImageParam>) -> Unit
+    onImageClick: (ExpandableImageParam) -> Unit
 ) {
     when (val cover = game.cover ?: getImagePlaceHolder()) {
         is String ->
@@ -39,11 +39,9 @@ internal fun GameCover(
                         .getCoverModifier()
                         .clickable {
                             onImageClick(
-                                listOf(
-                                    ExpandableImageParam(
-                                        cover,
-                                        ExpandableImageType.Cover
-                                    )
+                                ExpandableImageParam(
+                                    cover,
+                                    ExpandableImageType.Cover
                                 )
                             )
                         }

@@ -13,17 +13,18 @@
 package com.oscarg798.amiibowiki.searchgamesresults.mvi
 
 import android.os.Parcelable
+import androidx.compose.runtime.Stable
 import com.oscarg798.amiibowiki.core.failures.SearchGameFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.searchgamesresults.models.ViewGameSearchResult
-import javax.annotation.concurrent.Immutable
 import kotlinx.parcelize.Parcelize
 
-@Immutable
+@Stable
 @Parcelize
 data class ViewState(
     val isLoading: Boolean = false,
     val idling: Boolean = true,
     val gamesResult: List<ViewGameSearchResult>? = null,
+    val currentQuery: String? = null,
     val error: SearchGameFailure? = null
 ) : MVIViewState, Parcelable

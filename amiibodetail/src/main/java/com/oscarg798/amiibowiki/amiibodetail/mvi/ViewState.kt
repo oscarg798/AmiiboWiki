@@ -13,14 +13,14 @@
 package com.oscarg798.amiibowiki.amiibodetail.mvi
 
 import android.os.Parcelable
+import androidx.compose.runtime.Stable
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
-import javax.annotation.concurrent.Immutable
 import kotlinx.parcelize.Parcelize
 
+@Stable
 @Parcelize
-@Immutable
 internal data class ViewState(
     val loading: Boolean = false,
     val amiibo: ViewAmiiboDetails? = null,

@@ -10,18 +10,14 @@ import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
 @Composable
 internal fun GameArtworks(
     game: Game,
-    onImageClick: (Collection<ExpandableImageParam>) -> Unit
+    onImageClick: (ExpandableImageParam) -> Unit
 ) {
     ImageGallery(
         layoutId = ArtworksId,
         title = stringResource(id = R.string.artworks_label),
         images = game.artworks!!.toList()
     ) {
-        onImageClick(
-            game.artworks!!.map {
-                ExpandableImageParam(it, ExpandableImageType.Artwork)
-            }
-        )
+        onImageClick(ExpandableImageParam(it, ExpandableImageType.Artwork))
     }
 }
 

@@ -10,14 +10,8 @@
  *
  */
 
-package com.oscarg798.amiibowiki.navigation
+package com.oscarg798.amiibowiki.dashboard.mvi
 
-sealed class UpdateStatus {
+import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
-    sealed class UpdateAvailable: UpdateStatus() {
-        object Immediate: UpdateAvailable()
-        object Flexible: UpdateAvailable()
-    }
-
-    object AlreadyUpdated : UpdateStatus()
-}
+object ViewState : MVIViewState

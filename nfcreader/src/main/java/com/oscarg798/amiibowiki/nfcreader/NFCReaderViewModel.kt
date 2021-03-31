@@ -21,10 +21,12 @@ import com.oscarg798.amiibowiki.nfcreader.mvi.ReadTagWish
 import com.oscarg798.amiibowiki.nfcreader.mvi.ShowAmiiboDetailsUiEffect
 import com.oscarg798.amiibowiki.nfcreader.mvi.ViewState
 import com.oscarg798.amiibowiki.nfcreader.usecase.ReadTagUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@HiltViewModel
 internal class NFCReaderViewModel @Inject constructor(
     private val readTagUseCase: ReadTagUseCase,
     private val logger: NFCReaderLogger,

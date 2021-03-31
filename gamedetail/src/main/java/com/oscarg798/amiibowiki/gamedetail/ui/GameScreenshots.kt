@@ -10,18 +10,14 @@ import com.oscarg798.amiibowiki.gamedetail.models.ExpandableImageType
 @Composable
 internal fun GameScreenshots(
     game: Game,
-    onImageClick: (Collection<ExpandableImageParam>) -> Unit
+    onImageClick: (ExpandableImageParam) -> Unit
 ) {
     ImageGallery(
         layoutId = ScreenshotsId,
         title = stringResource(id = R.string.screenshots_label),
         images = game.screenshots!!.toList()
     ) {
-        onImageClick(
-            game.screenshots!!.map {
-                ExpandableImageParam(it, ExpandableImageType.Screenshot)
-            }
-        )
+        onImageClick(ExpandableImageParam(it, ExpandableImageType.Screenshot))
     }
 }
 

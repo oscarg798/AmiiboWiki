@@ -10,28 +10,38 @@
  *
  */
 
-package com.oscarg798.amiibowiki.nfcreader.di
+package com.oscarg798.amiibowiki.dashboard
 
-import com.oscarg798.amiibowiki.core.di.entrypoints.NFCReaderEntryPoint
-import com.oscarg798.amiibowiki.nfcreader.NFCReaderActivity
-import dagger.Component
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import com.oscarg798.amiibowiki.core.extensions.setViewTreeObserver
+import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
+import com.oscarg798.amiibowiki.dashboard.ui.DashboardScreen
+import dagger.hilt.android.AndroidEntryPoint
 
-@NFCReaderScope
-@Component(
-    dependencies = [NFCReaderEntryPoint::class],
-    modules = [
-        NFCReaderModule::class
-    ]
-)
-internal interface NFCReaderComponent {
+@AndroidEntryPoint
+class DashboardActivity : AppCompatActivity() {
 
-    @Component.Factory
-    interface Factory {
+    private val viewModel: DashboardViewModel by viewModels()
 
-        fun create(
-            nfcReaderEntryPoint: NFCReaderEntryPoint
-        ): NFCReaderComponent
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        verifyNightMode()
+        setViewTreeObserver()
+
+        setContent {
+            DashboardScreen(viewModel)
+        }
     }
-
-    fun inject(nfcReaderActivity: NFCReaderActivity)
 }
+
+
+
+
+
+
+
+
+

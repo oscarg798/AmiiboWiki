@@ -12,29 +12,34 @@
 
 package com.oscarg798.amiibowiki.amiibolist.ui
 
+import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import com.oscarg798.amiibowiki.amiibolist.AmiiboListViewModel
+import com.oscarg798.amiibowiki.amiibolist.R
+import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.mvi.ViewState
 import com.oscarg798.amiibowiki.core.ui.ErrorSnackbar
-import com.oscarg798.amiibowiki.core.ui.Screen
-import com.oscarg798.amiibowiki.core.utils.requireCurrentBackStackEntryArguments
+import com.oscarg798.amiibowiki.core.ui.Router
+import com.oscarg798.amiibowiki.core.ui.ScreenConfigurator
 import kotlinx.coroutines.CoroutineScope
 
 @ExperimentalFoundationApi
 @Composable
-fun AmiiboListScreen(
+internal fun AmiiboListScreen(
+    viewModel: AmiiboListViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope,
+    screenConfigurator: ScreenConfigurator
 ) {
-    val viewModel: AmiiboListViewModel = hiltNavGraphViewModel()
+
     val state by viewModel.state.collectAsState(initial = ViewState())
 
     if (state.error != null) {
@@ -45,17 +50,40 @@ fun AmiiboListScreen(
         )
     }
 
+    DetailsTile(screenConfigurator)
+
     when {
         state.loading -> AmiiboListLoading()
         !state.loading && state.amiibos != null ->
             AmiiboList(
                 state.amiibos!!
             ) { amiibo ->
-                navController.requireCurrentBackStackEntryArguments().putString(
-                    Screen.Detail.AmiiboIdArgument,
-                    amiibo.tail
-                )
-                navController.navigate(Screen.Detail.route)
+                showAmiiboDetail(navController, amiibo)
             }
     }
+}
+
+@Composable
+private fun DetailsTile(
+    screenConfigurator: ScreenConfigurator
+) {
+    val title = stringResource(id = R.string.app_name)
+    SideEffect {
+        screenConfigurator.titleUpdater(title)
+    }
+}
+
+private fun showAmiiboDetail(
+    navController: NavController,
+    amiibo: ViewAmiibo
+) {
+    Router.AmiiboDetail.navigate(
+        navController = navController,
+        arguments = Bundle().apply {
+            putString(
+                Router.AmiiboDetail.AmiiboIdArgument,
+                amiibo.tail
+            )
+        }
+    )
 }

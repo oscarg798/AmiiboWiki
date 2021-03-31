@@ -12,10 +12,13 @@
 
 package com.oscarg798.amiibowiki.splash.mvi
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 
 import kotlin.Exception
 
+@Stable
 internal  data class ViewState(
     val loading: Boolean = true,
     val error: Exception? = null

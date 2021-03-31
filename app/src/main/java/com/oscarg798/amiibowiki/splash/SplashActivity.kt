@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.extensions.verifyNightMode
-import com.oscarg798.amiibowiki.navigation.DashboardActivity
+import com.oscarg798.amiibowiki.dashboard.DashboardActivity
 import com.oscarg798.amiibowiki.splash.mvi.SplashWish
 import com.oscarg798.amiibowiki.splash.mvi.UiEffect
 import com.oscarg798.amiibowiki.splash.ui.SplashScreen

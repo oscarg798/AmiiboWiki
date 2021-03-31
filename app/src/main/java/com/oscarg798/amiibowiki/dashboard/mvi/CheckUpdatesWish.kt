@@ -10,8 +10,11 @@
  *
  */
 
-package com.oscarg798.amiibowiki.navigation.mvi
+package com.oscarg798.amiibowiki.dashboard.mvi
 
 import com.oscarg798.amiibowiki.core.mvi.Wish
 
-object CheckUpdatesWish : Wish
+sealed class DashboardWish : Wish {
+    object CheckUpdatesWish : DashboardWish()
+    object HideUpdateDialog : DashboardWish()
+}

@@ -12,29 +12,30 @@
 
 package com.oscarg798.amiibowiki.searchgamesresults.ui
 
+import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import com.oscarg798.amiibowiki.core.ui.Screen
-import com.oscarg798.amiibowiki.core.utils.requireCurrentBackStackEntryArguments
-import com.oscarg798.amiibowiki.core.utils.requirePreviousBackStackEntryArguments
+import com.oscarg798.amiibowiki.core.ui.Router
+import com.oscarg798.amiibowiki.core.ui.ScreenConfigurator
+import com.oscarg798.amiibowiki.searchgamesresults.R
 import com.oscarg798.amiibowiki.searchgamesresults.SearchGamesResultViewModel
 import com.oscarg798.amiibowiki.searchgamesresults.models.GameSearchParam
 import com.oscarg798.amiibowiki.searchgamesresults.mvi.SearchResultWish
@@ -44,20 +45,18 @@ import kotlinx.coroutines.flow.collect
 
 @Composable
 fun SearchGamesScreen(
+    viewModel: SearchGamesResultViewModel,
     navController: NavController,
-    searchBox: Boolean = true
+    searchBoxEnabled: Boolean = true,
+    screenConfigurator: ScreenConfigurator,
+    amiiboId: String? = null
 ) {
-    val viewModel: SearchGamesResultViewModel = hiltNavGraphViewModel()
-    val state by viewModel.state.collectAsState(initial = ViewState())
-    var searchState by remember { mutableStateOf(TextFieldValue()) }
-
-    val searchBoxEnabled = navController.requirePreviousBackStackEntryArguments()
-        .getBoolean(Screen.SearchGames.ShowSearchBoxArgument, searchBox)
-
-    navController.requirePreviousBackStackEntryArguments()
-        .getString(Screen.SearchGames.AmiiboIdArgument)?.let { amiiboId ->
-        search(viewModel, GameSearchParam.AmiiboGameSearchParam(amiiboId))
+    val title = if (searchBoxEnabled) {
+        stringResource(R.string.game_search_title)
+    } else {
+        stringResource(R.string.related_games_title)
     }
+    val state by viewModel.state.collectAsState(initial = ViewState())
 
     ConstraintLayout(
         constraintSet = getConstraintSet(searchBoxEnabled),
@@ -66,11 +65,13 @@ fun SearchGamesScreen(
             .fillMaxSize()
     ) {
         if (searchBoxEnabled) {
+            var searchState by remember(state) { mutableStateOf(state.currentQuery) }
+
             SearchBox(
-                query = searchState,
+                query = searchState ?: DefaultQuery,
                 onSearch = {
                     searchState = it
-                    search(viewModel, GameSearchParam.StringQueryGameSearchParam(it.text))
+                    search(viewModel, GameSearchParam.StringQueryGameSearchParam(it))
                 }
             )
         }
@@ -88,9 +89,14 @@ fun SearchGamesScreen(
         }
     }
 
+    SideEffect {
+        screenConfigurator.titleUpdater(title)
+    }
+
     ObserveUiEffects(
         viewModel = viewModel,
-        navigationController = navController
+        navigationController = navController,
+        amiiboId = amiiboId
     )
 }
 
@@ -118,6 +124,42 @@ private fun getConstraintSet(searchBox: Boolean) = ConstraintSet {
     }
 }
 
+@Composable
+private fun ObserveUiEffects(
+    viewModel: SearchGamesResultViewModel,
+    navigationController: NavController,
+    amiiboId: String?
+) {
+
+    amiiboId?.let {
+        SideEffect {
+            search(viewModel, GameSearchParam.AmiiboGameSearchParam(amiiboId))
+        }
+    }
+
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.uiEffect.collect { uiEffect ->
+            when (uiEffect) {
+                is UIEffect.ShowGameDetails -> {
+                    showGameDetails(navigationController, uiEffect)
+                }
+            }
+        }
+    }
+}
+
+private fun showGameDetails(
+    navigationController: NavController,
+    uiEffect: UIEffect.ShowGameDetails
+) {
+    Router.GameDetail.navigate(
+        navController = navigationController,
+        arguments = Bundle().apply {
+            putInt(Router.GameDetail.GameIdArgument, uiEffect.gameId)
+        }
+    )
+}
+
 private fun ConstrainScope.getContentConstraints(
     searchBox: Boolean,
     searchBoxId: ConstrainedLayoutReference
@@ -138,25 +180,10 @@ private fun ConstrainScope.getVerticalConstrainsBasedOnSearchBox(
     }
 }
 
-@Composable
-private fun ObserveUiEffects(
+private fun search(
     viewModel: SearchGamesResultViewModel,
-    navigationController: NavController
+    gameSearchGameQueryParam: GameSearchParam
 ) {
-    LaunchedEffect(key1 = viewModel) {
-        viewModel.uiEffect.collect { uiEffect ->
-            when (uiEffect) {
-                is UIEffect.ShowGameDetails -> {
-                    navigationController.requireCurrentBackStackEntryArguments()
-                        .putInt(Screen.GameDetail.GameIdArgument, uiEffect.gameId)
-                    navigationController.navigate(Screen.GameDetail.route)
-                }
-            }
-        }
-    }
-}
-
-fun search(viewModel: SearchGamesResultViewModel, gameSearchGameQueryParam: GameSearchParam) {
     viewModel.onWish(SearchResultWish.SearchGames(gameSearchGameQueryParam))
 }
 
@@ -164,3 +191,4 @@ internal const val LoadingId = "loadingId"
 internal const val SearchBoxId = "searchBox"
 internal const val ResultListId = "resultsListId"
 internal const val EmptyStateId = "emptyStateId"
+private const val DefaultQuery = ""

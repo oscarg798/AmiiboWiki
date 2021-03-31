@@ -14,13 +14,12 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import com.oscarg798.amiibowiki.searchgamesresults.R
 
 @Composable
 internal fun SearchBox(
-    query: TextFieldValue,
-    onSearch: (TextFieldValue) -> Unit
+    query: String,
+    onSearch: (String) -> Unit
 ) {
     TextField(
         value = query,

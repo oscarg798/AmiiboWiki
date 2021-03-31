@@ -90,11 +90,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun recreateActivity() {
         requireContext().packageManager
             .getLaunchIntentForPackage(requireContext().packageName)?.let { intent ->
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            requireActivity().finish()
-        }
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                requireActivity().finish()
+            }
     }
 
     private fun navigateToDevelopmentActivity() {

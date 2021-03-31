@@ -50,16 +50,44 @@ class SearchGamesResultViewModel @Inject constructor(
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<ViewState, UIEffect, SearchResultWish>(ViewState()) {
 
-    private val searchFlow = MutableStateFlow(InitialSearchQuery)
+    private lateinit var searchFlow: MutableStateFlow<String>
 
     init {
+        cacheState()
+        verifyCachedQuery()
+    }
+
+    private fun verifyCachedQuery() {
+        if (handle.contains(QUERY_KEY)) {
+            viewModelScope.launch {
+                updateState {
+                    it.copy(
+                        currentQuery = handle.get(QUERY_KEY) ?: INITIAL_SEARCH_QUERY
+                    )
+                }
+            }
+        }
+    }
+
+    private fun cacheState() {
         state.onEach {
             handle.set(STATE_KEY, it)
         }.launchIn(viewModelScope)
+    }
 
-        searchFlow.debounce(SearchDelay)
+    private fun observerSearchQuery() {
+        if (::searchFlow.isInitialized) {
+            return
+        }
+
+        searchFlow = MutableStateFlow(INITIAL_SEARCH_QUERY)
+        searchFlow.debounce(SEARCH_DELAY)
             .onEach {
+                handle.set(QUERY_KEY, it)
                 search(it)
+                updateState { currentState ->
+                    currentState.copy(currentQuery = it)
+                }
             }.launchIn(viewModelScope)
     }
 
@@ -74,7 +102,6 @@ class SearchGamesResultViewModel @Inject constructor(
             )
 
             wish is SearchResultWish.ShowGameDetail -> getShowGamesFlow(wish)
-            wish is SearchResultWish.ObserveSearchResult -> _uiEffect.tryEmit(UIEffect.ObserveSearchResults)
         }
     }
 
@@ -112,6 +139,7 @@ class SearchGamesResultViewModel @Inject constructor(
     }
 
     private fun searchByQuery(query: String) {
+        observerSearchQuery()
         searchFlow.value = query
     }
 
@@ -200,18 +228,10 @@ class SearchGamesResultViewModel @Inject constructor(
     private fun trackSearchResultClick(gameId: Int) {
         searchGamesLogger.trackGameSearchResultClicked(mapOf(GAME_ID_KEY to gameId.toString()))
     }
-
-//    @AssistedFactory
-//    interface Factory {
-//
-//        fun create(
-//            shownAsRelatedGames: Boolean,
-//            stateHandle: SavedStateHandle
-//        ): SearchGamesResultViewModel
-//    }
 }
 
 private const val STATE_KEY = "state"
 private const val GAME_ID_KEY = "GAME_ID_KEY"
-private const val SearchDelay = 350L
-private const val InitialSearchQuery = ""
+private const val SEARCH_DELAY = 350L
+private const val INITIAL_SEARCH_QUERY = ""
+private const val QUERY_KEY = "query_key"

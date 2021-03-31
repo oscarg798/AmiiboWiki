@@ -14,8 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".navigation.DashboardActivity"
-            android:label="@string/title_activity_dashboard"></activity>
+            android:name=".dashboard.DashboardActivity"
+            android:label="@string/title_activity_dashboard"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <data
+                    android:host="amiibowiki.com"
+                    android:scheme="https" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name="com.oscarg798.amiibowiki.splash.SplashActivity"
             android:noHistory="true"

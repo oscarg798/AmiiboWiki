@@ -1,4 +1,4 @@
-package com.oscarg798.amiibowiki.navigation.ui
+package com.oscarg798.amiibowiki.dashboard.ui
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
@@ -7,21 +7,32 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.KEY_ROUTE
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigate
+import androidx.navigation.compose.popUpTo
 import com.oscarg798.amiibowiki.R
 
 @Composable
 internal fun AppBottomNavigationBar(
+    startDestination: String,
     navController: NavHostController,
     items: List<NavigationScreens>
 ) {
     BottomNavigation(backgroundColor = MaterialTheme.colors.background) {
-        val currentRoute = currentRoute(navController)
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
         items.forEach { screen ->
-            AppNavigationItem(screen, currentRoute, navController)
+            AppNavigationItem(
+                screen = screen,
+                startDestination = startDestination,
+                currentRoute = currentRoute,
+                navController = navController
+            )
         }
     }
 }
@@ -29,6 +40,7 @@ internal fun AppBottomNavigationBar(
 @Composable
 private fun RowScope.AppNavigationItem(
     screen: NavigationScreens,
+    startDestination: String,
     currentRoute: String?,
     navController: NavHostController
 ) {
@@ -42,10 +54,14 @@ private fun RowScope.AppNavigationItem(
         label = { Text(stringResource(id = screen.title)) },
         selectedContentColor = MaterialTheme.colors.secondary,
         unselectedContentColor = MaterialTheme.colors.onBackground,
-        selected = currentRoute == screen.route,
+        selected = currentRoute == screen.route || currentRoute == screen.nestedGraphStartedRoute,
         onClick = {
-            if (currentRoute != screen.route) {
-                navController.navigate(screen.route)
+            navController.navigate(screen.route) {
+                launchSingleTop = true
+                this.popUpTo(startDestination) {
+                    inclusive = true
+                }
+
             }
         }
     )

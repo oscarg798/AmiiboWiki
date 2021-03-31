@@ -12,21 +12,12 @@
 
 package com.oscarg798.amiibowiki.di
 
-import android.content.Context
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.oscarg798.amiibowiki.BuildConfig
-import com.oscarg798.amiibowiki.R
 import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Flavor
-import com.oscarg798.amiibowiki.navigation.DashboardActivity
 import dagger.Module
 import dagger.Provides
-import dagger.Reusable
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton

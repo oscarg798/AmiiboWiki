@@ -1,6 +1,7 @@
 package com.oscarg798.amiibowiki.gamedetail.ui
 
 import android.app.Activity
+import android.os.Bundle
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,24 +9,25 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import com.google.android.youtube.player.YouTubeStandalonePlayer
 import com.oscarg798.amiibowiki.core.ui.ErrorSnackbar
-import com.oscarg798.amiibowiki.core.ui.Screen
-import com.oscarg798.amiibowiki.core.utils.requirePreviousBackStackEntryArguments
+import com.oscarg798.amiibowiki.core.ui.Router
+import com.oscarg798.amiibowiki.core.ui.ScreenConfigurator
 import com.oscarg798.amiibowiki.gamedetail.GameDetailViewModel
 import com.oscarg798.amiibowiki.gamedetail.mvi.GameDetailWish
 import com.oscarg798.amiibowiki.gamedetail.mvi.UiEffect
 import com.oscarg798.amiibowiki.gamedetail.mvi.ViewState
 
 @Composable
-fun GameDetailScreen(
+internal fun GameDetailScreen(
+    viewModel: GameDetailViewModel,
+    gameId: Int,
     snackbarHostState: SnackbarHostState,
-    navController: NavController
+    navController: NavController,
+    screenConfigurator: ScreenConfigurator
 ) {
 
-    val viewModel: GameDetailViewModel = hiltNavGraphViewModel()
     val state by viewModel.state.collectAsState(initial = ViewState())
     ObserveViewModelState(navController = navController, viewModel = viewModel)
 
@@ -42,6 +44,7 @@ fun GameDetailScreen(
         state.game != null ->
             GameDetail(
                 game = state.game!!,
+                screenConfigurator = screenConfigurator,
                 onTrailerClicked = {
                     viewModel.onWish(GameDetailWish.PlayGameTrailer)
                 },
@@ -55,10 +58,7 @@ fun GameDetailScreen(
 
     LaunchedEffect(key1 = viewModel) {
         viewModel.onWish(
-            GameDetailWish.ShowGameDetail(
-                navController.requirePreviousBackStackEntryArguments()
-                    .getInt(Screen.GameDetail.GameIdArgument)
-            )
+            GameDetailWish.ShowGameDetail(gameId)
         )
     }
 }
@@ -72,23 +72,39 @@ private fun ObserveViewModelState(
     val uiEffect by viewModel.uiEffect.collectAsState(initial = null)
 
     when (uiEffect) {
-        is UiEffect.ShowingGameImages -> {
-            // Expand Images
+        is UiEffect.ShowingGameImages -> expandImage(
+            navController = navController,
+            image = (uiEffect as UiEffect.ShowingGameImages).image
+        )
+        is UiEffect.ShowingGameTrailer -> {
+            val effect = uiEffect as UiEffect.ShowingGameTrailer
+            ShowGameTrailer(effect.trailer, effect.apiKey)
         }
-        is UiEffect.ShowingGameTrailer -> Navigate((uiEffect as UiEffect.ShowingGameTrailer).trailer)
     }
 }
 
 @Composable
-fun Navigate(trailer: String) {
+private fun ShowGameTrailer(trailer: String, apiKey: String) {
     val context = LocalContext.current
 
     val intent = YouTubeStandalonePlayer.createVideoIntent(
         context as Activity,
-        "AIzaSyBXzt2KOnnQT084k5xRCq64ctFn",
+        apiKey,
         trailer, START_TIME, true, true
     )
     context.startActivity(intent)
+}
+
+private fun expandImage(navController: NavController, image: String) {
+    Router.ImageGallery.navigate(
+        navController = navController,
+        arguments = Bundle().apply {
+            putString(
+                Router.ImageGallery.ImageArgument,
+                image
+            )
+        }
+    )
 }
 
 private const val START_TIME = 0

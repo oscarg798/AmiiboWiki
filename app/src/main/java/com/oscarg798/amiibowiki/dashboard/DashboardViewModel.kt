@@ -10,14 +10,14 @@
  *
  */
 
-package com.oscarg798.amiibowiki.navigation
+package com.oscarg798.amiibowiki.dashboard
 
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
-import com.oscarg798.amiibowiki.navigation.mvi.CheckUpdatesWish
-import com.oscarg798.amiibowiki.navigation.mvi.ViewState
-import com.oscarg798.amiibowiki.navigation.mvi.RequestUpdateSideEffect
+import com.oscarg798.amiibowiki.dashboard.mvi.DashboardWish
+import com.oscarg798.amiibowiki.dashboard.mvi.ViewState
+import com.oscarg798.amiibowiki.dashboard.mvi.UiEffect
 import com.oscarg798.amiibowiki.updatechecker.UpdateCheckerUseCase
 import com.oscarg798.amiibowiki.updatechecker.UpdateType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,9 +29,16 @@ import kotlinx.coroutines.withContext
 internal class DashboardViewModel @Inject constructor(
     private val usecase: UpdateCheckerUseCase,
     override val coroutineContextProvider: CoroutineContextProvider
-) : AbstractViewModel<ViewState, RequestUpdateSideEffect, CheckUpdatesWish>(ViewState) {
+) : AbstractViewModel<ViewState, UiEffect, DashboardWish>(ViewState) {
 
-    override fun processWish(wish: CheckUpdatesWish) {
+    override fun processWish(wish: DashboardWish) {
+        when (wish) {
+            DashboardWish.CheckUpdatesWish -> checkUpdate()
+            DashboardWish.HideUpdateDialog -> _uiEffect.tryEmit(UiEffect.HideUpdateDialog)
+        }
+    }
+
+    private fun checkUpdate() {
         viewModelScope.launch {
             runCatching {
                 withContext(coroutineContextProvider.backgroundDispatcher) {
@@ -39,12 +46,14 @@ internal class DashboardViewModel @Inject constructor(
                 }
             }.onSuccess { status ->
                 if (status is UpdateStatus.UpdateAvailable) {
-                    _uiEffect.emit( RequestUpdateSideEffect(
-                        when (status) {
-                            is UpdateStatus.UpdateAvailable.Immediate -> UpdateType.Immediate
-                            else -> UpdateType.Flexible
-                        }
-                    ))
+                    _uiEffect.emit(
+                        UiEffect.RequestUpdateSideEffect(
+                            when (status) {
+                                is UpdateStatus.UpdateAvailable.Immediate -> UpdateType.Immediate
+                                else -> UpdateType.Flexible
+                            }
+                        )
+                    )
                 }
             }
         }

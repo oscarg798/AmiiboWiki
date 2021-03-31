@@ -15,13 +15,11 @@ package com.oscarg798.amiibowiki.splash.usecases
 import com.oscarg798.amiibowiki.core.usecases.AuthenticateApplicationUseCase
 import com.oscarg798.amiibowiki.updatechecker.UpdateCheckerUseCase
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
-import com.oscarg798.amiibowiki.navigation.UpdateStatus
+import com.oscarg798.amiibowiki.dashboard.UpdateStatus
 import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip
 import javax.inject.Inject

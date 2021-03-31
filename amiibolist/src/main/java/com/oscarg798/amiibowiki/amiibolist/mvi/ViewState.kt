@@ -14,11 +14,13 @@ package com.oscarg798.amiibowiki.amiibolist.mvi
 
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.oscarg798.amiibowiki.amiibolist.ViewAmiibo
 import com.oscarg798.amiibowiki.amiibolist.exceptions.AmiiboListFailure
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIState
 import kotlinx.parcelize.Parcelize
 
+@Stable
 @Parcelize
 @Immutable
 internal data class ViewState(

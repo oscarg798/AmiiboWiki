@@ -16,7 +16,7 @@ apply from: 'dependencies.gradle'
 apply from: 'gradlescripts/properties.gradle.kts'
 
 buildscript {
-    ext.kotlin_version = "1.4.31"
+    ext.kotlin_version = "1.4.32"
     ext.navigationVersion = "2.3.4"
 
     repositories {
@@ -31,11 +31,11 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha12'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha14'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.5'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.1'
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:9.3.0"
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
         classpath "com.github.triplet.gradle:play-publisher:3.3.0-agp4.2"
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.33-beta'
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
