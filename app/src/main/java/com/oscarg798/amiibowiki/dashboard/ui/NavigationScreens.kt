@@ -24,4 +24,10 @@ internal sealed class NavigationScreens(
             title = R.string.search,
             icon = R.drawable.ic_search
         )
+
+    object Settings : NavigationScreens(
+        route = Router.Settings.route,
+        title = R.string.settings_navigation_menu_title,
+        icon = R.drawable.ic_settings
+    )
 }

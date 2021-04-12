@@ -12,36 +12,8 @@
 
 package com.oscarg798.amiibowiki.settings.models
 
-import android.text.TextWatcher
-import android.widget.EditText
-
-sealed class PreferenceBuilder(
-    private val key: String,
-    private val title: String,
-    private val iconResourceId: Int? = null
-) {
-
-    data class Clickable(
-        val key: String,
-        val title: String,
-        val iconResourceId: Int? = null
-    ) : PreferenceBuilder(key, title, iconResourceId)
-
-    data class Text(
-        val key: String,
-        val title: String,
-        val inputType: InputType,
-        val defaultValue: String,
-        val textPreferenceChangeListener: TextPreferenceChangeListener? = null,
-        val iconResourceId: Int? = null
-    ) : PreferenceBuilder(key, title, iconResourceId) {
-        sealed class InputType {
-            data class Number(val minumum: Int? = 0, val maximun: Int? = 0) : InputType()
-        }
-    }
-}
-
-interface TextPreferenceChangeListener {
-
-    fun onPreferenceChange(newPreferenceText: String?, editText: EditText, watcher: TextWatcher)
-}
+data class PreferenceBuilder(
+    val key: String,
+    val title: String,
+    val iconResourceId: Int? = null
+)

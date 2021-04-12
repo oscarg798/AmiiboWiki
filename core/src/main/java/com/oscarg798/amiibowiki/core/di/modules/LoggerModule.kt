@@ -13,6 +13,7 @@
 package com.oscarg798.amiibowiki.core.di.modules
 
 import android.content.Context
+import com.google.android.gms.common.util.CollectionUtils.mapOf
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.oscarg798.amiibowiki.core.logger.CrashLogger
 import com.oscarg798.amiibowiki.core.logger.FirebaseLogger

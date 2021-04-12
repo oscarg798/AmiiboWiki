@@ -107,7 +107,7 @@ internal class AmiiboListViewModel @Inject constructor(
     }
 
     private fun fetchAmiibos(isRefreshing: Boolean) {
-        val state = stateHandle.get<ViewState>(STATE_KEY)
+        val state = stateHandle.get(STATE_KEY) as? ViewState
 
         if (!isRefreshing && state?.amiibos != null) {
             viewModelScope.launch { updateState { it.copy(amiibos = state.amiibos) } }

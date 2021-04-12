@@ -31,6 +31,7 @@ import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByQueryUse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
@@ -47,10 +48,17 @@ class SearchGamesResultViewModel @Inject constructor(
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val searchGamesByQueryUseCase: SearchGamesByQueryUseCase,
     private val searchGamesLogger: SearchGamesResultLogger,
-    override val coroutineContextProvider: CoroutineContextProvider
+    override val coroutineContextProvider: CoroutineContextProvider,
+    /**
+     * Workaround to test the search, I tried with runBlockingTest and advancing
+     * but does not work
+     */
+    private val searchDebounce: Long
 ) : AbstractViewModel<ViewState, UIEffect, SearchResultWish>(ViewState()) {
 
-    private lateinit var searchFlow: MutableStateFlow<String>
+    val _searchFlow: MutableStateFlow<String> = MutableStateFlow(INITIAL_QUERY)
+
+    val searchFlow: StateFlow<String> = _searchFlow
 
     init {
         cacheState()
@@ -59,13 +67,7 @@ class SearchGamesResultViewModel @Inject constructor(
 
     private fun verifyCachedQuery() {
         if (handle.contains(QUERY_KEY)) {
-            viewModelScope.launch {
-                updateState {
-                    it.copy(
-                        currentQuery = handle.get(QUERY_KEY) ?: INITIAL_SEARCH_QUERY
-                    )
-                }
-            }
+            _searchFlow.value = handle.get<String>(QUERY_KEY)!!
         }
     }
 
@@ -75,33 +77,24 @@ class SearchGamesResultViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun observerSearchQuery() {
-        if (::searchFlow.isInitialized) {
-            return
-        }
-
-        searchFlow = MutableStateFlow(INITIAL_SEARCH_QUERY)
-        searchFlow.debounce(SEARCH_DELAY)
-            .onEach {
-                handle.set(QUERY_KEY, it)
-                search(it)
-                updateState { currentState ->
-                    currentState.copy(currentQuery = it)
-                }
-            }.launchIn(viewModelScope)
-    }
-
     override fun processWish(wish: SearchResultWish) {
         when {
             wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.AmiiboGameSearchParam -> searchByAmiiboId(
                 wish.gameSearchGameQueryParam.amiiboId
             )
 
-            wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.StringQueryGameSearchParam -> searchByQuery(
-                wish.gameSearchGameQueryParam.query
-            )
+            wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.StringQueryGameSearchParam ->
+                _searchFlow.value =
+                    wish.gameSearchGameQueryParam.query
 
             wish is SearchResultWish.ShowGameDetail -> getShowGamesFlow(wish)
+            wish is SearchResultWish.Init -> {
+                if (wish.searchBoxEnabled) {
+                    observeSearchFlow()
+                }
+
+                _uiEffect.tryEmit(UIEffect.InitializationCompleted)
+            }
         }
     }
 
@@ -118,16 +111,41 @@ class SearchGamesResultViewModel @Inject constructor(
         }
     }
 
+    private fun observeSearchFlow() {
+        _searchFlow.debounce(searchDebounce)
+            .onEach { query ->
+                val currentState = _state.replayCache.firstOrNull()
+                if (currentStateContainsResultsForQuery(
+                        currentState = currentState,
+                        query = query
+                    )
+                ) {
+                    return@onEach
+                }
+
+                search(query)
+            }.launchIn(viewModelScope)
+    }
+
+    private fun currentStateContainsResultsForQuery(
+        currentState: ViewState?,
+        query: String
+    ) = currentState?.currentQuery == query && currentState.gamesResult != null
+
     private fun search(query: String) {
+        handle.set(QUERY_KEY, query)
         viewModelScope.launch {
             showLoading()
+            updateState { it.copy(currentQuery = query) }
 
             val result = withContext(coroutineContextProvider.backgroundDispatcher) {
                 searchGamesByQueryUseCase.execute(query)
             }
 
             when (result) {
-                is SearchGameResult.Allowed -> subscribeToSearchUpdates(result)
+                is SearchGameResult.Allowed -> {
+                    subscribeToSearchUpdates(result)
+                }
                 is SearchGameResult.NotAllowed -> updateState {
                     it.copy(
                         idling = true,
@@ -136,11 +154,6 @@ class SearchGamesResultViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun searchByQuery(query: String) {
-        observerSearchQuery()
-        searchFlow.value = query
     }
 
     private fun subscribeToSearchUpdates(
@@ -232,6 +245,5 @@ class SearchGamesResultViewModel @Inject constructor(
 
 private const val STATE_KEY = "state"
 private const val GAME_ID_KEY = "GAME_ID_KEY"
-private const val SEARCH_DELAY = 350L
-private const val INITIAL_SEARCH_QUERY = ""
 private const val QUERY_KEY = "query_key"
+private const val INITIAL_QUERY = ""

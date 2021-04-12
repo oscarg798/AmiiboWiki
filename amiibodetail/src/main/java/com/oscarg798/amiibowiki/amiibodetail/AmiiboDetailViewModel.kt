@@ -19,11 +19,11 @@ import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.UiEffect
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ViewState
+import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
-import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -153,11 +153,6 @@ internal class AmiiboDetailViewModel @Inject constructor(
             )
         )
     }
-//
-//    @AssistedFactory
-//    interface Factory {
-//        fun create(params: String): AmiiboDetailViewModel
-//    }
 }
 
 private const val STATE_KEY = "state"

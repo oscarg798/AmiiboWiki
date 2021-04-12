@@ -21,9 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstrainScope
@@ -32,7 +29,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import com.oscarg798.amiibowiki.core.ui.Router
 import com.oscarg798.amiibowiki.core.ui.ScreenConfigurator
 import com.oscarg798.amiibowiki.searchgamesresults.R
@@ -56,6 +52,7 @@ fun SearchGamesScreen(
     } else {
         stringResource(R.string.related_games_title)
     }
+
     val state by viewModel.state.collectAsState(initial = ViewState())
 
     ConstraintLayout(
@@ -65,13 +62,16 @@ fun SearchGamesScreen(
             .fillMaxSize()
     ) {
         if (searchBoxEnabled) {
-            var searchState by remember(state) { mutableStateOf(state.currentQuery) }
+            val query by viewModel.searchFlow.collectAsState()
 
             SearchBox(
-                query = searchState ?: DefaultQuery,
-                onSearch = {
-                    searchState = it
-                    search(viewModel, GameSearchParam.StringQueryGameSearchParam(it))
+                query = query,
+                onSearch = { search ->
+                    viewModel.onWish(
+                        SearchResultWish.SearchGames(
+                            GameSearchParam.StringQueryGameSearchParam(search)
+                        )
+                    )
                 }
             )
         }
@@ -91,6 +91,7 @@ fun SearchGamesScreen(
 
     SideEffect {
         screenConfigurator.titleUpdater(title)
+        viewModel.onWish(SearchResultWish.Init(searchBoxEnabled))
     }
 
     ObserveUiEffects(
@@ -191,4 +192,3 @@ internal const val LoadingId = "loadingId"
 internal const val SearchBoxId = "searchBox"
 internal const val ResultListId = "resultsListId"
 internal const val EmptyStateId = "emptyStateId"
-private const val DefaultQuery = ""

@@ -24,7 +24,7 @@ import kotlinx.parcelize.Parcelize
 data class ViewState(
     val isLoading: Boolean = false,
     val idling: Boolean = true,
-    val gamesResult: List<ViewGameSearchResult>? = null,
     val currentQuery: String? = null,
+    val gamesResult: List<ViewGameSearchResult>? = null,
     val error: SearchGameFailure? = null
 ) : MVIViewState, Parcelable

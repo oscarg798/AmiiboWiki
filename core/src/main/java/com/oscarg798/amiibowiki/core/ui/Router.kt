@@ -73,6 +73,11 @@ sealed class Router(val route: String, val uriPattern: String) {
         }
     }
 
+    object Settings : Router(SettingsRoute, SettingUriPattern) {
+
+        override fun getDeeplinkNavigationRoute(arguments: Bundle?): Uri = SettingUriPattern.toUri()
+    }
+
     protected abstract fun getDeeplinkNavigationRoute(arguments: Bundle?): Uri
 
     fun navigate(navController: NavController, arguments: Bundle?) {
@@ -112,3 +117,6 @@ private const val GameSearchUriPattern = "$DeeplinkUri/$GameSearchRoute"
 
 private const val RelatedGamesRoute = "relatedGames/{$AmiiboIdArgumentName}"
 private const val RelatedGamesUriPattern = "$DeeplinkUri/$RelatedGamesRoute"
+
+private const val SettingsRoute = "settings"
+private const val SettingUriPattern = "$DeeplinkUri/$SettingsRoute"

@@ -32,21 +32,21 @@ class ExpandGameImagesUseCaseTest {
     fun `given a expand image params when type is cover then it should replace the cover size for the desired size`() {
         val params = ExpandableImageParam(MOCK_COVER_IMAGE_URL, ExpandableImageType.Cover)
 
-        usecase.execute(listOf(params)) shouldBeEqualTo listOf(DESIRED_SIZE)
+        usecase.execute(params) shouldBeEqualTo DESIRED_SIZE
     }
 
     @Test
     fun `given a expand image params when type is screenshot then it should replace the cover size for the desired size`() {
         val params = ExpandableImageParam(MOCK_SCREENSHOT_IMAGE_URL, ExpandableImageType.Screenshot)
 
-        usecase.execute(listOf(params)) shouldBeEqualTo listOf(DESIRED_SIZE)
+        usecase.execute(params) shouldBeEqualTo DESIRED_SIZE
     }
 
     @Test
     fun `given a expand image params when type is artwork then it should replace the cover size for the desired size`() {
         val params = ExpandableImageParam(MOCK_ARTWORK_IMAGE_URL, ExpandableImageType.Artwork)
 
-        usecase.execute(listOf(params)) shouldBeEqualTo listOf(DESIRED_SIZE)
+        usecase.execute(params) shouldBeEqualTo DESIRED_SIZE
     }
 }
 

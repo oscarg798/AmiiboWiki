@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2021 Oscar David Gallon Rosero
  *
@@ -15,10 +14,15 @@ package com.oscarg798.amiibowiki.amiibolist
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import com.oscarg798.amiibowiki.amiibolist.logger.AmiiboListLogger
 import com.oscarg798.amiibowiki.amiibolist.mvi.AmiiboListWish
 import com.oscarg798.amiibowiki.amiibolist.mvi.ViewState
 import com.oscarg798.amiibowiki.amiibolist.ui.AmiiboListScreen
+import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiiboFilteredUseCase
+import com.oscarg798.amiibowiki.amiibolist.usecases.GetAmiibosUseCase
+import com.oscarg798.amiibowiki.amiibolist.usecases.SearchAmiibosUseCase
 import com.oscarg798.amiibowiki.core.EnvirormentCheckerModule
 import com.oscarg798.amiibowiki.core.di.modules.FeatureFlagHandlerModule
 import com.oscarg798.amiibowiki.core.di.modules.LoggerModule
@@ -26,6 +30,10 @@ import com.oscarg798.amiibowiki.core.di.modules.PersistenceModule
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.models.DBAMiiboReleaseDate
 import com.oscarg798.amiibowiki.core.persistence.models.DBAmiibo
+import com.oscarg798.amiibowiki.core.ui.ScreenConfigurator
+import com.oscarg798.amiibowiki.core.usecases.GetAmiiboTypeUseCase
+import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
+import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.network.di.NetworkModule
 import com.oscarg798.amiibowiki.testutils.extensions.createMockResponse
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
@@ -34,8 +42,10 @@ import com.oscarg798.amiibowiki.testutils.testrules.MockWebServerTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.just
 import javax.inject.Inject
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestCoroutineScope
@@ -70,14 +80,33 @@ internal class AmiiboListTest {
     val mockWebServerTestRule = MockWebServerTestRule(DISPATCHER)
 
     @Inject
-    lateinit var factory: AmiiboListViewModel.Factory
+    lateinit var getAmiibosUseCase: GetAmiibosUseCase
+
+    @Inject
+    lateinit var getAmiiboFilteredUseCase: GetAmiiboFilteredUseCase
+
+    @Inject
+    lateinit var getAmiiboTypeUsecase: GetAmiiboTypeUseCase
+
+    @Inject
+    lateinit var searchAmiibosUseCase: SearchAmiibosUseCase
+
+    @Inject
+    lateinit var isFeatureEnabledUseCase: IsFeatureEnableUseCase
+
+    @Inject
+    lateinit var coroutinesContextProvider: CoroutineContextProvider
 
     @Inject
     lateinit var amiiboDAO: AmiiboDAO
 
     private val composeNetworkIdlingResource = ComposeNetworkIdlingResource()
     private val amiiboListRobot = AmiiboListRobot(composeTestRule)
+    private val amiiboListLogger: AmiiboListLogger = relaxedMockk()
     private val stateHandler = relaxedMockk<SavedStateHandle>()
+    private val navController: NavController = relaxedMockk()
+    private val screenConfigurator: ScreenConfigurator = relaxedMockk()
+    private val titleUpdater: (String) -> Unit = relaxedMockk()
     private lateinit var viewModel: AmiiboListViewModel
 
     @Before
@@ -85,13 +114,30 @@ internal class AmiiboListTest {
         hiltRule.inject()
         coEvery { stateHandler.get<ViewState>(any()) } answers { null }
         every { amiiboDAO.getAmiibos() } answers { flowOf(listOf(DB_AMIIBO)) }
+        every { screenConfigurator.titleUpdater } answers { titleUpdater }
+        every { titleUpdater.invoke(any()) } just Runs
 
-        viewModel = factory.create(stateHandler)
+        viewModel = AmiiboListViewModel(
+            stateHandle = stateHandler,
+            getAmiibosUseCase = getAmiibosUseCase,
+            getAmiiboFilteredUseCase = getAmiiboFilteredUseCase,
+            getAmiiboTypeUseCase = getAmiiboTypeUsecase,
+            searchAmiibosUseCase = searchAmiibosUseCase,
+            amiiboListLogger = amiiboListLogger,
+            isFeatureEnableUseCase = isFeatureEnabledUseCase,
+            coroutineContextProvider = coroutinesContextProvider
+        )
 
         composeTestRule.registerIdlingResource(composeNetworkIdlingResource)
         composeTestRule.setContent {
-            AmiiboListScreen(viewModel = viewModel, coroutineScope = TestCoroutineScope()) {
-            }
+
+            AmiiboListScreen(
+                viewModel = viewModel,
+                coroutineScope = TestCoroutineScope(),
+                navController = navController,
+                screenConfigurator = screenConfigurator,
+                snackbarHostState = relaxedMockk()
+            )
         }
     }
 

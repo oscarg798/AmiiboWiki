@@ -28,4 +28,10 @@ internal object SearchResultModule {
     @ViewModelScoped
     @Provides
     fun provideLogger(logger: Logger): SearchGamesResultLogger = SearchGamesResultLoggerImpl(logger)
+
+    @ViewModelScoped
+    @Provides
+    fun provideSearchDebounce() = SEARCH_DELAY
 }
+
+private const val SEARCH_DELAY = 350L

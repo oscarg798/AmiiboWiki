@@ -30,10 +30,13 @@ import com.oscarg798.amiibowiki.dashboard.mvi.UiEffect
 
 @Composable
 internal fun DashboardScreen(viewModel: DashboardViewModel) {
+
     val uiEffect by viewModel.uiEffect.collectAsState(initial = null)
     val navController = rememberNavController()
+
     val snackbarHostState = remember { SnackbarHostState() }
     val startDestination = Router.AmiiboList.route
+
     var title by remember { mutableStateOf(InitialTitle) }
     val screenConfigurator = ScreenConfigurator {
         title = it
@@ -77,13 +80,19 @@ internal fun DashboardScreen(viewModel: DashboardViewModel) {
 @Composable
 private fun AmiiboToolbar(title: String) {
     TopAppBar(title = {
-        Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(end = Dimensions.Spacing.Small))
+        Text(
+            text = title,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(end = Dimensions.Spacing.Small)
+        )
     })
 }
 
 private fun navigationScreens() = listOf(
     NavigationScreens.AmiiboList,
-    NavigationScreens.GameSearch
+    NavigationScreens.GameSearch,
+    NavigationScreens.Settings
 )
 
 private const val InitialTitle = ""

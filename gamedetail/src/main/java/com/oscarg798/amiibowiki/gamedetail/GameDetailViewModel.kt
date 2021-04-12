@@ -65,7 +65,8 @@ internal class GameDetailViewModel @Inject constructor(
 
     private fun getGameTrailer() = flow {
         trackTrailerClick(gameId)
-        emit(getGameTrailerUseCase.execute(gameId))
+        val trailer = getGameTrailerUseCase.execute(gameId)
+        emit(trailer)
     }.onEach {
         _uiEffect.emit(UiEffect.ShowingGameTrailer(it, config.googleAPIKey))
     }.flowOn(coroutineContextProvider.backgroundDispatcher)

@@ -31,5 +31,3 @@ class AmiiboDetailRobot(private val composeTestRule: ComposeContentTestRule) :
         composeTestRule.onNode(hasText("Related Games")).assertIsDisplayed()
     }
 }
-
-private const val CHARACTER_VIEW_INDEX = 1

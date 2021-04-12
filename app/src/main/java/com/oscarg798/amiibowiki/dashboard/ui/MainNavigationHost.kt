@@ -11,6 +11,7 @@ import com.oscarg798.amiibowiki.core.ui.ScreenConfigurator
 import com.oscarg798.amiibowiki.core.ui.imagegallery.imageGalleryNavigation
 import com.oscarg798.amiibowiki.gamedetail.ui.navigation.gameDetailNavigation
 import com.oscarg798.amiibowiki.searchgamesresults.ui.navigation.searchGameRoute
+import com.oscarg798.amiibowiki.settings.ui.navigation.settingsScreenNavigation
 
 @Composable
 internal fun MainNavigationHost(
@@ -52,6 +53,8 @@ internal fun MainNavigationHost(
             navController = navController,
             screenConfigurator = screenConfigurator
         )
+
+        settingsScreenNavigation(screenConfigurator)
     }
 
 }

@@ -24,6 +24,7 @@ import com.oscarg798.amiibowiki.core.rubik
 private val H1FontSize = 28.sp
 private val H2FontSize = 24.sp
 private val H3FontSize = 16.sp
+private val H4FontSize = 14.sp
 private val BODY_1_FONT_SIZE = 14.sp
 private val BODY_2_FONT_SIZE = 12.sp
 
@@ -33,12 +34,15 @@ private val H2 =
     TextStyle(fontWeight = FontWeight.Medium, fontSize = H2FontSize, fontFamily = rubik)
 private val H3 =
     TextStyle(fontWeight = FontWeight.Medium, fontSize = H3FontSize, fontFamily = rubik)
+private val H4 =
+    TextStyle(fontWeight = FontWeight.Medium, fontSize = H4FontSize, fontFamily = rubik)
 private val Body1 =
     TextStyle(fontWeight = FontWeight.Normal, fontSize = BODY_1_FONT_SIZE, fontFamily = rubik)
 private val Body2 =
     TextStyle(fontWeight = FontWeight.Normal, fontSize = BODY_2_FONT_SIZE, fontFamily = rubik)
 
-val AmiiboWikiTextAppearence = Typography(h1 = H1, h2 = H2, h3 = H3, body1 = Body1, body2 = Body2)
+val AmiiboWikiTextAppearence =
+    Typography(h1 = H1, h2 = H2, h3 = H3, h4 = H4, body1 = Body1, body2 = Body2)
 
 @Composable
 fun ThemeContainer(content: @Composable () -> Unit) {

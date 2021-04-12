@@ -22,7 +22,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import okhttp3.Interceptor
-import okhttp3.Response
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -30,11 +29,11 @@ object TestLoggerModule {
 
     @Singleton
     @Provides
-    fun provideFirebaseAnlytics(): FirebaseAnalytics = relaxedMockk<FirebaseAnalytics>()
+    fun provideFirebaseAnlytics(): FirebaseAnalytics = relaxedMockk()
 
     @Singleton
     @Provides
-    fun provideLogger(): Logger = relaxedMockk<Logger>()
+    fun provideLogger(): Logger = relaxedMockk()
 
     @Singleton
     @Provides
@@ -42,10 +41,5 @@ object TestLoggerModule {
 
     @Singleton
     @Provides
-    fun provideNetworkLoggerInterceptor(): Interceptor = object : Interceptor {
-
-        override fun intercept(chain: Interceptor.Chain): Response {
-            return chain.proceed(chain.request())
-        }
-    }
+    fun provideNetworkLoggerInterceptor(): Interceptor = Interceptor { chain -> chain.proceed(chain.request()) }
 }

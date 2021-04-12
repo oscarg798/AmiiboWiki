@@ -10,24 +10,25 @@
  *
  */
 
-package com.oscarg798.amiibowiki.core.di.entrypoints
+package com.oscarg798.amiibowiki.amiibodetail.usecase
 
-import com.oscarg798.amiibowiki.core.di.providers.ContextProvider
-import com.oscarg798.amiibowiki.core.di.providers.CoroutinesProvider
-import com.oscarg798.amiibowiki.core.di.providers.LoggerProvider
-import com.oscarg798.amiibowiki.core.di.providers.ResourceProviderProvider
-import com.oscarg798.amiibowiki.core.usecases.AuthenticateApplicationUseCase
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import com.oscarg798.amiibowiki.core.extensions.getOrTransform
+import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
+import com.oscarg798.amiibowiki.core.models.Amiibo
+import com.oscarg798.amiibowiki.core.repositories.AmiiboRepository
+import javax.inject.Inject
 
-@EntryPoint
-@InstallIn(SingletonComponent::class)
-interface NFCReaderEntryPoint :
-    ContextProvider,
-    CoroutinesProvider,
-    LoggerProvider,
-    ResourceProviderProvider {
+class GetAmiiboDetailUseCase @Inject constructor(private val repository: AmiiboRepository) {
 
-    fun provideAuthenticateApplicationUseCase(): AuthenticateApplicationUseCase
+    suspend fun execute(tail: String): Amiibo {
+        return runCatching {
+            repository.getAmiiboById(tail)
+        }.getOrTransform {
+            throw if (it is IllegalArgumentException) {
+                AmiiboDetailFailure.AmiiboNotFoundByTail(tail)
+            } else {
+                it
+            }
+        }
+    }
 }

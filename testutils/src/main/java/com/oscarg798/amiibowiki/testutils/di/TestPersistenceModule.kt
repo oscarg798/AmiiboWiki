@@ -17,11 +17,11 @@ import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.AmiiboTypeDAO
 import com.oscarg798.amiibowiki.core.persistence.dao.GameDAO
 import com.oscarg798.amiibowiki.core.persistence.database.CoreAmiiboDatabase
+import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.mockk.mockk
 import javax.inject.Singleton
 
 @Module
@@ -30,21 +30,21 @@ object TestPersistenceModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(): CoreAmiiboDatabase = mockk<CoreAmiiboDatabase>(relaxed = true)
+    fun provideDatabase(): CoreAmiiboDatabase = relaxedMockk()
 
     @Singleton
     @Provides
-    fun provideAmiiboTypeDao(): AmiiboTypeDAO = mockk<AmiiboTypeDAO>(relaxed = true)
+    fun provideAmiiboTypeDao(): AmiiboTypeDAO = relaxedMockk()
 
     @Singleton
     @Provides
-    fun provideAmiiboDAO(): AmiiboDAO = mockk<AmiiboDAO>(relaxed = true)
+    fun provideAmiiboDAO(): AmiiboDAO = relaxedMockk()
 
     @Singleton
     @Provides
-    fun provideGameDAO(): GameDAO = mockk<GameDAO>(relaxed = true)
+    fun provideGameDAO(): GameDAO = relaxedMockk()
 
     @Singleton
     @Provides
-    fun provideAgeRatingDAO(): AgeRatingDAO = mockk<AgeRatingDAO>(relaxed = true)
+    fun provideAgeRatingDAO(): AgeRatingDAO = relaxedMockk()
 }

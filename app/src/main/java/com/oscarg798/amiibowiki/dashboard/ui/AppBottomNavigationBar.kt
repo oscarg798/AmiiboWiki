@@ -24,8 +24,7 @@ internal fun AppBottomNavigationBar(
     items: List<NavigationScreens>
 ) {
     BottomNavigation(backgroundColor = MaterialTheme.colors.background) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+        val currentRoute = CurrentRoute(navController = navController)
         items.forEach { screen ->
             AppNavigationItem(
                 screen = screen,
