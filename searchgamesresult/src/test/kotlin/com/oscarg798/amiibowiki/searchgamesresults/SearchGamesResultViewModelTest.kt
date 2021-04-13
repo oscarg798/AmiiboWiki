@@ -1,6 +1,7 @@
 package com.oscarg798.amiibowiki.searchgamesresults
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.models.GameSearchResult
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.searchgamesresults.logger.SearchGamesResultLogger
@@ -17,7 +18,12 @@ import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.verify
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.newCoroutineContext
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,7 +40,6 @@ class SearchGamesResultViewModelTest :
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase = relaxedMockk()
     private val searchGamesByQueryUseCase: SearchGamesByQueryUseCase = relaxedMockk()
     private val searchGamesLogger: SearchGamesResultLogger = relaxedMockk()
-    private val showAsRelatedSectionGames = true
 
     private val viewModel: SearchGamesResultViewModel
         get() = viewModelRule.viewModel
@@ -42,16 +47,17 @@ class SearchGamesResultViewModelTest :
     @Before
     fun setup() {
         every { handle.get<ViewState>(any()) } answers { null }
+        viewModel.onWish(SearchResultWish.Init(false))
     }
 
     override fun create(): SearchGamesResultViewModel = SearchGamesResultViewModel(
-        handle,
-        showAsRelatedSectionGames,
-        searchGamesByAmiiboUseCase,
-        isFeatureEnableUseCase,
-        searchGamesByQueryUseCase,
-        searchGamesLogger,
-        viewModelRule.coroutineContextProvider
+        handle = handle,
+        searchGamesByAmiiboUseCase = searchGamesByAmiiboUseCase,
+        isFeatureEnableUseCase = isFeatureEnableUseCase,
+        searchGamesByQueryUseCase = searchGamesByQueryUseCase,
+        searchGamesLogger = searchGamesLogger,
+        coroutineContextProvider = viewModelRule.coroutineContextProvider,
+        searchDebounce = NO_DELAY
     )
 
     @Test
@@ -135,31 +141,7 @@ class SearchGamesResultViewModelTest :
             )
         )
 
-        viewModelRule.stateCollector.wereValuesEmitted(
-            listOf(
-                STATE.copy(
-                    isLoading = true,
-                    idling = false
-                ),
-                STATE.copy(
-                    isLoading = true,
-                    idling = false
-                ),
-                STATE.copy(
-                    isLoading = false,
-                    idling = false,
-                    gamesResult = listOf(ViewGameSearchResult(RESULT))
-                )
-            )
-        )
-
-        verify { searchGamesByQueryUseCase.execute(QUERY) }
-    }
-
-    @Test
-    fun `when a not allowed search result is return by the usecase then it should return an idel state`() {
-        every { searchGamesByQueryUseCase.execute(QUERY) } answers { SearchGameResult.NotAllowed }
-
+        viewModel.onWish(SearchResultWish.Init(true))
         viewModel.onWish(
             SearchResultWish.SearchGames(
                 GameSearchParam.StringQueryGameSearchParam(
@@ -174,7 +156,57 @@ class SearchGamesResultViewModelTest :
                     isLoading = true,
                     idling = false
                 ),
-                STATE
+                STATE.copy(
+                    isLoading = true,
+                    idling = false,
+                    currentQuery = QUERY
+                ),
+                STATE.copy(
+                    isLoading = true,
+                    idling = false,
+                    currentQuery = QUERY
+                ),
+                STATE.copy(
+                    isLoading = false,
+                    idling = false,
+                    currentQuery = QUERY,
+                    gamesResult = listOf(ViewGameSearchResult(RESULT))
+                )
+            )
+        )
+
+        verify { searchGamesByQueryUseCase.execute(QUERY) }
+    }
+
+    @Test
+    fun `when a not allowed search result is return by the usecase then it should return an idel state`() {
+        every { searchGamesByQueryUseCase.execute(QUERY) } answers { SearchGameResult.NotAllowed }
+
+        viewModel.onWish(SearchResultWish.Init(true))
+        viewModel.onWish(
+            SearchResultWish.SearchGames(
+                GameSearchParam.StringQueryGameSearchParam(
+                    QUERY
+                )
+            )
+        )
+
+        viewModelRule.stateCollector.wereValuesEmitted(
+            listOf(
+                STATE.copy(
+                    isLoading = true,
+                    idling = false
+                ),
+                STATE.copy(
+                    isLoading = true,
+                    currentQuery = QUERY,
+                    idling = false
+                ),
+                STATE.copy(
+                    isLoading = false,
+                    currentQuery = QUERY,
+                    idling = true
+                )
             )
         )
 
@@ -182,6 +214,7 @@ class SearchGamesResultViewModelTest :
     }
 }
 
+private const val NO_DELAY = 0L
 private const val QUERY = "1"
 private val STATE = ViewState()
 private const val AMIIBO_ID = "1"

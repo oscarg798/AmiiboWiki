@@ -18,5 +18,5 @@ internal sealed class AmiiboDetailWish : EffectWish {
 
     data class ExpandAmiiboImage(val image: String) : AmiiboDetailWish()
     object ShowRelatedGames : AmiiboDetailWish()
-    object ShowAmiiboDetail : AmiiboDetailWish()
+    data class ShowAmiiboDetail(val tail: String) : AmiiboDetailWish()
 }

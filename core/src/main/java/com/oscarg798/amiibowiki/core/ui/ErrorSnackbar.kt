@@ -11,14 +11,16 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ErrorSnackbar(
-    message: String? = stringResource(R.string.generic_error),
+    message: String?,
     snackbarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope,
     onDismiss: () -> Unit = {}
 ) {
+
+    val snackbarMessage = message ?: stringResource(R.string.generic_error)
     coroutineScope.launch {
         val state = snackbarHostState.showSnackbar(
-            message = message!!,
+            message = snackbarMessage,
             duration = SnackbarDuration.Short
         )
 

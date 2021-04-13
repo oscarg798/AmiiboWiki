@@ -13,9 +13,11 @@
 package com.oscarg798.amiibowiki.amiibodetail.models
 
 import android.os.Parcelable
+import androidx.compose.runtime.Stable
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import kotlinx.parcelize.Parcelize
 
+@Stable
 @Parcelize
 internal data class ViewAmiiboDetails(
     val id: String,

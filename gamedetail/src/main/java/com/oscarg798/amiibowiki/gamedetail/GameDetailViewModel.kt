@@ -15,6 +15,7 @@ package com.oscarg798.amiibowiki.gamedetail
 import androidx.lifecycle.viewModelScope
 import com.oscarg798.amiibowiki.core.base.AbstractViewModel
 import com.oscarg798.amiibowiki.core.failures.GameDetailFailure
+import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Id
 import com.oscarg798.amiibowiki.core.utils.CoroutineContextProvider
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
@@ -25,34 +26,36 @@ import com.oscarg798.amiibowiki.gamedetail.mvi.ViewState
 import com.oscarg798.amiibowiki.gamedetail.usecases.ExpandGameImagesUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGameTrailerUseCase
 import com.oscarg798.amiibowiki.gamedetail.usecases.GetGamesUseCase
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.catch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-internal class GameDetailViewModel @AssistedInject constructor(
-    @Assisted private val gameId: Id,
+@HiltViewModel
+internal class GameDetailViewModel @Inject constructor(
     private val getGameUseCase: GetGamesUseCase,
     private val expandGameImagesUseCase: ExpandGameImagesUseCase,
     private val getGameTrailerUseCase: GetGameTrailerUseCase,
     private val gameDetailLogger: GameDetailLogger,
+    private val config: Config,
     override val coroutineContextProvider: CoroutineContextProvider
 ) : AbstractViewModel<ViewState, UiEffect, GameDetailWish>(ViewState()) {
 
+    private var gameId: Int = 0
+
     override fun processWish(wish: GameDetailWish) {
         when (wish) {
-            is GameDetailWish.ShowGameDetail -> getGame()
+            is GameDetailWish.ShowGameDetail -> getGame(wish.gameId)
             is GameDetailWish.PlayGameTrailer -> getGameTrailer()
             is GameDetailWish.ExpandImages -> expandImages(wish.expandableImageParams)
         }
     }
 
-    private fun expandImages(expandableImageParam: Collection<ExpandableImageParam>) = flow {
+    private fun expandImages(expandableImageParam: ExpandableImageParam) = flow {
         val expandedImages = expandGameImagesUseCase.execute(expandableImageParam)
         emit(expandedImages)
     }.onEach { images ->
@@ -62,28 +65,38 @@ internal class GameDetailViewModel @AssistedInject constructor(
 
     private fun getGameTrailer() = flow {
         trackTrailerClick(gameId)
-        emit(getGameTrailerUseCase.execute(gameId))
+        val trailer = getGameTrailerUseCase.execute(gameId)
+        emit(trailer)
     }.onEach {
-        _uiEffect.emit(UiEffect.ShowingGameTrailer(it))
+        _uiEffect.emit(UiEffect.ShowingGameTrailer(it, config.googleAPIKey))
     }.flowOn(coroutineContextProvider.backgroundDispatcher)
         .launchIn(viewModelScope)
 
-    private fun getGame() = flow {
+    private fun getGame(gameId: Id) {
+        this.gameId = gameId
         trackScreenShown()
-        emit(getGameUseCase.execute(gameId))
-    }.onStart {
-        updateState { it.copy(loading = true, error = null) }
-    }.onEach { game ->
-        updateState { it.copy(loading = false, error = null, game = game) }
-    }.catch { cause ->
-        if (cause !is GameDetailFailure) {
-            throw cause
-        }
 
-        gameDetailLogger.logCrash(cause)
-        updateState { it.copy(loading = false, error = cause) }
-    }.flowOn(coroutineContextProvider.backgroundDispatcher)
-        .launchIn(viewModelScope)
+        viewModelScope.launch {
+            updateState { it.copy(loading = true, error = null) }
+            runCatching {
+                withContext(coroutineContextProvider.backgroundDispatcher) {
+                    getGameUseCase.execute(gameId)
+                }
+            }.fold(
+                { game ->
+                    updateState { it.copy(loading = false, error = null, game = game) }
+                },
+                { cause ->
+                    if (cause !is GameDetailFailure) {
+                        throw cause
+                    }
+
+                    gameDetailLogger.logCrash(cause)
+                    updateState { it.copy(loading = false, error = cause) }
+                }
+            )
+        }
+    }
 
     private fun trackScreenShown() {
         gameDetailLogger.trackScreenShown(mapOf(GAME_ID_PROPERTY_NAME to gameId.toString()))
@@ -91,12 +104,6 @@ internal class GameDetailViewModel @AssistedInject constructor(
 
     private fun trackTrailerClick(gameId: Id) {
         gameDetailLogger.trackTrailerClicked(mapOf(GAME_ID_PROPERTY_NAME to gameId.toString()))
-    }
-
-    @AssistedFactory
-    interface Factory {
-
-        fun create(gameId: Id): GameDetailViewModel
     }
 }
 

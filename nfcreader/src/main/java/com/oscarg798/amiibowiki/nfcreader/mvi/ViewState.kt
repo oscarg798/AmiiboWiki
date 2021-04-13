@@ -12,9 +12,11 @@
 
 package com.oscarg798.amiibowiki.nfcreader.mvi
 
+import androidx.compose.runtime.Stable
 import com.oscarg798.amiibowiki.core.mvi.ViewState as MVIViewState
 import com.oscarg798.amiibowiki.nfcreader.errors.NFCReaderFailure
 
+@Stable
 internal data class ViewState(
     val loading: Boolean = false,
     val error: NFCReaderFailure? = null

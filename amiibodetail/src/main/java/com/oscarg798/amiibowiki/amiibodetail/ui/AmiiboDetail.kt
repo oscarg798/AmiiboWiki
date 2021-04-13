@@ -14,24 +14,39 @@ package com.oscarg798.amiibowiki.amiibodetail.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
+import com.oscarg798.amiibowiki.core.ui.ScreenConfigurator
 
 @Composable
 internal fun Detail(
     viewAmiiboDetails: ViewAmiiboDetails,
     relatedGamesSectionEnabled: Boolean,
+    screenConfigurator: ScreenConfigurator,
     onImageClick: (String) -> Unit,
     onRelatedGamesButtonClick: () -> Unit
 ) {
-    Column(Modifier.background(MaterialTheme.colors.background)) {
-        AmiiboImage(viewAmiiboDetails.imageUrl, onImageClick)
-        AmiiboDetailDescription(
-            viewAmiiboDetails,
-            relatedGamesSectionEnabled,
-            onRelatedGamesButtonClick
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colors.background)
+            .fillMaxSize()
+    ) {
+        AmiiboImage(
+            url = viewAmiiboDetails.imageUrl,
+            onImageClick = onImageClick
         )
+        AmiiboDetailDescription(
+            viewAmiiboDetails = viewAmiiboDetails,
+            relatedGamesSectionEnabled = relatedGamesSectionEnabled,
+            onRelatedGamesButtonClick = onRelatedGamesButtonClick
+        )
+    }
+
+    SideEffect {
+        screenConfigurator.titleUpdater(viewAmiiboDetails.name)
     }
 }

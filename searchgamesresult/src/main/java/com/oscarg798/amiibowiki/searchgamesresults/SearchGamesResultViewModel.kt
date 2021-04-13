@@ -28,10 +28,12 @@ import com.oscarg798.amiibowiki.searchgamesresults.mvi.ViewState
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGameResult
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByAmiiboUseCase
 import com.oscarg798.amiibowiki.searchgamesresults.usecase.SearchGamesByQueryUseCase
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -39,24 +41,40 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SearchGamesResultViewModel @AssistedInject constructor(
-    @Assisted private val handle: SavedStateHandle,
-    @Assisted private val shownAsRelatedGames: Boolean,
+@HiltViewModel
+class SearchGamesResultViewModel @Inject constructor(
+    private val handle: SavedStateHandle,
     private val searchGamesByAmiiboUseCase: SearchGamesByAmiiboUseCase,
     private val isFeatureEnableUseCase: IsFeatureEnableUseCase,
     private val searchGamesByQueryUseCase: SearchGamesByQueryUseCase,
     private val searchGamesLogger: SearchGamesResultLogger,
-    override val coroutineContextProvider: CoroutineContextProvider
+    override val coroutineContextProvider: CoroutineContextProvider,
+    /**
+     * Workaround to test the search, I tried with runBlockingTest and advancing
+     * but does not work
+     */
+    private val searchDebounce: Long
 ) : AbstractViewModel<ViewState, UIEffect, SearchResultWish>(ViewState()) {
 
+    val _searchFlow: MutableStateFlow<String> = MutableStateFlow(INITIAL_QUERY)
+
+    val searchFlow: StateFlow<String> = _searchFlow
+
     init {
+        cacheState()
+        verifyCachedQuery()
+    }
+
+    private fun verifyCachedQuery() {
+        if (handle.contains(QUERY_KEY)) {
+            _searchFlow.value = handle.get<String>(QUERY_KEY)!!
+        }
+    }
+
+    private fun cacheState() {
         state.onEach {
             handle.set(STATE_KEY, it)
         }.launchIn(viewModelScope)
-
-        if (!shownAsRelatedGames) {
-            _uiEffect.tryEmit(UIEffect.ObserveSearchResults)
-        }
     }
 
     override fun processWish(wish: SearchResultWish) {
@@ -65,11 +83,18 @@ class SearchGamesResultViewModel @AssistedInject constructor(
                 wish.gameSearchGameQueryParam.amiiboId
             )
 
-            wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.StringQueryGameSearchParam -> searchByQuery(
-                wish.gameSearchGameQueryParam.query
-            )
+            wish is SearchResultWish.SearchGames && wish.gameSearchGameQueryParam is GameSearchParam.StringQueryGameSearchParam ->
+                _searchFlow.value =
+                    wish.gameSearchGameQueryParam.query
 
             wish is SearchResultWish.ShowGameDetail -> getShowGamesFlow(wish)
+            wish is SearchResultWish.Init -> {
+                if (wish.searchBoxEnabled) {
+                    observeSearchFlow()
+                }
+
+                _uiEffect.tryEmit(UIEffect.InitializationCompleted)
+            }
         }
     }
 
@@ -86,16 +111,41 @@ class SearchGamesResultViewModel @AssistedInject constructor(
         }
     }
 
-    private fun searchByQuery(query: String) {
+    private fun observeSearchFlow() {
+        _searchFlow.debounce(searchDebounce)
+            .onEach { query ->
+                val currentState = _state.replayCache.firstOrNull()
+                if (currentStateContainsResultsForQuery(
+                        currentState = currentState,
+                        query = query
+                    )
+                ) {
+                    return@onEach
+                }
+
+                search(query)
+            }.launchIn(viewModelScope)
+    }
+
+    private fun currentStateContainsResultsForQuery(
+        currentState: ViewState?,
+        query: String
+    ) = currentState?.currentQuery == query && currentState.gamesResult != null
+
+    private fun search(query: String) {
+        handle.set(QUERY_KEY, query)
         viewModelScope.launch {
             showLoading()
+            updateState { it.copy(currentQuery = query) }
 
             val result = withContext(coroutineContextProvider.backgroundDispatcher) {
                 searchGamesByQueryUseCase.execute(query)
             }
 
             when (result) {
-                is SearchGameResult.Allowed -> subscribeToSearch(result)
+                is SearchGameResult.Allowed -> {
+                    subscribeToSearchUpdates(result)
+                }
                 is SearchGameResult.NotAllowed -> updateState {
                     it.copy(
                         idling = true,
@@ -106,7 +156,7 @@ class SearchGamesResultViewModel @AssistedInject constructor(
         }
     }
 
-    private fun subscribeToSearch(
+    private fun subscribeToSearchUpdates(
         result: SearchGameResult.Allowed
     ) {
         result.flow.onEach { results ->
@@ -191,16 +241,9 @@ class SearchGamesResultViewModel @AssistedInject constructor(
     private fun trackSearchResultClick(gameId: Int) {
         searchGamesLogger.trackGameSearchResultClicked(mapOf(GAME_ID_KEY to gameId.toString()))
     }
-
-    @AssistedFactory
-    interface Factory {
-
-        fun create(
-            shownAsRelatedGames: Boolean,
-            stateHandle: SavedStateHandle
-        ): SearchGamesResultViewModel
-    }
 }
 
 private const val STATE_KEY = "state"
 private const val GAME_ID_KEY = "GAME_ID_KEY"
+private const val QUERY_KEY = "query_key"
+private const val INITIAL_QUERY = ""

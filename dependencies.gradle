@@ -228,7 +228,7 @@ ext {
     shimmer = "com.facebook.shimmer:shimmer:0.5.0"
 
     kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:1.2.9"
-    ktlintLib = "com.pinterest:ktlint:0.37.2"
+    ktlintLib = "com.pinterest:ktlint:0.41.0"
 
     zoomImageViewer = "com.github.stfalcon:stfalcon-imageviewer:1.0.10"
 
@@ -246,6 +246,14 @@ ext {
     facebookShimmer = 'com.facebook.shimmer:shimmer:0.5.0'
 }
 
+def navigationComponent = [:]
+navigationComponent.fragment = "androidx.navigation:navigation-fragment:$navigationVersion"
+navigationComponent.ui = "androidx.navigation:navigation-ui:$navigationVersion"
+navigationComponent.fragmentKtx = "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+navigationComponent.uiKtx = "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+navigationComponent.compose = "androidx.navigation:navigation-compose:1.0.0-alpha09"
+ext.navigationComponent = navigationComponent
+
 def firebase = [:]
 firebase.boom = "com.google.firebase:firebase-bom:26.4.0"
 firebase.crashlytics = "com.google.firebase:firebase-crashlytics:17.4.0"
@@ -257,6 +265,8 @@ hilt.androidTesting = "com.google.dagger:hilt-android-testing:$hiltVersion"
 hilt.compiler = "com.google.dagger:hilt-android-compiler:$hiltVersion"
 hilt.viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$androidXHiltVersion"
 hilt.common = "androidx.hilt:hilt-common:$androidXHiltVersion"
+hilt.compose = "androidx.hilt:hilt-navigation-compose:1.0.0-alpha01"
+hilt.navigation = "androidx.hilt:hilt-navigation-fragment:1.0.0-beta01"
 ext.daggerHilt = hilt
 
 def androidTesting = [:]

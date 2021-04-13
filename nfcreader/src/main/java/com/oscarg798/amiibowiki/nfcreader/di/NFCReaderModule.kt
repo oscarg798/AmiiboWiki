@@ -12,8 +12,6 @@
 
 package com.oscarg798.amiibowiki.nfcreader.di
 
-import android.content.Context
-import android.nfc.NfcAdapter
 import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLogger
 import com.oscarg798.amiibowiki.nfcreader.logger.NFCReaderLoggerImpl
 import com.oscarg798.amiibowiki.nfcreader.repository.NFCReaderRepository
@@ -27,32 +25,32 @@ import com.oscarg798.amiibowiki.nfcreader.utils.TagTech
 import com.oscarg798.lomeno.logger.Logger
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
+@InstallIn(ViewModelComponent::class)
 @Module
 object NFCReaderModule {
 
-    @NFCReaderScope
-    @Provides
-    fun provideNFCReader(@ApplicationContext context: Context): NfcAdapter = NfcAdapter.getDefaultAdapter(context)
-
-    @NFCReaderScope
+    @ViewModelScoped
     @Provides
     fun provideMifareTagTech(mifareTagTech: MifareTagTech): TagTech = mifareTagTech
 
-    @NFCReaderScope
+    @ViewModelScoped
     @Provides
     fun provideArrayCloner(amiiboArrayCloner: AmiiboArrayCloner): ArrayCloner = amiiboArrayCloner
 
-    @NFCReaderScope
+    @ViewModelScoped
     @Provides
     fun provideByteWrapper(amiiboByteWrapper: AmiiboByteWrapper): ByteWrapper = amiiboByteWrapper
 
-    @NFCReaderScope
+    @ViewModelScoped
     @Provides
-    fun provideNFCReaderRepository(nfcReaderRepositoryImpl: NFCReaderRepositoryImpl): NFCReaderRepository = nfcReaderRepositoryImpl
+    fun provideNFCReaderRepository(nfcReaderRepositoryImpl: NFCReaderRepositoryImpl): NFCReaderRepository =
+        nfcReaderRepositoryImpl
 
-    @NFCReaderScope
+    @ViewModelScoped
     @Provides
     fun provideLogger(logger: Logger): NFCReaderLogger = NFCReaderLoggerImpl(logger)
 }

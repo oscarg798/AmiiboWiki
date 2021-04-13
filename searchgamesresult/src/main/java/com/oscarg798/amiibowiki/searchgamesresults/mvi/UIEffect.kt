@@ -17,5 +17,5 @@ import com.oscarg798.amiibowiki.core.mvi.SideEffect
 sealed class UIEffect : SideEffect {
 
     data class ShowGameDetails(val gameId: Int) : UIEffect()
-    object ObserveSearchResults : UIEffect()
+    object InitializationCompleted : UIEffect()
 }

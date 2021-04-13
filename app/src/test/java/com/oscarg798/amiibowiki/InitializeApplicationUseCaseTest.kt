@@ -17,7 +17,7 @@ import com.oscarg798.amiibowiki.core.failures.GameAPIAuthenticationFailure
 import com.oscarg798.amiibowiki.core.usecases.UpdateAmiiboTypeUseCase
 import com.oscarg798.amiibowiki.splash.usecases.ActivateRemoteConfigUseCase
 import com.oscarg798.amiibowiki.core.usecases.AuthenticateApplicationUseCase
-import com.oscarg798.amiibowiki.navigation.UpdateStatus
+import com.oscarg798.amiibowiki.dashboard.UpdateStatus
 import com.oscarg798.amiibowiki.splash.failures.OutdatedAppException
 import com.oscarg798.amiibowiki.splash.usecases.InitializeApplicationUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk

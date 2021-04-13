@@ -55,21 +55,21 @@ internal class AmiiboListViewModelTest : ViewModelTestRule.ViewModelCreator<View
 
     @Before
     fun setup() {
-        coEvery { handleState.get<ViewState>(any()) } answers { null }
+        every { handleState.get("state") as? ViewState } answers { null }
         coEvery { getAmiiboTypeUseCase.execute() } answers { listOf(AMIIBO_TYPE) }
         coEvery { getAmiibosFilteredUseCase.execute(AMIIBO_TYPE) } answers { listOf(AMIIBO) }
         every { getAmiibosUseCase.execute() } answers { flowOf(listOf(AMIIBO)) }
     }
 
     override fun create(): AmiiboListViewModel = AmiiboListViewModel(
-        handleState,
-        getAmiibosUseCase,
-        getAmiibosFilteredUseCase,
-        getAmiiboTypeUseCase,
-        searchAmiiboUseCase,
-        amiiboListLogger,
-        isFeatureEnableUseCase,
-        viewModelRule.coroutineContextProvider
+        stateHandle = handleState,
+        getAmiibosUseCase = getAmiibosUseCase,
+        getAmiiboFilteredUseCase = getAmiibosFilteredUseCase,
+        getAmiiboTypeUseCase = getAmiiboTypeUseCase,
+        searchAmiibosUseCase = searchAmiiboUseCase,
+        amiiboListLogger = amiiboListLogger,
+        isFeatureEnableUseCase = isFeatureEnableUseCase,
+        coroutineContextProvider = viewModelRule.coroutineContextProvider
     )
 
     @Test

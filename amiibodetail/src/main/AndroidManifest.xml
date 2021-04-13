@@ -4,7 +4,6 @@
 
 
     <application>
-        <activity android:name=".AmiiboDetailDeepLinkActivity" />
         <activity android:name="androidx.activity.ComponentActivity" />
     </application>
 </manifest>

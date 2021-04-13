@@ -14,7 +14,6 @@ package com.oscarg798.amiibowiki.settings.di
 
 import com.oscarg798.amiibowiki.settings.featurepoint.DarkModelPreferenceFeatureFactory
 import com.oscarg798.amiibowiki.settings.featurepoint.DevelopmentActivityFeatureFactory
-import com.oscarg798.amiibowiki.settings.featurepoint.MaxNumberOfResultInSearchFeatureFactory
 import com.oscarg798.amiibowiki.settings.featurepoint.PreferenceFeaturePoint
 import com.oscarg798.amiibowiki.settings.models.PreferenceBuilder
 import com.oscarg798.amiibowiki.settings.repositories.SettingsRepository
@@ -34,13 +33,11 @@ object SettingsModule {
     @Provides
     fun bindFeaturePoint(
         developmentActivityFeatureFactory: DevelopmentActivityFeatureFactory,
-        darkModelPreferenceFeatureFactory: DarkModelPreferenceFeatureFactory,
-        maxNumberOfResultInSearchFeatureFactory: MaxNumberOfResultInSearchFeatureFactory
+        darkModelPreferenceFeatureFactory: DarkModelPreferenceFeatureFactory
     ): SuspendFeaturePoint<PreferenceBuilder, Unit> =
         PreferenceFeaturePoint(
             setOf(
                 darkModelPreferenceFeatureFactory,
-                maxNumberOfResultInSearchFeatureFactory,
                 developmentActivityFeatureFactory
             )
         )

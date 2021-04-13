@@ -107,6 +107,6 @@ internal class SettingsViewModelTest :
 }
 
 private val PREFERENCES = setOf(
-    PreferenceBuilder.Clickable("1", "2"),
-    PreferenceBuilder.Clickable("1", "2")
+    PreferenceBuilder("1", "2"),
+    PreferenceBuilder("1", "2")
 )

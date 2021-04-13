@@ -19,13 +19,11 @@ import javax.inject.Inject
 @Reusable
 class ExpandGameImagesUseCase @Inject constructor() {
 
-    fun execute(params: Collection<ExpandableImageParam>): Collection<String> {
-        return params.map {
-            it.imageUrl.getExpandableCoverUrl(it.type.originalSize)
-        }
+    fun execute(params: ExpandableImageParam): String {
+        return params.imageUrl.getExpandedUrl(params.type.originalSize)
     }
 
-    private fun String.getExpandableCoverUrl(originalSize: String): String {
+    private fun String.getExpandedUrl(originalSize: String): String {
         return replace(originalSize, EXPANDED_IMAGE_SIZE)
     }
 }

@@ -12,6 +12,7 @@
 
 package com.oscarg798.amiibowiki.gamedetail
 
+import com.oscarg798.amiibowiki.core.models.Config
 import com.oscarg798.amiibowiki.core.models.Game
 import com.oscarg798.amiibowiki.core.models.GameCategory
 import com.oscarg798.amiibowiki.gamedetail.logger.GameDetailLogger
@@ -27,6 +28,7 @@ import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
@@ -42,25 +44,26 @@ internal class GameDetailViewModelTest :
     private val getGamesUseCase = relaxedMockk<GetGamesUseCase>()
     private val expandGameImagesUseCase = relaxedMockk<ExpandGameImagesUseCase>()
     private val getGameTrailerUseCase = relaxedMockk<GetGameTrailerUseCase>()
+    private val config: Config = relaxedMockk()
 
     @Before
     fun setup() {
         coEvery { getGamesUseCase.execute(GAME_ID) } answers { GAME }
         coEvery { expandGameImagesUseCase.execute(EXPAND_IMAGE_PARAMS) } answers { EXPANDED_IMAGES }
+        viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail(GAME_ID))
     }
 
     override fun create(): GameDetailViewModel = GameDetailViewModel(
-        GAME_ID,
-        getGamesUseCase,
-        expandGameImagesUseCase,
-        getGameTrailerUseCase,
-        gameDetailLogger,
-        viewModelTestRule.coroutineContextProvider
+        getGameUseCase = getGamesUseCase,
+        expandGameImagesUseCase = expandGameImagesUseCase,
+        getGameTrailerUseCase = getGameTrailerUseCase,
+        gameDetailLogger = gameDetailLogger,
+        config = config,
+        coroutineContextProvider = viewModelTestRule.coroutineContextProvider
     )
 
     @Test
     fun `given a wish to show the game details when its processed then it should return the state with the details`() {
-        viewModelTestRule.viewModel.onWish(GameDetailWish.ShowGameDetail)
 
         viewModelTestRule.stateCollector wereValuesEmitted listOf(
             STATE.copy(loading = true),
@@ -77,6 +80,7 @@ internal class GameDetailViewModelTest :
 
     @Test
     fun `given a wish to show the game trailer when its processed then it should return the state with the trailer id`() {
+        every { config.googleAPIKey } answers { API_KEY }
         coEvery { getGameTrailerUseCase.execute(GAME_ID) } answers { "9" }
 
         viewModelTestRule.viewModel.onWish(
@@ -84,7 +88,7 @@ internal class GameDetailViewModelTest :
         )
 
         viewModelTestRule.effectCollector.wereValuesEmitted(
-            listOf(UiEffect.ShowingGameTrailer("9"))
+            listOf(UiEffect.ShowingGameTrailer("9", API_KEY))
         )
 
         verify {
@@ -105,9 +109,9 @@ internal class GameDetailViewModelTest :
 }
 
 private val STATE = ViewState()
-private val EXPANDED_IMAGES = listOf("expand_url")
-private val EXPAND_IMAGE_PARAMS =
-    listOf(ExpandableImageParam("url", ExpandableImageType.Cover))
+private val EXPANDED_IMAGES = "expand_url"
+private val EXPAND_IMAGE_PARAMS = ExpandableImageParam("url", ExpandableImageType.Cover)
+private val API_KEY = "1"
 private const val GAME_ID = 45
 private val GAME =
     Game(

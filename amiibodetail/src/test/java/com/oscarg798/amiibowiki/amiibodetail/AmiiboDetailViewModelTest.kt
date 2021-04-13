@@ -18,11 +18,11 @@ import com.oscarg798.amiibowiki.amiibodetail.models.ViewAmiiboDetails
 import com.oscarg798.amiibowiki.amiibodetail.mvi.AmiiboDetailWish
 import com.oscarg798.amiibowiki.amiibodetail.mvi.UiEffect
 import com.oscarg798.amiibowiki.amiibodetail.mvi.ViewState
+import com.oscarg798.amiibowiki.amiibodetail.usecase.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.failures.AmiiboDetailFailure
 import com.oscarg798.amiibowiki.core.featureflaghandler.AmiiboWikiFeatureFlag
 import com.oscarg798.amiibowiki.core.models.Amiibo
 import com.oscarg798.amiibowiki.core.models.AmiiboReleaseDate
-import com.oscarg798.amiibowiki.core.usecases.GetAmiiboDetailUseCase
 import com.oscarg798.amiibowiki.core.usecases.IsFeatureEnableUseCase
 import com.oscarg798.amiibowiki.testutils.extensions.relaxedMockk
 import com.oscarg798.amiibowiki.testutils.testrules.ViewModelTestRule
@@ -56,17 +56,16 @@ internal class AmiiboDetailViewModelTest :
     }
 
     override fun create(): AmiiboDetailViewModel = AmiiboDetailViewModel(
-        TAIL,
-        savedStateHandle,
-        getAmiiboDetailUseCase,
-        logger,
-        isFeatureFlagEnableUseCase,
-        viewModelTestTule.coroutineContextProvider
+        handle = savedStateHandle,
+        getAmiiboDetailUseCase = getAmiiboDetailUseCase,
+        amiiboDetailLogger = logger,
+        isFeatureEnableUseCase = isFeatureFlagEnableUseCase,
+        coroutineContextProvider = viewModelTestTule.coroutineContextProvider
     )
 
     @Test
     fun `given showrelated games FF is off and ShowDetail wish when view model process it then it should update the state with the amiibo result`() {
-        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
+        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail(TAIL))
 
         viewModelTestTule.stateCollector wereValuesEmitted listOf(
             STATE.copy(loading = true),
@@ -82,7 +81,7 @@ internal class AmiiboDetailViewModelTest :
     @Test
     fun `given show related games FF is on and ShowDetail wish when view model process it then it should update the state with the amiibo result`() {
         every { isFeatureFlagEnableUseCase.execute(AmiiboWikiFeatureFlag.ShowRelatedGames) } answers { true }
-        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
+        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail(TAIL))
 
         viewModelTestTule.stateCollector wereValuesEmitted listOf(
             STATE.copy(loading = true),
@@ -101,7 +100,7 @@ internal class AmiiboDetailViewModelTest :
             TAIL
         )
 
-        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
+        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail(TAIL))
 
         viewModelTestTule.stateCollector wereValuesEmitted listOf(
             STATE.copy(loading = true),
@@ -128,6 +127,7 @@ internal class AmiiboDetailViewModelTest :
 
     @Test
     fun `given show related games wish when its processed then it should generate a side effect to show them`() {
+        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail(TAIL))
         viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowRelatedGames)
 
         viewModelTestTule.effectCollector.wereValuesEmitted(
@@ -142,7 +142,7 @@ internal class AmiiboDetailViewModelTest :
         val error = NullPointerException()
         coEvery { getAmiiboDetailUseCase.execute(TAIL) } throws error
 
-        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
+        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail(TAIL))
 
         viewModelTestTule.stateCollector wereValuesEmitted listOf(
             STATE,
@@ -157,7 +157,7 @@ internal class AmiiboDetailViewModelTest :
 
     @Test
     fun `when show amiibo details wish is emitted then it should track the view as shown with the properties`() {
-        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail)
+        viewModelTestTule.viewModel.onWish(AmiiboDetailWish.ShowAmiiboDetail(TAIL))
 
         verify {
             logger.trackScreenShown(

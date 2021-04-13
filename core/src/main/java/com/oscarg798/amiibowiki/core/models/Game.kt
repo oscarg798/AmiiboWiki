@@ -16,7 +16,6 @@ typealias Id = Int
 typealias WebSiteId = Int
 typealias WebSiteUrl = String
 typealias VideoId = String
-typealias CoverUrl = String
 
 data class Game(
     val id: Id,
