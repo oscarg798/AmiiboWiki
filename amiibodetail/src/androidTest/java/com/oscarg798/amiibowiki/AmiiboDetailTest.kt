@@ -47,6 +47,8 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
+@Ignore("Kind of broken when i removed assisted inject need to fix it later")
+
 @UninstallModules(
     PersistenceModule::class,
     FeatureFlagHandlerModule::class,
@@ -55,7 +57,6 @@ import org.junit.Test
     EnvirormentCheckerModule::class,
 )
 @HiltAndroidTest
-@Ignore("Kind of broken when i removed assisted inject need to fix it later")
 internal class AmiiboDetailTest {
 
     @get:Rule

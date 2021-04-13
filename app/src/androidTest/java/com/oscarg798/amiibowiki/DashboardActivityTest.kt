@@ -41,6 +41,7 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
+@Ignore("This need to be migrated to compose ")
 @UninstallModules(
     PersistenceModule::class,
     FeatureFlagHandlerModule::class,
@@ -50,8 +51,6 @@ import org.junit.Test
     AppModule::class
 )
 @HiltAndroidTest
-
-
 class DashboardActivityTest : BaseUITest(DISPATCHER)  {
 
     private val dashboardTestRobot = DashboardTestRobot()
